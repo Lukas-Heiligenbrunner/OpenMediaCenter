@@ -1,35 +1,43 @@
-.myvideo{
-  width: 80%;
-  margin-left: 10%;
-  float: left;
+.myvideo {
+    width: 80%;
+    margin-left: 10%;
+    float: left;
 }
 
-.previewcontainer{
-  margin-left: 10%;
-  width: 80%;
-  margin-right: 10%;
+.previewcontainer {
+    margin-left: 10%;
+    width: 80%;
+    margin-right: 10%;
 }
 
-.videopreview{
-  height: 300px;
-  width: 30%;
-  float: left;
-  margin: 1%;
-  background-color: #7F7F7F;
-  cursor: pointer;
-}
-.previewtitle{
-  height: 10%;
-}
-.previewpic{
-  height: 90%;
+.videopreview {
+    height: 300px;
+    width: 30%;
+    float: left;
+    margin: 1%;
+    background-color: #7F7F7F;
+    cursor: pointer;
+    opacity: 0.9;
 }
 
-.hideit{
-  display: none;
+.videopreview:hover {
+    opacity: 1;
+    transition: opacity 0.5s;
 }
 
-.closebutton{
-  height: 15px;
-  background-color: #FF0000;
+.previewtitle {
+    height: 10%;
+}
+
+.previewpic {
+    height: 90%;
+}
+
+.hideit {
+    display: none;
+}
+
+.closebutton {
+    height: 15px;
+    background-color: #FF0000;
 }
