@@ -18,6 +18,8 @@
     background-color: #7F7F7F;
     cursor: pointer;
     opacity: 0.9;
+    border: 10px;
+    border-radius: 20px;
 }
 
 .videopreview:hover {
@@ -27,10 +29,12 @@
 
 .previewtitle {
     height: 10%;
+    color: white;
+    text-align: center;
 }
 
 .previewpic {
-    height: 90%;
+    height: 80%;
 }
 
 .hideit {
@@ -38,6 +42,11 @@
 }
 
 .closebutton {
-    height: 15px;
+    color: white;
+    height: 35px;
+    width: 90px;
+    margin-right: 80px;
+    float: right;
     background-color: #FF0000;
+    cursor: pointer;
 }
