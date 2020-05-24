@@ -5,8 +5,11 @@ let scrollposition = 0;
 $(document).ready(function () {
     $.post('php/videoload.php', 'action=getMovies', function (data) {
         videos = data;
-        console.log(videos);
         loadPreviewBlock(12);
+    }, 'json');
+
+    $.post('php/videoload.php', 'action=getDbSize', function (data) {
+        console.log(data);
     }, 'json');
 
     $(".closebutton").click(function () {

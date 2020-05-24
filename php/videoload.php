@@ -12,7 +12,7 @@ if (isset($_POST['action'])) {
             $result = $conn->query($query);
             $rows = array();
             while ($r = mysqli_fetch_assoc($result)) {
-                array_push($rows,$r);
+                array_push($rows, $r);
             }
 
             echo(json_encode($rows));
@@ -33,19 +33,30 @@ if (isset($_POST['action'])) {
             $query = "SELECT table_schema AS \"Database\", 
                         ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS \"Size\" 
                         FROM information_schema.TABLES 
-                        WHERE TABLE_SCHEMA='test'
+                        WHERE TABLE_SCHEMA='hub'
                         GROUP BY table_schema;";
             $result = $conn->query($query);
 
             if ($result->num_rows == 1) {
                 $row = $result->fetch_assoc();
 
-                echo '{"data":"' . $row["Size"] . '"}';
+                echo '{"data":"' . $row["Size"] . 'MB"}';
             }
 
             break;
         case "readThumbnail":
             $query = "SELECT thumbnail FROM videos WHERE movie_id='" . $_POST['movieid'] . "'";
+
+            $result = $conn->query($query);
+            $row = $result->fetch_assoc();
+
+            echo($row["thumbnail"]);
+
+            break;
+
+        case "getTags":
+            $query = "SELECT * FROM video_tags INNER JOIN tags t on video_tags.tag_id = t.tag_id WHERE video_id='" . $_POST['movieid'] . "'";
+            #$query = "SELECT thumbnail FROM videos WHERE movie_id='" . $_POST['movieid'] . "'";
 
             $result = $conn->query($query);
             $row = $result->fetch_assoc();
