@@ -6,7 +6,7 @@ let loadedvideoid = -1;
 $(document).ready(function () {
     $.post('php/videoload.php', 'action=getMovies', function (data) {
         videos = data;
-        loadPreviewBlock(12);
+        loadPreviewBlock(15);
     }, 'json');
 
     $.post('php/videoload.php', 'action=getDbSize', function (data) {
