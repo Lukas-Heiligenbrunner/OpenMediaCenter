@@ -18,7 +18,7 @@ if (isset($_POST['action'])) {
             echo(json_encode($rows));
             break;
         case "loadVideo":
-            $query = "SELECT movie_url,thumbnail FROM videos WHERE movie_id='" . $_POST['movieid'] . "'";
+            $query = "SELECT movie_url,thumbnail,likes FROM videos WHERE movie_id='" . $_POST['movieid'] . "'";
 
             $result = $conn->query($query);
             $row = $result->fetch_assoc();
@@ -26,6 +26,7 @@ if (isset($_POST['action'])) {
             $arr = array();
             $arr["thumbnail"] = $row["thumbnail"];
             $arr["movie_url"] = $row["movie_url"];
+            $arr["likes"] = $row["likes"];
             echo(json_encode($arr));
 
             break;
@@ -39,7 +40,6 @@ if (isset($_POST['action'])) {
 
             if ($result->num_rows == 1) {
                 $row = $result->fetch_assoc();
-
                 echo '{"data":"' . $row["Size"] . 'MB"}';
             }
 
@@ -55,14 +55,32 @@ if (isset($_POST['action'])) {
             break;
 
         case "getTags":
-            $query = "SELECT * FROM video_tags INNER JOIN tags t on video_tags.tag_id = t.tag_id WHERE video_id='" . $_POST['movieid'] . "'";
-            #$query = "SELECT thumbnail FROM videos WHERE movie_id='" . $_POST['movieid'] . "'";
+            $movieid = $_POST['movieid'];
+
+            $query = "SELECT tag_name FROM video_tags 
+                        INNER JOIN tags t on video_tags.tag_id = t.tag_id 
+                        WHERE video_id='$movieid'";
 
             $result = $conn->query($query);
-            $row = $result->fetch_assoc();
 
-            echo($row["thumbnail"]);
+            $rows = array();
+            $rows['tags'] = array();
+            while ($r = mysqli_fetch_assoc($result)) {
+                array_push($rows['tags'], $r['tag_name']);
+            }
 
+            echo(json_encode($rows));
+            break;
+        case "addLike":
+            $movieid = $_POST['movieid'];
+
+            $query = "update videos set likes = likes + 1 where movie_id = '$movieid'";
+
+            if ($conn->query($query) === TRUE) {
+                echo('{"result":"success"}');
+            } else {
+                echo('{"result":"' . $conn->error . '"}');
+            }
             break;
     }
 } else {
