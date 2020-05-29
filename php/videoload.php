@@ -8,7 +8,17 @@ if (isset($_POST['action'])) {
     $action = $_POST['action'];
     switch ($action) {
         case "getMovies":
-            $query = "SELECT movie_id,movie_name FROM videos ORDER BY likes DESC,, create_date ASC, movie_name ASC";
+            $query = "SELECT movie_id,movie_name FROM videos ORDER BY likes DESC, create_date ASC, movie_name ASC";
+            $result = $conn->query($query);
+            $rows = array();
+            while ($r = mysqli_fetch_assoc($result)) {
+                array_push($rows, $r);
+            }
+
+            echo(json_encode($rows));
+            break;
+        case "getRandomMovies":
+            $query = "SELECT movie_id,movie_name FROM videos ORDER BY RAND() LIMIT ".$_POST['number'];
             $result = $conn->query($query);
             $rows = array();
             while ($r = mysqli_fetch_assoc($result)) {
