@@ -1,5 +1,7 @@
 import React from "react";
 import "./css/Preview.css"
+import ReactDOM from "react-dom";
+import Player from "./Player";
 
 class Preview extends React.Component {
     constructor(props, context) {
@@ -8,8 +10,7 @@ class Preview extends React.Component {
 
         this.state = {
             previewpicture: null,
-            name: null,
-            url: null
+            name: null
         };
     }
 
@@ -20,9 +21,8 @@ class Preview extends React.Component {
     componentDidMount() {
         this.setState({
             previewpicture: null,
-            name: this.props.name,
-            url: this.props.url
-        })
+            name: this.props.name
+        });
 
         const updateRequest = new FormData();
         updateRequest.append('action', 'readThumbnail');
@@ -39,7 +39,7 @@ class Preview extends React.Component {
 
     render() {
         return (
-            <div className='videopreview'>
+            <div className='videopreview' onClick={() => this.itemClick()}>
                 <div className='previewtitle'>{this.state.name}</div>
                 <div className='previewpic'>
                     <img className='previewimage'
@@ -47,6 +47,17 @@ class Preview extends React.Component {
                          alt='no thumbnail found'/>
                 </div>
             </div>
+        );
+    }
+
+    itemClick() {
+        console.log("item clicked!"+this.state.name);
+
+        ReactDOM.render(
+            <React.StrictMode>
+                <Player movie_id={this.props.movie_id}/>
+            </React.StrictMode>,
+            document.getElementById('root')
         );
     }
 }
