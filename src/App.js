@@ -1,29 +1,12 @@
 import React from 'react';
-import './App.css';
 import MainBody from "./MainBody";
-import AlternativeBody from "./AlternativeBody"
-import ReactDOM from 'react-dom';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class App extends React.Component {
-    page1click() {
-        console.log("click page1");
-
-        // rerender mainbody space here
-        ReactDOM.render(
-            <MainBody/>,
-            document.getElementById("mainbody")
-        );
-    }
-
-    page2click() {
-        console.log("click page2");
-
-        // rerender mainbody space here
-        ReactDOM.render(
-            <AlternativeBody/>,
-            document.getElementById("mainbody")
-        );
+    constructor(props, context) {
+        super(props, context);
+        this.state = {page: "default"};
     }
 
     render() {
@@ -34,36 +17,34 @@ class App extends React.Component {
 
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <a className="nav-link" onClick={() => this.homePageClick()} href="!#">Home</a>
+                            <a className="nav-link" onClick={() => this.loadHomePage()} href="!#">Home</a>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" onClick={() => this.homePageClick()} href="!#">Random Video</a>
+                            <a className="nav-link" onClick={() => this.loadRandomPage()} href="!#">Random Video</a>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" onClick={() => this.homePageClick()} href="!#">Categories</a>
+                            <a className="nav-link" onClick={() => this.loadCategoriesPage()} href="!#">Categories</a>
                         </li>
                     </ul>
                 </nav>
-                <div>
-                    <button onClick={() => this.page1click()}>Page1</button>
-                    <button onClick={() => this.page2click()}>Page2</button>
-                </div>
-                <div id="mainbody">
-                    mimimimimi
-                </div>
-
+                <MainBody page={this.state.page}/>
             </div>
         );
     }
 
-    homePageClick() {
-        console.log("click page1");
+    loadCategoriesPage() {
+        console.log("click categories");
+        this.setState({page: "categories"});
+    }
 
-        // rerender mainbody space here
-        ReactDOM.render(
-            <MainBody/>,
-            document.getElementById("mainbody")
-        );
+    loadRandomPage() {
+        console.log("click random");
+        this.setState({page: "random"});
+    }
+
+    loadHomePage() {
+        console.log("click default");
+        this.setState({page: "default"});
     }
 }
 

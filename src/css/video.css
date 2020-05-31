@@ -41,30 +41,3 @@
     width: 80%;
     margin-right: 10%;
 }
-
-.videopreview {
-    height: 300px;
-    width: 30%;
-    float: left;
-    margin: 1%;
-    background-color: #7F7F7F;
-    cursor: pointer;
-    opacity: 0.9;
-    border: 10px;
-    border-radius: 20px;
-}
-
-.videopreview:hover {
-    opacity: 1;
-    transition: opacity 0.5s;
-}
-
-.previewtitle {
-    height: 10%;
-    color: white;
-    text-align: center;
-}
-
-.previewpic {
-    height: 80%;
-}

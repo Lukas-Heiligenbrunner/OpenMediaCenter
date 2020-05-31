@@ -1,18 +1,20 @@
 import React from "react";
+import HomePage from "./HomePage";
 
 class MainBody extends React.Component {
+    constructor(props) {
+        super(props);
+        this.props = props;
+    }
+
     render() {
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title: 'React POST Request Example' })
-        };
-        fetch('https://jsonplaceholder.typicode.com/posts', requestOptions)
-            .then(response => response.json())
-            .then(data => this.setState({ postId: data.id }));
-        return (
-            <div>Hey from other class</div>
-        );
+        let page;
+        if (this.props.page === "default") {
+            page = <HomePage/>;
+        }else {
+            page = <div>unimplemented yet!</div>;
+        }
+        return (page);
     }
 }
 
