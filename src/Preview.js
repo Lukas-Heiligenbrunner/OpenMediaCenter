@@ -43,7 +43,7 @@ class Preview extends React.Component {
                 <div className='previewpic'>
                     <img className='previewimage'
                          src={this.state.previewpicture}
-                         alt='no thumbnail found'/>
+                         alt='Pic loading.'/>
                 </div>
             </div>
         );
@@ -52,7 +52,9 @@ class Preview extends React.Component {
     itemClick() {
         console.log("item clicked!" + this.state.name);
 
-        this.props.viewbinding.showVideo(<Player viewbinding={this.props.viewbinding} movie_id={this.props.movie_id}/>);
+        this.props.viewbinding.showVideo(<Player
+            viewbinding={this.props.viewbinding}
+            movie_id={this.props.movie_id}/>);
     }
 }
 

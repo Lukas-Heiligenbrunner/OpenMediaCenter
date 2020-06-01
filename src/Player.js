@@ -121,6 +121,8 @@ class Player extends React.Component {
     }
 
     closebtn() {
+        // todo go back to correct page here!
+        // have a catch to <Route>
         this.props.viewbinding.hideVideo();
     }
 }

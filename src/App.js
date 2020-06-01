@@ -1,6 +1,7 @@
 import React from 'react';
 import MainBody from "./MainBody";
 
+// include bootstraps css
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class App extends React.Component {
@@ -17,7 +18,7 @@ class App extends React.Component {
         return (
             <div className="App">
                 <nav className="navbar navbar-expand-sm bg-primary navbar-dark">
-                    <a className="navbar-brand" href="!#">Lukis Tube</a>
+                    <a className="navbar-brand" href="# ">Lukis Tube</a>
 
                     <ul className="navbar-nav">
                         <li className="nav-item">

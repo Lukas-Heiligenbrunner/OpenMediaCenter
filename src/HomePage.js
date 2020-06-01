@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Preview from "./Preview";
 import "./css/HomePage.css"
 
@@ -12,7 +12,13 @@ class HomePage extends React.Component {
         super(props, context);
 
         this.state = {
-            loadeditems: []
+            loadeditems: [],
+            sideinfo: {
+                videonr: null,
+                hdvideonr: null,
+                sdvideonr: null,
+                categorynr: null
+            }
         };
     }
 
@@ -24,11 +30,16 @@ class HomePage extends React.Component {
 
         // fetch all videos available
         fetch('/php/videoload.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json())
-            .then((result) => {
-                this.data = result;
-                this.loadPreviewBlock(12);
+            .then((response) => response.json()
+                .then((result) => {
+                    this.data = result;
+                    this.loadPreviewBlock(12);
+                }))
+            .catch(() => {
+                console.log("no connection to backend");
             });
+
+
     }
 
     componentWillUnmount() {
@@ -41,7 +52,11 @@ class HomePage extends React.Component {
             <div>
                 <div><h1>Home page</h1></div>
                 <div className='sideinfo'>
-                    beep beep
+                    Infos:
+                    <div>Total Number of Videos: {this.state.sideinfo.videonr}</div>
+                    <div>HD Videos: {this.state.sideinfo.hdvideonr}</div>
+                    <div>SD Videos: {this.state.sideinfo.sdvideonr}</div>
+                    <div>Total Number of Categories: {this.state.sideinfo.categorynr}</div>
                 </div>
                 <div className='maincontent'>
                     {this.state.loadeditems.map(elem => (
