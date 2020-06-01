@@ -7,6 +7,9 @@ class App extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {page: "default"};
+
+        // bind this to the method for being able to call methods such as this.setstate
+        this.showVideo = this.showVideo.bind(this);
     }
 
     render() {
@@ -17,17 +20,17 @@ class App extends React.Component {
 
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <a className="nav-link" onClick={() => this.loadHomePage()} href="!#">Home</a>
+                            <a className="nav-link" onClick={() => this.loadHomePage()} href="#">Home</a>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" onClick={() => this.loadRandomPage()} href="!#">Random Video</a>
+                            <a className="nav-link" onClick={() => this.loadRandomPage()} href="#">Random Video</a>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" onClick={() => this.loadCategoriesPage()} href="!#">Categories</a>
+                            <a className="nav-link" onClick={() => this.loadCategoriesPage()} href="#">Categories</a>
                         </li>
                     </ul>
                 </nav>
-                <MainBody page={this.state.page}/>
+                <MainBody showvideo={this.showVideo} page={this.state.page} videoelement={this.element}/>
             </div>
         );
     }
@@ -45,6 +48,14 @@ class App extends React.Component {
     loadHomePage() {
         console.log("click default");
         this.setState({page: "default"});
+    }
+
+    showVideo(element) {
+        this.setState({
+            page: "video"
+        });
+
+        this.element = element;
     }
 }
 

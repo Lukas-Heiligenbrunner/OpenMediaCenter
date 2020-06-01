@@ -43,7 +43,8 @@ class HomePage extends React.Component {
                 {this.state.loadeditems.map(elem => (
                     <Preview
                         name={elem.movie_name}
-                        movie_id={elem.movie_id}/>
+                        movie_id={elem.movie_id}
+                        showvideo={this.props.showvideo}/>
                 ))}
             </div>
         );

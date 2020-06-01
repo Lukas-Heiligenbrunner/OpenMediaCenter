@@ -53,12 +53,7 @@ class Preview extends React.Component {
     itemClick() {
         console.log("item clicked!"+this.state.name);
 
-        ReactDOM.render(
-            <React.StrictMode>
-                <Player movie_id={this.props.movie_id}/>
-            </React.StrictMode>,
-            document.getElementById('root')
-        );
+        this.props.showvideo(<Player movie_id={this.props.movie_id}/>);
     }
 }
 

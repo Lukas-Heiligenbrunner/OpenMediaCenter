@@ -8,7 +8,17 @@ class Player extends React.Component {
         super(props, context);
 
         this.state = {
-            sources: null
+            sources: {
+                type: 'video',
+                sources: [
+                    {
+                        src: '',
+                        type: 'video/mp4',
+                        size: 1080,
+                    }
+                ],
+                poster: ''
+            }
         };
 
         this.props = props;
@@ -22,7 +32,6 @@ class Player extends React.Component {
         fetch('/php/videoload.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json())
             .then((result) => {
-                console.log(result);
                 this.setState({
                     sources: {
                         type: 'video',
@@ -33,7 +42,7 @@ class Player extends React.Component {
                                 size: 1080,
                             }
                         ],
-                        poster: result["thumbnail"]
+                        poster: result.thumbnail
                     }
                 });
                 console.log(this.state);
@@ -43,8 +52,41 @@ class Player extends React.Component {
 
     render() {
         return (
-            <div className='myvideo'>
-                {this.state.sources ? <PlyrComponent sources={this.state.sources}/> : <div>loading</div>}
+            <div>
+                <div className="row">
+                    <div className="col-sm-2">
+                        <div className="videoleftbanner">
+                            <div className="likefield">Likes: 10</div>
+                        </div>
+                    </div>
+                    <div className="col-sm-8">
+                        <div className="videowrapper">
+                            <div className='myvideo'>
+                                {this.state.sources.sources[0].src ? <PlyrComponent sources={this.state.sources}/> :
+                                    <div>not loaded yet</div>}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-sm-2">
+                        <div className="closebutton">Close</div>
+                        <div className="videorightbanner"></div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-sm-5">
+
+
+                    </div>
+                    <div className="col-sm-2">
+                        <button id="likebtn">Like it!</button>
+                        <button id="tagbutton">Tag it!</button>
+
+                    </div>
+                    <div className="col-sm-5">
+
+
+                    </div>
+                </div>
             </div>
         );
     }
