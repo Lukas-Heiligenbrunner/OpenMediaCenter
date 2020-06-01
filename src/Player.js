@@ -35,7 +35,7 @@ class Player extends React.Component {
 
     render() {
         return (
-            <div>
+            <div id='videocontainer'>
                 <div className="row">
                     <div className="col-sm-2">
                         <div className="videoleftbanner">
@@ -81,7 +81,7 @@ class Player extends React.Component {
         updateRequest.append('action', 'loadVideo');
         updateRequest.append('movieid', this.props.movie_id);
 
-        fetch('/php/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json())
             .then((result) => {
                 this.setState({
@@ -108,7 +108,7 @@ class Player extends React.Component {
         updateRequest.append('action', 'addLike');
         updateRequest.append('movieid', this.props.movie_id);
 
-        fetch('/php/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json())
             .then((result) => {
                 if(result.result === "success"){

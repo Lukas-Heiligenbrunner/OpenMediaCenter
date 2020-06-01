@@ -29,7 +29,7 @@ class HomePage extends React.Component {
         updateRequest.append('action', 'getMovies');
 
         // fetch all videos available
-        fetch('/php/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
                     this.data = result;

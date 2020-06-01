@@ -19,7 +19,7 @@ class App extends React.Component {
         return (
             <div className="App">
                 <nav className="navbar navbar-expand-sm bg-primary navbar-dark">
-                    <div className="navbar-brand">Lukis Tube</div>
+                    <div className="navbar-brand">OpenMediaCenter</div>
 
                     <ul className="navbar-nav">
                         <li className="nav-item">

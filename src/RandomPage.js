@@ -3,7 +3,7 @@ import Preview from "./Preview";
 import "./css/RandomPage.css"
 
 class RandomPage extends React.Component {
-    constructor(props: P, context: any) {
+    constructor(props, context) {
         super(props, context);
 
         this.state = {
@@ -53,7 +53,7 @@ class RandomPage extends React.Component {
         updateRequest.append('number', nr);
 
         // fetch all videos available
-        fetch('/php/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
                     this.setState({videos: result});
