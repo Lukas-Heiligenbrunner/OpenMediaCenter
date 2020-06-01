@@ -1,6 +1,5 @@
 import React from "react";
 import "./css/Preview.css"
-import ReactDOM from "react-dom";
 import Player from "./Player";
 
 class Preview extends React.Component {
@@ -51,9 +50,9 @@ class Preview extends React.Component {
     }
 
     itemClick() {
-        console.log("item clicked!"+this.state.name);
+        console.log("item clicked!" + this.state.name);
 
-        this.props.showvideo(<Player movie_id={this.props.movie_id}/>);
+        this.props.viewbinding.showVideo(<Player viewbinding={this.props.viewbinding} movie_id={this.props.movie_id}/>);
     }
 }
 

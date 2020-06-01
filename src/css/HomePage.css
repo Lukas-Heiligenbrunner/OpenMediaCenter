@@ -1,0 +1,14 @@
+.sideinfo{
+    width: 20%;
+    float: left;
+}
+
+.maincontent{
+    float: left;
+    width: 70%;
+}
+
+.rightinfo{
+    float: left;
+    width: 10%;
+}

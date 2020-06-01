@@ -1,6 +1,6 @@
 import React from "react";
 import Preview from "./Preview";
-import './css/video.css'
+import "./css/HomePage.css"
 
 class HomePage extends React.Component {
     // stores all available movies
@@ -40,12 +40,22 @@ class HomePage extends React.Component {
         return (
             <div>
                 <div><h1>Home page</h1></div>
-                {this.state.loadeditems.map(elem => (
-                    <Preview
-                        name={elem.movie_name}
-                        movie_id={elem.movie_id}
-                        showvideo={this.props.showvideo}/>
-                ))}
+                <div className='sideinfo'>
+                    beep beep
+                </div>
+                <div className='maincontent'>
+                    {this.state.loadeditems.map(elem => (
+                        <Preview
+                            key={elem.movie_id}
+                            name={elem.movie_name}
+                            movie_id={elem.movie_id}
+                            viewbinding={this.props.viewbinding}/>
+                    ))}
+                </div>
+                <div className='rightinfo'>
+
+                </div>
+
             </div>
         );
     }

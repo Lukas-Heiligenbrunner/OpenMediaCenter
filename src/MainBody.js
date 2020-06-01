@@ -10,7 +10,7 @@ class MainBody extends React.Component {
     render() {
         let page;
         if (this.props.page === "default") {
-            page = <HomePage showvideo={this.props.showvideo}/>;
+            page = <HomePage viewbinding={this.props.viewbinding}/>;
         } else if (this.props.page === "video") {
             // show videoelement if neccessary
             page = this.props.videoelement;
