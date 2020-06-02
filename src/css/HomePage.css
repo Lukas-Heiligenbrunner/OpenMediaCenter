@@ -1,14 +1,9 @@
-.sideinfo{
-    width: 20%;
-    float: left;
-}
-
-.maincontent{
+.maincontent {
     float: left;
     width: 70%;
 }
 
-.rightinfo{
+.rightinfo {
     float: left;
     width: 10%;
 }

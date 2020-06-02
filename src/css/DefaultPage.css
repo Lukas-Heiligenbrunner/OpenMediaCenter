@@ -1,0 +1,18 @@
+.pageheader {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-left: 22%;
+    padding-right: 12%;
+}
+
+.pageheadertitle {
+    font-size: 40pt;
+    font-weight: bold;
+}
+
+.pageheadersubtitle {
+    margin-left: 20px;
+    font-size: 23pt;
+    opacity: 0.6;
+}
+

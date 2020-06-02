@@ -1,11 +1,12 @@
-.nav-item{
+.nav-item {
     cursor: pointer;
 }
-.nav-link{
-    color: rgba(255,255,255,.5);
+
+.nav-link {
+    color: rgba(255, 255, 255, .5);
     font-weight: bold;
 }
 
-.nav-link:hover{
-    color: rgba(255,255,255,1);
+.nav-link:hover {
+    color: rgba(255, 255, 255, 1);
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import "./css/Player.css"
 import {PlyrComponent} from 'plyr-react';
+import SideBar from "./SideBar";
 
 
 class Player extends React.Component {
@@ -36,50 +37,38 @@ class Player extends React.Component {
     render() {
         return (
             <div id='videocontainer'>
-                <div className="row">
-                    <div className="col-sm-2">
-                        <div className="videoleftbanner">
-                            <div className="likefield">Likes: {this.state.likes}</div>
-                            <div className="likefield">Quality: {this.state.quality}p</div>
-                            <div className="likefield">Length in Minutes: {this.state.length}</div>
-                        </div>
-                    </div>
-                    <div className="col-sm-8">
-                        <div className="videowrapper">
-                            <div className='myvideo'>
-                                {this.state.sources ? <PlyrComponent
-                                        sources={this.state.sources}
-                                        options={this.options}/> :
-                                    <div>not loaded yet</div>}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-sm-2">
-                        <div className="closebutton" onClick={() => {
-                            this.closebtn()
-                        }}>Close
-                        </div>
-                        <div className="videorightbanner"></div>
+                <div className='pageheader'>
+                    <span className='pageheadertitle'>Watch</span>
+                    <span className='pageheadersubtitle'>{this.state.movie_name}</span>
+                    <hr/>
+                </div>
+                <SideBar>
+                    <div className='sidebartitle'>Infos:</div>
+                    <hr/>
+                    <div className='sidebarinfo'><b>{this.state.likes}</b> Likes!</div>
+                    <div className='sidebarinfo'><b> {this.state.quality}p</b> Quality!</div>
+                    <div className='sidebarinfo'><b>{this.state.length}</b> Minutes of length!</div>
+                    <hr/>
+                    <div className='sidebartitle'>Tags:</div>
+                    <button className='tagbtn' onClick={() => this.fetchVideoData("all")}>All</button>
+                    <button className='tagbtn' onClick={() => this.fetchVideoData("fullhd")}>FullHd</button>
+                    <button className='tagbtn' onClick={() => this.fetchVideoData("lowquality")}>LowQuality</button>
+                    <button className='tagbtn' onClick={() => this.fetchVideoData("hd")}>HD</button>
+                </SideBar>
+
+                <div className="videowrapper">
+                    {/* video component is added here */}
+                    {this.state.sources ? <PlyrComponent
+                            className='myvideo'
+                            sources={this.state.sources}
+                            options={this.options}/> :
+                        <div>not loaded yet</div>}
+                    <div className='videoactions'>
+                        <button className='btn btn-primary' onClick={() => this.likebtn()}>Like this Video!</button>
+                        <button className='btn btn-info' id="tagbutton">Give this Video a Tag</button>
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col-sm-5">
-
-
-                    </div>
-                    <div className="col-sm-2">
-                        <button className='btn btn-primary' onClick={() => {
-                            this.likebtn()
-                        }}>Like it!
-                        </button>
-                        <button className='btn btn-info' id="tagbutton">Tag it!</button>
-
-                    </div>
-                    <div className="col-sm-5">
-
-
-                    </div>
-                </div>
+                <button className="closebutton" onClick={() => this.closebtn()}>Close</button>
             </div>
         );
     }
@@ -104,6 +93,7 @@ class Player extends React.Component {
                         ],
                         poster: result.thumbnail
                     },
+                    movie_name: result.movie_name,
                     likes: result.likes,
                     quality: result.quality,
                     length: result.length
@@ -131,8 +121,6 @@ class Player extends React.Component {
     }
 
     closebtn() {
-        // todo go back to correct page here!
-        // have a catch to <Route>
         this.props.viewbinding.hideVideo();
     }
 }

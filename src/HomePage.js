@@ -1,6 +1,9 @@
 import React from "react";
 import Preview from "./Preview";
+import SideBar from "./SideBar";
+
 import "./css/HomePage.css"
+import "./css/DefaultPage.css"
 
 class HomePage extends React.Component {
     // stores all available movies
@@ -15,9 +18,10 @@ class HomePage extends React.Component {
             loadeditems: [],
             sideinfo: {
                 videonr: null,
+                fullhdvideonr: null,
                 hdvideonr: null,
                 sdvideonr: null,
-                categorynr: null
+                tagnr: null
             },
             tag: "all"
         };
@@ -27,6 +31,7 @@ class HomePage extends React.Component {
         document.addEventListener('scroll', this.trackScrolling);
         // initial get of all videos
         this.fetchVideoData("all");
+        this.fetchStartData();
     }
 
     // this function clears all preview elements an reloads gravity with tag
@@ -41,8 +46,30 @@ class HomePage extends React.Component {
                 .then((result) => {
                     this.data = result;
                     this.setState({loadeditems: []});
-                    this.loadindex=0;
+                    this.loadindex = 0;
                     this.loadPreviewBlock(12);
+                }))
+            .catch(() => {
+                console.log("no connection to backend");
+            });
+    }
+
+    fetchStartData() {
+        const updateRequest = new FormData();
+        updateRequest.append('action', 'getStartData');
+
+        // fetch all videos available
+        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+            .then((response) => response.json()
+                .then((result) => {
+                    this.setState({
+                        sideinfo: {
+                            videonr: result['total'],
+                            fullhdvideonr: result['fullhd'],
+                            hdvideonr: result['hd'],
+                            sdvideonr: result['sd'],
+                            tagnr: result['tags']
+                        }});
                 }))
             .catch(() => {
                 console.log("no connection to backend");
@@ -57,32 +84,26 @@ class HomePage extends React.Component {
     render() {
         return (
             <div>
-                <div><h1>Home page</h1></div>
-                <div className='sideinfo'>
-                    Infos:
-                    <div>Total Number of Videos: {this.state.sideinfo.videonr}</div>
-                    <div>HD Videos: {this.state.sideinfo.hdvideonr}</div>
-                    <div>SD Videos: {this.state.sideinfo.sdvideonr}</div>
-                    <div>Total Number of Categories: {this.state.sideinfo.categorynr}</div>
-
-                    <div>default tags:</div>
-                    <button className='btn btn-primary' onClick={() => {
-                        this.fetchVideoData("fullhd");
-                    }}>FullHd
-                    </button>
-                    <button className='btn btn-primary' onClick={() => {
-                        this.fetchVideoData("all");
-                    }}>All
-                    </button>
-                    <button className='btn btn-primary' onClick={() => {
-                        this.fetchVideoData("lowquality");
-                    }}>LowQuality
-                    </button>
-                    <button className='btn btn-primary' onClick={() => {
-                        this.fetchVideoData("hd");
-                    }}>HD
-                    </button>
+                <div className='pageheader'>
+                    <span className='pageheadertitle'>Home Page</span>
+                    <span className='pageheadersubtitle'>All Videos - {this.state.sideinfo.videonr}</span>
+                    <hr/>
                 </div>
+                <SideBar>
+                    <div className='sidebartitle'>Infos:</div>
+                    <hr/>
+                    <div className='sidebarinfo'><b>{this.state.sideinfo.videonr}</b> Videos Total!</div>
+                    <div className='sidebarinfo'><b>{this.state.sideinfo.fullhdvideonr}</b> FULL-HD Videos!</div>
+                    <div className='sidebarinfo'><b>{this.state.sideinfo.hdvideonr}</b> HD Videos!</div>
+                    <div className='sidebarinfo'><b>{this.state.sideinfo.sdvideonr}</b> SD Videos!</div>
+                    <div className='sidebarinfo'><b>{this.state.sideinfo.tagnr}</b> different Tags!</div>
+                    <hr/>
+                    <div className='sidebartitle'>Default Tags:</div>
+                    <button className='tagbtn' onClick={() => this.fetchVideoData("all")}>All</button>
+                    <button className='tagbtn' onClick={() => this.fetchVideoData("fullhd")}>FullHd</button>
+                    <button className='tagbtn' onClick={() => this.fetchVideoData("lowquality")}>LowQuality</button>
+                    <button className='tagbtn' onClick={() => this.fetchVideoData("hd")}>HD</button>
+                </SideBar>
                 <div className='maincontent'>
                     {this.state.loadeditems.map(elem => (
                         <Preview
@@ -122,7 +143,9 @@ class HomePage extends React.Component {
     }
 
     trackScrolling = () => {
-        if (window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight) {
+        // comparison if current scroll position is on bottom
+        // 200 stands for bottom offset to trigger load
+        if (window.innerHeight + document.documentElement.scrollTop + 200 >= document.documentElement.offsetHeight) {
             this.loadPreviewBlock(6);
         }
     }

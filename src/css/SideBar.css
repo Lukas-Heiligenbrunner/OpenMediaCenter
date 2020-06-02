@@ -1,0 +1,43 @@
+.sideinfo {
+    width: 20%;
+    float: left;
+    padding: 20px;
+    margin-top: 25px;
+    margin-left: 15px;
+    background-color: #b4c7fe;
+    border-radius: 20px;
+    border: 2px #3574fe solid;
+}
+
+.tagbtn {
+    color: white;
+    margin: 10px;
+    background-color: #3574fe;
+    border: none;
+    border-radius: 10px;
+    padding: 5px 15px 5px 15px;
+    /*font-weight: bold;*/
+    display: block;
+}
+
+.tagbtn:focus {
+    background-color: #004eff;
+    outline: none;
+}
+
+.tagbtn:hover {
+    background-color: #004eff;
+}
+
+.sidebartitle {
+    font-weight: bold;
+    font-size: larger;
+}
+
+.sidebarinfo {
+    margin-top: 5px;
+    background-color: #8ca3fc;
+    border-radius: 5px;
+    padding: 2px 10px 2px 15px;
+    width: 60%;
+}

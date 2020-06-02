@@ -1,6 +1,7 @@
 import React from "react";
 import Preview from "./Preview";
 import "./css/RandomPage.css"
+import SideBar from "./SideBar";
 
 class RandomPage extends React.Component {
     constructor(props, context) {
@@ -16,31 +17,35 @@ class RandomPage extends React.Component {
     }
 
     render() {
-        return (<div>
-            <div><h1>Random Videos</h1></div>
-            <div className='sideinfo'>
-                todo here.
-            </div>
-            <div className='maincontent'>
-                {this.state.videos.map(elem => (
-                    <Preview
-                        key={elem.movie_id}
-                        name={elem.movie_name}
-                        movie_id={elem.movie_id}
-                        viewbinding={this.props.viewbinding}/>
-                ))}
-            </div>
-            <div className='rightinfo'>
-                right
-            </div>
-            <div className='Shufflebutton'>
-                <button onClick={() => {
-                    this.shuffleclick()
-                }} className='btn btn-success'>Shuffle
-                </button>
-            </div>
+        return (
+            <div>
+                <div className='pageheader'>
+                    <span className='pageheadertitle'>Random Videos</span>
+                    <span className='pageheadersubtitle'>6pc</span>
+                    <hr/>
+                </div>
+                <SideBar>
+                    <div className='sidebartitle'>Visible Tags:</div>
+                    <button className='tagbtn' onClick={() => this.fetchVideoData("all")}>All</button>
+                    <button className='tagbtn' onClick={() => this.fetchVideoData("fullhd")}>FullHd</button>
+                    <button className='tagbtn' onClick={() => this.fetchVideoData("lowquality")}>LowQuality</button>
+                    <button className='tagbtn' onClick={() => this.fetchVideoData("hd")}>HD</button>
+                </SideBar>
 
-        </div>);
+                <div className='maincontent'>
+                    {this.state.videos.map(elem => (
+                        <Preview
+                            key={elem.movie_id}
+                            name={elem.movie_name}
+                            movie_id={elem.movie_id}
+                            viewbinding={this.props.viewbinding}/>
+                    ))}
+                    <div className='Shufflebutton'>
+                        <button onClick={() => this.shuffleclick()} className='btnshuffle'>Shuffle</button>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     shuffleclick() {

@@ -11,7 +11,7 @@ if (isset($_POST['action'])) {
             $query = "SELECT movie_id,movie_name FROM videos ORDER BY likes DESC, create_date ASC, movie_name ASC";
             if (isset($_POST['tag'])) {
                 $tag = $_POST['tag'];
-                if($_POST['tag'] != "all"){
+                if ($_POST['tag'] != "all") {
                     $query = "SELECT movie_id,movie_name FROM videos 
                             INNER JOIN video_tags vt on videos.movie_id = vt.video_id
                             INNER JOIN tags t on vt.tag_id = t.tag_id
@@ -28,7 +28,7 @@ if (isset($_POST['action'])) {
             echo(json_encode($rows));
             break;
         case "getRandomMovies":
-            $query = "SELECT movie_id,movie_name FROM videos ORDER BY RAND() LIMIT ".$_POST['number'];
+            $query = "SELECT movie_id,movie_name FROM videos ORDER BY RAND() LIMIT " . $_POST['number'];
             $result = $conn->query($query);
             $rows = array();
             while ($r = mysqli_fetch_assoc($result)) {
@@ -38,13 +38,14 @@ if (isset($_POST['action'])) {
             echo(json_encode($rows));
             break;
         case "loadVideo":
-            $query = "SELECT movie_url,thumbnail,likes,quality,length FROM videos WHERE movie_id='" . $_POST['movieid'] . "'";
+            $query = "SELECT movie_name,movie_url,thumbnail,likes,quality,length FROM videos WHERE movie_id='" . $_POST['movieid'] . "'";
 
             $result = $conn->query($query);
             $row = $result->fetch_assoc();
 
             $arr = array();
             $arr["thumbnail"] = $row["thumbnail"];
+            $arr["movie_name"] = $row["movie_name"];
             $arr["movie_url"] = $row["movie_url"];
             $arr["likes"] = $row["likes"];
             $arr["quality"] = $row["quality"];
@@ -75,7 +76,6 @@ if (isset($_POST['action'])) {
             echo($row["thumbnail"]);
 
             break;
-
         case "getTags":
             $movieid = $_POST['movieid'];
 
@@ -103,6 +103,52 @@ if (isset($_POST['action'])) {
             } else {
                 echo('{"result":"' . $conn->error . '"}');
             }
+            break;
+        case "getStartData":
+            $query = "SELECT COUNT(*) as nr FROM videos";
+            $result = $conn->query($query);
+            $r = mysqli_fetch_assoc($result);
+
+            $arr = array();
+            $arr['total'] = $r['nr'];
+
+            $query = "SELECT COUNT(*) as nr FROM videos
+                        INNER JOIN video_tags vt on videos.movie_id = vt.video_id
+                        INNER JOIN tags t on vt.tag_id = t.tag_id";
+            $result = $conn->query($query);
+            $r = mysqli_fetch_assoc($result);
+            $arr['tagged'] = $r['nr'];
+
+            $query = "SELECT COUNT(*) as nr FROM videos
+                        INNER JOIN video_tags vt on videos.movie_id = vt.video_id
+                        INNER JOIN tags t on vt.tag_id = t.tag_id
+                        WHERE t.tag_name='hd'";
+            $result = $conn->query($query);
+            $r = mysqli_fetch_assoc($result);
+            $arr['hd'] = $r['nr'];
+
+            $query = "SELECT COUNT(*) as nr FROM videos
+                        INNER JOIN video_tags vt on videos.movie_id = vt.video_id
+                        INNER JOIN tags t on vt.tag_id = t.tag_id
+                        WHERE t.tag_name='fullhd'";
+            $result = $conn->query($query);
+            $r = mysqli_fetch_assoc($result);
+            $arr['fullhd'] = $r['nr'];
+
+            $query = "SELECT COUNT(*) as nr FROM videos
+                        INNER JOIN video_tags vt on videos.movie_id = vt.video_id
+                        INNER JOIN tags t on vt.tag_id = t.tag_id
+                        WHERE t.tag_name='lowquality'";
+            $result = $conn->query($query);
+            $r = mysqli_fetch_assoc($result);
+            $arr['sd'] = $r['nr'];
+
+            $query = "SELECT COUNT(*) as nr FROM tags";
+            $result = $conn->query($query);
+            $r = mysqli_fetch_assoc($result);
+            $arr['tags'] = $r['nr'];
+
+            echo(json_encode($arr));
             break;
     }
 } else {

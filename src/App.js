@@ -1,6 +1,7 @@
 import React from 'react';
-import MainBody from "./MainBody";
 import "./css/App.css"
+import HomePage from "./HomePage";
+import RandomPage from "./RandomPage";
 
 // include bootstraps css
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -13,6 +14,28 @@ class App extends React.Component {
         // bind this to the method for being able to call methods such as this.setstate
         this.showVideo = this.showVideo.bind(this);
         this.hideVideo = this.hideVideo.bind(this);
+    }
+
+    videoelement = null;
+
+    MainBody() {
+        let page;
+        if (this.state.page === "default") {
+            page = <HomePage viewbinding={{showVideo: this.showVideo, hideVideo: this.hideVideo}}/>;
+            this.mypage = page;
+        } else if (this.state.page === "random") {
+            page = <RandomPage viewbinding={{showVideo: this.showVideo, hideVideo: this.hideVideo}}/>;
+            this.mypage = page;
+        } else if (this.state.page === "video") {
+            // show videoelement if neccessary
+            page = this.videoelement;
+        } else if (this.state.page === "lastpage") {
+            // return back to last page
+            page = this.mypage;
+        } else {
+            page = <div>unimplemented yet!</div>;
+        }
+        return (page);
     }
 
     render() {
@@ -42,8 +65,7 @@ class App extends React.Component {
                         </li>
                     </ul>
                 </nav>
-                <MainBody viewbinding={{showVideo: this.showVideo, hideVideo: this.hideVideo}} page={this.state.page}
-                          videoelement={this.element}/>
+                {this.MainBody()}
             </div>
         );
     }
@@ -68,7 +90,7 @@ class App extends React.Component {
             page: "video"
         });
 
-        this.element = element;
+        this.videoelement = element;
     }
 
     hideVideo() {
