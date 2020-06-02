@@ -1,5 +1,6 @@
 <?php
 require 'Database.php';
+$ffmpeg = 'ffmpeg'; //or: /usr/bin/ffmpeg , or /usr/local/bin/ffmpeg - depends on your installation (type which ffmpeg into a console to find the install path)
 
 $conn = Database::getInstance()->getConnection();
 
@@ -23,12 +24,43 @@ foreach ($arr as $elem) {
             $image_base64 = base64_encode($pic);
 
             $image = 'data:image/jpeg;base64,' . $image_base64;
-            $conn = Database::getInstance()->getConnection();
 
-            $query = "INSERT INTO videos(movie_name,movie_url,thumbnail) VALUES ('" . mysqli_real_escape_string($conn, $elem) . "','" . mysqli_real_escape_string($conn, 'videos/prn/' . $elem) . "','$image')";
+            $video_attributes = _get_video_attributes($elem);
+
+            $duration = 60 * $video_attributes['hours'] + $video_attributes['mins'];
+
+            $query = "INSERT INTO videos(movie_name,movie_url,thumbnail,quality,length) 
+                            VALUES ('" . mysqli_real_escape_string($conn, $elem) . "',
+                            '" . mysqli_real_escape_string($conn, 'videos/prn/' . $elem) . "',
+                            '$image',
+                            '" . $video_attributes['height'] . "',
+                            '$duration')";
 
             if ($conn->query($query) === TRUE) {
                 echo('successfully added ' . $elem . " to video gravity\n");
+                $last_id = $conn->insert_id;
+
+                // full hd
+                if ($video_attributes['height'] >= 1080) {
+                    $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,2)";
+                    if ($conn->query($query) !== TRUE) {
+                        echo "failed to add tag here.\n";
+                    }
+                }
+
+                if ($video_attributes['height'] >= 720 && $video_attributes['height'] < 1080) {
+                    $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,4)";
+                    if ($conn->query($query) !== TRUE) {
+                        echo "failed to add tag here.\n";
+                    }
+                }
+
+                if ($video_attributes['height'] < 720) {
+                    $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,3)";
+                    if ($conn->query($query) !== TRUE) {
+                        echo "failed to add tag here.\n";
+                    }
+                }
                 $added++;
                 $all++;
             } else {
@@ -85,3 +117,35 @@ echo "Size of Databse is: " . $size . "MB\n";
 echo "added in this run: " . $added . "\n";
 echo "deleted in this run: " . $deleted . "\n";
 echo "errored in this run: " . $failed . "\n";
+
+function _get_video_attributes($video)
+{
+    global $ffmpeg;
+
+    $command = "$ffmpeg -i \"../videos/prn/$video\" -vstats 2>&1";
+    $output = shell_exec($command);
+
+    $regex_sizes = "/Video: ([^,]*), ([^,]*), ([0-9]{1,4})x([0-9]{1,4})/"; // or : $regex_sizes = "/Video: ([^\r\n]*), ([^,]*), ([0-9]{1,4})x([0-9]{1,4})/"; (code from @1owk3y)
+    if (preg_match($regex_sizes, $output, $regs)) {
+        $codec = $regs [1] ? $regs [1] : null;
+        $width = $regs [3] ? $regs [3] : null;
+        $height = $regs [4] ? $regs [4] : null;
+    }
+
+    $regex_duration = "/Duration: ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2}).([0-9]{1,2})/";
+    if (preg_match($regex_duration, $output, $regs)) {
+        $hours = $regs [1] ? $regs [1] : null;
+        $mins = $regs [2] ? $regs [2] : null;
+        $secs = $regs [3] ? $regs [3] : null;
+        $ms = $regs [4] ? $regs [4] : null;
+    }
+
+    return array('codec' => $codec,
+        'width' => $width,
+        'height' => $height,
+        'hours' => $hours,
+        'mins' => $mins,
+        'secs' => $secs,
+        'ms' => $ms
+    );
+}

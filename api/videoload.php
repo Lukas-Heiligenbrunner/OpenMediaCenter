@@ -9,6 +9,16 @@ if (isset($_POST['action'])) {
     switch ($action) {
         case "getMovies":
             $query = "SELECT movie_id,movie_name FROM videos ORDER BY likes DESC, create_date ASC, movie_name ASC";
+            if (isset($_POST['tag'])) {
+                $tag = $_POST['tag'];
+                if($_POST['tag'] != "all"){
+                    $query = "SELECT movie_id,movie_name FROM videos 
+                            INNER JOIN video_tags vt on videos.movie_id = vt.video_id
+                            INNER JOIN tags t on vt.tag_id = t.tag_id
+                            WHERE t.tag_name = '$tag'
+                            ORDER BY likes DESC, create_date ASC, movie_name ASC";
+                }
+            }
             $result = $conn->query($query);
             $rows = array();
             while ($r = mysqli_fetch_assoc($result)) {
@@ -28,7 +38,7 @@ if (isset($_POST['action'])) {
             echo(json_encode($rows));
             break;
         case "loadVideo":
-            $query = "SELECT movie_url,thumbnail,likes FROM videos WHERE movie_id='" . $_POST['movieid'] . "'";
+            $query = "SELECT movie_url,thumbnail,likes,quality,length FROM videos WHERE movie_id='" . $_POST['movieid'] . "'";
 
             $result = $conn->query($query);
             $row = $result->fetch_assoc();
@@ -37,6 +47,8 @@ if (isset($_POST['action'])) {
             $arr["thumbnail"] = $row["thumbnail"];
             $arr["movie_url"] = $row["movie_url"];
             $arr["likes"] = $row["likes"];
+            $arr["quality"] = $row["quality"];
+            $arr["length"] = $row["length"];
             echo(json_encode($arr));
 
             break;

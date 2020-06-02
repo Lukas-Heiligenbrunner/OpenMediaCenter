@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import Preview from "./Preview";
 import "./css/HomePage.css"
 
@@ -18,28 +18,35 @@ class HomePage extends React.Component {
                 hdvideonr: null,
                 sdvideonr: null,
                 categorynr: null
-            }
+            },
+            tag: "all"
         };
     }
 
     componentDidMount() {
         document.addEventListener('scroll', this.trackScrolling);
+        // initial get of all videos
+        this.fetchVideoData("all");
+    }
 
+    // this function clears all preview elements an reloads gravity with tag
+    fetchVideoData(tag) {
         const updateRequest = new FormData();
         updateRequest.append('action', 'getMovies');
+        updateRequest.append('tag', tag);
 
         // fetch all videos available
         fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
                     this.data = result;
+                    this.setState({loadeditems: []});
+                    this.loadindex=0;
                     this.loadPreviewBlock(12);
                 }))
             .catch(() => {
                 console.log("no connection to backend");
             });
-
-
     }
 
     componentWillUnmount() {
@@ -57,6 +64,24 @@ class HomePage extends React.Component {
                     <div>HD Videos: {this.state.sideinfo.hdvideonr}</div>
                     <div>SD Videos: {this.state.sideinfo.sdvideonr}</div>
                     <div>Total Number of Categories: {this.state.sideinfo.categorynr}</div>
+
+                    <div>default tags:</div>
+                    <button className='btn btn-primary' onClick={() => {
+                        this.fetchVideoData("fullhd");
+                    }}>FullHd
+                    </button>
+                    <button className='btn btn-primary' onClick={() => {
+                        this.fetchVideoData("all");
+                    }}>All
+                    </button>
+                    <button className='btn btn-primary' onClick={() => {
+                        this.fetchVideoData("lowquality");
+                    }}>LowQuality
+                    </button>
+                    <button className='btn btn-primary' onClick={() => {
+                        this.fetchVideoData("hd");
+                    }}>HD
+                    </button>
                 </div>
                 <div className='maincontent'>
                     {this.state.loadeditems.map(elem => (
@@ -96,7 +121,7 @@ class HomePage extends React.Component {
         this.loadindex += nr;
     }
 
-    trackScrolling = (e) => {
+    trackScrolling = () => {
         if (window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight) {
             this.loadPreviewBlock(6);
         }

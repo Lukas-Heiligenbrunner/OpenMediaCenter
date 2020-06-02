@@ -40,6 +40,8 @@ class Player extends React.Component {
                     <div className="col-sm-2">
                         <div className="videoleftbanner">
                             <div className="likefield">Likes: {this.state.likes}</div>
+                            <div className="likefield">Quality: {this.state.quality}p</div>
+                            <div className="likefield">Length in Minutes: {this.state.length}</div>
                         </div>
                     </div>
                     <div className="col-sm-8">
@@ -53,7 +55,10 @@ class Player extends React.Component {
                         </div>
                     </div>
                     <div className="col-sm-2">
-                        <div className="closebutton" onClick={() => {this.closebtn()}}>Close</div>
+                        <div className="closebutton" onClick={() => {
+                            this.closebtn()
+                        }}>Close
+                        </div>
                         <div className="videorightbanner"></div>
                     </div>
                 </div>
@@ -63,7 +68,10 @@ class Player extends React.Component {
 
                     </div>
                     <div className="col-sm-2">
-                        <button className='btn btn-primary' onClick={() => {this.likebtn()}}>Like it!</button>
+                        <button className='btn btn-primary' onClick={() => {
+                            this.likebtn()
+                        }}>Like it!
+                        </button>
                         <button className='btn btn-info' id="tagbutton">Tag it!</button>
 
                     </div>
@@ -76,7 +84,7 @@ class Player extends React.Component {
         );
     }
 
-    fetchMovieData(){
+    fetchMovieData() {
         const updateRequest = new FormData();
         updateRequest.append('action', 'loadVideo');
         updateRequest.append('movieid', this.props.movie_id);
@@ -96,7 +104,9 @@ class Player extends React.Component {
                         ],
                         poster: result.thumbnail
                     },
-                    likes: result.likes
+                    likes: result.likes,
+                    quality: result.quality,
+                    length: result.length
                 });
             });
     }
@@ -111,9 +121,9 @@ class Player extends React.Component {
         fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json())
             .then((result) => {
-                if(result.result === "success"){
+                if (result.result === "success") {
                     this.fetchMovieData();
-                }else{
+                } else {
                     console.log("an error occured while liking");
                     console.log(result);
                 }

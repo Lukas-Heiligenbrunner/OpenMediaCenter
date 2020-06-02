@@ -73,7 +73,7 @@ class App extends React.Component {
 
     hideVideo() {
         this.setState({
-            page: "default"
+            page: "lastpage"
         });
         this.element = null;
     }
