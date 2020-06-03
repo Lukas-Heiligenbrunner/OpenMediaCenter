@@ -1,10 +1,14 @@
 <?php
 require 'Database.php';
+require 'TMDBMovie.php';
+
 $ffmpeg = 'ffmpeg'; //or: /usr/bin/ffmpeg , or /usr/local/bin/ffmpeg - depends on your installation (type which ffmpeg into a console to find the install path)
+$tmdb = new TMDBMovie();
 
 $conn = Database::getInstance()->getConnection();
 
-$arr = scandir("../videos/prn/");
+$scandir = "../videos/prn/";
+$arr = scandir($scandir);
 
 $all = 0;
 $added = 0;
@@ -13,63 +17,74 @@ $failed = 0;
 
 foreach ($arr as $elem) {
     if ($elem != "." && $elem != "..") {
+        if (strpos($elem, '.mp4') !== false) {
+            $moviename = substr($elem, 0, -4);
 
-        $query = "SELECT * FROM videos WHERE movie_name = '" . mysqli_real_escape_string($conn, $elem) . "'";
-        $result = $conn->query($query);
+            $query = "SELECT * FROM videos WHERE movie_name = '" . mysqli_real_escape_string($conn, $moviename) . "'";
+            $result = $conn->query($query);
 
-        // insert if not available in db
-        if (!mysqli_fetch_assoc($result)) {
-            $pic = shell_exec("ffmpeg -hide_banner -loglevel panic -ss 00:04:00 -i \"../videos/prn/$elem\" -vframes 1 -q:v 2 -f singlejpeg pipe:1 2>/dev/null");
+            // insert if not available in db
+            if (!mysqli_fetch_assoc($result)) {
+                // try to fetch data from TMDB
+                if (!is_null($dta = $tmdb->searchMovie($moviename))) {
+                    $pic = file_get_contents($tmdb->picturebase . $dta->poster_path);
+                } else {
+                    echo "nothing found with TMDB!\n";
+                    $pic = shell_exec("ffmpeg -hide_banner -loglevel panic -ss 00:04:00 -i \"../videos/prn/$elem\" -vframes 1 -q:v 2 -f singlejpeg pipe:1 2>/dev/null");
+                }
 
-            $image_base64 = base64_encode($pic);
+                $image_base64 = base64_encode($pic);
 
-            $image = 'data:image/jpeg;base64,' . $image_base64;
+                $image = 'data:image/jpeg;base64,' . $image_base64;
 
-            $video_attributes = _get_video_attributes($elem);
+                $video_attributes = _get_video_attributes($elem);
 
-            $duration = 60 * $video_attributes['hours'] + $video_attributes['mins'];
+                $duration = 60 * $video_attributes['hours'] + $video_attributes['mins'];
 
-            $query = "INSERT INTO videos(movie_name,movie_url,thumbnail,quality,length) 
-                            VALUES ('" . mysqli_real_escape_string($conn, $elem) . "',
+                $query = "INSERT INTO videos(movie_name,movie_url,thumbnail,quality,length) 
+                            VALUES ('" . mysqli_real_escape_string($conn, $moviename) . "',
                             '" . mysqli_real_escape_string($conn, 'videos/prn/' . $elem) . "',
                             '$image',
                             '" . $video_attributes['height'] . "',
                             '$duration')";
 
-            if ($conn->query($query) === TRUE) {
-                echo('successfully added ' . $elem . " to video gravity\n");
-                $last_id = $conn->insert_id;
+                if ($conn->query($query) === TRUE) {
+                    echo('successfully added ' . $elem . " to video gravity\n");
+                    $last_id = $conn->insert_id;
 
-                // full hd
-                if ($video_attributes['height'] >= 1080) {
-                    $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,2)";
-                    if ($conn->query($query) !== TRUE) {
-                        echo "failed to add default tag here.\n";
+                    // full hd
+                    if ($video_attributes['height'] >= 1080) {
+                        $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,2)";
+                        if ($conn->query($query) !== TRUE) {
+                            echo "failed to add default tag here.\n";
+                        }
                     }
-                }
 
-                if ($video_attributes['height'] >= 720 && $video_attributes['height'] < 1080) {
-                    $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,4)";
-                    if ($conn->query($query) !== TRUE) {
-                        echo "failed to add default tag here.\n";
+                    if ($video_attributes['height'] >= 720 && $video_attributes['height'] < 1080) {
+                        $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,4)";
+                        if ($conn->query($query) !== TRUE) {
+                            echo "failed to add default tag here.\n";
+                        }
                     }
-                }
 
-                if ($video_attributes['height'] < 720) {
-                    $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,3)";
-                    if ($conn->query($query) !== TRUE) {
-                        echo "failed to add default tag here.\n";
+                    if ($video_attributes['height'] < 720) {
+                        $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,3)";
+                        if ($conn->query($query) !== TRUE) {
+                            echo "failed to add default tag here.\n";
+                        }
                     }
+                    $added++;
+                    $all++;
+                } else {
+                    echo('errored item: ' . $elem . "\n");
+                    echo('{"data":"' . $conn->error . '"}\n');
+                    $failed++;
                 }
-                $added++;
-                $all++;
             } else {
-                echo('errored item: ' . $elem . "\n");
-                echo('{"data":"' . $conn->error . '"}\n');
-                $failed++;
+                $all++;
             }
-        } else {
-            $all++;
+        }else{
+            echo($elem . " does not contain a .mp4 extension! - skipping \n");
         }
     }
 }
