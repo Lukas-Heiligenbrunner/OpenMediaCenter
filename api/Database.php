@@ -2,13 +2,13 @@
 
 class Database
 {
-    private static $instance = null;
-    private $conn;
+    private static ?Database $instance = null;
+    private mysqli $conn;
 
-    private $servername = "192.168.0.30";
-    private $username = "root";
-    private $password = "1qayxsw2";
-    private $dbname = "mediacenter";
+    private string $servername = "192.168.0.30";
+    private string $username = "root";
+    private string $password = "1qayxsw2";
+    private string $dbname = "mediacenter";
 
     // The db connection is established in the private constructor.
     private function __construct()
@@ -33,5 +33,9 @@ class Database
     public function getConnection()
     {
         return $this->conn;
+    }
+
+    public function getDatabaseName(){
+        return $this->dbname;
     }
 }

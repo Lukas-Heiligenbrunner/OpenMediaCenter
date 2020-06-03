@@ -12,10 +12,11 @@ create table if not exists videos
     movie_name  varchar(200)                       null,
     movie_url   varchar(250)                       null,
     thumbnail   mediumblob                         null,
+    poster      mediumblob                         null,
     likes       int      default 0                 null,
-    create_date datetime default CURRENT_TIMESTAMP null,
     quality     int                                null,
-    length      int                                null comment 'in seconds'
+    length      int                                null comment 'in seconds',
+    create_date datetime default CURRENT_TIMESTAMP null
 );
 
 create table if not exists video_tags
@@ -27,3 +28,10 @@ create table if not exists video_tags
     constraint video_tags_videos_movie_id_fk
         foreign key (video_id) references videos (movie_id)
 );
+
+INSERT INTO tags (tag_id, tag_name)
+VALUES (2, 'fullhd');
+INSERT INTO tags (tag_id, tag_name)
+VALUES (3, 'lowquality');
+INSERT INTO tags (tag_id, tag_name)
+VALUES (4, 'hd');

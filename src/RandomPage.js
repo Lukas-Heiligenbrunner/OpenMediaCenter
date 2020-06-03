@@ -15,7 +15,7 @@ class RandomPage extends React.Component {
     }
 
     componentDidMount() {
-        this.loadShuffledvideos(6);
+        this.loadShuffledvideos(4);
     }
 
     render() {
@@ -50,7 +50,7 @@ class RandomPage extends React.Component {
     }
 
     shuffleclick() {
-        this.loadShuffledvideos(6);
+        this.loadShuffledvideos(4);
     }
 
     loadShuffledvideos(nr) {

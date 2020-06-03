@@ -26,48 +26,73 @@ foreach ($arr as $elem) {
             // insert if not available in db
             if (!mysqli_fetch_assoc($result)) {
                 // try to fetch data from TMDB
+                $poster = -1;
                 if (!is_null($dta = $tmdb->searchMovie($moviename))) {
                     $pic = file_get_contents($tmdb->picturebase . $dta->poster_path);
+                    $poster = shell_exec("ffmpeg -hide_banner -loglevel panic -ss 00:04:00 -i \"../videos/prn/$elem\" -vframes 1 -q:v 2 -f singlejpeg pipe:1 2>/dev/null");
                 } else {
                     echo "nothing found with TMDB!\n";
                     $pic = shell_exec("ffmpeg -hide_banner -loglevel panic -ss 00:04:00 -i \"../videos/prn/$elem\" -vframes 1 -q:v 2 -f singlejpeg pipe:1 2>/dev/null");
                 }
 
+                //convert video to base64
                 $image_base64 = base64_encode($pic);
-
+                // add base64 fileinfo
                 $image = 'data:image/jpeg;base64,' . $image_base64;
 
+                // extract other video attributes
                 $video_attributes = _get_video_attributes($elem);
+                $duration = 0;
+                $size = 0;
+                $width = 0;
 
-                $duration = 60 * $video_attributes['hours'] + $video_attributes['mins'];
+                if ($video_attributes) {
+                    $duration = $video_attributes->media->track[0]->Duration; // in seconds
+                    $size = $video_attributes->media->track[0]->FileSize; // in Bytes
+                    $width = $video_attributes->media->track[1]->Width; // width
+                }
 
-                $query = "INSERT INTO videos(movie_name,movie_url,thumbnail,quality,length) 
+
+                if ($poster != -1) {
+                    $poster_base64 = 'data:image/jpeg;base64,' . base64_encode($poster);
+
+                    $query = "INSERT INTO videos(movie_name,movie_url,poster,thumbnail,quality,length) 
+                            VALUES ('" . mysqli_real_escape_string($conn, $moviename) . "',
+                            '" . mysqli_real_escape_string($conn, 'videos/prn/' . $elem) . "',
+                            '$poster_base64',
+                            '$image',
+                            '$width',
+                            '$duration')";
+                } else {
+                    $query = "INSERT INTO videos(movie_name,movie_url,thumbnail,quality,length) 
                             VALUES ('" . mysqli_real_escape_string($conn, $moviename) . "',
                             '" . mysqli_real_escape_string($conn, 'videos/prn/' . $elem) . "',
                             '$image',
-                            '" . $video_attributes['height'] . "',
+                            '$width',
                             '$duration')";
+                }
+
 
                 if ($conn->query($query) === TRUE) {
                     echo('successfully added ' . $elem . " to video gravity\n");
                     $last_id = $conn->insert_id;
 
                     // full hd
-                    if ($video_attributes['height'] >= 1080) {
+                    if ($width >= 1900) {
                         $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,2)";
                         if ($conn->query($query) !== TRUE) {
                             echo "failed to add default tag here.\n";
                         }
                     }
 
-                    if ($video_attributes['height'] >= 720 && $video_attributes['height'] < 1080) {
+                    if ($width >= 1250 && $width < 1900) {
                         $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,4)";
                         if ($conn->query($query) !== TRUE) {
                             echo "failed to add default tag here.\n";
                         }
                     }
 
-                    if ($video_attributes['height'] < 720) {
+                    if ($width < 1250) {
                         $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,3)";
                         if ($conn->query($query) !== TRUE) {
                             echo "failed to add default tag here.\n";
@@ -83,7 +108,7 @@ foreach ($arr as $elem) {
             } else {
                 $all++;
             }
-        }else{
+        } else {
             echo($elem . " does not contain a .mp4 extension! - skipping \n");
         }
     }
@@ -119,7 +144,7 @@ $size = -1;
 $query = "SELECT table_schema AS \"Database\", 
                         ROUND(SUM(data_length + index_length) / 1024 / 1024, 3) AS \"Size\" 
                         FROM information_schema.TABLES 
-                        WHERE TABLE_SCHEMA='hub'
+                        WHERE TABLE_SCHEMA='" . Database::getInstance()->getDatabaseName() . "'
                         GROUP BY table_schema;";
 $result = $conn->query($query);
 if ($result->num_rows == 1) {
@@ -135,41 +160,7 @@ echo "errored in this run: " . $failed . "\n";
 
 function _get_video_attributes($video)
 {
-    global $ffmpeg;
-
-    $command = "$ffmpeg -i \"../videos/prn/$video\" -vstats 2>&1";
+    $command = "mediainfo \"../videos/prn/$video\" --Output=JSON";
     $output = shell_exec($command);
-
-    $codec = "null";
-    $width = 0;
-    $height = 0;
-
-    $regex_sizes = "/Video: ([^,]*), ([^,]*), ([0-9]{1,4})x([0-9]{1,4})/"; // or : $regex_sizes = "/Video: ([^\r\n]*), ([^,]*), ([0-9]{1,4})x([0-9]{1,4})/"; (code from @1owk3y)
-    if (preg_match($regex_sizes, $output, $regs)) {
-        $codec = $regs [1] ? $regs [1] : "null";
-        $width = $regs [3] ? $regs [3] : 0;
-        $height = $regs [4] ? $regs [4] : 0;
-    }
-
-    $hours = 0;
-    $mins = 0;
-    $secs = 0;
-    $ms = 0;
-
-    $regex_duration = "/Duration: ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2}).([0-9]{1,2})/";
-    if (preg_match($regex_duration, $output, $regs)) {
-        $hours = $regs [1] ? $regs [1] : 0;
-        $mins = $regs [2] ? $regs [2] : 0;
-        $secs = $regs [3] ? $regs [3] : 0;
-        $ms = $regs [4] ? $regs [4] : 0;
-    }
-
-    return array('codec' => $codec,
-        'width' => $width,
-        'height' => $height,
-        'hours' => $hours,
-        'mins' => $mins,
-        'secs' => $secs,
-        'ms' => $ms
-    );
+    return json_decode($output);
 }

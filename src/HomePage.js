@@ -57,7 +57,7 @@ class HomePage extends React.Component {
                         selectionnr: this.data.length
                     });
                     this.loadindex = 0;
-                    this.loadPreviewBlock(12);
+                    this.loadPreviewBlock(16);
                 }))
             .catch(() => {
                 console.log("no connection to backend");
@@ -176,7 +176,7 @@ class HomePage extends React.Component {
         // comparison if current scroll position is on bottom
         // 200 stands for bottom offset to trigger load
         if (window.innerHeight + document.documentElement.scrollTop + 200 >= document.documentElement.offsetHeight) {
-            this.loadPreviewBlock(6);
+            this.loadPreviewBlock(8);
         }
     }
 }

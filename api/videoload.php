@@ -55,13 +55,18 @@ if (isset($_POST['action'])) {
             echo(json_encode($return));
             break;
         case "loadVideo":
-            $query = "SELECT movie_name,movie_url,thumbnail,likes,quality,length FROM videos WHERE movie_id='" . $_POST['movieid'] . "'";
+            $query = "SELECT movie_name,movie_url,thumbnail,poster,likes,quality,length FROM videos WHERE movie_id='" . $_POST['movieid'] . "'";
 
             $result = $conn->query($query);
             $row = $result->fetch_assoc();
 
             $arr = array();
-            $arr["thumbnail"] = $row["thumbnail"];
+            if($row["poster"] == null){
+                $arr["thumbnail"] = $row["thumbnail"];
+            }else{
+                $arr["thumbnail"] = $row["poster"];
+            }
+
             $arr["movie_name"] = $row["movie_name"];
             $arr["movie_url"] = $row["movie_url"];
             $arr["likes"] = $row["likes"];
