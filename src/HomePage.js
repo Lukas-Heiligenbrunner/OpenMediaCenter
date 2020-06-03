@@ -4,6 +4,7 @@ import SideBar from "./SideBar";
 
 import "./css/HomePage.css"
 import "./css/DefaultPage.css"
+import Tag from "./Tag";
 
 class HomePage extends React.Component {
     // stores all available movies
@@ -23,7 +24,8 @@ class HomePage extends React.Component {
                 sdvideonr: null,
                 tagnr: null
             },
-            tag: "all"
+            tag: "All",
+            selectionnr: null
         };
     }
 
@@ -34,7 +36,12 @@ class HomePage extends React.Component {
         this.fetchStartData();
     }
 
-    // this function clears all preview elements an reloads gravity with tag
+    /**
+     * fetch available videos for specified tag
+     * this function clears all preview elements an reloads gravity with tag
+     *
+     * @param tag tag to fetch videos
+     */
     fetchVideoData(tag) {
         const updateRequest = new FormData();
         updateRequest.append('action', 'getMovies');
@@ -45,7 +52,10 @@ class HomePage extends React.Component {
             .then((response) => response.json()
                 .then((result) => {
                     this.data = result;
-                    this.setState({loadeditems: []});
+                    this.setState({
+                        loadeditems: [],
+                        selectionnr: this.data.length
+                    });
                     this.loadindex = 0;
                     this.loadPreviewBlock(12);
                 }))
@@ -54,6 +64,9 @@ class HomePage extends React.Component {
             });
     }
 
+    /**
+     * fetch the necessary data for left info box
+     */
     fetchStartData() {
         const updateRequest = new FormData();
         updateRequest.append('action', 'getStartData');
@@ -69,7 +82,8 @@ class HomePage extends React.Component {
                             hdvideonr: result['hd'],
                             sdvideonr: result['sd'],
                             tagnr: result['tags']
-                        }});
+                        }
+                    });
                 }))
             .catch(() => {
                 console.log("no connection to backend");
@@ -86,7 +100,7 @@ class HomePage extends React.Component {
             <div>
                 <div className='pageheader'>
                     <span className='pageheadertitle'>Home Page</span>
-                    <span className='pageheadersubtitle'>All Videos - {this.state.sideinfo.videonr}</span>
+                    <span className='pageheadersubtitle'>{this.state.tag} Videos - {this.state.selectionnr}</span>
                     <hr/>
                 </div>
                 <SideBar>
@@ -99,10 +113,26 @@ class HomePage extends React.Component {
                     <div className='sidebarinfo'><b>{this.state.sideinfo.tagnr}</b> different Tags!</div>
                     <hr/>
                     <div className='sidebartitle'>Default Tags:</div>
-                    <button className='tagbtn' onClick={() => this.fetchVideoData("all")}>All</button>
-                    <button className='tagbtn' onClick={() => this.fetchVideoData("fullhd")}>FullHd</button>
-                    <button className='tagbtn' onClick={() => this.fetchVideoData("lowquality")}>LowQuality</button>
-                    <button className='tagbtn' onClick={() => this.fetchVideoData("hd")}>HD</button>
+                    <Tag onClick={() => {
+                        this.setState({tag: "All"});
+                        this.fetchVideoData("all");
+                    }}>All
+                    </Tag>
+                    <Tag onClick={() => {
+                        this.setState({tag: "Full HD"});
+                        this.fetchVideoData("fullhd");
+                    }}>FullHd
+                    </Tag>
+                    <Tag onClick={() => {
+                        this.setState({tag: "Low Quality"});
+                        this.fetchVideoData("lowquality");
+                    }}>LowQuality
+                    </Tag>
+                    <Tag onClick={() => {
+                        this.setState({tag: "HD"});
+                        this.fetchVideoData("hd");
+                    }}>HD
+                    </Tag>
                 </SideBar>
                 <div className='maincontent'>
                     {this.state.loadeditems.map(elem => (

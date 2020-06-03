@@ -44,21 +44,21 @@ foreach ($arr as $elem) {
                 if ($video_attributes['height'] >= 1080) {
                     $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,2)";
                     if ($conn->query($query) !== TRUE) {
-                        echo "failed to add tag here.\n";
+                        echo "failed to add default tag here.\n";
                     }
                 }
 
                 if ($video_attributes['height'] >= 720 && $video_attributes['height'] < 1080) {
                     $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,4)";
                     if ($conn->query($query) !== TRUE) {
-                        echo "failed to add tag here.\n";
+                        echo "failed to add default tag here.\n";
                     }
                 }
 
                 if ($video_attributes['height'] < 720) {
                     $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,3)";
                     if ($conn->query($query) !== TRUE) {
-                        echo "failed to add tag here.\n";
+                        echo "failed to add default tag here.\n";
                     }
                 }
                 $added++;
@@ -125,19 +125,28 @@ function _get_video_attributes($video)
     $command = "$ffmpeg -i \"../videos/prn/$video\" -vstats 2>&1";
     $output = shell_exec($command);
 
+    $codec = "null";
+    $width = 0;
+    $height = 0;
+
     $regex_sizes = "/Video: ([^,]*), ([^,]*), ([0-9]{1,4})x([0-9]{1,4})/"; // or : $regex_sizes = "/Video: ([^\r\n]*), ([^,]*), ([0-9]{1,4})x([0-9]{1,4})/"; (code from @1owk3y)
     if (preg_match($regex_sizes, $output, $regs)) {
-        $codec = $regs [1] ? $regs [1] : null;
-        $width = $regs [3] ? $regs [3] : null;
-        $height = $regs [4] ? $regs [4] : null;
+        $codec = $regs [1] ? $regs [1] : "null";
+        $width = $regs [3] ? $regs [3] : 0;
+        $height = $regs [4] ? $regs [4] : 0;
     }
+
+    $hours = 0;
+    $mins = 0;
+    $secs = 0;
+    $ms = 0;
 
     $regex_duration = "/Duration: ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2}).([0-9]{1,2})/";
     if (preg_match($regex_duration, $output, $regs)) {
-        $hours = $regs [1] ? $regs [1] : null;
-        $mins = $regs [2] ? $regs [2] : null;
-        $secs = $regs [3] ? $regs [3] : null;
-        $ms = $regs [4] ? $regs [4] : null;
+        $hours = $regs [1] ? $regs [1] : 0;
+        $mins = $regs [2] ? $regs [2] : 0;
+        $secs = $regs [3] ? $regs [3] : 0;
+        $ms = $regs [4] ? $regs [4] : 0;
     }
 
     return array('codec' => $codec,

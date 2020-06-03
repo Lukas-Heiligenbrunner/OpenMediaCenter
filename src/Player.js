@@ -2,13 +2,21 @@ import React from "react";
 import "./css/Player.css"
 import {PlyrComponent} from 'plyr-react';
 import SideBar from "./SideBar";
+import Tag from "./Tag";
 
 
 class Player extends React.Component {
     constructor(props, context) {
         super(props, context);
 
-        this.state = {};
+        this.state = {
+            sources: null,
+            movie_name: null,
+            likes: null,
+            quality: null,
+            length: null,
+            tags: []
+        };
 
         this.props = props;
     }
@@ -50,10 +58,9 @@ class Player extends React.Component {
                     <div className='sidebarinfo'><b>{this.state.length}</b> Minutes of length!</div>
                     <hr/>
                     <div className='sidebartitle'>Tags:</div>
-                    <button className='tagbtn' onClick={() => this.fetchVideoData("all")}>All</button>
-                    <button className='tagbtn' onClick={() => this.fetchVideoData("fullhd")}>FullHd</button>
-                    <button className='tagbtn' onClick={() => this.fetchVideoData("lowquality")}>LowQuality</button>
-                    <button className='tagbtn' onClick={() => this.fetchVideoData("hd")}>HD</button>
+                    {this.state.tags.map((m) => (
+                        <Tag>{m.tag_name}</Tag>
+                    ))}
                 </SideBar>
 
                 <div className="videowrapper">
@@ -96,7 +103,8 @@ class Player extends React.Component {
                     movie_name: result.movie_name,
                     likes: result.likes,
                     quality: result.quality,
-                    length: result.length
+                    length: result.length,
+                    tags: result.tags
                 });
             });
     }

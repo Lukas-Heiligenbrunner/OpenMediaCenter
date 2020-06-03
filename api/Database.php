@@ -8,7 +8,7 @@ class Database
     private $servername = "192.168.0.30";
     private $username = "root";
     private $password = "1qayxsw2";
-    private $dbname = "hub";
+    private $dbname = "mediacenter";
 
     // The db connection is established in the private constructor.
     private function __construct()

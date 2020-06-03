@@ -9,26 +9,6 @@
     border: 2px #3574fe solid;
 }
 
-.tagbtn {
-    color: white;
-    margin: 10px;
-    background-color: #3574fe;
-    border: none;
-    border-radius: 10px;
-    padding: 5px 15px 5px 15px;
-    /*font-weight: bold;*/
-    display: block;
-}
-
-.tagbtn:focus {
-    background-color: #004eff;
-    outline: none;
-}
-
-.tagbtn:hover {
-    background-color: #004eff;
-}
-
 .sidebartitle {
     font-weight: bold;
     font-size: larger;

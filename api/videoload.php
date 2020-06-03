@@ -3,7 +3,7 @@ require 'Database.php';
 
 $conn = Database::getInstance()->getConnection();
 
-
+//$_POST['action'] = "getRandomMovies";$_POST['number'] =6;
 if (isset($_POST['action'])) {
     $action = $_POST['action'];
     switch ($action) {
@@ -28,14 +28,31 @@ if (isset($_POST['action'])) {
             echo(json_encode($rows));
             break;
         case "getRandomMovies":
+            $return = new stdClass();
             $query = "SELECT movie_id,movie_name FROM videos ORDER BY RAND() LIMIT " . $_POST['number'];
             $result = $conn->query($query);
-            $rows = array();
+            $return->rows = array();
+
+            // get tags of random videos
+            $ids = [];
             while ($r = mysqli_fetch_assoc($result)) {
-                array_push($rows, $r);
+                array_push($return->rows, $r);
+                array_push($ids,"video_tags.video_id=".$r['movie_id']);
             }
 
-            echo(json_encode($rows));
+            $idstring = implode(" OR ",$ids);
+
+            $return->tags = array();
+            $query = "SELECT t.tag_name FROM video_tags 
+                        INNER JOIN tags t on video_tags.tag_id = t.tag_id
+                        WHERE $idstring
+                        GROUP BY t.tag_name";
+            $result = $conn->query($query);
+            while ($r = mysqli_fetch_assoc($result)) {
+                array_push($return->tags, $r);
+            }
+
+            echo(json_encode($return));
             break;
         case "loadVideo":
             $query = "SELECT movie_name,movie_url,thumbnail,likes,quality,length FROM videos WHERE movie_id='" . $_POST['movieid'] . "'";
@@ -50,6 +67,18 @@ if (isset($_POST['action'])) {
             $arr["likes"] = $row["likes"];
             $arr["quality"] = $row["quality"];
             $arr["length"] = $row["length"];
+
+            // load tags of this video
+            $arr['tags'] = Array();
+            $query = "SELECT t.tag_name FROM video_tags 
+                        INNER JOIN tags t on video_tags.tag_id = t.tag_id
+                        WHERE video_tags.video_id=".$_POST['movieid']."
+                        GROUP BY t.tag_name";
+            $result = $conn->query($query);
+            while ($r = mysqli_fetch_assoc($result)) {
+                array_push($arr['tags'], $r);
+            }
+
             echo(json_encode($arr));
 
             break;
@@ -77,6 +106,7 @@ if (isset($_POST['action'])) {
 
             break;
         case "getTags":
+            // todo add this to loadVideo maybe
             $movieid = $_POST['movieid'];
 
             $query = "SELECT tag_name FROM video_tags 

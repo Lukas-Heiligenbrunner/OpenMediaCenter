@@ -2,13 +2,15 @@ import React from "react";
 import Preview from "./Preview";
 import "./css/RandomPage.css"
 import SideBar from "./SideBar";
+import Tag from "./Tag";
 
 class RandomPage extends React.Component {
     constructor(props, context) {
         super(props, context);
 
         this.state = {
-            videos: []
+            videos: [],
+            tags: []
         };
     }
 
@@ -26,10 +28,9 @@ class RandomPage extends React.Component {
                 </div>
                 <SideBar>
                     <div className='sidebartitle'>Visible Tags:</div>
-                    <button className='tagbtn' onClick={() => this.fetchVideoData("all")}>All</button>
-                    <button className='tagbtn' onClick={() => this.fetchVideoData("fullhd")}>FullHd</button>
-                    <button className='tagbtn' onClick={() => this.fetchVideoData("lowquality")}>LowQuality</button>
-                    <button className='tagbtn' onClick={() => this.fetchVideoData("hd")}>HD</button>
+                    {this.state.tags.map((m) => (
+                        <Tag>{m.tag_name}</Tag>
+                    ))}
                 </SideBar>
 
                 <div className='maincontent'>
@@ -61,7 +62,11 @@ class RandomPage extends React.Component {
         fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
-                    this.setState({videos: result});
+                    console.log(result);
+                    this.setState({
+                        videos: result.rows,
+                        tags: result.tags
+                    });
                 }))
             .catch(() => {
                 console.log("no connection to backend");

@@ -48,19 +48,25 @@ class App extends React.Component {
                         <li className="nav-item">
                             <div className="nav-link"
                                  style={this.state.page === "default" ? {color: "rgba(255,255,255,.75"} : {}}
-                                 onClick={() => this.loadHomePage()}>Home
+                                 onClick={() => this.setState({page: "default"})}>Home
                             </div>
                         </li>
                         <li className="nav-item">
                             <div className="nav-link"
                                  style={this.state.page === "random" ? {color: "rgba(255,255,255,.75"} : {}}
-                                 onClick={() => this.loadRandomPage()}>Random Video
+                                 onClick={() => this.setState({page: "random"})}>Random Video
                             </div>
                         </li>
                         <li className="nav-item">
                             <div className="nav-link"
                                  style={this.state.page === "categories" ? {color: "rgba(255,255,255,.75"} : {}}
-                                 onClick={() => this.loadCategoriesPage()}>Categories
+                                 onClick={() => this.setState({page: "categories"})}>Categories
+                            </div>
+                        </li>
+                        <li className="nav-item">
+                            <div className="nav-link"
+                                 style={this.state.page === "settings" ? {color: "rgba(255,255,255,.75"} : {}}
+                                 onClick={() => this.setState({page: "settings"})}>Settings
                             </div>
                         </li>
                     </ul>
@@ -68,21 +74,6 @@ class App extends React.Component {
                 {this.MainBody()}
             </div>
         );
-    }
-
-    loadCategoriesPage() {
-        console.log("click categories");
-        this.setState({page: "categories"});
-    }
-
-    loadRandomPage() {
-        console.log("click random");
-        this.setState({page: "random"});
-    }
-
-    loadHomePage() {
-        console.log("click default");
-        this.setState({page: "default"});
     }
 
     showVideo(element) {
