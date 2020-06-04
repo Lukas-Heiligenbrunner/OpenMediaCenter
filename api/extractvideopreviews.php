@@ -27,9 +27,12 @@ foreach ($arr as $elem) {
             if (!mysqli_fetch_assoc($result)) {
                 // try to fetch data from TMDB
                 $poster = -1;
+                $genres = -1;
                 if (!is_null($dta = $tmdb->searchMovie($moviename))) {
                     $pic = file_get_contents($tmdb->picturebase . $dta->poster_path);
                     $poster = shell_exec("ffmpeg -hide_banner -loglevel panic -ss 00:04:00 -i \"../videos/prn/$elem\" -vframes 1 -q:v 2 -f singlejpeg pipe:1 2>/dev/null");
+
+                    $genres = $dta->genre_ids;
                 } else {
                     echo "nothing found with TMDB!\n";
                     $pic = shell_exec("ffmpeg -hide_banner -loglevel panic -ss 00:04:00 -i \"../videos/prn/$elem\" -vframes 1 -q:v 2 -f singlejpeg pipe:1 2>/dev/null");
@@ -98,6 +101,16 @@ foreach ($arr as $elem) {
                             echo "failed to add default tag here.\n";
                         }
                     }
+
+                    // handle tmdb genres here!
+                    if($genres != -1){
+                        foreach ($genres as $genre) {
+                            // check if genre is already a tag in db
+                            echo $genre."\n\n";
+                        }
+                    }
+
+
                     $added++;
                     $all++;
                 } else {

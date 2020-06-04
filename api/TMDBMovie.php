@@ -6,7 +6,13 @@ class TMDBMovie
     private $baseurl = "https://api.themoviedb.org/3/";
     public $picturebase = "https://image.tmdb.org/t/p/w500";
 
-    public function searchMovie($moviename)
+    /**
+     * search for a specific movie
+     *
+     * @param string $moviename moviename
+     * @return object movie object or null if not found
+     */
+    public function searchMovie(string $moviename)
     {
         $reply = json_decode(file_get_contents($this->baseurl . "search/movie?api_key=" . $this->apikey . "&query=" . urlencode($moviename)));
         if ($reply->total_results == 0) {
@@ -15,18 +21,18 @@ class TMDBMovie
             return null;
         } else {
             return $reply->results[0];
-
-//            $image_base64 = base64_encode(file_get_contents($this->posterbase . $reply->results[0]->poster_path));
-//            $image = 'data:image/jpeg;base64,' . $image_base64;
-//            // Insert record
-//            $conn = Database::getInstance()->getConnection();
-//            $query = "insert into Movie(name,url,poster) values('" . pathinfo($i)['filename'] . "','/data/$i','" . $image . "')";
-//            if ($conn->query($query) === TRUE) {
-//                echo('{"data":"successfully created entry"}');
-//            } else {
-//                echo('{"data":"' . $conn->error . '"}');
-//            }
         }
+    }
+
+    /**
+     * query all available genres from tmdb
+     *
+     * @return array of all available genres
+     */
+    public function getAllGenres()
+    {
+        $reply = json_decode(file_get_contents($this->baseurl . "genre/movie/list?api_key=" . $this->apikey));
+        return $reply->genres;
     }
 }
 

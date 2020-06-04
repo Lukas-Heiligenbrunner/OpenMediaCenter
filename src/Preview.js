@@ -45,6 +45,9 @@ class Preview extends React.Component {
                          src={this.state.previewpicture}
                          alt='Pic loading.'/>
                 </div>
+                <div className='previewbottom'>
+
+                </div>
             </div>
         );
     }
