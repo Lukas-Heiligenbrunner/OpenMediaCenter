@@ -18,24 +18,23 @@
     max-width: 410px;
 }
 
-.previewbottom{
+.previewbottom {
     height: 20px;
 }
 
 .videopreview {
-    /*width: 250px;*/
     float: left;
     margin-left: 25px;
     margin-top: 25px;
     /*background-color: #7F7F7F;*/
     background-color: #a8c3ff;
     cursor: pointer;
-    opacity: 0.9;
-    border: 10px;
+    opacity: 0.85;
     border-radius: 20px;
 }
 
 .videopreview:hover {
     opacity: 1;
-    transition: opacity 0.5s;
+    box-shadow: rgba(2, 12, 27, 0.7) 0px 0px 0px 5px;
+    transition: all 300ms;
 }

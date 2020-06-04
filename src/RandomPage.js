@@ -23,7 +23,7 @@ class RandomPage extends React.Component {
             <div>
                 <div className='pageheader'>
                     <span className='pageheadertitle'>Random Videos</span>
-                    <span className='pageheadersubtitle'>6pc</span>
+                    <span className='pageheadersubtitle'>4pc</span>
                     <hr/>
                 </div>
                 <SideBar>

@@ -2,6 +2,8 @@
 require 'Database.php';
 require 'TMDBMovie.php';
 
+writeLog("starting extraction!\n");
+
 $ffmpeg = 'ffmpeg'; //or: /usr/bin/ffmpeg , or /usr/local/bin/ffmpeg - depends on your installation (type which ffmpeg into a console to find the install path)
 $tmdb = new TMDBMovie();
 
@@ -35,6 +37,7 @@ foreach ($arr as $elem) {
                     $genres = $dta->genre_ids;
                 } else {
                     echo "nothing found with TMDB!\n";
+                    writeLog("nothing found with TMDB!\n");
                     $pic = shell_exec("ffmpeg -hide_banner -loglevel panic -ss 00:04:00 -i \"../videos/prn/$elem\" -vframes 1 -q:v 2 -f singlejpeg pipe:1 2>/dev/null");
                 }
 
@@ -78,6 +81,7 @@ foreach ($arr as $elem) {
 
                 if ($conn->query($query) === TRUE) {
                     echo('successfully added ' . $elem . " to video gravity\n");
+                    writeLog('successfully added ' . $elem . " to video gravity\n");
                     $last_id = $conn->insert_id;
 
                     // full hd
@@ -85,6 +89,7 @@ foreach ($arr as $elem) {
                         $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,2)";
                         if ($conn->query($query) !== TRUE) {
                             echo "failed to add default tag here.\n";
+                            writeLog("failed to add default tag here.\n");
                         }
                     }
 
@@ -92,21 +97,23 @@ foreach ($arr as $elem) {
                         $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,4)";
                         if ($conn->query($query) !== TRUE) {
                             echo "failed to add default tag here.\n";
+                            writeLog("failed to add default tag here.\n");
                         }
                     }
 
-                    if ($width < 1250) {
+                    if ($width < 1250 && $width > 0) {
                         $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,3)";
                         if ($conn->query($query) !== TRUE) {
                             echo "failed to add default tag here.\n";
+                            writeLog("failed to add default tag here.\n");
                         }
                     }
 
                     // handle tmdb genres here!
-                    if($genres != -1){
+                    if ($genres != -1) {
                         foreach ($genres as $genre) {
                             // check if genre is already a tag in db
-                            echo $genre."\n\n";
+//                            echo $genre."\n\n";
                         }
                     }
 
@@ -115,7 +122,9 @@ foreach ($arr as $elem) {
                     $all++;
                 } else {
                     echo('errored item: ' . $elem . "\n");
+                    writeLog('errored item: ' . $elem . "\n");
                     echo('{"data":"' . $conn->error . '"}\n');
+                    writeLog('{"data":"' . $conn->error . '"}\n');
                     $failed++;
                 }
             } else {
@@ -123,6 +132,7 @@ foreach ($arr as $elem) {
             }
         } else {
             echo($elem . " does not contain a .mp4 extension! - skipping \n");
+            writeLog($elem . " does not contain a .mp4 extension! - skipping \n");
         }
     }
 }
@@ -133,8 +143,11 @@ $r = mysqli_fetch_assoc($result);
 
 if ($all < $r['count']) {
     echo "should be in gravity: " . $all . "\n";
+    writeLog("should be in gravity: " . $all . "\n");
     echo "really in gravity: " . $r['count'] . "\n";
+    writeLog("really in gravity: " . $r['count'] . "\n");
     echo "cleaning up gravity\n";
+    writeLog("cleaning up gravity\n");
 
     $query = "SELECT movie_id,movie_url FROM videos";
     $result = $conn->query($query);
@@ -144,9 +157,11 @@ if ($all < $r['count']) {
             $query = "DELETE FROM videos WHERE movie_id='" . $r['movie_id'] . "'";
             if ($conn->query($query) === TRUE) {
                 echo('successfully deleted ' . $r['movie_url'] . " from video gravity\n");
+                writeLog('successfully deleted ' . $r['movie_url'] . " from video gravity\n");
                 $deleted++;
             } else {
                 echo "failed to delete " . $r['movie_url'] . " from gravity: " . $conn->error . "\n";
+                writeLog("failed to delete " . $r['movie_url'] . " from gravity: " . $conn->error . "\n");
             }
         }
     }
@@ -166,14 +181,26 @@ if ($result->num_rows == 1) {
 }
 
 echo "Total gravity: " . $all . "\n";
+writeLog("Total gravity: " . $all . "\n");
 echo "Size of Databse is: " . $size . "MB\n";
+writeLog("Size of Databse is: " . $size . "MB\n");
 echo "added in this run: " . $added . "\n";
+writeLog("added in this run: " . $added . "\n");
 echo "deleted in this run: " . $deleted . "\n";
+writeLog("deleted in this run: " . $deleted . "\n");
 echo "errored in this run: " . $failed . "\n";
+writeLog("errored in this run: " . $failed . "\n");
+writeLog("-42");
 
 function _get_video_attributes($video)
 {
     $command = "mediainfo \"../videos/prn/$video\" --Output=JSON";
     $output = shell_exec($command);
     return json_decode($output);
+}
+
+function writeLog(string $message)
+{
+    file_put_contents("/tmp/output.log", $message, FILE_APPEND);
+    flush();
 }

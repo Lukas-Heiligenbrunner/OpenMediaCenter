@@ -12,7 +12,7 @@ For organizing videos tags are used.
 
 Here you can see an example main page:
 
-![Image of OpenMediaCenter](https://i.ibb.co/pZMj9GL/Screenshot-20200604-163448.png)
+![Image of OpenMediaCenter](https://i.ibb.co/2PC3fmk/Screenshot-20200604-163448.png)
 
 ## Installation
 First of all clone the repository.
@@ -35,5 +35,5 @@ Now you can access your MediaCenter via the servers global ip (:
 
 ## Contact
 Any contribution is appreciated. 
-Feel free to contact me (lukas.heiligenbrunner@gmail.com), open an issue or request a new featur. 
+Feel free to contact me (lukas.heiligenbrunner@gmail.com), open an issue or request a new feature. 
 

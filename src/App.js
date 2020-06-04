@@ -5,6 +5,7 @@ import RandomPage from "./RandomPage";
 
 // include bootstraps css
 import 'bootstrap/dist/css/bootstrap.min.css';
+import SettingsPage from "./SettingsPage";
 
 class App extends React.Component {
     constructor(props, context) {
@@ -25,6 +26,9 @@ class App extends React.Component {
             this.mypage = page;
         } else if (this.state.page === "random") {
             page = <RandomPage viewbinding={{showVideo: this.showVideo, hideVideo: this.hideVideo}}/>;
+            this.mypage = page;
+        } else if (this.state.page === "settings") {
+            page = <SettingsPage/>;
             this.mypage = page;
         } else if (this.state.page === "video") {
             // show videoelement if neccessary

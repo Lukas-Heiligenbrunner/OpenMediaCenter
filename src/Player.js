@@ -54,8 +54,12 @@ class Player extends React.Component {
                     <div className='sidebartitle'>Infos:</div>
                     <hr/>
                     <div className='sidebarinfo'><b>{this.state.likes}</b> Likes!</div>
-                    <div className='sidebarinfo'><b> {this.state.quality}p</b> Quality!</div>
-                    <div className='sidebarinfo'><b>{this.state.length}</b> Minutes of length!</div>
+                    {this.state.quality != 0 ?
+                        <div className='sidebarinfo'><b>{this.state.quality}p</b> Quality!
+                        </div> : null}
+                    {this.state.length != 0 ?
+                        <div className='sidebarinfo'><b>{Math.round(this.state.length / 60)}</b> Minutes of length!
+                        </div> : null}
                     <hr/>
                     <div className='sidebartitle'>Tags:</div>
                     {this.state.tags.map((m) => (
