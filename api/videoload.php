@@ -37,10 +37,10 @@ if (isset($_POST['action'])) {
             $ids = [];
             while ($r = mysqli_fetch_assoc($result)) {
                 array_push($return->rows, $r);
-                array_push($ids,"video_tags.video_id=".$r['movie_id']);
+                array_push($ids, "video_tags.video_id=" . $r['movie_id']);
             }
 
-            $idstring = implode(" OR ",$ids);
+            $idstring = implode(" OR ", $ids);
 
             $return->tags = array();
             $query = "SELECT t.tag_name FROM video_tags 
@@ -55,18 +55,19 @@ if (isset($_POST['action'])) {
             echo(json_encode($return));
             break;
         case "loadVideo":
-            $query = "SELECT movie_name,movie_url,thumbnail,poster,likes,quality,length FROM videos WHERE movie_id='" . $_POST['movieid'] . "'";
+            $query = "SELECT movie_name,movie_id,movie_url,thumbnail,poster,likes,quality,length FROM videos WHERE movie_id='" . $_POST['movieid'] . "'";
 
             $result = $conn->query($query);
             $row = $result->fetch_assoc();
 
             $arr = array();
-            if($row["poster"] == null){
+            if ($row["poster"] == null) {
                 $arr["thumbnail"] = $row["thumbnail"];
-            }else{
+            } else {
                 $arr["thumbnail"] = $row["poster"];
             }
 
+            $arr["movie_id"] = $row["movie_id"];
             $arr["movie_name"] = $row["movie_name"];
             $arr["movie_url"] = $row["movie_url"];
             $arr["likes"] = $row["likes"];
@@ -74,10 +75,10 @@ if (isset($_POST['action'])) {
             $arr["length"] = $row["length"];
 
             // load tags of this video
-            $arr['tags'] = Array();
+            $arr['tags'] = array();
             $query = "SELECT t.tag_name FROM video_tags 
                         INNER JOIN tags t on video_tags.tag_id = t.tag_id
-                        WHERE video_tags.video_id=".$_POST['movieid']."
+                        WHERE video_tags.video_id=" . $_POST['movieid'] . "
                         GROUP BY t.tag_name";
             $result = $conn->query($query);
             while ($r = mysqli_fetch_assoc($result)) {
@@ -185,9 +186,32 @@ if (isset($_POST['action'])) {
 
             echo(json_encode($arr));
             break;
+
+        case "getAllTags":
+            $query = "SELECT tag_name,tag_id from tags";
+            $result = $conn->query($query);
+
+            $rows = array();
+            while ($r = mysqli_fetch_assoc($result)) {
+                array_push($rows, $r);
+            }
+            echo(json_encode($rows));
+            break;
+        case "addTag":
+            $movieid = $_POST['movieid'];
+            $tagid = $_POST['id'];
+
+            $query = "INSERT INTO video_tags(tag_id, video_id) VALUES ('$tagid','$movieid')";
+
+            if ($conn->query($query) === TRUE) {
+                echo('{"result":"success"}');
+            } else {
+                echo('{"result":"' . $conn->error . '"}');
+            }
+            break;
     }
 } else {
-    echo('{"data":"error"}');
+    echo('{data:"error"}');
 }
 return;
 
