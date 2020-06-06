@@ -3,6 +3,7 @@ import "./css/Player.css"
 import {PlyrComponent} from 'plyr-react';
 import SideBar from "./SideBar";
 import Tag from "./Tag";
+import AddTagPopup from "./AddTagPopup";
 
 
 class Player extends React.Component {
@@ -11,11 +12,13 @@ class Player extends React.Component {
 
         this.state = {
             sources: null,
+            movie_id: null,
             movie_name: null,
             likes: null,
             quality: null,
             length: null,
-            tags: []
+            tags: [],
+            popupvisible: false
         };
 
         this.props = props;
@@ -54,10 +57,10 @@ class Player extends React.Component {
                     <div className='sidebartitle'>Infos:</div>
                     <hr/>
                     <div className='sidebarinfo'><b>{this.state.likes}</b> Likes!</div>
-                    {this.state.quality != 0 ?
+                    {this.state.quality !== 0 ?
                         <div className='sidebarinfo'><b>{this.state.quality}p</b> Quality!
                         </div> : null}
-                    {this.state.length != 0 ?
+                    {this.state.length !== 0 ?
                         <div className='sidebarinfo'><b>{Math.round(this.state.length / 60)}</b> Minutes of length!
                         </div> : null}
                     <hr/>
@@ -76,7 +79,16 @@ class Player extends React.Component {
                         <div>not loaded yet</div>}
                     <div className='videoactions'>
                         <button className='btn btn-primary' onClick={() => this.likebtn()}>Like this Video!</button>
-                        <button className='btn btn-info' id="tagbutton">Give this Video a Tag</button>
+                        <button className='btn btn-info' onClick={() => this.setState({popupvisible: true})}>Give this
+                            Video a Tag
+                        </button>
+                        {this.state.popupvisible ?
+                            <AddTagPopup show={this.state.popupvisible}
+                                         onHide={() => this.setState({popupvisible: false})}
+                                         movie_id={this.state.movie_id}/> :
+                            null
+                        }
+
                     </div>
                 </div>
                 <button className="closebutton" onClick={() => this.closebtn()}>Close</button>
@@ -104,6 +116,7 @@ class Player extends React.Component {
                         ],
                         poster: result.thumbnail
                     },
+                    movie_id: result.movie_id,
                     movie_name: result.movie_name,
                     likes: result.likes,
                     quality: result.quality,
