@@ -1,10 +1,10 @@
 import React from "react";
-import Preview from "./Preview";
-import SideBar from "./SideBar";
+import Preview from "../elements/Preview";
+import SideBar from "../elements/SideBar";
+import Tag from "../elements/Tag";
 
-import "./css/HomePage.css"
-import "./css/DefaultPage.css"
-import Tag from "./Tag";
+import "../css/HomePage.css"
+import "../css/DefaultPage.css"
 
 class HomePage extends React.Component {
     // stores all available movies

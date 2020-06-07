@@ -13,6 +13,7 @@
 }
 
 .previewimage {
+    min-height: 150px;
     max-height: 400px;
     min-width: 266px;
     max-width: 410px;

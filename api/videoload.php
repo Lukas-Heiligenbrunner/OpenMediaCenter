@@ -8,7 +8,7 @@ if (isset($_POST['action'])) {
     $action = $_POST['action'];
     switch ($action) {
         case "getMovies":
-            $query = "SELECT movie_id,movie_name FROM videos ORDER BY likes DESC, create_date ASC, movie_name ASC";
+            $query = "SELECT movie_id,movie_name FROM videos ORDER BY likes DESC, create_date DESC, movie_name ASC";
             if (isset($_POST['tag'])) {
                 $tag = $_POST['tag'];
                 if ($_POST['tag'] != "all") {

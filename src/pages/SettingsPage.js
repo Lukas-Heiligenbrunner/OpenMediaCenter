@@ -1,5 +1,5 @@
 import React from "react";
-import "./css/DefaultPage.css"
+import "../css/DefaultPage.css"
 
 
 class SettingsPage extends React.Component {

@@ -1,8 +1,8 @@
 import React from "react";
-import Preview from "./Preview";
-import "./css/RandomPage.css"
-import SideBar from "./SideBar";
-import Tag from "./Tag";
+import Preview from "../elements/Preview";
+import "../css/RandomPage.css"
+import SideBar from "../elements/SideBar";
+import Tag from "../elements/Tag";
 
 class RandomPage extends React.Component {
     constructor(props, context) {

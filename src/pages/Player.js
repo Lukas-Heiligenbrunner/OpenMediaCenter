@@ -1,9 +1,9 @@
 import React from "react";
-import "./css/Player.css"
+import "../css/Player.css"
 import {PlyrComponent} from 'plyr-react';
-import SideBar from "./SideBar";
-import Tag from "./Tag";
-import AddTagPopup from "./AddTagPopup";
+import SideBar from "../elements/SideBar";
+import Tag from "../elements/Tag";
+import AddTagPopup from "../elements/AddTagPopup";
 
 
 class Player extends React.Component {

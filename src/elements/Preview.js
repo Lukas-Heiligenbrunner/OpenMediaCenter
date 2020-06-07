@@ -1,6 +1,6 @@
 import React from "react";
-import "./css/Preview.css";
-import Player from "./Player";
+import "../css/Preview.css";
+import Player from "../pages/Player";
 
 class Preview extends React.Component {
     constructor(props, context) {
