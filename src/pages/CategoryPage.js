@@ -2,7 +2,6 @@ import React from "react";
 import SideBar from "../elements/SideBar";
 import Tag from "../elements/Tag";
 
-import "../css/CategoryPage.css"
 import {TagPreview} from "../elements/Preview";
 
 class CategoryPage extends React.Component {
@@ -39,21 +38,23 @@ class CategoryPage extends React.Component {
                     <hr/>
                     <button className='btn btn-success'>Add a new Tag!</button>
                 </SideBar>
-                <div id='categorycontent'>
-                    {!this.state.selected ?
-                        (this.state.loadedtags ?
-                        this.state.loadedtags.map((m) => (
-                            <TagPreview
-                                name={m.tag_name}
-                                tag_id={m.tag_id}
-                                viewbinding={this.props.viewbinding}
-                                categorybinding={this.setPage}/>
-                        )) :
-                        "loading") :
-                        this.selectionelements
-                    }
 
-                </div>
+                {!this.state.selected ?
+                    (<div className='maincontent'>
+                        {this.state.loadedtags ?
+                            this.state.loadedtags.map((m) => (
+                                <TagPreview
+                                    name={m.tag_name}
+                                    tag_id={m.tag_id}
+                                    viewbinding={this.props.viewbinding}
+                                    categorybinding={this.setPage}/>
+                            )) :
+                            "loading"}
+                    </div>) :
+                    this.selectionelements
+                }
+
+
             </>
         );
     }

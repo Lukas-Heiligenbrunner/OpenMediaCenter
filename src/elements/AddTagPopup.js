@@ -4,7 +4,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 
 class AddTagPopup extends React.Component {
-    constructor(props: P, context: any) {
+    constructor(props, context) {
         super(props, context);
 
         this.state = {
@@ -60,7 +60,6 @@ class AddTagPopup extends React.Component {
                     <Modal.Footer>
                         <button className='btn btn-primary' onClick={() => {
                             this.storeselection();
-                            this.props.onHide();
                         }}>Add
                         </button>
                     </Modal.Footer>
@@ -82,6 +81,7 @@ class AddTagPopup extends React.Component {
                     console.log("error occured while writing to db -- todo error handling");
                     console.log(result.result);
                 }
+                this.props.onHide();
             });
     }
 }

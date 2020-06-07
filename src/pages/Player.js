@@ -84,7 +84,10 @@ class Player extends React.Component {
                         </button>
                         {this.state.popupvisible ?
                             <AddTagPopup show={this.state.popupvisible}
-                                         onHide={() => this.setState({popupvisible: false})}
+                                         onHide={() => {
+                                             this.setState({popupvisible: false});
+                                             this.fetchMovieData();
+                                         }}
                                          movie_id={this.state.movie_id}/> :
                             null
                         }
