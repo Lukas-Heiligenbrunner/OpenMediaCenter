@@ -6,13 +6,14 @@ import "../css/CategoryPage.css"
 import {TagPreview} from "../elements/Preview";
 
 class CategoryPage extends React.Component {
-    constructor(props: P, context: any) {
+    constructor(props, context) {
         super(props, context);
 
         this.props = props;
 
         this.state = {
-            loadedtags: []
+            loadedtags: [],
+            selected: false
         };
     }
 
@@ -39,20 +40,29 @@ class CategoryPage extends React.Component {
                     <button className='btn btn-success'>Add a new Tag!</button>
                 </SideBar>
                 <div id='categorycontent'>
-                    {this.state.loadedtags ?
+                    {!this.state.selected ?
+                        (this.state.loadedtags ?
                         this.state.loadedtags.map((m) => (
                             <TagPreview
                                 name={m.tag_name}
                                 tag_id={m.tag_id}
-                                viewbinding={this.props.viewbinding}/>
+                                viewbinding={this.props.viewbinding}
+                                categorybinding={this.setPage}/>
                         )) :
-                        "loading"
+                        "loading") :
+                        this.selectionelements
                     }
 
                 </div>
             </>
         );
     }
+
+    setPage = (element) => {
+        this.selectionelements = element;
+
+        this.setState({selected: true});
+    };
 
     /**
      * load all available tags from db.

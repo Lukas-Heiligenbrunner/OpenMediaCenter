@@ -63,7 +63,7 @@ class Preview extends React.Component {
 }
 
 export class TagPreview extends React.Component {
-    constructor(props: P, context: any) {
+    constructor(props, context) {
         super(props, context);
 
         this.props = props;
@@ -82,7 +82,7 @@ export class TagPreview extends React.Component {
             .then((response) => response.json()
                 .then((result) => {
                     console.log(result);
-                    this.props.viewbinding.showVideo(
+                    this.props.categorybinding(
                         <VideoContainer
                             data={result}
                             viewbinding={this.props.viewbinding}/>

@@ -2,7 +2,7 @@ import React from "react";
 import Preview from "./Preview";
 
 class VideoContainer extends React.Component {
-    constructor(props: P, context: any) {
+    constructor(props, context) {
         super(props, context);
 
         this.data = props.data;
@@ -12,6 +12,7 @@ class VideoContainer extends React.Component {
             selectionnr: null
         };
     }
+
     // stores current index of loaded elements
     loadindex = 0;
 
@@ -31,6 +32,9 @@ class VideoContainer extends React.Component {
                         movie_id={elem.movie_id}
                         viewbinding={this.props.viewbinding}/>
                 ))}
+                {/*todo css for no items to show*/}
+                {this.state.loadeditems.length === 0 ?
+                    "no items to show!" : null}
             </div>
         );
     }
