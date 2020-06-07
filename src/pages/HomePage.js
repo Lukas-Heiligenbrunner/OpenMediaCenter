@@ -1,22 +1,16 @@
 import React from "react";
-import Preview from "../elements/Preview";
 import SideBar from "../elements/SideBar";
 import Tag from "../elements/Tag";
+import VideoContainer from "../elements/VideoContainer";
 
 import "../css/HomePage.css"
 import "../css/DefaultPage.css"
 
 class HomePage extends React.Component {
-    // stores all available movies
-    data = null;
-    // stores current index of loaded elements
-    loadindex = 0;
-
     constructor(props, context) {
         super(props, context);
 
         this.state = {
-            loadeditems: [],
             sideinfo: {
                 videonr: null,
                 fullhdvideonr: null,
@@ -25,12 +19,13 @@ class HomePage extends React.Component {
                 tagnr: null
             },
             tag: "All",
-            selectionnr: null
+            data: [],
+            selectionnr: 0
         };
     }
 
     componentDidMount() {
-        document.addEventListener('scroll', this.trackScrolling);
+        // document.addEventListener('scroll', this.trackScrolling);
         // initial get of all videos
         this.fetchVideoData("all");
         this.fetchStartData();
@@ -47,17 +42,19 @@ class HomePage extends React.Component {
         updateRequest.append('action', 'getMovies');
         updateRequest.append('tag', tag);
 
+        console.log("fetching data");
+
         // fetch all videos available
         fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
-                    this.data = result;
                     this.setState({
-                        loadeditems: [],
-                        selectionnr: this.data.length
+                        data: []
                     });
-                    this.loadindex = 0;
-                    this.loadPreviewBlock(16);
+                    this.setState({
+                        data: result,
+                        selectionnr: result.length
+                    });
                 }))
             .catch(() => {
                 console.log("no connection to backend");
@@ -88,11 +85,6 @@ class HomePage extends React.Component {
             .catch(() => {
                 console.log("no connection to backend");
             });
-    }
-
-    componentWillUnmount() {
-        this.setState({});
-        document.removeEventListener('scroll', this.trackScrolling);
     }
 
     render() {
@@ -134,50 +126,16 @@ class HomePage extends React.Component {
                     }}>HD
                     </Tag>
                 </SideBar>
-                <div className='maincontent'>
-                    {this.state.loadeditems.map(elem => (
-                        <Preview
-                            key={elem.movie_id}
-                            name={elem.movie_name}
-                            movie_id={elem.movie_id}
-                            viewbinding={this.props.viewbinding}/>
-                    ))}
-                </div>
+                {this.state.data.length !== 0 ?
+                    <VideoContainer
+                        data={this.state.data}
+                        viewbinding={this.props.viewbinding}/> : null}
                 <div className='rightinfo'>
 
                 </div>
 
             </div>
         );
-    }
-
-    loadPreviewBlock(nr) {
-        console.log("loadpreviewblock called ...")
-        let ret = [];
-        for (let i = 0; i < nr; i++) {
-            // only add if not end
-            if (this.data.length > this.loadindex + i) {
-                ret.push(this.data[this.loadindex + i]);
-            }
-        }
-
-        this.setState({
-            loadeditems: [
-                ...this.state.loadeditems,
-                ...ret
-            ]
-        });
-
-
-        this.loadindex += nr;
-    }
-
-    trackScrolling = () => {
-        // comparison if current scroll position is on bottom
-        // 200 stands for bottom offset to trigger load
-        if (window.innerHeight + document.documentElement.scrollTop + 200 >= document.documentElement.offsetHeight) {
-            this.loadPreviewBlock(8);
-        }
     }
 }
 

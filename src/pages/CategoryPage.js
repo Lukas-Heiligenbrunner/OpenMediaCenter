@@ -30,24 +30,21 @@ class CategoryPage extends React.Component {
                     <hr/>
                 </div>
                 <SideBar>
-                    <div className='sidebartitle'>Infos:</div>
-                    <hr/>
                     <div className='sidebartitle'>Default Tags:</div>
-                    <Tag onClick={() => {
-                        this.setState({tag: "All"});
-                        this.fetchVideoData("all");
-                    }}>All
-                    </Tag>
+                    <Tag>All</Tag>
                     <Tag>FullHd</Tag>
                     <Tag>LowQuality</Tag>
                     <Tag>HD</Tag>
+                    <hr/>
+                    <button className='btn btn-success'>Add a new Tag!</button>
                 </SideBar>
                 <div id='categorycontent'>
                     {this.state.loadedtags ?
                         this.state.loadedtags.map((m) => (
                             <TagPreview
                                 name={m.tag_name}
-                                tag_id={m.tag_id}/>
+                                tag_id={m.tag_id}
+                                viewbinding={this.props.viewbinding}/>
                         )) :
                         "loading"
                     }

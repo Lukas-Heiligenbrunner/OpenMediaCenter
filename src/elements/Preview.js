@@ -1,6 +1,7 @@
 import React from "react";
 import "../css/Preview.css";
 import Player from "../pages/Player";
+import VideoContainer from "./VideoContainer";
 
 class Preview extends React.Component {
     constructor(props, context) {
@@ -66,43 +67,45 @@ export class TagPreview extends React.Component {
         super(props, context);
 
         this.props = props;
-
-        this.state = {
-            thumbnail: null
-        };
     }
 
-    componentDidMount() {
-        this.loadPreview();
+    fetchVideoData(tag) {
+        console.log(tag);
+        const updateRequest = new FormData();
+        updateRequest.append('action', 'getMovies');
+        updateRequest.append('tag', tag);
+
+        console.log("fetching data");
+
+        // fetch all videos available
+        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+            .then((response) => response.json()
+                .then((result) => {
+                    console.log(result);
+                    this.props.viewbinding.showVideo(
+                        <VideoContainer
+                            data={result}
+                            viewbinding={this.props.viewbinding}/>
+                    );
+                }))
+            .catch(() => {
+                console.log("no connection to backend");
+            });
     }
 
 
     render() {
         return (
-            <div className='videopreview' onClick={() => this.itemClick()}>
-                <div className='previewtitle tagpreviewtitle'>{this.props.name}</div>
-                <div className='previewpic'>
-                    <img className='previewimage'
-                         src={this.state.thumbnail}
-                         alt='Pic loading.'/>
-                </div>
-                <div className='previewbottom'>
-
+            <div className='videopreview tagpreview' onClick={() => this.itemClick()}>
+                <div className='tagpreviewtitle'>
+                    {this.props.name}
                 </div>
             </div>
         );
     }
 
-    loadPreview() {
-        const updateRequest = new FormData();
-        updateRequest.append('action', 'getRandomTagPreview');
-        updateRequest.append('id', this.props.tag_id);
-
-        fetch('/api/Tags.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.text())
-            .then((result) => {
-                this.setState({thumbnail: result});
-            });
+    itemClick() {
+        this.fetchVideoData(this.props.name);
     }
 }
 

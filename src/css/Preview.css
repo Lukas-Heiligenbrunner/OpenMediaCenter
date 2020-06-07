@@ -4,13 +4,6 @@
     text-align: center;
     font-weight: bold;
     max-width: 266px;
-}
-
-.tagpreviewtitle{
-    font-size: larger;
-}
-
-.videopreviewtitle{
     font-size: smaller;
 }
 
@@ -45,4 +38,17 @@
     opacity: 1;
     box-shadow: rgba(2, 12, 27, 0.7) 0px 0px 0px 5px;
     transition: all 300ms;
+}
+
+.tagpreview {
+    text-transform: uppercase;
+    font-weight: bolder;
+    font-size: x-large;
+    text-align: center;
+    height: 150px;
+    width: 266px;
+}
+
+.tagpreviewtitle{
+    margin-top: 55px;
 }

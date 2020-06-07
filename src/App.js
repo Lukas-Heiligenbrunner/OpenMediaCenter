@@ -32,11 +32,13 @@ class App extends React.Component {
             page = <SettingsPage/>;
             this.mypage = page;
         } else if (this.state.page === "categories") {
-            page = <CategoryPage/>;
+            page = <CategoryPage viewbinding={{showVideo: this.showVideo, hideVideo: this.hideVideo}}/>;
             this.mypage = page;
         } else if (this.state.page === "video") {
             // show videoelement if neccessary
             page = this.videoelement;
+
+            console.log(page);
         } else if (this.state.page === "lastpage") {
             // return back to last page
             page = this.mypage;
@@ -85,11 +87,11 @@ class App extends React.Component {
     }
 
     showVideo(element) {
+        this.videoelement = element;
+
         this.setState({
             page: "video"
         });
-
-        this.videoelement = element;
     }
 
     hideVideo() {
