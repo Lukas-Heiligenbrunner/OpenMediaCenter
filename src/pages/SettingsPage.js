@@ -50,7 +50,7 @@ class SettingsPage extends React.Component {
                     <hr/>
                 </div>
 
-                <button onClick={() => {
+                <button className='btn btn-success' onClick={() => {
                     this.startReindex()
                 }}>Reindex Movies
                 </button>

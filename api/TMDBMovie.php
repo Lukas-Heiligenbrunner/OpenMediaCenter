@@ -35,6 +35,3 @@ class TMDBMovie
         return $reply->genres;
     }
 }
-
-$temp = new TMDBMovie();
-$temp->searchMovie("007 - Ein quantum Trost");

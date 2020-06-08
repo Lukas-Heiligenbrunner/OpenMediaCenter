@@ -66,7 +66,7 @@ class Player extends React.Component {
                     <hr/>
                     <div className='sidebartitle'>Tags:</div>
                     {this.state.tags.map((m) => (
-                        <Tag>{m.tag_name}</Tag>
+                        <Tag key={m.tag_name}>{m.tag_name}</Tag>
                     ))}
                 </SideBar>
 

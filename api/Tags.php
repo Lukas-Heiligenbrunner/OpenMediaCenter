@@ -17,5 +17,15 @@ if (isset($_POST['action'])) {
             echo json_encode($rows);
 
             break;
+
+        case "createTag":
+            $query = "INSERT INTO tags (tag_name) VALUES ('" . $_POST['tagname'] . "')";
+
+            if ($conn->query($query) === TRUE) {
+                echo('{"result":"success"}');
+            } else {
+                echo('{"result":"' . $conn->error . '"}');
+            }
+            break;
     }
 }

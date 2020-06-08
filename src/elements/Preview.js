@@ -85,7 +85,7 @@ export class TagPreview extends React.Component {
                     this.props.categorybinding(
                         <VideoContainer
                             data={result}
-                            viewbinding={this.props.viewbinding}/>
+                            viewbinding={this.props.viewbinding}/>,tag
                     );
                 }))
             .catch(() => {

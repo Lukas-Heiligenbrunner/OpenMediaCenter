@@ -3,6 +3,7 @@ import SideBar from "../elements/SideBar";
 import Tag from "../elements/Tag";
 
 import {TagPreview} from "../elements/Preview";
+import NewTagPopup from "../elements/NewTagPopup";
 
 class CategoryPage extends React.Component {
     constructor(props, context) {
@@ -12,7 +13,7 @@ class CategoryPage extends React.Component {
 
         this.state = {
             loadedtags: [],
-            selected: false
+            selected: null
         };
     }
 
@@ -24,9 +25,9 @@ class CategoryPage extends React.Component {
         return (
             <>
                 <div className='pageheader'>
-                    <span className='pageheadertitle'>Category Page</span>
+                    <span className='pageheadertitle'>Categories</span>
                     <span
-                        className='pageheadersubtitle'>{this.state.loadedtags ? this.state.loadedtags.length + " different Tags" : ""}</span>
+                        className='pageheadersubtitle'>{!this.state.selected ? this.state.loadedtags.length + " different Tags" : this.state.selected}</span>
                     <hr/>
                 </div>
                 <SideBar>
@@ -36,7 +37,10 @@ class CategoryPage extends React.Component {
                     <Tag>LowQuality</Tag>
                     <Tag>HD</Tag>
                     <hr/>
-                    <button className='btn btn-success'>Add a new Tag!</button>
+                    <button className='btn btn-success' onClick={() => {
+                        this.setState({popupvisible: true})
+                    }}>Add a new Tag!
+                    </button>
                 </SideBar>
 
                 {!this.state.selected ?
@@ -44,6 +48,7 @@ class CategoryPage extends React.Component {
                         {this.state.loadedtags ?
                             this.state.loadedtags.map((m) => (
                                 <TagPreview
+                                    key={m.tag_name}
                                     name={m.tag_name}
                                     tag_id={m.tag_id}
                                     viewbinding={this.props.viewbinding}
@@ -51,18 +56,33 @@ class CategoryPage extends React.Component {
                             )) :
                             "loading"}
                     </div>) :
-                    this.selectionelements
+                    <>
+                        {this.selectionelements}
+                        <button className="btn btn-success" onClick={this.loadCategoryPageDefault}>Back</button>
+                    </>
                 }
 
+                {this.state.popupvisible ?
+                    <NewTagPopup show={this.state.popupvisible}
+                                 onHide={() => {
+                                     this.setState({popupvisible: false});
+                                     this.loadTags();
+                                 }}/> :
+                    null
+                }
 
             </>
         );
     }
 
-    setPage = (element) => {
+    setPage = (element, tagname) => {
         this.selectionelements = element;
 
-        this.setState({selected: true});
+        this.setState({selected: tagname});
+    };
+
+    loadCategoryPageDefault = () => {
+        this.setState({selected: null});
     };
 
     /**

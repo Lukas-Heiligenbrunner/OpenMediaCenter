@@ -1,19 +1,10 @@
 import React from "react";
 import Modal from 'react-bootstrap/Modal'
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
+import {Form} from "react-bootstrap";
 
-class AddTagPopup extends React.Component {
+class NewTagPopup extends React.Component {
     constructor(props, context) {
         super(props, context);
-
-        this.state = {
-            selection: {
-                name: "nothing selected",
-                id: -1
-            },
-            items: []
-        };
 
         this.props = props;
     }
@@ -42,20 +33,17 @@ class AddTagPopup extends React.Component {
                     centered>
                     <Modal.Header closeButton>
                         <Modal.Title id="contained-modal-title-vcenter">
-                            Add to Tag
+                            Create a new Tag!
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <h4>Select a Tag:</h4>
-                        <DropdownButton id="dropdown-basic-button" title={this.state.selection.name}>
-                            {this.state.items ?
-                                this.state.items.map((i) => (
-                                    <Dropdown.Item key={i.tag_name} onClick={() => {
-                                        this.setState({selection: {name: i.tag_name, id: i.tag_id}})
-                                    }}>{i.tag_name}</Dropdown.Item>
-                                )) :
-                                <Dropdown.Item>loading tags...</Dropdown.Item>}
-                        </DropdownButton>
+                        <Form.Group>
+                            <Form.Label>Tag Name:</Form.Label>
+                            <Form.Control id='namefield' type="text" placeholder="Enter Tag name" />
+                            <Form.Text className="text-muted">
+                                This Tag will automatically show up on category page.
+                            </Form.Text>
+                        </Form.Group>
                     </Modal.Body>
                     <Modal.Footer>
                         <button className='btn btn-primary' onClick={() => {
@@ -70,11 +58,10 @@ class AddTagPopup extends React.Component {
 
     storeselection() {
         const updateRequest = new FormData();
-        updateRequest.append('action', 'addTag');
-        updateRequest.append('id', this.state.selection.id);
-        updateRequest.append('movieid', this.props.movie_id);
+        updateRequest.append('action', 'createTag');
+        updateRequest.append('tagname', document.getElementById("namefield").value);
 
-        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/Tags.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json())
             .then((result) => {
                 if (result.result !== "success") {
@@ -86,4 +73,4 @@ class AddTagPopup extends React.Component {
     }
 }
 
-export default AddTagPopup;
+export default NewTagPopup;

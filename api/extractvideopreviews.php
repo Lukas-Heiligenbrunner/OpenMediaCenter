@@ -6,6 +6,8 @@ writeLog("starting extraction!\n");
 
 $ffmpeg = 'ffmpeg'; //or: /usr/bin/ffmpeg , or /usr/local/bin/ffmpeg - depends on your installation (type which ffmpeg into a console to find the install path)
 $tmdb = new TMDBMovie();
+// initial load off all available movie genres
+$tmdbgenres = $tmdb->getAllGenres();
 
 $conn = Database::getInstance()->getConnection();
 
@@ -82,6 +84,8 @@ foreach ($arr as $elem) {
                 if ($conn->query($query) === TRUE) {
                     echo('successfully added ' . $elem . " to video gravity\n");
                     writeLog('successfully added ' . $elem . " to video gravity\n");
+
+                    // add this entry to the default tags
                     $last_id = $conn->insert_id;
 
                     // full hd
@@ -93,6 +97,7 @@ foreach ($arr as $elem) {
                         }
                     }
 
+                    // HD
                     if ($width >= 1250 && $width < 1900) {
                         $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,4)";
                         if ($conn->query($query) !== TRUE) {
@@ -101,6 +106,7 @@ foreach ($arr as $elem) {
                         }
                     }
 
+                    // SD
                     if ($width < 1250 && $width > 0) {
                         $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,3)";
                         if ($conn->query($query) !== TRUE) {
@@ -111,9 +117,17 @@ foreach ($arr as $elem) {
 
                     // handle tmdb genres here!
                     if ($genres != -1) {
-                        foreach ($genres as $genre) {
-                            // check if genre is already a tag in db
-//                            echo $genre."\n\n";
+                        // transform genre ids in valid names
+                        foreach ($genres as $genreid) {
+                            // check if genre is already a tag in db if not insert it
+                            $tagname = array_column($tmdbgenres, 'name', 'id')[$genreid];
+                            $tagid = tagExists($tagname);
+
+                            $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,$tagid)";
+                            if ($conn->query($query) !== TRUE) {
+                                echo "failed to add $genreid tag here.\n";
+                                writeLog("failed to add $genreid tag here.\n");
+                            }
                         }
                     }
 
@@ -137,6 +151,7 @@ foreach ($arr as $elem) {
     }
 }
 
+// auto cleanup db entries
 $query = "SELECT COUNT(*) as count FROM videos";
 $result = $conn->query($query);
 $r = mysqli_fetch_assoc($result);
@@ -190,8 +205,15 @@ echo "deleted in this run: " . $deleted . "\n";
 writeLog("deleted in this run: " . $deleted . "\n");
 echo "errored in this run: " . $failed . "\n";
 writeLog("errored in this run: " . $failed . "\n");
-writeLog("-42");
 
+writeLog("-42"); // terminating characters to stop webui requesting infos
+
+/**
+ * get all videoinfos of a video file
+ *
+ * @param $video string name including extension
+ * @return object all infos as object
+ */
 function _get_video_attributes($video)
 {
     $command = "mediainfo \"../videos/prn/$video\" --Output=JSON";
@@ -199,8 +221,38 @@ function _get_video_attributes($video)
     return json_decode($output);
 }
 
+/**
+ * write a line to the output log file
+ *
+ * @param string $message message to write
+ */
 function writeLog(string $message)
 {
     file_put_contents("/tmp/output.log", $message, FILE_APPEND);
     flush();
+}
+
+/**
+ * ckecks if tag exists -- if not creates it
+ * @param string $tagname the name of the tag
+ * @return integer the id of the inserted tag
+ */
+function tagExists(string $tagname)
+{
+    global $conn;
+
+    $query = "SELECT * FROM tags WHERE tag_name='$tagname'";
+
+    $result = $conn->query($query);
+    if ($result->num_rows == 0) {
+        // tag does not exist --> create it
+        $query = "INSERT INTO tags (tag_name) VALUES ('$tagname')";
+        if ($conn->query($query) !== TRUE) {
+            echo "failed to create $tagname tag in database\n";
+            writeLog("failed to create $tagname tag in database\n");
+        }
+        return $conn->insert_id;
+    } else {
+        return $result->fetch_assoc()['tag_id'];
+    }
 }
