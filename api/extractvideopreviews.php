@@ -36,6 +36,10 @@ foreach ($arr as $elem) {
                     $pic = file_get_contents($tmdb->picturebase . $dta->poster_path);
                     $poster = shell_exec("ffmpeg -hide_banner -loglevel panic -ss 00:04:00 -i \"../videos/prn/$elem\" -vframes 1 -q:v 2 -f singlejpeg pipe:1 2>/dev/null");
 
+                    if($pic == null){
+                        // todo error handling for errored tmdb query
+                    }
+
                     $genres = $dta->genre_ids;
                 } else {
                     echo "nothing found with TMDB!\n";

@@ -9,19 +9,6 @@ class NewTagPopup extends React.Component {
         this.props = props;
     }
 
-    componentDidMount() {
-        const updateRequest = new FormData();
-        updateRequest.append('action', 'getAllTags');
-
-        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json())
-            .then((result) => {
-                this.setState({
-                    items: result
-                });
-            });
-    }
-
     render() {
         return (
             <>

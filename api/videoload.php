@@ -69,7 +69,7 @@ if (isset($_POST['action'])) {
 
             $arr["movie_id"] = $row["movie_id"];
             $arr["movie_name"] = $row["movie_name"];
-            $arr["movie_url"] = $row["movie_url"];
+            $arr["movie_url"] = str_replace("?","%3F",$row["movie_url"]);
             $arr["likes"] = $row["likes"];
             $arr["quality"] = $row["quality"];
             $arr["length"] = $row["length"];
