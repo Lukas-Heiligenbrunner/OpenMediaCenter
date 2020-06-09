@@ -1,5 +1,5 @@
 {
-  "name": "untitled",
+  "name": "openmediacenter",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -17,7 +17,14 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "coverage": "react-scripts test --coverage --watchAll=false",
     "eject": "react-scripts eject"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}"
+    ],
+    "coverageReporters": ["cobertura","text"]
   },
   "proxy": "http://192.168.0.248",
   "homepage": "/",

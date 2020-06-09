@@ -2,6 +2,7 @@ image: node:latest
 
 stages:
   - test
+  - coverage
   - build
 
 cache:
@@ -13,6 +14,14 @@ test:
   script:
     - npm install
     - npm run test
+
+coverage:
+  stage: coverage
+  script:
+    - npm run coverage
+  artifacts:
+    reports:
+      cobertura: coverage/cobertura-coverage.xml
 
 build:
   stage: build
