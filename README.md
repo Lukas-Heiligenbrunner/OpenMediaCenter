@@ -1,3 +1,5 @@
+[![pipeline status](http://gitlab.heili.eu/lukas/openmediacenter/badges/master/pipeline.svg)](http://gitlab.heili.eu/lukas/openmediacenter/-/commits/master)
+[![coverage report](http://gitlab.heili.eu/lukas/openmediacenter/badges/master/coverage.svg)](http://gitlab.heili.eu/lukas/openmediacenter/-/commits/master)
 # Open Media Center
 
 Github: This is only a clone of the main Repository.

@@ -1,6 +1,6 @@
 import React from "react";
-import SideBar from "../elements/SideBar";
-import Tag from "../elements/Tag";
+import SideBar from "../elements/SideBar/SideBar";
+import Tag from "../elements/Tag/Tag";
 import VideoContainer from "../elements/VideoContainer";
 
 import "../css/HomePage.css"
