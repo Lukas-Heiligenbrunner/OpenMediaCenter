@@ -27,7 +27,8 @@
     ],
     "coverageReporters": [
       "cobertura",
-      "text"
+      "text",
+      "text-summary"
     ]
   },
   "proxy": "http://192.168.0.248",
