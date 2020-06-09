@@ -13,16 +13,20 @@ test:
   stage: test
   script:
     - npm install
-    - npm run test
+    - CI=true npm run test
+  artifacts:
+    reports:
+      junit:
+        - ./junit.xml
 
 coverage:
   stage: coverage
   script:
-    - npm run coverage
+    - CI=true npm run coverage
   artifacts:
     reports:
-      cobertura: coverage/cobertura-coverage.xml
-      junit: junit.xml
+      cobertura:
+        - ./coverage/cobertura-coverage.xml
 
 build:
   stage: build
