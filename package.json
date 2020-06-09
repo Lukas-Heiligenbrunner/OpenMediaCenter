@@ -7,16 +7,17 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "bootstrap": "^4.5.0",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-scripts": "^3.4.1",
+    "jest-junit": "^10.0.0",
     "plyr-react": "^2.2.0",
-    "react-bootstrap": "^1.0.1"
+    "react": "^16.13.1",
+    "react-bootstrap": "^1.0.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "^3.4.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --reporters=jest-junit --reporters=default",
     "coverage": "react-scripts test --coverage --watchAll=false",
     "eject": "react-scripts eject"
   },
@@ -24,7 +25,10 @@
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,ts,tsx}"
     ],
-    "coverageReporters": ["cobertura","text"]
+    "coverageReporters": [
+      "cobertura",
+      "text"
+    ]
   },
   "proxy": "http://192.168.0.248",
   "homepage": "/",

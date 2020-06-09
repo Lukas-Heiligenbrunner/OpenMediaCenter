@@ -22,6 +22,7 @@ coverage:
   artifacts:
     reports:
       cobertura: coverage/cobertura-coverage.xml
+      junit: junit.xml
 
 build:
   stage: build
