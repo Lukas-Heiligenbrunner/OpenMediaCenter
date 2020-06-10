@@ -1,28 +1,20 @@
 import React from 'react';
-import { render } from '@testing-library/react';
 import App from './App';
-import ReactDom from "react-dom";
+import {shallow} from 'enzyme'
 
 describe('<App/>', function () {
   it('renders without crashing ', function () {
-    const div = document.createElement("div");
-    ReactDom.render(<App/>,div);
-    ReactDom.unmountComponentAtNode(div);
+    const wrapper = shallow(<App/>);
+    wrapper.unmount();
   });
 
   it('renders title', () => {
-    const { getByText } = render(<App />);
-    const linkElement = getByText(/Home Page/i);
-    expect(linkElement).toBeInTheDocument();
+    const wrapper = shallow(<App/>);
+    expect(wrapper.find('.navbar-brand').text()).toBe('OpenMediaCenter');
   });
 
   it('are navlinks correct', function () {
-    const { getByText } = render(<App />);
-    const randomElement = getByText(/Random Video/i);
-    const categoryElement = getByText(/Categories/i);
-    const settingsElement = getByText(/Settings/i);
-    expect(randomElement).toBeInTheDocument();
-    expect(categoryElement).toBeInTheDocument();
-    expect(settingsElement).toBeInTheDocument();
+    const wrapper = shallow(<App/>);
+    expect(wrapper.find('nav').find('li')).toHaveLength(4);
   });
 });

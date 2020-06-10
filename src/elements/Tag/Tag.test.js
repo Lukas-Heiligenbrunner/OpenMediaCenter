@@ -1,19 +1,17 @@
 import React from "react";
-import ReactDom from 'react-dom'
 import Tag from './Tag'
 
-import {render} from '@testing-library/react'
 import "@testing-library/jest-dom"
+import {shallow} from 'enzyme'
 
 describe('<Tag/>', function () {
     it('renders without crashing ', function () {
-        const div = document.createElement("div");
-        ReactDom.render(<Tag/>,div);
-        ReactDom.unmountComponentAtNode(div);
+        const wrapper = shallow(<Tag>test</Tag>);
+        wrapper.unmount();
     });
 
     it('renders childs correctly', function () {
-        const {getByTestId} = render(<Tag>test</Tag>);
-        expect(getByTestId("Test-Tag")).toHaveTextContent("test");
+        const wrapper = shallow(<Tag>test</Tag>);
+        expect(wrapper.children().text()).toBe("test");
     });
 });

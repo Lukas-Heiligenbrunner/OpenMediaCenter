@@ -3,7 +3,6 @@ import React from "react";
 import "./Tag.css"
 
 class Tag extends React.Component {
-
     constructor(props, context) {
         super(props, context);
 

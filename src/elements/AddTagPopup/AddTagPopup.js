@@ -75,14 +75,14 @@ class AddTagPopup extends React.Component {
         updateRequest.append('movieid', this.props.movie_id);
 
         fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json())
-            .then((result) => {
-                if (result.result !== "success") {
-                    console.log("error occured while writing to db -- todo error handling");
-                    console.log(result.result);
-                }
-                this.props.onHide();
-            });
+            .then((response) => response.json()
+                .then((result) => {
+                    if (result.result !== "success") {
+                        console.log("error occured while writing to db -- todo error handling");
+                        console.log(result.result);
+                    }
+                    this.props.onHide();
+                }));
     }
 }
 
