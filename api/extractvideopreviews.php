@@ -6,7 +6,7 @@ writeLog("starting extraction!\n");
 
 $ffmpeg = 'ffmpeg'; //or: /usr/bin/ffmpeg , or /usr/local/bin/ffmpeg - depends on your installation (type which ffmpeg into a console to find the install path)
 $tmdb = new TMDBMovie();
-// initial load off all available movie genres
+// initial load of all available movie genres
 $tmdbgenres = $tmdb->getAllGenres();
 
 $conn = Database::getInstance()->getConnection();
@@ -36,8 +36,11 @@ foreach ($arr as $elem) {
                     $pic = file_get_contents($tmdb->picturebase . $dta->poster_path);
                     $poster = shell_exec("ffmpeg -hide_banner -loglevel panic -ss 00:04:00 -i \"../videos/prn/$elem\" -vframes 1 -q:v 2 -f singlejpeg pipe:1 2>/dev/null");
 
-                    if($pic == null){
-                        // todo error handling for errored tmdb query
+                    // error handling for download error
+                    if (!$pic) {
+                        $pic = $poster;
+                        $poster = -1;
+                        echo "Failed to load Picture from TMDB!  \n";
                     }
 
                     $genres = $dta->genre_ids;
