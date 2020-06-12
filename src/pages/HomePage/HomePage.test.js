@@ -1,6 +1,7 @@
 import {shallow} from "enzyme";
 import React from "react";
 import HomePage from "./HomePage";
+import VideoContainer from "../../elements/VideoContainer/VideoContainer";
 
 function prepareFetchApi(response) {
     const mockJsonPromise = Promise.resolve(response);
@@ -54,5 +55,22 @@ describe('<HomePage/>', function () {
         });
 
         expect(wrapper.find(".pageheadersubtitle").text()).toBe("testtag Videos - 42");
+    });
+
+    it('test search field', done => {
+        global.fetch = prepareFetchApi([{},{}]);
+
+        const wrapper = shallow(<HomePage/>);
+
+        wrapper.find('[data-testid="searchtextfield"]').simulate('change', { target: { value: 'testvalue' } });
+        wrapper.find('[data-testid="searchbtnsubmit"]').simulate("click");
+
+        process.nextTick(() => {
+            // state to be set correctly with response
+            expect(wrapper.state().selectionnr).toBe(2);
+
+            global.fetch.mockClear();
+            done();
+        });
     });
 });

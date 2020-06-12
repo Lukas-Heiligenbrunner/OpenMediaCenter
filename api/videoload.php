@@ -54,6 +54,21 @@ if (isset($_POST['action'])) {
 
             echo(json_encode($return));
             break;
+        case "getSearchKeyWord":
+            $search = $_POST['keyword'];
+
+            $query = "SELECT movie_id,movie_name FROM videos 
+                        WHERE movie_name LIKE '%$search%'
+                        ORDER BY likes DESC, create_date DESC, movie_name ASC";
+            $result = $conn->query($query);
+            $rows = array();
+            while ($r = mysqli_fetch_assoc($result)) {
+                array_push($rows, $r);
+            }
+
+            echo(json_encode($rows));
+
+            break;
         case "loadVideo":
             $query = "SELECT movie_name,movie_id,movie_url,thumbnail,poster,likes,quality,length FROM videos WHERE movie_id='" . $_POST['movieid'] . "'";
 

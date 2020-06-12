@@ -24,6 +24,9 @@ class HomePage extends React.Component {
         };
     }
 
+    /** keyword variable needed temporary store search keyword */
+    keyword = "";
+
     componentDidMount() {
         // initial get of all videos
         this.fetchVideoData("all");
@@ -86,12 +89,52 @@ class HomePage extends React.Component {
             });
     }
 
+    /**
+     * search for a keyword in db and update previews
+     *
+     * @param keyword The keyword to search for
+     */
+    searchVideos(keyword) {
+        console.log("search called");
+
+        const updateRequest = new FormData();
+        updateRequest.append('action', 'getSearchKeyWord');
+        updateRequest.append('keyword', keyword);
+
+        // fetch all videos available
+        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+            .then((response) => response.json()
+                .then((result) => {
+                    this.setState({
+                        data: []
+                    });
+                    this.setState({
+                        data: result,
+                        selectionnr: result.length
+                    });
+                }))
+            .catch(() => {
+                console.log("no connection to backend");
+            });
+    }
+
     render() {
         return (
             <div>
                 <div className='pageheader'>
                     <span className='pageheadertitle'>Home Page</span>
                     <span className='pageheadersubtitle'>{this.state.tag} Videos - {this.state.selectionnr}</span>
+                    <form className="form-inline searchform" action="#">
+                        <input data-testid='searchtextfield' className="form-control mr-sm-2"
+                               type="text" placeholder="Search"
+                               onChange={(e) => {
+                                   this.keyword = e.target.value
+                               }}/>
+                        <button data-testid='searchbtnsubmit' className="btn btn-success" type="submit" onClick={() => {
+                            this.searchVideos(this.keyword)
+                        }}>Search
+                        </button>
+                    </form>
                     <hr/>
                 </div>
                 <SideBar>
