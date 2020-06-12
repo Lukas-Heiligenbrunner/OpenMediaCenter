@@ -1,9 +1,9 @@
 import React from "react";
-import "../css/Player.css"
+import "./Player.css"
 import {PlyrComponent} from 'plyr-react';
-import SideBar from "../elements/SideBar/SideBar";
-import Tag from "../elements/Tag/Tag";
-import AddTagPopup from "../elements/AddTagPopup/AddTagPopup";
+import SideBar from "../../elements/SideBar/SideBar";
+import Tag from "../../elements/Tag/Tag";
+import AddTagPopup from "../../elements/AddTagPopup/AddTagPopup";
 
 
 class Player extends React.Component {
@@ -137,15 +137,15 @@ class Player extends React.Component {
         updateRequest.append('movieid', this.props.movie_id);
 
         fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json())
-            .then((result) => {
-                if (result.result === "success") {
-                    this.fetchMovieData();
-                } else {
-                    console.log("an error occured while liking");
-                    console.log(result);
-                }
-            });
+            .then((response) => response.json()
+                .then((result) => {
+                    if (result.result === "success") {
+                        this.fetchMovieData();
+                    } else {
+                        console.log("an error occured while liking");
+                        console.log(result);
+                    }
+                }));
     }
 
     closebtn() {

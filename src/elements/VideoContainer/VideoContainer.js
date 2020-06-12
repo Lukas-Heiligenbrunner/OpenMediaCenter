@@ -1,5 +1,5 @@
 import React from "react";
-import Preview from "./Preview";
+import Preview from "../Preview/Preview";
 
 class VideoContainer extends React.Component {
     constructor(props, context) {

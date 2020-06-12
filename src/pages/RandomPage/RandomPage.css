@@ -3,7 +3,7 @@
     align-content: center;
 }
 
-.btnshuffle{
+.btnshuffle {
     background-color: #39a945;
 
     color: white;
@@ -16,6 +16,6 @@
     font-size: larger;
 }
 
-.btnshuffle:focus{
+.btnshuffle:focus {
     outline: none;
 }

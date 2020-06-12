@@ -26,7 +26,9 @@ class NewTagPopup extends React.Component {
                     <Modal.Body>
                         <Form.Group>
                             <Form.Label>Tag Name:</Form.Label>
-                            <Form.Control id='namefield' type="text" placeholder="Enter Tag name" />
+                            <Form.Control id='namefield' type="text" placeholder="Enter Tag name" onChange={(v) => {
+                                this.value = v.target.value
+                            }}/>
                             <Form.Text className="text-muted">
                                 This Tag will automatically show up on category page.
                             </Form.Text>
@@ -46,7 +48,7 @@ class NewTagPopup extends React.Component {
     storeselection() {
         const updateRequest = new FormData();
         updateRequest.append('action', 'createTag');
-        updateRequest.append('tagname', document.getElementById("namefield").value);
+        updateRequest.append('tagname', this.value);
 
         fetch('/api/Tags.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json())

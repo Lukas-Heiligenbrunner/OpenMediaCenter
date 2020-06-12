@@ -1,5 +1,5 @@
 import React from "react";
-import "../css/DefaultPage.css"
+import "../../css/DefaultPage.css"
 
 
 class SettingsPage extends React.Component {
@@ -31,7 +31,7 @@ class SettingsPage extends React.Component {
     };
 
     componentDidMount() {
-        if(this.myinterval){
+        if (this.myinterval) {
             clearInterval(this.myinterval);
         }
         this.myinterval = setInterval(this.updateStatus, 1000);
@@ -50,12 +50,12 @@ class SettingsPage extends React.Component {
                     <hr/>
                 </div>
 
-                <button className='btn btn-success' onClick={() => {
+                <button className='reindexbtn btn btn-success' onClick={() => {
                     this.startReindex()
                 }}>Reindex Movies
                 </button>
-                <div>{this.state.text.map(m => (
-                    <div>{m}</div>
+                <div className='indextextarea'>{this.state.text.map(m => (
+                    <div className='textarea-element'>{m}</div>
                 ))}</div>
             </div>
         );
@@ -73,7 +73,7 @@ class SettingsPage extends React.Component {
             .catch(() => {
                 console.log("no connection to backend");
             });
-        if(this.myinterval){
+        if (this.myinterval) {
             clearInterval(this.myinterval);
         }
         this.myinterval = setInterval(this.updateStatus, 1000);
