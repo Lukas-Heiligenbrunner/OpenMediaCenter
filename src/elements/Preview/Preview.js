@@ -1,7 +1,7 @@
 import React from "react";
-import "../css/Preview.css";
-import Player from "../pages/Player";
-import VideoContainer from "./VideoContainer";
+import "./Preview.css";
+import Player from "../../pages/Player/Player";
+import VideoContainer from "../VideoContainer/VideoContainer";
 
 class Preview extends React.Component {
     constructor(props, context) {
@@ -29,18 +29,18 @@ class Preview extends React.Component {
         updateRequest.append('movieid', this.props.movie_id);
 
         fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.text())
-            .then((result) => {
-                this.setState(prevState => ({
-                    ...prevState.previewpicture, previewpicture: result
+            .then((response) => response.text()
+                .then((result) => {
+                    this.setState(prevState => ({
+                        ...prevState.previewpicture, previewpicture: result
+                    }));
                 }));
-            });
     }
 
     render() {
         return (
             <div className='videopreview' onClick={() => this.itemClick()}>
-                <div className='previewtitle videopreviewtitle'>{this.state.name}</div>
+                <div className='previewtitle'>{this.state.name}</div>
                 <div className='previewpic'>
                     <img className='previewimage'
                          src={this.state.previewpicture}
@@ -85,7 +85,7 @@ export class TagPreview extends React.Component {
                     this.props.categorybinding(
                         <VideoContainer
                             data={result}
-                            viewbinding={this.props.viewbinding}/>,tag
+                            viewbinding={this.props.viewbinding}/>, tag
                     );
                 }))
             .catch(() => {

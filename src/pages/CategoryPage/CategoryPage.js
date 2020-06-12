@@ -1,9 +1,9 @@
 import React from "react";
-import SideBar from "../elements/SideBar/SideBar";
-import Tag from "../elements/Tag/Tag";
+import SideBar from "../../elements/SideBar/SideBar";
+import Tag from "../../elements/Tag/Tag";
 
-import {TagPreview} from "../elements/Preview";
-import NewTagPopup from "../elements/NewTagPopup";
+import {TagPreview} from "../../elements/Preview/Preview";
+import NewTagPopup from "../../elements/NewTagPopup/NewTagPopup";
 
 class CategoryPage extends React.Component {
     constructor(props, context) {
@@ -37,7 +37,7 @@ class CategoryPage extends React.Component {
                     <Tag>LowQuality</Tag>
                     <Tag>HD</Tag>
                     <hr/>
-                    <button className='btn btn-success' onClick={() => {
+                    <button data-testid='btnaddtag' className='btn btn-success' onClick={() => {
                         this.setState({popupvisible: true})
                     }}>Add a new Tag!
                     </button>
@@ -58,7 +58,9 @@ class CategoryPage extends React.Component {
                     </div>) :
                     <>
                         {this.selectionelements}
-                        <button className="btn btn-success" onClick={this.loadCategoryPageDefault}>Back</button>
+                        <button data-testid='backbtn' className="btn btn-success"
+                                onClick={this.loadCategoryPageDefault}>Back
+                        </button>
                     </>
                 }
 

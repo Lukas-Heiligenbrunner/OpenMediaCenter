@@ -1,10 +1,10 @@
 import React from "react";
-import SideBar from "../elements/SideBar/SideBar";
-import Tag from "../elements/Tag/Tag";
-import VideoContainer from "../elements/VideoContainer";
+import SideBar from "../../elements/SideBar/SideBar";
+import Tag from "../../elements/Tag/Tag";
+import VideoContainer from "../../elements/VideoContainer/VideoContainer";
 
-import "../css/HomePage.css"
-import "../css/DefaultPage.css"
+import "./HomePage.css"
+import "../../css/DefaultPage.css"
 
 class HomePage extends React.Component {
     constructor(props, context) {
@@ -25,7 +25,6 @@ class HomePage extends React.Component {
     }
 
     componentDidMount() {
-        // document.addEventListener('scroll', this.trackScrolling);
         // initial get of all videos
         this.fetchVideoData("all");
         this.fetchStartData();
@@ -129,7 +128,8 @@ class HomePage extends React.Component {
                 {this.state.data.length !== 0 ?
                     <VideoContainer
                         data={this.state.data}
-                        viewbinding={this.props.viewbinding}/> : null}
+                        viewbinding={this.props.viewbinding}/> :
+                    <div>No Data found!</div>}
                 <div className='rightinfo'>
 
                 </div>

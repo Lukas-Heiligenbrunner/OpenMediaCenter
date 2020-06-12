@@ -1,12 +1,12 @@
 import React from 'react';
 import "./css/App.css"
-import HomePage from "./pages/HomePage";
-import RandomPage from "./pages/RandomPage";
+import HomePage from "./pages/HomePage/HomePage";
+import RandomPage from "./pages/RandomPage/RandomPage";
 
 // include bootstraps css
 import 'bootstrap/dist/css/bootstrap.min.css';
-import SettingsPage from "./pages/SettingsPage";
-import CategoryPage from "./pages/CategoryPage";
+import SettingsPage from "./pages/SettingsPage/SettingsPage";
+import CategoryPage from "./pages/CategoryPage/CategoryPage";
 
 class App extends React.Component {
     constructor(props, context) {
