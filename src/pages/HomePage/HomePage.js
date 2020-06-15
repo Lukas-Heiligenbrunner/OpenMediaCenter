@@ -124,17 +124,16 @@ class HomePage extends React.Component {
                 <div className='pageheader'>
                     <span className='pageheadertitle'>Home Page</span>
                     <span className='pageheadersubtitle'>{this.state.tag} Videos - {this.state.selectionnr}</span>
-                    <form className="form-inline searchform">
+                    <form className="form-inline searchform" onSubmit={(e) => {
+                        e.preventDefault();
+                        this.searchVideos(this.keyword);
+                    }}>
                         <input data-testid='searchtextfield' className="form-control mr-sm-2"
                                type="text" placeholder="Search"
                                onChange={(e) => {
                                    this.keyword = e.target.value
                                }}/>
-                        <button data-testid='searchbtnsubmit' className="btn btn-success" type="submit" onClick={(e) => {
-                            e.preventDefault();
-                            this.searchVideos(this.keyword)
-                        }}>Search
-                        </button>
+                        <button data-testid='searchbtnsubmit' className="btn btn-success" type="submit">Search</button>
                     </form>
                     <hr/>
                 </div>
