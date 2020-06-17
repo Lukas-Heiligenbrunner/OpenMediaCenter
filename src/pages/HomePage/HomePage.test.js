@@ -11,6 +11,11 @@ function prepareFetchApi(response) {
     return (jest.fn().mockImplementation(() => mockFetchPromise));
 }
 
+function prepareFailingFetchApi() {
+    const mockFetchPromise = Promise.reject("myreason");
+    return (jest.fn().mockImplementation(() => mockFetchPromise));
+}
+
 describe('<HomePage/>', function () {
     it('renders without crashing ', function () {
         const wrapper = shallow(<HomePage/>);
@@ -58,16 +63,55 @@ describe('<HomePage/>', function () {
     });
 
     it('test search field', done => {
-        global.fetch = prepareFetchApi([{},{}]);
+        global.fetch = prepareFetchApi([{}, {}]);
 
         const wrapper = shallow(<HomePage/>);
 
-        wrapper.find('[data-testid="searchtextfield"]').simulate('change', { target: { value: 'testvalue' } });
+        wrapper.find('[data-testid="searchtextfield"]').simulate('change', {target: {value: 'testvalue'}});
         wrapper.find('[data-testid="searchbtnsubmit"]').simulate("click");
 
         process.nextTick(() => {
             // state to be set correctly with response
             expect(wrapper.state().selectionnr).toBe(2);
+
+            global.fetch.mockClear();
+            done();
+        });
+    });
+
+    it('test form submit', done => {
+        global.fetch = prepareFetchApi([{}, {}]);
+
+        const wrapper = shallow(<HomePage/>);
+
+        const fakeEvent = {preventDefault: () => console.log('preventDefault')};
+        wrapper.find(".searchform").simulate('submit', fakeEvent);
+
+        expect(wrapper.state().selectionnr).toBe(0);
+
+        process.nextTick(() => {
+            // state to be set correctly with response
+            expect(wrapper.state().selectionnr).toBe(2);
+
+            global.fetch.mockClear();
+            done();
+        });
+    });
+
+    it('test no backend connection behaviour', done => {
+        // this test assumes a console.log within every connection fail
+        global.fetch = prepareFailingFetchApi();
+
+        let count = 0;
+        global.console.log = jest.fn((m) => {
+            count++;
+        });
+
+        const wrapper = shallow(<HomePage/>);
+
+        process.nextTick(() => {
+            // state to be set correctly with response
+            expect(global.fetch).toBeCalledTimes(2);
 
             global.fetch.mockClear();
             done();

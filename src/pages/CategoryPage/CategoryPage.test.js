@@ -39,7 +39,7 @@ describe('<CategoryPage/>', function () {
         let message;
         global.console.log = jest.fn((m) => {
             message = m;
-        })
+        });
 
         const wrapper = shallow(<CategoryPage/>);
 
