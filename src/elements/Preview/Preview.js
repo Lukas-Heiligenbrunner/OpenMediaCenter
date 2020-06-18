@@ -2,6 +2,7 @@ import React from "react";
 import "./Preview.css";
 import Player from "../../pages/Player/Player";
 import VideoContainer from "../VideoContainer/VideoContainer";
+import {Spinner} from "react-bootstrap";
 
 class Preview extends React.Component {
     constructor(props, context) {
@@ -42,9 +43,12 @@ class Preview extends React.Component {
             <div className='videopreview' onClick={() => this.itemClick()}>
                 <div className='previewtitle'>{this.state.name}</div>
                 <div className='previewpic'>
-                    <img className='previewimage'
-                         src={this.state.previewpicture}
-                         alt='Pic loading.'/>
+                    {this.state.previewpicture != null ?
+                        <img className='previewimage'
+                             src={this.state.previewpicture}
+                             alt='Pic loading.'/> :
+                        <span className='loadAnimation'><Spinner animation="border"/></span>}
+
                 </div>
                 <div className='previewbottom'>
 

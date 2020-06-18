@@ -8,8 +8,17 @@
 }
 
 .previewpic {
+    min-width: 266px;
+    min-height: 150px;
     height: 80%;
     overflow: hidden;
+    text-align: center;
+}
+
+.loadAnimation {
+    display: inline-block;
+    line-height: 150px;
+    vertical-align: center;
 }
 
 .previewimage {
