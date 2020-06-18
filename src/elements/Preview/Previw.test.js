@@ -56,6 +56,13 @@ describe('<Preview/>', function () {
         });
 
     });
+
+    it('spinner loads correctly', function () {
+        const wrapper = shallow(<Preview/>);
+
+        // expect load animation to be visible
+        expect(wrapper.find(".loadAnimation")).toHaveLength(1);
+    });
 });
 
 describe('<TagPreview/>', function () {
