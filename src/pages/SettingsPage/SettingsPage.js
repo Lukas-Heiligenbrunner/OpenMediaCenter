@@ -1,5 +1,5 @@
 import React from "react";
-import "../../css/DefaultPage.css"
+import PageTitle from "../../elements/PageTitle/PageTitle";
 
 
 class SettingsPage extends React.Component {
@@ -44,11 +44,9 @@ class SettingsPage extends React.Component {
     render() {
         return (
             <div>
-                <div className='pageheader'>
-                    <span className='pageheadertitle'>Settings Page</span>
-                    <span className='pageheadersubtitle'>todo</span>
-                    <hr/>
-                </div>
+                <PageTitle
+                    title='Settings Page'
+                    subtitle='todo'/>
 
                 <button className='reindexbtn btn btn-success' onClick={() => {
                     this.startReindex()

@@ -3,6 +3,7 @@ import Preview from "../../elements/Preview/Preview";
 import "./RandomPage.css"
 import SideBar from "../../elements/SideBar/SideBar";
 import Tag from "../../elements/Tag/Tag";
+import PageTitle from "../../elements/PageTitle/PageTitle";
 
 class RandomPage extends React.Component {
     constructor(props, context) {
@@ -21,11 +22,10 @@ class RandomPage extends React.Component {
     render() {
         return (
             <div>
-                <div className='pageheader'>
-                    <span className='pageheadertitle'>Random Videos</span>
-                    <span className='pageheadersubtitle'>4pc</span>
-                    <hr/>
-                </div>
+                <PageTitle
+                    title='Random Videos'
+                    subtitle='4pc'/>
+
                 <SideBar>
                     <div className='sidebartitle'>Visible Tags:</div>
                     {this.state.tags.map((m) => (
