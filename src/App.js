@@ -7,11 +7,13 @@ import RandomPage from "./pages/RandomPage/RandomPage";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SettingsPage from "./pages/SettingsPage/SettingsPage";
 import CategoryPage from "./pages/CategoryPage/CategoryPage";
+import {Spinner} from "react-bootstrap";
+import LoginPage from "./pages/LoginPage/LoginPage";
 
 class App extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {page: "default"};
+        this.state = {page: "unverified"};
 
         // bind this to the method for being able to call methods such as this.setstate
         this.showVideo = this.showVideo.bind(this);
@@ -42,10 +44,40 @@ class App extends React.Component {
         } else if (this.state.page === "lastpage") {
             // return back to last page
             page = this.mypage;
+        } else if (this.state.page === "loginpage") {
+            // return back to last page
+            page = <LoginPage/>;
+        } else if (this.state.page === "unverified") {
+            // return back to last page
+            page =
+                <div className='loadSpinner'>
+                    <Spinner style={{marginLeft: "40px", marginBottom: "20px"}} animation="border" role="status">
+                        <span className="sr-only">Loading...</span>
+                    </Spinner>
+                    <div>Content loading...</div>
+                </div>;
         } else {
             page = <div>unimplemented yet!</div>;
         }
         return (page);
+    }
+
+    componentDidMount() {
+        const updateRequest = new FormData();
+        updateRequest.append("action", "isPasswordNeeded");
+
+        fetch('/api/settings.php', {method: 'POST', body: updateRequest})
+            .then((response) => response.json()
+                .then((result) => {
+                        if (result.password === false) {
+                            this.setState({page: "default"});
+                        } else {
+                            this.setState({page: "loginpage"});
+                        }
+                }))
+            .catch(() => {
+                console.log("no connection to backend");
+            });
     }
 
     render() {

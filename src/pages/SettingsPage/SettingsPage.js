@@ -34,7 +34,10 @@ class SettingsPage extends React.Component {
         if (this.myinterval) {
             clearInterval(this.myinterval);
         }
+        // todo 2020-06-18: maybe not start on mount
         this.myinterval = setInterval(this.updateStatus, 1000);
+
+        // todo 2020-06-18: fetch path data here
     }
 
     componentWillUnmount() {
