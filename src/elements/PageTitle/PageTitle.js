@@ -14,7 +14,9 @@ class PageTitle extends React.Component {
             <div className='pageheader'>
                 <span className='pageheadertitle'>{this.props.title}</span>
                 <span className='pageheadersubtitle'>{this.props.subtitle}</span>
-                {this.props.children}
+                <>
+                    {this.props.children}
+                </>
                 <hr/>
             </div>
         );

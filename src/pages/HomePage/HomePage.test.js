@@ -52,14 +52,14 @@ describe('<HomePage/>', function () {
     it('test title and nr insertions', function () {
         const wrapper = shallow(<HomePage/>);
 
-        expect(wrapper.find(".pageheadersubtitle").text()).toBe("All Videos - 0");
+        expect(wrapper.find("PageTitle").props().subtitle).toBe("All Videos - 0");
 
         wrapper.setState({
             tag: "testtag",
             selectionnr: 42
         });
 
-        expect(wrapper.find(".pageheadersubtitle").text()).toBe("testtag Videos - 42");
+        expect(wrapper.find("PageTitle").props().subtitle).toBe("testtag Videos - 42");
     });
 
     it('test search field', done => {
