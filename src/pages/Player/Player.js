@@ -4,6 +4,7 @@ import {PlyrComponent} from 'plyr-react';
 import SideBar from "../../elements/SideBar/SideBar";
 import Tag from "../../elements/Tag/Tag";
 import AddTagPopup from "../../elements/AddTagPopup/AddTagPopup";
+import PageTitle from "../../elements/PageTitle/PageTitle";
 
 
 class Player extends React.Component {
@@ -48,11 +49,10 @@ class Player extends React.Component {
     render() {
         return (
             <div id='videocontainer'>
-                <div className='pageheader'>
-                    <span className='pageheadertitle'>Watch</span>
-                    <span className='pageheadersubtitle'>{this.state.movie_name}</span>
-                    <hr/>
-                </div>
+                <PageTitle
+                    title='Watch'
+                    subtitle={this.state.movie_name}/>
+
                 <SideBar>
                     <div className='sidebartitle'>Infos:</div>
                     <hr/>

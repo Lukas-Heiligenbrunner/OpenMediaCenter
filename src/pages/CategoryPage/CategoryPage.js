@@ -4,6 +4,7 @@ import Tag from "../../elements/Tag/Tag";
 
 import {TagPreview} from "../../elements/Preview/Preview";
 import NewTagPopup from "../../elements/NewTagPopup/NewTagPopup";
+import PageTitle from "../../elements/PageTitle/PageTitle";
 
 class CategoryPage extends React.Component {
     constructor(props, context) {
@@ -24,12 +25,10 @@ class CategoryPage extends React.Component {
     render() {
         return (
             <>
-                <div className='pageheader'>
-                    <span className='pageheadertitle'>Categories</span>
-                    <span
-                        className='pageheadersubtitle'>{!this.state.selected ? this.state.loadedtags.length + " different Tags" : this.state.selected}</span>
-                    <hr/>
-                </div>
+                <PageTitle
+                    title='Categories'
+                    subtitle={!this.state.selected ? this.state.loadedtags.length + " different Tags" : this.state.selected}/>
+
                 <SideBar>
                     <div className='sidebartitle'>Default Tags:</div>
                     <Tag>All</Tag>

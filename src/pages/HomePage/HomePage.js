@@ -4,7 +4,7 @@ import Tag from "../../elements/Tag/Tag";
 import VideoContainer from "../../elements/VideoContainer/VideoContainer";
 
 import "./HomePage.css"
-import "../../css/DefaultPage.css"
+import PageTitle from "../../elements/PageTitle/PageTitle";
 
 class HomePage extends React.Component {
     constructor(props, context) {
@@ -121,9 +121,9 @@ class HomePage extends React.Component {
     render() {
         return (
             <div>
-                <div className='pageheader'>
-                    <span className='pageheadertitle'>Home Page</span>
-                    <span className='pageheadersubtitle'>{this.state.tag} Videos - {this.state.selectionnr}</span>
+                <PageTitle
+                    title='Home Page'
+                    subtitle={this.state.tag + " Videos - " + this.state.selectionnr}>
                     <form className="form-inline searchform" onSubmit={(e) => {
                         e.preventDefault();
                         this.searchVideos(this.keyword);
@@ -135,8 +135,7 @@ class HomePage extends React.Component {
                                }}/>
                         <button data-testid='searchbtnsubmit' className="btn btn-success" type="submit">Search</button>
                     </form>
-                    <hr/>
-                </div>
+                </PageTitle>
                 <SideBar>
                     <div className='sidebartitle'>Infos:</div>
                     <hr/>
