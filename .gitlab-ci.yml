@@ -1,18 +1,31 @@
 image: node:latest
 
 stages:
-  - test
-  - coverage
+  - prepare
   - build
+  - test
 
 cache:
   paths:
     - node_modules/
 
+prepare:
+  stage: prepare
+  script:
+    - npm install --progress=false
+
+build:
+  stage: build
+  script:
+    - npm run build
+  artifacts:
+    expire_in: 7 days
+    paths:
+      - build/
+
 test:
   stage: test
   script:
-    - npm install
     - CI=true npm run test
   artifacts:
     reports:
@@ -20,15 +33,10 @@ test:
         - ./junit.xml
 
 coverage:
-  stage: coverage
+  stage: test
   script:
     - CI=true npm run coverage
   artifacts:
     reports:
       cobertura:
         - ./coverage/cobertura-coverage.xml
-
-build:
-  stage: build
-  script:
-    - npm run build
