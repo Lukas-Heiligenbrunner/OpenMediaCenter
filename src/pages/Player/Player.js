@@ -149,7 +149,7 @@ class Player extends React.Component {
     }
 
     closebtn() {
-        this.props.viewbinding.hideVideo();
+        this.props.viewbinding.returnToLastElement();
     }
 }
 

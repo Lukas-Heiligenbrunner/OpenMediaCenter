@@ -1,6 +1,7 @@
 import React from "react";
 
 import "./Tag.css"
+import VideoContainer from "../VideoContainer/VideoContainer";
 
 class Tag extends React.Component {
     constructor(props, context) {
@@ -10,11 +11,32 @@ class Tag extends React.Component {
     }
 
     render() {
-        // todo onclick events correctlyy
         return (
-            <button className='tagbtn' onClick={this.props.onClick}
+            <button className='tagbtn' onClick={() => this.TagClick()}
                     data-testid="Test-Tag">{this.props.children}</button>
         );
+    }
+
+    TagClick() {
+        const tag = this.props.children.toString().toLowerCase();
+
+        const updateRequest = new FormData();
+        updateRequest.append('action', 'getMovies');
+        updateRequest.append('tag', tag);
+
+        // fetch all videos available
+        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+            .then((response) => response.json()
+                .then((result) => {
+                    this.props.contentbinding(
+                        <VideoContainer
+                            data={result}
+                            viewbinding={this.props.viewbinding}/>, tag
+                    );
+                }))
+            .catch(() => {
+                console.log("no connection to backend");
+            });
     }
 }
 

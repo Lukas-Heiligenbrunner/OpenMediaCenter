@@ -13,7 +13,7 @@ describe('<Preview/>', function () {
         const wrapper = shallow(<PageTitle>heyimachild</PageTitle>);
 
         const children = wrapper.children();
-        expect(children.at(children.length-2).text()).toBe("heyimachild");
+        expect(children.at(children.length - 2).text()).toBe("heyimachild");
     });
 
     it('renders pagetitle prop', function () {

@@ -60,9 +60,10 @@ class Preview extends React.Component {
     itemClick() {
         console.log("item clicked!" + this.state.name);
 
-        this.props.viewbinding.showVideo(<Player
-            viewbinding={this.props.viewbinding}
-            movie_id={this.props.movie_id}/>);
+        this.props.viewbinding.changeRootElement(
+            <Player
+                viewbinding={this.props.viewbinding}
+                movie_id={this.props.movie_id}/>);
     }
 }
 

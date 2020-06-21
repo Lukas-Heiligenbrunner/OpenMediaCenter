@@ -14,29 +14,38 @@ class App extends React.Component {
         this.state = {page: "default"};
 
         // bind this to the method for being able to call methods such as this.setstate
-        this.showVideo = this.showVideo.bind(this);
-        this.hideVideo = this.hideVideo.bind(this);
+        this.changeRootElement = this.changeRootElement.bind(this);
+        this.returnToLastElement = this.returnToLastElement.bind(this);
     }
 
-    videoelement = null;
+    newElement = null;
 
     MainBody() {
         let page;
         if (this.state.page === "default") {
-            page = <HomePage viewbinding={{showVideo: this.showVideo, hideVideo: this.hideVideo}}/>;
+            page = <HomePage viewbinding={{
+                changeRootElement: this.changeRootElement,
+                returnToLastElement: this.returnToLastElement
+            }}/>;
             this.mypage = page;
         } else if (this.state.page === "random") {
-            page = <RandomPage viewbinding={{showVideo: this.showVideo, hideVideo: this.hideVideo}}/>;
+            page = <RandomPage viewbinding={{
+                changeRootElement: this.changeRootElement,
+                returnToLastElement: this.returnToLastElement
+            }}/>;
             this.mypage = page;
         } else if (this.state.page === "settings") {
             page = <SettingsPage/>;
             this.mypage = page;
         } else if (this.state.page === "categories") {
-            page = <CategoryPage viewbinding={{showVideo: this.showVideo, hideVideo: this.hideVideo}}/>;
+            page = <CategoryPage viewbinding={{
+                changeRootElement: this.changeRootElement,
+                returnToLastElement: this.returnToLastElement
+            }}/>;
             this.mypage = page;
         } else if (this.state.page === "video") {
             // show videoelement if neccessary
-            page = this.videoelement;
+            page = this.newElement;
 
             console.log(page);
         } else if (this.state.page === "lastpage") {
@@ -86,19 +95,18 @@ class App extends React.Component {
         );
     }
 
-    showVideo(element) {
-        this.videoelement = element;
+    changeRootElement(element) {
+        this.newElement = element;
 
         this.setState({
             page: "video"
         });
     }
 
-    hideVideo() {
+    returnToLastElement() {
         this.setState({
             page: "lastpage"
         });
-        this.element = null;
     }
 }
 

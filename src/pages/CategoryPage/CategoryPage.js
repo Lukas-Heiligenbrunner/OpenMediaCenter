@@ -31,10 +31,10 @@ class CategoryPage extends React.Component {
 
                 <SideBar>
                     <div className='sidebartitle'>Default Tags:</div>
-                    <Tag>All</Tag>
-                    <Tag>FullHd</Tag>
-                    <Tag>LowQuality</Tag>
-                    <Tag>HD</Tag>
+                    <Tag viewbinding={this.props.viewbinding} contentbinding={this.setPage}>All</Tag>
+                    <Tag viewbinding={this.props.viewbinding} contentbinding={this.setPage}>FullHd</Tag>
+                    <Tag viewbinding={this.props.viewbinding} contentbinding={this.setPage}>LowQuality</Tag>
+                    <Tag viewbinding={this.props.viewbinding} contentbinding={this.setPage}>HD</Tag>
                     <hr/>
                     <button data-testid='btnaddtag' className='btn btn-success' onClick={() => {
                         this.setState({popupvisible: true})
@@ -78,7 +78,7 @@ class CategoryPage extends React.Component {
 
     setPage = (element, tagname) => {
         this.selectionelements = element;
-
+        this.setState({selected: null}); // todo save this change trigger better
         this.setState({selected: tagname});
     };
 

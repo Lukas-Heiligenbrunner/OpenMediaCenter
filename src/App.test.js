@@ -21,7 +21,7 @@ describe('<App/>', function () {
     it('simulate video view change ', function () {
         const wrapper = shallow(<App/>);
 
-        wrapper.instance().showVideo(<div id='testit'></div>);
+        wrapper.instance().changeRootElement(<div id='testit'></div>);
 
         expect(wrapper.find("#testit")).toHaveLength(1);
     });
@@ -29,11 +29,11 @@ describe('<App/>', function () {
     it('test hide video again', function () {
         const wrapper = shallow(<App/>);
 
-        wrapper.instance().showVideo(<div id='testit'></div>);
+        wrapper.instance().changeRootElement(<div id='testit'></div>);
 
         expect(wrapper.find("#testit")).toHaveLength(1);
 
-        wrapper.instance().hideVideo();
+        wrapper.instance().returnToLastElement();
 
         expect(wrapper.find("HomePage")).toHaveLength(1);
     });
@@ -43,11 +43,11 @@ describe('<App/>', function () {
 
         wrapper.find(".nav-link").findWhere(t => t.text() === "Random Video" && t.type() === "div").simulate("click");
 
-        wrapper.instance().showVideo(<div id='testit'></div>);
+        wrapper.instance().changeRootElement(<div id='testit'></div>);
 
         expect(wrapper.find("#testit")).toHaveLength(1);
 
-        wrapper.instance().hideVideo();
+        wrapper.instance().returnToLastElement();
 
         expect(wrapper.find("RandomPage")).toHaveLength(1);
     });
