@@ -22,7 +22,7 @@ describe('<Preview/>', function () {
         const wrapper = shallow(<Preview/>);
         wrapper.setProps({
             viewbinding: {
-                showVideo: () => {
+                changeRootElement: () => {
                     func()
                 }
             }
