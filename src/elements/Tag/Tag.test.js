@@ -23,21 +23,20 @@ describe('<Tag/>', function () {
         expect(wrapper.children().text()).toBe("test");
     });
 
-    it('click event triggered and setvideo callback called', done => {
+    it('click event triggered and setvideo callback called', function () {
         global.fetch = prepareFetchApi({});
         const func = jest.fn();
+        const elem = {
+            changeRootElement: () => func()
+        };
 
         const wrapper = shallow(<Tag
-            contentbinding={func}>test</Tag>);
+            viewbinding={elem}>test</Tag>);
+
+        expect(func).toBeCalledTimes(0);
 
         wrapper.simulate("click");
 
-        process.nextTick(() => {
-            // state to be set correctly with response
-            expect(func).toBeCalledTimes(1);
-
-            global.fetch.mockClear();
-            done();
-        });
+        expect(func).toBeCalledTimes(1);
     });
 });

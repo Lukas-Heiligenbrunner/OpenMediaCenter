@@ -1,4 +1,4 @@
-import {shallow, mount} from "enzyme";
+import {shallow} from "enzyme";
 import React from "react";
 import HomePage from "./HomePage";
 import VideoContainer from "../../elements/VideoContainer/VideoContainer";
@@ -20,19 +20,6 @@ describe('<HomePage/>', function () {
     it('renders without crashing ', function () {
         const wrapper = shallow(<HomePage/>);
         wrapper.unmount();
-    });
-
-    it('ckeck default tag click events', function () {
-        // todo mount bad here maybe delete this test
-        const wrapper = mount(<HomePage/>);
-        global.fetch = prepareFetchApi({});
-
-        expect(global.fetch).toBeCalledTimes(0);
-        // click every tag button
-        wrapper.find("Tag").map((i) => {
-            i.simulate("click");
-        });
-        expect(global.fetch).toBeCalledTimes(4);
     });
 
     it('test data insertion', function () {
