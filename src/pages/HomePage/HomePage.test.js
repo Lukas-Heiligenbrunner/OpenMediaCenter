@@ -22,18 +22,6 @@ describe('<HomePage/>', function () {
         wrapper.unmount();
     });
 
-    it('ckeck default tag click events', function () {
-        const wrapper = shallow(<HomePage/>);
-        global.fetch = prepareFetchApi({});
-
-        expect(global.fetch).toBeCalledTimes(0);
-        // click every tag button
-        wrapper.find("Tag").map((i) => {
-            i.simulate("click");
-        });
-        expect(global.fetch).toBeCalledTimes(4);
-    });
-
     it('test data insertion', function () {
         const wrapper = shallow(<HomePage/>);
 

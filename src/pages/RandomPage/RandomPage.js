@@ -29,7 +29,9 @@ class RandomPage extends React.Component {
                 <SideBar>
                     <div className='sidebartitle'>Visible Tags:</div>
                     {this.state.tags.map((m) => (
-                        <Tag>{m.tag_name}</Tag>
+                        <Tag
+                            key={m.tag_name}
+                            viewbinding={this.props.viewbinding}>{m.tag_name}</Tag>
                     ))}
                 </SideBar>
 

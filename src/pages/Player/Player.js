@@ -21,8 +21,6 @@ class Player extends React.Component {
             tags: [],
             popupvisible: false
         };
-
-        this.props = props;
     }
 
     options = {
@@ -66,7 +64,9 @@ class Player extends React.Component {
                     <hr/>
                     <div className='sidebartitle'>Tags:</div>
                     {this.state.tags.map((m) => (
-                        <Tag key={m.tag_name}>{m.tag_name}</Tag>
+                        <Tag
+                            key={m.tag_name}
+                            viewbinding={this.props.viewbinding}>{m.tag_name}</Tag>
                     ))}
                 </SideBar>
 
@@ -149,7 +149,7 @@ class Player extends React.Component {
     }
 
     closebtn() {
-        this.props.viewbinding.hideVideo();
+        this.props.viewbinding.returnToLastElement();
     }
 }
 

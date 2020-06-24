@@ -99,7 +99,7 @@ describe('<Player/>', function () {
 
         wrapper.setProps({
             viewbinding: {
-                hideVideo: () => {
+                returnToLastElement: () => {
                     func()
                 }
             }

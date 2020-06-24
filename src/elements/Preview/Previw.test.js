@@ -22,7 +22,7 @@ describe('<Preview/>', function () {
         const wrapper = shallow(<Preview/>);
         wrapper.setProps({
             viewbinding: {
-                showVideo: () => {
+                changeRootElement: () => {
                     func()
                 }
             }
@@ -78,14 +78,7 @@ describe('<TagPreview/>', function () {
     });
 
 
-    it('click event triggered', done => {
-        const mockSuccessResponse = {};
-        const mockJsonPromise = Promise.resolve(mockSuccessResponse);
-        const mockFetchPromise = Promise.resolve({
-            json: () => mockJsonPromise,
-        });
-        global.fetch = jest.fn().mockImplementation(() => mockFetchPromise);
-
+    it('click event triggered', function () {
         const func = jest.fn();
 
         const wrapper = shallow(<TagPreview/>);
@@ -96,19 +89,11 @@ describe('<TagPreview/>', function () {
         });
 
         // first call of fetch is getting of available tags
-        expect(global.fetch).toHaveBeenCalledTimes(0);
+        expect(func).toHaveBeenCalledTimes(0);
         wrapper.find('.videopreview').simulate('click');
 
         // now called 1 times
-        expect(global.fetch).toHaveBeenCalledTimes(1);
-
-        process.nextTick(() => {
-            //callback to close window should have called
-            expect(func).toHaveBeenCalledTimes(1);
-
-            global.fetch.mockClear();
-            done();
-        });
+        expect(func).toHaveBeenCalledTimes(1);
     });
 });
 

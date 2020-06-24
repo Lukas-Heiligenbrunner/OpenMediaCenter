@@ -1,20 +1,23 @@
 import React from "react";
 
 import "./Tag.css"
+import CategoryPage from "../../pages/CategoryPage/CategoryPage";
 
 class Tag extends React.Component {
-    constructor(props, context) {
-        super(props, context);
-
-        this.props = props;
-    }
-
     render() {
-        // todo onclick events correctlyy
         return (
-            <button className='tagbtn' onClick={this.props.onClick}
+            <button className='tagbtn' onClick={() => this.TagClick()}
                     data-testid="Test-Tag">{this.props.children}</button>
         );
+    }
+
+    TagClick() {
+        const tag = this.props.children.toString().toLowerCase();
+
+        this.props.viewbinding.changeRootElement(
+            <CategoryPage
+                category={tag}
+                viewbinding={this.props.viewbinding}/>);
     }
 }
 

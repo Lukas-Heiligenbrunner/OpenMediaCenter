@@ -5,12 +5,11 @@ import Tag from "../../elements/Tag/Tag";
 import {TagPreview} from "../../elements/Preview/Preview";
 import NewTagPopup from "../../elements/NewTagPopup/NewTagPopup";
 import PageTitle from "../../elements/PageTitle/PageTitle";
+import VideoContainer from "../../elements/VideoContainer/VideoContainer";
 
 class CategoryPage extends React.Component {
     constructor(props, context) {
         super(props, context);
-
-        this.props = props;
 
         this.state = {
             loadedtags: [],
@@ -19,7 +18,12 @@ class CategoryPage extends React.Component {
     }
 
     componentDidMount() {
-        this.loadTags();
+        // check if predefined category is set
+        if (this.props.category) {
+            this.fetchVideoData(this.props.category);
+        } else {
+            this.loadTags();
+        }
     }
 
     render() {
@@ -31,10 +35,26 @@ class CategoryPage extends React.Component {
 
                 <SideBar>
                     <div className='sidebartitle'>Default Tags:</div>
-                    <Tag>All</Tag>
-                    <Tag>FullHd</Tag>
-                    <Tag>LowQuality</Tag>
-                    <Tag>HD</Tag>
+                    <Tag viewbinding={{
+                        changeRootElement: (e) => {
+                            this.loadTag(e.props.category)
+                        }
+                    }}>All</Tag>
+                    <Tag viewbinding={{
+                        changeRootElement: (e) => {
+                            this.loadTag(e.props.category)
+                        }
+                    }}>FullHd</Tag>
+                    <Tag viewbinding={{
+                        changeRootElement: (e) => {
+                            this.loadTag(e.props.category)
+                        }
+                    }}>LowQuality</Tag>
+                    <Tag viewbinding={{
+                        changeRootElement: (e) => {
+                            this.loadTag(e.props.category)
+                        }
+                    }}>HD</Tag>
                     <hr/>
                     <button data-testid='btnaddtag' className='btn btn-success' onClick={() => {
                         this.setState({popupvisible: true})
@@ -42,8 +62,17 @@ class CategoryPage extends React.Component {
                     </button>
                 </SideBar>
 
-                {!this.state.selected ?
-                    (<div className='maincontent'>
+                {this.state.selected ?
+                    <>
+                        {this.videodata ?
+                            <VideoContainer
+                                data={this.videodata}
+                                viewbinding={this.props.viewbinding}/> : null}
+                        <button data-testid='backbtn' className="btn btn-success"
+                                onClick={this.loadCategoryPageDefault}>Back
+                        </button>
+                    </> :
+                    <div className='maincontent'>
                         {this.state.loadedtags ?
                             this.state.loadedtags.map((m) => (
                                 <TagPreview
@@ -51,16 +80,10 @@ class CategoryPage extends React.Component {
                                     name={m.tag_name}
                                     tag_id={m.tag_id}
                                     viewbinding={this.props.viewbinding}
-                                    categorybinding={this.setPage}/>
+                                    categorybinding={this.loadTag}/>
                             )) :
                             "loading"}
-                    </div>) :
-                    <>
-                        {this.selectionelements}
-                        <button data-testid='backbtn' className="btn btn-success"
-                                onClick={this.loadCategoryPageDefault}>Back
-                        </button>
-                    </>
+                    </div>
                 }
 
                 {this.state.popupvisible ?
@@ -76,14 +99,34 @@ class CategoryPage extends React.Component {
         );
     }
 
-    setPage = (element, tagname) => {
-        this.selectionelements = element;
-
-        this.setState({selected: tagname});
+    loadTag = (tagname) => {
+        this.fetchVideoData(tagname);
     };
+
+    fetchVideoData(tag) {
+        console.log(tag);
+        const updateRequest = new FormData();
+        updateRequest.append('action', 'getMovies');
+        updateRequest.append('tag', tag);
+
+        console.log("fetching data");
+
+        // fetch all videos available
+        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+            .then((response) => response.json()
+                .then((result) => {
+                    this.videodata = result;
+                    this.setState({selected: null}); // needed to trigger the state reload correctly
+                    this.setState({selected: tag});
+                }))
+            .catch(() => {
+                console.log("no connection to backend");
+            });
+    }
 
     loadCategoryPageDefault = () => {
         this.setState({selected: null});
+        this.loadTags();
     };
 
     /**

@@ -146,26 +146,10 @@ class HomePage extends React.Component {
                     <div className='sidebarinfo'><b>{this.state.sideinfo.tagnr}</b> different Tags!</div>
                     <hr/>
                     <div className='sidebartitle'>Default Tags:</div>
-                    <Tag onClick={() => {
-                        this.setState({tag: "All"});
-                        this.fetchVideoData("all");
-                    }}>All
-                    </Tag>
-                    <Tag onClick={() => {
-                        this.setState({tag: "Full HD"});
-                        this.fetchVideoData("fullhd");
-                    }}>FullHd
-                    </Tag>
-                    <Tag onClick={() => {
-                        this.setState({tag: "Low Quality"});
-                        this.fetchVideoData("lowquality");
-                    }}>LowQuality
-                    </Tag>
-                    <Tag onClick={() => {
-                        this.setState({tag: "HD"});
-                        this.fetchVideoData("hd");
-                    }}>HD
-                    </Tag>
+                    <Tag viewbinding={this.props.viewbinding}>All</Tag>
+                    <Tag viewbinding={this.props.viewbinding}>FullHd</Tag>
+                    <Tag viewbinding={this.props.viewbinding}>LowQuality</Tag>
+                    <Tag viewbinding={this.props.viewbinding}>HD</Tag>
                 </SideBar>
                 {this.state.data.length !== 0 ?
                     <VideoContainer
