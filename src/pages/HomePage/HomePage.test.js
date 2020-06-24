@@ -105,11 +105,4 @@ describe('<HomePage/>', function () {
             done();
         });
     });
-
-    it.skip('test setcontent of homepage', function () {
-        const wrapper = shallow(<HomePage/>);
-
-        wrapper.instance().setPage();
-        // todo finish test
-    });
 });

@@ -86,8 +86,6 @@ describe('<CategoryPage/>', function () {
         process.nextTick(() => {
             // expect callback to have loaded correct tag
             expect(wrapper.state().selected).toBe("testname");
-            // expect to receive a videocontainer with simulated data
-            expect(wrapper.instance().selectionelements).toMatchObject(<VideoContainer data={[{}, {}]}/>);
 
             global.fetch.mockClear();
             done();
@@ -103,5 +101,14 @@ describe('<CategoryPage/>', function () {
         expect(wrapper.state().selected).not.toBeNull();
         wrapper.find('[data-testid="backbtn"]').simulate("click");
         expect(wrapper.state().selected).toBeNull();
+    });
+
+    it('load categorypage with predefined tag', function () {
+        const func = jest.fn();
+        CategoryPage.prototype.fetchVideoData = func;
+
+        const wrapper = shallow(<CategoryPage category="fullhd"/>);
+
+        expect(func).toBeCalledTimes(1);
     });
 });

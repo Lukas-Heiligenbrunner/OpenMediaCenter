@@ -35,10 +35,26 @@ class CategoryPage extends React.Component {
 
                 <SideBar>
                     <div className='sidebartitle'>Default Tags:</div>
-                    <Tag viewbinding={this.props.viewbinding} contentbinding={this.loadTag}>All</Tag>
-                    <Tag viewbinding={this.props.viewbinding} contentbinding={this.loadTag}>FullHd</Tag>
-                    <Tag viewbinding={this.props.viewbinding} contentbinding={this.loadTag}>LowQuality</Tag>
-                    <Tag viewbinding={this.props.viewbinding} contentbinding={this.loadTag}>HD</Tag>
+                    <Tag viewbinding={{
+                        changeRootElement: (e) => {
+                            this.loadTag(e.props.category)
+                        }
+                    }}>All</Tag>
+                    <Tag viewbinding={{
+                        changeRootElement: (e) => {
+                            this.loadTag(e.props.category)
+                        }
+                    }}>FullHd</Tag>
+                    <Tag viewbinding={{
+                        changeRootElement: (e) => {
+                            this.loadTag(e.props.category)
+                        }
+                    }}>LowQuality</Tag>
+                    <Tag viewbinding={{
+                        changeRootElement: (e) => {
+                            this.loadTag(e.props.category)
+                        }
+                    }}>HD</Tag>
                     <hr/>
                     <button data-testid='btnaddtag' className='btn btn-success' onClick={() => {
                         this.setState({popupvisible: true})
@@ -46,8 +62,17 @@ class CategoryPage extends React.Component {
                     </button>
                 </SideBar>
 
-                {!this.state.selected ?
-                    (<div className='maincontent'>
+                {this.state.selected ?
+                    <>
+                        {this.videodata ?
+                            <VideoContainer
+                                data={this.videodata}
+                                viewbinding={this.props.viewbinding}/> : null}
+                        <button data-testid='backbtn' className="btn btn-success"
+                                onClick={this.loadCategoryPageDefault}>Back
+                        </button>
+                    </> :
+                    <div className='maincontent'>
                         {this.state.loadedtags ?
                             this.state.loadedtags.map((m) => (
                                 <TagPreview
@@ -58,13 +83,7 @@ class CategoryPage extends React.Component {
                                     categorybinding={this.loadTag}/>
                             )) :
                             "loading"}
-                    </div>) :
-                    <>
-                        {this.selectionelements ? this.selectionelements : null}
-                        <button data-testid='backbtn' className="btn btn-success"
-                                onClick={this.loadCategoryPageDefault}>Back
-                        </button>
-                    </>
+                    </div>
                 }
 
                 {this.state.popupvisible ?
@@ -81,8 +100,6 @@ class CategoryPage extends React.Component {
     }
 
     loadTag = (tagname) => {
-        // this.selectionelements = element;
-        // this.setState({selected: null}); // todo save this change trigger better
         this.fetchVideoData(tagname);
     };
 
@@ -98,10 +115,8 @@ class CategoryPage extends React.Component {
         fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
-                    this.selectionelements =
-                        <VideoContainer
-                            data={result}
-                            viewbinding={this.props.viewbinding}/>;
+                    this.videodata = result;
+                    this.setState({selected: null}); // needed to trigger the state reload correctly
                     this.setState({selected: tag});
                 }))
             .catch(() => {
@@ -111,6 +126,7 @@ class CategoryPage extends React.Component {
 
     loadCategoryPageDefault = () => {
         this.setState({selected: null});
+        this.loadTags();
     };
 
     /**
