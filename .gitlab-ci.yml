@@ -8,6 +8,9 @@ stages:
 cache:
   paths:
     - node_modules/
+    
+include:
+  - template: SAST.gitlab-ci.yml
 
 prepare:
   stage: prepare
