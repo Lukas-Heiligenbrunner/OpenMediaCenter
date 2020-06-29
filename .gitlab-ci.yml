@@ -8,9 +8,12 @@ stages:
 cache:
   paths:
     - node_modules/
-    
+
 include:
   - template: SAST.gitlab-ci.yml
+
+variables:
+  SAST_DISABLE_DIND: "true"
 
 prepare:
   stage: prepare
