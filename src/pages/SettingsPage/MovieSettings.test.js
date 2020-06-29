@@ -16,5 +16,47 @@ describe('<MovieSettings/>', function () {
         wrapper.unmount();
     });
 
+    it('received text renders into dom', function () {
+        const wrapper = shallow(<MovieSettings/>);
 
+        wrapper.setState({
+            text: [
+                "firstline",
+                "secline"
+            ]
+        });
+
+        expect(wrapper.find(".indextextarea").find(".textarea-element")).toHaveLength(2);
+    });
+
+    it('test simulate reindex', function () {
+        global.fetch = prepareFetchApi({});
+        const wrapper = shallow(<MovieSettings/>);
+
+        wrapper.find(".reindexbtn").simulate("click");
+
+        // initial send of reindex request to server
+        expect(global.fetch).toBeCalledTimes(1);
+    });
+
+    it('content available received and in state', done => {
+        global.fetch = prepareFetchApi({
+            contentAvailable: true,
+            message: "firstline\nsecondline"
+        });
+        const wrapper = shallow(<MovieSettings/>);
+        wrapper.instance().updateStatus();
+
+        process.nextTick(() => {
+            expect(wrapper.state()).toMatchObject({
+                text: [
+                    "firstline",
+                    "secondline"
+                ]
+            });
+
+            global.fetch.mockClear();
+            done();
+        });
+    });
 });

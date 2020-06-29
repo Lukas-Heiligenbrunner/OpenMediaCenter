@@ -28,6 +28,7 @@
     background-color: #a8b2de;
     text-align: center;
     font-weight: bold;
+    border-radius: 7px;
 }
 
 .SettingSidebarElement:hover {

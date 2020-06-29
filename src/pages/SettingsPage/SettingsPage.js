@@ -19,6 +19,8 @@ class SettingsPage extends React.Component {
                 return <GeneralSettings/>;
             case "movies":
                 return <MovieSettings/>;
+            case "tv":
+                return <a/>; // todo this page
             default:
                 return "unknown button clicked";
         }
