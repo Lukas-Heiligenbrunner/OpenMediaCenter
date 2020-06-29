@@ -20,7 +20,7 @@ class SettingsPage extends React.Component {
             case "movies":
                 return <MovieSettings/>;
             case "tv":
-                return <a/>; // todo this page
+                return <span/>; // todo this page
             default:
                 return "unknown button clicked";
         }

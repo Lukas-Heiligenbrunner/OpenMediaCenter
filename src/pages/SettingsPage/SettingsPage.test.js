@@ -29,7 +29,7 @@ describe('<RandomPage/>', function () {
 
         simulateSideBarClick("TV Shows",wrapper);
         expect(wrapper.state().currentpage).toBe("tv");
-        expect(wrapper.find(".SettingsContent").find("a")).toHaveLength(1);
+        expect(wrapper.find(".SettingsContent").find("span")).toHaveLength(1);
     });
 
     function simulateSideBarClick(name, wrapper) {
