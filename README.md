@@ -7,7 +7,8 @@ Feel free to contribute or open an issue here: https://gitlab.heili.eu/lukas/ope
 
 ## What is this?
 Open Media Center is an open source solution for a mediacenter in your home network.
-It's based on Reactjs and  uses PHP for backend.
+Transform your webserver into a mediaserver.
+It's based on Reactjs and PHP is used as backend.
 It is optimized for general videos as well as for movies. 
 For grabbing movie data TMDB is used. 
 For organizing videos tags are used.
