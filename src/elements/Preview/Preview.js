@@ -13,10 +13,6 @@ class Preview extends React.Component {
         };
     }
 
-    componentWillUnmount() {
-        this.setState({});
-    }
-
     componentDidMount() {
         this.setState({
             previewpicture: null,
@@ -30,9 +26,9 @@ class Preview extends React.Component {
         fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
             .then((response) => response.text()
                 .then((result) => {
-                    this.setState(prevState => ({
-                        ...prevState.previewpicture, previewpicture: result
-                    }));
+                    this.setState({
+                        previewpicture: result
+                    });
                 }));
     }
 
