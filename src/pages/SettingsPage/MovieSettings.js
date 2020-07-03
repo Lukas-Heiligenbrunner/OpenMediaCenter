@@ -1,4 +1,5 @@
 import React from "react";
+import "./MovieSettings.css"
 
 class MovieSettings extends React.Component {
     constructor(props) {
@@ -35,12 +36,15 @@ class MovieSettings extends React.Component {
     }
 
     startReindex() {
+        document.getElementsByClassName("indextextarea")[0].innerHTML = "";
         console.log("starting");
         const updateRequest = new FormData();
         // fetch all videos available
         fetch('/api/extractvideopreviews.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
+                    // todo 2020-07-4: some kind of start event
+                    //  maybe disable start btn
                     console.log("returned");
                 }))
             .catch(() => {
@@ -60,11 +64,15 @@ class MovieSettings extends React.Component {
                 .then((result) => {
                     if (result.contentAvailable === true) {
                         console.log(result);
+                        // todo 2020-07-4: scroll to bottom of div here
                         this.setState({
+                            // insert a string for each line
                             text: [...result.message.split("\n"),
                                 ...this.state.text]
                         });
                     } else {
+                        // clear refresh interval if no content available
+                        // todo 2020-07-4: maybe enable start btn again
                         clearInterval(this.myinterval);
                     }
                 }))

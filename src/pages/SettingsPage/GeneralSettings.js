@@ -15,13 +15,13 @@ class GeneralSettings extends React.Component {
 
     componentDidMount() {
         const updateRequest = new FormData();
-        updateRequest.append('action', 'loadVideo');
-        updateRequest.append('movieid', this.props.movie_id);
+        updateRequest.append('action', 'loadGeneralSettings');
 
-        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/settings.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
                     // todo 2020-07-3: set state here
+                    // todo 2020-07-4: php and test code
                 }));
     }
 
@@ -29,7 +29,10 @@ class GeneralSettings extends React.Component {
         return (
             <>
                 <div className='GeneralForm'>
-                    <Form>
+                    <Form onSubmit={(e) => {
+                        e.preventDefault();
+                        this.saveSettings();
+                    }}>
                         <Form.Row>
                             <Form.Group as={Col} controlId="formGridEmail">
                                 <Form.Label>Video Path</Form.Label>
@@ -66,6 +69,17 @@ class GeneralSettings extends React.Component {
                 </div>
             </>
         );
+    }
+
+    saveSettings() {
+        const updateRequest = new FormData();
+        updateRequest.append('action', 'saveGeneralSettings');
+
+        fetch('/api/settings.php', {method: 'POST', body: updateRequest})
+            .then((response) => response.json()
+                .then((result) => {
+                    // todo 2020-07-4: settings result here
+                }));
     }
 }
 
