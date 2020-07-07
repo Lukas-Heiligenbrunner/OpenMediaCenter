@@ -1,5 +1,5 @@
 import React from "react";
-import "./Preview.css";
+import style from "./Preview.module.css";
 import Player from "../../pages/Player/Player";
 import {Spinner} from "react-bootstrap";
 
@@ -38,17 +38,17 @@ class Preview extends React.Component {
 
     render() {
         return (
-            <div className='videopreview' onClick={() => this.itemClick()}>
-                <div className='previewtitle'>{this.state.name}</div>
-                <div className='previewpic'>
+            <div className={style.videopreview} onClick={() => this.itemClick()}>
+                <div className={style.previewtitle}>{this.state.name}</div>
+                <div className={style.previewpic}>
                     {this.state.previewpicture != null ?
-                        <img className='previewimage'
+                        <img className={style.previewimage}
                              src={this.state.previewpicture}
                              alt='Pic loading.'/> :
-                        <span className='loadAnimation'><Spinner animation="border"/></span>}
+                        <span className={style.loadAnimation}><Spinner animation="border"/></span>}
 
                 </div>
-                <div className='previewbottom'>
+                <div className={style.previewbottom}>
 
                 </div>
             </div>
@@ -68,8 +68,8 @@ class Preview extends React.Component {
 export class TagPreview extends React.Component {
     render() {
         return (
-            <div className='videopreview tagpreview' onClick={() => this.itemClick()}>
-                <div className='tagpreviewtitle'>
+            <div className={style.videopreview + ' ' + style.tagpreview} onClick={() => this.itemClick()}>
+                <div className={style.tagpreviewtitle}>
                     {this.props.name}
                 </div>
             </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import Preview from "../Preview/Preview";
+import style from "./VideoContainer.module.css"
 
 class VideoContainer extends React.Component {
     constructor(props, context) {
@@ -24,7 +25,7 @@ class VideoContainer extends React.Component {
 
     render() {
         return (
-            <div className='maincontent'>
+            <div className={style.maincontent}>
                 {this.state.loadeditems.map(elem => (
                     <Preview
                         key={elem.movie_id}

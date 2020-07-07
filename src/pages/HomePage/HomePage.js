@@ -1,9 +1,9 @@
 import React from "react";
-import SideBar from "../../elements/SideBar/SideBar";
+import SideBar, {SideBarTitle, SideBarItem} from "../../elements/SideBar/SideBar";
 import Tag from "../../elements/Tag/Tag";
 import VideoContainer from "../../elements/VideoContainer/VideoContainer";
 
-import "./HomePage.css"
+import style from "./HomePage.module.css"
 import PageTitle from "../../elements/PageTitle/PageTitle";
 
 class HomePage extends React.Component {
@@ -120,11 +120,11 @@ class HomePage extends React.Component {
 
     render() {
         return (
-            <div>
+            <>
                 <PageTitle
                     title='Home Page'
                     subtitle={this.state.tag + " Videos - " + this.state.selectionnr}>
-                    <form className="form-inline searchform" onSubmit={(e) => {
+                    <form className={"form-inline " + style.searchform} onSubmit={(e) => {
                         e.preventDefault();
                         this.searchVideos(this.keyword);
                     }}>
@@ -137,15 +137,15 @@ class HomePage extends React.Component {
                     </form>
                 </PageTitle>
                 <SideBar>
-                    <div className='sidebartitle'>Infos:</div>
+                    <SideBarTitle>Infos:</SideBarTitle>
                     <hr/>
-                    <div className='sidebarinfo'><b>{this.state.sideinfo.videonr}</b> Videos Total!</div>
-                    <div className='sidebarinfo'><b>{this.state.sideinfo.fullhdvideonr}</b> FULL-HD Videos!</div>
-                    <div className='sidebarinfo'><b>{this.state.sideinfo.hdvideonr}</b> HD Videos!</div>
-                    <div className='sidebarinfo'><b>{this.state.sideinfo.sdvideonr}</b> SD Videos!</div>
-                    <div className='sidebarinfo'><b>{this.state.sideinfo.tagnr}</b> different Tags!</div>
+                    <SideBarItem><b>{this.state.sideinfo.videonr}</b> Videos Total!</SideBarItem>
+                    <SideBarItem><b>{this.state.sideinfo.fullhdvideonr}</b> FULL-HD Videos!</SideBarItem>
+                    <SideBarItem><b>{this.state.sideinfo.hdvideonr}</b> HD Videos!</SideBarItem>
+                    <SideBarItem><b>{this.state.sideinfo.sdvideonr}</b> SD Videos!</SideBarItem>
+                    <SideBarItem><b>{this.state.sideinfo.tagnr}</b> different Tags!</SideBarItem>
                     <hr/>
-                    <div className='sidebartitle'>Default Tags:</div>
+                    <SideBarTitle>Default Tags:</SideBarTitle>
                     <Tag viewbinding={this.props.viewbinding}>All</Tag>
                     <Tag viewbinding={this.props.viewbinding}>FullHd</Tag>
                     <Tag viewbinding={this.props.viewbinding}>LowQuality</Tag>
@@ -156,11 +156,11 @@ class HomePage extends React.Component {
                         data={this.state.data}
                         viewbinding={this.props.viewbinding}/> :
                     <div>No Data found!</div>}
-                <div className='rightinfo'>
+                <div className={style.rightinfo}>
 
                 </div>
 
-            </div>
+            </>
         );
     }
 }
