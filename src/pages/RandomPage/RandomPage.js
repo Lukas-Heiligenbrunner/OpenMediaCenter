@@ -1,7 +1,7 @@
 import React from "react";
 import Preview from "../../elements/Preview/Preview";
-import "./RandomPage.css"
-import SideBar from "../../elements/SideBar/SideBar";
+import style from "./RandomPage.module.css"
+import SideBar, {SideBarTitle} from "../../elements/SideBar/SideBar";
 import Tag from "../../elements/Tag/Tag";
 import PageTitle from "../../elements/PageTitle/PageTitle";
 
@@ -27,7 +27,7 @@ class RandomPage extends React.Component {
                     subtitle='4pc'/>
 
                 <SideBar>
-                    <div className='sidebartitle'>Visible Tags:</div>
+                    <SideBarTitle>Visible Tags:</SideBarTitle>
                     {this.state.tags.map((m) => (
                         <Tag
                             key={m.tag_name}
@@ -43,8 +43,8 @@ class RandomPage extends React.Component {
                             movie_id={elem.movie_id}
                             viewbinding={this.props.viewbinding}/>
                     ))}
-                    <div className='Shufflebutton'>
-                        <button onClick={() => this.shuffleclick()} className='btnshuffle'>Shuffle</button>
+                    <div className={style.Shufflebutton}>
+                        <button onClick={() => this.shuffleclick()} className={style.btnshuffle}>Shuffle</button>
                     </div>
                 </div>
             </div>

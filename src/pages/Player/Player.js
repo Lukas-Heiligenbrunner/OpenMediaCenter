@@ -1,7 +1,7 @@
 import React from "react";
-import "./Player.css"
+import style from "./Player.module.css"
 import {PlyrComponent} from 'plyr-react';
-import SideBar from "../../elements/SideBar/SideBar";
+import SideBar, {SideBarTitle, SideBarItem} from "../../elements/SideBar/SideBar";
 import Tag from "../../elements/Tag/Tag";
 import AddTagPopup from "../../elements/AddTagPopup/AddTagPopup";
 import PageTitle from "../../elements/PageTitle/PageTitle";
@@ -52,17 +52,15 @@ class Player extends React.Component {
                     subtitle={this.state.movie_name}/>
 
                 <SideBar>
-                    <div className='sidebartitle'>Infos:</div>
+                    <SideBarTitle>Infos:</SideBarTitle>
                     <hr/>
-                    <div className='sidebarinfo'><b>{this.state.likes}</b> Likes!</div>
+                    <SideBarItem><b>{this.state.likes}</b> Likes!</SideBarItem>
                     {this.state.quality !== 0 ?
-                        <div className='sidebarinfo'><b>{this.state.quality}p</b> Quality!
-                        </div> : null}
+                        <SideBarItem><b>{this.state.quality}p</b> Quality!</SideBarItem> : null}
                     {this.state.length !== 0 ?
-                        <div className='sidebarinfo'><b>{Math.round(this.state.length / 60)}</b> Minutes of length!
-                        </div> : null}
+                        <SideBarItem><b>{Math.round(this.state.length / 60)}</b> Minutes of length!</SideBarItem>: null}
                     <hr/>
-                    <div className='sidebartitle'>Tags:</div>
+                    <SideBarTitle>Tags:</SideBarTitle>
                     {this.state.tags.map((m) => (
                         <Tag
                             key={m.tag_name}
@@ -70,14 +68,14 @@ class Player extends React.Component {
                     ))}
                 </SideBar>
 
-                <div className="videowrapper">
+                <div className={style.videowrapper}>
                     {/* video component is added here */}
                     {this.state.sources ? <PlyrComponent
                             className='myvideo'
                             sources={this.state.sources}
                             options={this.options}/> :
                         <div>not loaded yet</div>}
-                    <div className='videoactions'>
+                    <div className={style.videoactions}>
                         <button className='btn btn-primary' onClick={() => this.likebtn()}>Like this Video!</button>
                         <button className='btn btn-info' onClick={() => this.setState({popupvisible: true})}>Give this
                             Video a Tag
@@ -94,7 +92,7 @@ class Player extends React.Component {
 
                     </div>
                 </div>
-                <button className="closebutton" onClick={() => this.closebtn()}>Close</button>
+                <button className={style.closebutton} onClick={() => this.closebtn()}>Close</button>
             </div>
         );
     }

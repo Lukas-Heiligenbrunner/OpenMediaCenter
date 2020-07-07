@@ -1,5 +1,5 @@
 import React from "react";
-import "./PageTitle.css"
+import style from "./PageTitle.module.css"
 
 class PageTitle extends React.Component {
     constructor(props) {
@@ -11,9 +11,9 @@ class PageTitle extends React.Component {
 
     render() {
         return (
-            <div className='pageheader'>
-                <span className='pageheadertitle'>{this.props.title}</span>
-                <span className='pageheadersubtitle'>{this.props.subtitle}</span>
+            <div className={style.pageheader}>
+                <span className={style.pageheadertitle}>{this.props.title}</span>
+                <span className={style.pageheadersubtitle}>{this.props.subtitle}</span>
                 <>
                     {this.props.children}
                 </>

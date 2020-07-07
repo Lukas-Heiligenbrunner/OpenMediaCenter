@@ -1,12 +1,12 @@
 import React from "react";
 
-import "./Tag.css"
+import styles from "./Tag.module.css"
 import CategoryPage from "../../pages/CategoryPage/CategoryPage";
 
 class Tag extends React.Component {
     render() {
         return (
-            <button className='tagbtn' onClick={() => this.TagClick()}
+            <button className={styles.tagbtn} onClick={() => this.TagClick()}
                     data-testid="Test-Tag">{this.props.children}</button>
         );
     }

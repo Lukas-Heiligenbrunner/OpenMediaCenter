@@ -1,6 +1,7 @@
 import React from "react";
-import SideBar from "../../elements/SideBar/SideBar";
+import SideBar, {SideBarTitle} from "../../elements/SideBar/SideBar";
 import Tag from "../../elements/Tag/Tag";
+import videocontainerstyle from "../../elements/VideoContainer/VideoContainer.module.css"
 
 import {TagPreview} from "../../elements/Preview/Preview";
 import NewTagPopup from "../../elements/NewTagPopup/NewTagPopup";
@@ -34,7 +35,7 @@ class CategoryPage extends React.Component {
                     subtitle={!this.state.selected ? this.state.loadedtags.length + " different Tags" : this.state.selected}/>
 
                 <SideBar>
-                    <div className='sidebartitle'>Default Tags:</div>
+                    <SideBarTitle>Default Tags:</SideBarTitle>
                     <Tag viewbinding={{
                         changeRootElement: (e) => {
                             this.loadTag(e.props.category)
@@ -72,7 +73,7 @@ class CategoryPage extends React.Component {
                                 onClick={this.loadCategoryPageDefault}>Back
                         </button>
                     </> :
-                    <div className='maincontent'>
+                    <div className={videocontainerstyle.maincontent}>
                         {this.state.loadedtags ?
                             this.state.loadedtags.map((m) => (
                                 <TagPreview
