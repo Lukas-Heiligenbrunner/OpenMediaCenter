@@ -8,6 +8,8 @@ class MovieSettings extends React.Component {
         this.state = {
             text: []
         };
+
+        this.startbtn = React.createRef();
     }
 
     componentDidMount() {
@@ -24,7 +26,7 @@ class MovieSettings extends React.Component {
     render() {
         return (
             <>
-                <button className='reindexbtn btn btn-success' onClick={() => {
+                <button ref={this.startbtn} className='reindexbtn btn btn-success' onClick={() => {
                     this.startReindex()
                 }}>Reindex Movies
                 </button>
@@ -36,7 +38,12 @@ class MovieSettings extends React.Component {
     }
 
     startReindex() {
-        document.getElementsByClassName("indextextarea")[0].innerHTML = "";
+        // clear output text before start
+        this.setState({text: []});
+
+        const btn = this.startbtn.current;
+        btn.disabled = true;
+
         console.log("starting");
         const updateRequest = new FormData();
         // fetch all videos available
@@ -44,7 +51,6 @@ class MovieSettings extends React.Component {
             .then((response) => response.json()
                 .then((result) => {
                     // todo 2020-07-4: some kind of start event
-                    //  maybe disable start btn
                     console.log("returned");
                 }))
             .catch(() => {
@@ -72,8 +78,10 @@ class MovieSettings extends React.Component {
                         });
                     } else {
                         // clear refresh interval if no content available
-                        // todo 2020-07-4: maybe enable start btn again
                         clearInterval(this.myinterval);
+
+                        const btn = this.startbtn.current;
+                        btn.disabled = false;
                     }
                 }))
             .catch(() => {
