@@ -1,15 +1,14 @@
 import React from "react";
-import "./MovieSettings.css"
+import style from "./MovieSettings.module.css"
 
 class MovieSettings extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            text: []
+            text: [],
+            startbtnDisabled: false
         };
-
-        this.startbtn = React.createRef();
     }
 
     componentDidMount() {
@@ -26,11 +25,11 @@ class MovieSettings extends React.Component {
     render() {
         return (
             <>
-                <button ref={this.startbtn} className='reindexbtn btn btn-success' onClick={() => {
+                <button disabled={this.state.startbtnDisabled} className='reindexbtn btn btn-success' onClick={() => {
                     this.startReindex()
                 }}>Reindex Movies
                 </button>
-                <div className='indextextarea'>{this.state.text.map(m => (
+                <div className={style.indextextarea}>{this.state.text.map(m => (
                     <div className='textarea-element'>{m}</div>
                 ))}</div>
             </>
@@ -41,8 +40,7 @@ class MovieSettings extends React.Component {
         // clear output text before start
         this.setState({text: []});
 
-        const btn = this.startbtn.current;
-        btn.disabled = true;
+        this.setState({startbtnDisabled: true});
 
         console.log("starting");
         const updateRequest = new FormData();
@@ -60,7 +58,6 @@ class MovieSettings extends React.Component {
             clearInterval(this.myinterval);
         }
         this.myinterval = setInterval(this.updateStatus, 1000);
-        console.log("sent");
     }
 
     updateStatus = () => {
@@ -80,8 +77,7 @@ class MovieSettings extends React.Component {
                         // clear refresh interval if no content available
                         clearInterval(this.myinterval);
 
-                        const btn = this.startbtn.current;
-                        btn.disabled = false;
+                        this.setState({startbtnDisabled: false});
                     }
                 }))
             .catch(() => {

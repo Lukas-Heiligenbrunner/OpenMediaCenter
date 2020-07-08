@@ -1,6 +1,6 @@
 import React from "react";
 import {Form, Col, Button} from "react-bootstrap";
-import "./GeneralSettings.css"
+import style from "./GeneralSettings.module.css"
 
 class GeneralSettings extends React.Component {
     constructor(props) {
@@ -28,7 +28,7 @@ class GeneralSettings extends React.Component {
     render() {
         return (
             <>
-                <div className='GeneralForm'>
+                <div className={style.GeneralForm}>
                     <Form onSubmit={(e) => {
                         e.preventDefault();
                         this.saveSettings();
@@ -61,6 +61,10 @@ class GeneralSettings extends React.Component {
                             </Form.Group> : null
                         }
 
+                        <Form.Group className={style.mediacenternameform} controlId="passwordfield">
+                            <Form.Label>The name of the Mediacenter</Form.Label>
+                            <Form.Control type="text" placeholder="Mediacentername"/>
+                        </Form.Group>
 
                         <Button variant="primary" type="submit">
                             Submit

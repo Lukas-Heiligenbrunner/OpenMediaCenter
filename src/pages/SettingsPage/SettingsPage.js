@@ -1,7 +1,7 @@
 import React from "react";
 import MovieSettings from "./MovieSettings";
 import GeneralSettings from "./GeneralSettings";
-import "./SettingsPage.css"
+import style from "./SettingsPage.module.css"
 
 
 class SettingsPage extends React.Component {
@@ -29,19 +29,19 @@ class SettingsPage extends React.Component {
     render() {
         return (
             <div>
-                <div className='SettingsSidebar'>
-                    <div className='SettingsSidebarTitle'>Settings</div>
+                <div className={style.SettingsSidebar}>
+                    <div className={style.SettingsSidebarTitle}>Settings</div>
                     <div onClick={() => this.setState({currentpage: "general"})}
-                         className='SettingSidebarElement'>General
+                         className={style.SettingSidebarElement}>General
                     </div>
                     <div onClick={() => this.setState({currentpage: "movies"})}
-                         className='SettingSidebarElement'>Movies
+                         className={style.SettingSidebarElement}>Movies
                     </div>
                     <div onClick={() => this.setState({currentpage: "tv"})}
-                         className='SettingSidebarElement'>TV Shows
+                         className={style.SettingSidebarElement}>TV Shows
                     </div>
                 </div>
-                <div className='SettingsContent'>
+                <div className={style.SettingsContent}>
                     {this.getContent()}
                 </div>
             </div>
