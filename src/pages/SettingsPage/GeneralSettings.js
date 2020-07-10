@@ -93,10 +93,19 @@ class GeneralSettings extends React.Component {
         const updateRequest = new FormData();
         updateRequest.append('action', 'saveGeneralSettings');
 
-        fetch('/api/settings.php', {method: 'POST', body: updateRequest})
+        updateRequest.append('password', this.state.passwordsupport ? this.state.password : "-1");
+        updateRequest.append('videopath', this.state.videopath);
+        updateRequest.append('tvshowpath', this.state.tvshowpath);
+        updateRequest.append('mediacentername', this.state.mediacentername);
+
+        fetch('/api/Settings.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
-                    // todo 2020-07-4: settings result here
+                    if (result.success) {
+                        // todo 2020-07-10: popup success
+                    } else {
+                        // todo 2020-07-10: popup error
+                    }
                 }));
     }
 }

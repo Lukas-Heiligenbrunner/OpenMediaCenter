@@ -22,5 +22,24 @@ if (isset($_POST['action'])) {
             }
             echo json_encode($r);
             break;
+        case "saveGeneralSettings":
+            $mediacentername = $_POST['mediacentername'];
+            $password = $_POST['password'];
+            $videopath = $_POST['videopath'];
+            $tvshowpath = $_POST['tvshowpath'];
+
+            $query = "UPDATE settings SET 
+                        video_path='$videopath',
+                        episode_path='$tvshowpath',
+                        password='$password',
+                        mediacenter_name='$mediacentername'
+                    WHERE 1";
+
+            if ($conn->query($query) === true) {
+                echo '{"success": true}';
+            } else {
+                echo '{"success": true}';
+            }
+            break;
     }
 }
