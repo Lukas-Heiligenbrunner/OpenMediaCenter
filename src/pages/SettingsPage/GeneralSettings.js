@@ -1,5 +1,5 @@
 import React from "react";
-import {Form, Col, Button} from "react-bootstrap";
+import {Button, Col, Form} from "react-bootstrap";
 import style from "./GeneralSettings.module.css"
 
 class GeneralSettings extends React.Component {
@@ -42,13 +42,13 @@ class GeneralSettings extends React.Component {
                         this.saveSettings();
                     }}>
                         <Form.Row>
-                            <Form.Group as={Col} controlId="formGridEmail">
+                            <Form.Group as={Col} data-testid="videpathform">
                                 <Form.Label>Video Path</Form.Label>
                                 <Form.Control type="text" placeholder="/var/www/html/video" value={this.state.videopath}
                                               onChange={(ee) => this.setState({videopath: ee.target.value})}/>
                             </Form.Group>
 
-                            <Form.Group as={Col} controlId="formGridPassword">
+                            <Form.Group as={Col} data-testid="tvshowpath">
                                 <Form.Label>TV Show Path</Form.Label>
                                 <Form.Control type='text' placeholder="/var/www/html/tvshow"
                                               value={this.state.tvshowpath}
@@ -59,6 +59,7 @@ class GeneralSettings extends React.Component {
                         <Form.Check
                             type="switch"
                             id="custom-switch"
+                            data-testid='passwordswitch'
                             label="Enable Password support"
                             checked={this.state.passwordsupport}
                             onChange={() => {
@@ -67,14 +68,14 @@ class GeneralSettings extends React.Component {
                         />
 
                         {this.state.passwordsupport ?
-                            <Form.Group controlId="passwordfield">
+                            <Form.Group data-testid="passwordfield">
                                 <Form.Label>Password</Form.Label>
                                 <Form.Control type="password" placeholder="**********" value={this.state.password}
                                               onChange={(e) => this.setState({password: e.target.value})}/>
                             </Form.Group> : null
                         }
 
-                        <Form.Group className={style.mediacenternameform} controlId="nameform">
+                        <Form.Group className={style.mediacenternameform} data-testid="nameform">
                             <Form.Label>The name of the Mediacenter</Form.Label>
                             <Form.Control type="text" placeholder="Mediacentername" value={this.state.mediacentername}
                                           onChange={(e) => this.setState({mediacentername: e.target.value})}/>

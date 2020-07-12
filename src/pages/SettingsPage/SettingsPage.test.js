@@ -19,15 +19,15 @@ describe('<RandomPage/>', function () {
     it('simulate topic clicka', function () {
         const wrapper = shallow(<SettingsPage/>);
 
-        simulateSideBarClick("General",wrapper);
+        simulateSideBarClick("General", wrapper);
         expect(wrapper.state().currentpage).toBe("general");
         expect(wrapper.find(".SettingsContent").find("GeneralSettings")).toHaveLength(1);
 
-        simulateSideBarClick("Movies",wrapper);
+        simulateSideBarClick("Movies", wrapper);
         expect(wrapper.state().currentpage).toBe("movies");
         expect(wrapper.find(".SettingsContent").find("MovieSettings")).toHaveLength(1);
 
-        simulateSideBarClick("TV Shows",wrapper);
+        simulateSideBarClick("TV Shows", wrapper);
         expect(wrapper.state().currentpage).toBe("tv");
         expect(wrapper.find(".SettingsContent").find("span")).toHaveLength(1);
     });

@@ -1,7 +1,6 @@
-import {shallow, mount} from "enzyme";
+import {mount, shallow} from "enzyme";
 import React from "react";
 import CategoryPage from "./CategoryPage";
-import VideoContainer from "../../elements/VideoContainer/VideoContainer";
 
 function prepareFetchApi(response) {
     const mockJsonPromise = Promise.resolve(response);
