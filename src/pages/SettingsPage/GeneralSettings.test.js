@@ -24,4 +24,22 @@ describe('<GeneralSettings/>', function () {
 
         expect(wrapper.find("FormGroup").findWhere(it => it.props().controlId === "passwordfield")).toHaveLength(1);
     });
+
+    it('test savesettings', done => {
+        const wrapper = shallow(<GeneralSettings/>);
+
+        global.fetch = prepareFetchApi({success: true});
+
+        expect(global.fetch).toBeCalledTimes(0);
+        wrapper.find("[data-testid='mainformsettings']").simulate("submit");
+        expect(global.fetch).toBeCalledTimes(1);
+
+        process.nextTick(() => {
+            // expect callback to have loaded correct tag
+            expect(wrapper.state().selected).toBe("testname");
+
+            global.fetch.mockClear();
+            done();
+        });
+    });
 });

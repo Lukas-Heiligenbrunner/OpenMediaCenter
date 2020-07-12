@@ -37,7 +37,7 @@ class GeneralSettings extends React.Component {
         return (
             <>
                 <div className={style.GeneralForm}>
-                    <Form onSubmit={(e) => {
+                    <Form data-testid='mainformsettings' onSubmit={(e) => {
                         e.preventDefault();
                         this.saveSettings();
                     }}>
@@ -102,8 +102,10 @@ class GeneralSettings extends React.Component {
             .then((response) => response.json()
                 .then((result) => {
                     if (result.success) {
+                        console.log("successfully saved settings");
                         // todo 2020-07-10: popup success
                     } else {
+                        console.log("failed to save settings");
                         // todo 2020-07-10: popup error
                     }
                 }));
