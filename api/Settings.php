@@ -18,7 +18,7 @@ if (isset($_POST['action'])) {
             if ($r['password'] != "-1") {
                 $r['passwordEnabled'] = true;
             } else {
-                $r['passwordEnabled'] = true;
+                $r['passwordEnabled'] = false;
             }
             echo json_encode($r);
             break;
@@ -40,6 +40,23 @@ if (isset($_POST['action'])) {
             } else {
                 echo '{"success": true}';
             }
+            break;
+        case "loadInitialData":
+            $query = "SELECT * from settings";
+
+            $result = $conn->query($query);
+            if ($result->num_rows > 1) {
+                // todo throw error
+            }
+
+            $r = mysqli_fetch_assoc($result);
+            if ($r['password'] != "-1") {
+                $r['passwordEnabled'] = true;
+            } else {
+                $r['passwordEnabled'] = false;
+            }
+            unset($r['password']);
+            echo json_encode($r);
             break;
     }
 }

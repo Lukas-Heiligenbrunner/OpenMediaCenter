@@ -20,6 +20,7 @@ describe('<App/>', function () {
 
     it('simulate video view change ', function () {
         const wrapper = shallow(<App/>);
+        wrapper.setState({generalSettingsLoaded: true}); // simulate fetch to have already finisheed
 
         wrapper.instance().changeRootElement(<div id='testit'></div>);
 
@@ -28,6 +29,7 @@ describe('<App/>', function () {
 
     it('test hide video again', function () {
         const wrapper = shallow(<App/>);
+        wrapper.setState({generalSettingsLoaded: true}); // simulate fetch to have already finisheed
 
         wrapper.instance().changeRootElement(<div id='testit'></div>);
 
@@ -40,6 +42,7 @@ describe('<App/>', function () {
 
     it('test fallback to last loaded page', function () {
         const wrapper = shallow(<App/>);
+        wrapper.setState({generalSettingsLoaded: true}); // simulate fetch to have already finisheed
 
         wrapper.find(".nav-link").findWhere(t => t.text() === "Random Video" && t.type() === "div").simulate("click");
 
@@ -54,6 +57,8 @@ describe('<App/>', function () {
 
     it('test home click', function () {
         const wrapper = shallow(<App/>);
+        wrapper.setState({generalSettingsLoaded: true}); // simulate fetch to have already finisheed
+
         wrapper.setState({page: "wrongvalue"});
         expect(wrapper.find("HomePage")).toHaveLength(0);
         wrapper.find(".nav-link").findWhere(t => t.text() === "Home" && t.type() === "div").simulate("click");
@@ -62,6 +67,7 @@ describe('<App/>', function () {
 
     it('test category click', function () {
         const wrapper = shallow(<App/>);
+        wrapper.setState({generalSettingsLoaded: true}); // simulate fetch to have already finisheed
 
         expect(wrapper.find("CategoryPage")).toHaveLength(0);
         wrapper.find(".nav-link").findWhere(t => t.text() === "Categories" && t.type() === "div").simulate("click");
@@ -70,6 +76,7 @@ describe('<App/>', function () {
 
     it('test settings click', function () {
         const wrapper = shallow(<App/>);
+        wrapper.setState({generalSettingsLoaded: true}); // simulate fetch to have already finisheed
 
         expect(wrapper.find("SettingsPage")).toHaveLength(0);
         wrapper.find(".nav-link").findWhere(t => t.text() === "Settings" && t.type() === "div").simulate("click");
