@@ -2,6 +2,14 @@ import React from 'react';
 import App from './App';
 import {shallow} from 'enzyme'
 
+function prepareFetchApi(response) {
+    const mockJsonPromise = Promise.resolve(response);
+    const mockFetchPromise = Promise.resolve({
+        json: () => mockJsonPromise,
+    });
+    return (jest.fn().mockImplementation(() => mockFetchPromise));
+}
+
 describe('<App/>', function () {
     it('renders without crashing ', function () {
         const wrapper = shallow(<App/>);
@@ -81,5 +89,29 @@ describe('<App/>', function () {
         expect(wrapper.find("SettingsPage")).toHaveLength(0);
         wrapper.find(".nav-link").findWhere(t => t.text() === "Settings" && t.type() === "div").simulate("click");
         expect(wrapper.find("SettingsPage")).toHaveLength(1);
+    });
+
+    it('test initial fetch from api', done => {
+        global.fetch = prepareFetchApi({
+            generalSettingsLoaded: true,
+            passwordsupport: true,
+            mediacentername: "testname"
+        });
+
+        const wrapper = shallow(<App/>);
+
+        expect(global.fetch).toBeCalledTimes(1);
+
+        process.nextTick(() => {
+            console.log(wrapper.state());
+
+            // todo state lifecycle not triggered
+            wrapper.update();
+            console.log(wrapper.state());
+            expect(wrapper.state('passwordsupport')).toBe(true);
+
+            global.fetch.mockClear();
+            done();
+        });
     });
 });

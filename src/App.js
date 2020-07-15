@@ -14,15 +14,14 @@ class App extends React.Component {
         this.state = {
             page: "default",
             generalSettingsLoaded: false,
-            passwordsupport: null
+            passwordsupport: null,
+            mediacentername: "OpenMediaCenter"
         };
 
         // bind this to the method for being able to call methods such as this.setstate
         this.changeRootElement = this.changeRootElement.bind(this);
         this.returnToLastElement = this.returnToLastElement.bind(this);
     }
-
-    generaldata = {};
 
     componentDidMount() {
         const updateRequest = new FormData();
@@ -31,16 +30,13 @@ class App extends React.Component {
         fetch('/api/Settings.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
-                    this.generaldata = {
-                        videopath: result.video_path,
-                        tvshowpath: result.episode_path,
-                        mediacentername: result.mediacenter_name
-                    };
-
+                    console.log(result);
                     this.setState({
                         generalSettingsLoaded: true,
-                        passwordsupport: result.passwordEnabled
+                        passwordsupport: result.passwordEnabled,
+                        mediacentername: result.mediacenter_name
                     });
+                    console.log(this.state);
                 }));
     }
 
@@ -49,8 +45,7 @@ class App extends React.Component {
     constructViewBinding(){
         return {
             changeRootElement: this.changeRootElement,
-            returnToLastElement: this.returnToLastElement,
-            generalsettings: this.generaldata
+            returnToLastElement: this.returnToLastElement
         };
     }
 
@@ -86,7 +81,7 @@ class App extends React.Component {
         return (
             <div className="App">
                 <nav className="navbar navbar-expand-sm bg-primary navbar-dark">
-                    <div className="navbar-brand">OpenMediaCenter</div>
+                    <div className="navbar-brand">{this.state.mediacentername}</div>
 
                     <ul className="navbar-nav">
                         <li className="nav-item">
