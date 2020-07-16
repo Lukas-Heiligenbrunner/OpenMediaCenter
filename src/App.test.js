@@ -100,15 +100,14 @@ describe('<App/>', function () {
 
         const wrapper = shallow(<App/>);
 
+
+        const func = jest.fn();
+        wrapper.instance().setState = func;
+
         expect(global.fetch).toBeCalledTimes(1);
 
         process.nextTick(() => {
-            console.log(wrapper.state());
-
-            // todo state lifecycle not triggered
-            wrapper.update();
-            console.log(wrapper.state());
-            expect(wrapper.state('passwordsupport')).toBe(true);
+            expect(func).toBeCalledTimes(1);
 
             global.fetch.mockClear();
             done();

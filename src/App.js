@@ -42,7 +42,7 @@ class App extends React.Component {
 
     newElement = null;
 
-    constructViewBinding(){
+    constructViewBinding() {
         return {
             changeRootElement: this.changeRootElement,
             returnToLastElement: this.returnToLastElement
