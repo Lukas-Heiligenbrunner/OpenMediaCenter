@@ -110,4 +110,21 @@ describe('<CategoryPage/>', function () {
 
         expect(func).toBeCalledTimes(1);
     });
+
+    it('test sidebar tag clicks', function () {
+        const func = jest.fn();
+
+        const wrapper = mount(<CategoryPage category="fullhd"/>);
+        wrapper.instance().loadTag = func;
+
+        console.log(wrapper.debug());
+
+        expect(func).toBeCalledTimes(0);
+        wrapper.find("SideBar").find("Tag").forEach(e => {
+            e.simulate("click");
+        })
+
+        expect(func).toBeCalledTimes(4);
+
+    });
 });

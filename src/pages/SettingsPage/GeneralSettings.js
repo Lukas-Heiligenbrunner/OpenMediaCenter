@@ -8,6 +8,7 @@ class GeneralSettings extends React.Component {
 
         this.state = {
             passwordsupport: false,
+            tmdbsupport: null,
 
             videopath: "",
             tvshowpath: "",
@@ -23,12 +24,14 @@ class GeneralSettings extends React.Component {
         fetch('/api/Settings.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
+                    console.log(result);
                     this.setState({
                         videopath: result.video_path,
                         tvshowpath: result.episode_path,
                         mediacentername: result.mediacenter_name,
                         password: result.password,
-                        passwordsupport: result.passwordEnabled
+                        passwordsupport: result.passwordEnabled,
+                        tmdbsupport: result.TMDB_grabbing
                     });
                 }));
     }
@@ -67,6 +70,17 @@ class GeneralSettings extends React.Component {
                             }}
                         />
 
+                        <Form.Check
+                            type="switch"
+                            id="custom-switch-2"
+                            data-testid='tmdb-switch'
+                            label="Enable TMDB video grabbing support"
+                            checked={this.state.tmdbsupport}
+                            onChange={() => {
+                                this.setState({tmdbsupport: !this.state.tmdbsupport})
+                            }}
+                        />
+
                         {this.state.passwordsupport ?
                             <Form.Group data-testid="passwordfield">
                                 <Form.Label>Password</Form.Label>
@@ -98,6 +112,7 @@ class GeneralSettings extends React.Component {
         updateRequest.append('videopath', this.state.videopath);
         updateRequest.append('tvshowpath', this.state.tvshowpath);
         updateRequest.append('mediacentername', this.state.mediacentername);
+        updateRequest.append("tmdbsupport", this.state.tmdbsupport);
 
         fetch('/api/Settings.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()

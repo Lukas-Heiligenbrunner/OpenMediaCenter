@@ -2,7 +2,7 @@
 
 class SSettings
 {
-    private $database;
+    private ?Database $database;
 
     /**
      * SSettings constructor.
@@ -18,5 +18,22 @@ class SSettings
 
         $r = mysqli_fetch_assoc($result);
         return $r['video_path'];
+    }
+
+    /**
+     * check if TMDB is enableds
+     * @return bool isenabled?
+     */
+    public function isTMDBGrabbingEnabled(): bool
+    {
+        $query = "SELECT TMDB_grabbing from settings";
+
+        $result = $this->database->getConnection()->query($query);
+        if(!$result){
+            return true; // if undefined in db --> default true
+        }else{
+            $r = mysqli_fetch_assoc($result);
+            return $r['TMDB_grabbing'] == '1';
+        }
     }
 }

@@ -98,4 +98,13 @@ describe('<GeneralSettings/>', function () {
         wrapper.find("[data-testid='passwordfield']").find("FormControl").simulate("change", event);
         expect(wrapper.state().password).toBe("test");
     });
+
+    it('test tmdbsupport change event', function () {
+        const wrapper = shallow(<GeneralSettings/>);
+        wrapper.setState({tmdbsupport: true});
+
+        expect(wrapper.state().tmdbsupport).toBe(true);
+        wrapper.find("[data-testid='tmdb-switch']").simulate("change");
+        expect(wrapper.state().tmdbsupport).toBe(false);
+    });
 });
