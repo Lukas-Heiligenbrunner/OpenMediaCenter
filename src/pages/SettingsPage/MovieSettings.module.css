@@ -1,0 +1,13 @@
+.indextextarea {
+    margin-top: 15px;
+    padding: 10px;
+
+    overflow-y: scroll;
+    overflow-x: auto;
+
+    min-height: 100px;
+    max-height: 300px;
+    width: 50%;
+    background-color: #c2c2c2;
+    border-radius: 5px;
+}

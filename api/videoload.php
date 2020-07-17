@@ -1,9 +1,15 @@
 <?php
 require 'Database.php';
+require 'SSettings.php';
 
+// establish initial db connection
 $conn = Database::getInstance()->getConnection();
+$settings = new SSettings();
 
-//$_POST['action'] = "getRandomMovies";$_POST['number'] =6;
+// load video path from settings
+$videopath = $settings->getVideoPath();
+
+
 if (isset($_POST['action'])) {
     $action = $_POST['action'];
     switch ($action) {
@@ -84,7 +90,9 @@ if (isset($_POST['action'])) {
 
             $arr["movie_id"] = $row["movie_id"];
             $arr["movie_name"] = $row["movie_name"];
-            $arr["movie_url"] = str_replace("?","%3F",$row["movie_url"]);
+            // todo drop video url from db -- maybe one with and one without extension
+            // extension hardcoded here!!!
+            $arr["movie_url"] = str_replace("?", "%3F", $videopath . $row["movie_name"] . ".mp4");
             $arr["likes"] = $row["likes"];
             $arr["quality"] = $row["quality"];
             $arr["length"] = $row["length"];

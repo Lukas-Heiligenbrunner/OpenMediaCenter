@@ -1,0 +1,40 @@
+.SettingsSidebar {
+    padding-top: 20px;
+    float: left;
+    width: 10%;
+    background-color: #d3dcef;
+    min-height: calc(100vh - 56px);
+    min-width: 110px;
+}
+
+.SettingsSidebarTitle {
+    text-align: center;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: larger;
+    margin-bottom: 25px;
+}
+
+.SettingsContent {
+    float: left;
+    width: 80%;
+    padding-left: 30px;
+    padding-top: 30px;
+}
+
+.SettingSidebarElement {
+    margin: 10px 5px 5px;
+    padding: 5px;
+    background-color: #a8b2de;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 7px;
+}
+
+.SettingSidebarElement:hover {
+    font-weight: bolder;
+    background-color: #7d8dd4;
+    box-shadow: #7d8dd4 0 0 0 5px;
+    transition: all 300ms;
+    cursor: pointer;
+}

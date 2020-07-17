@@ -11,37 +11,57 @@ import CategoryPage from "./pages/CategoryPage/CategoryPage";
 class App extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {page: "default"};
+        this.state = {
+            page: "default",
+            generalSettingsLoaded: false,
+            passwordsupport: null,
+            mediacentername: "OpenMediaCenter"
+        };
 
         // bind this to the method for being able to call methods such as this.setstate
         this.changeRootElement = this.changeRootElement.bind(this);
         this.returnToLastElement = this.returnToLastElement.bind(this);
     }
 
+    componentDidMount() {
+        const updateRequest = new FormData();
+        updateRequest.append('action', 'loadInitialData');
+
+        fetch('/api/Settings.php', {method: 'POST', body: updateRequest})
+            .then((response) => response.json()
+                .then((result) => {
+                    console.log(result);
+                    this.setState({
+                        generalSettingsLoaded: true,
+                        passwordsupport: result.passwordEnabled,
+                        mediacentername: result.mediacenter_name
+                    });
+                    console.log(this.state);
+                }));
+    }
+
     newElement = null;
+
+    constructViewBinding() {
+        return {
+            changeRootElement: this.changeRootElement,
+            returnToLastElement: this.returnToLastElement
+        };
+    }
 
     MainBody() {
         let page;
         if (this.state.page === "default") {
-            page = <HomePage viewbinding={{
-                changeRootElement: this.changeRootElement,
-                returnToLastElement: this.returnToLastElement
-            }}/>;
+            page = <HomePage viewbinding={this.constructViewBinding()}/>;
             this.mypage = page;
         } else if (this.state.page === "random") {
-            page = <RandomPage viewbinding={{
-                changeRootElement: this.changeRootElement,
-                returnToLastElement: this.returnToLastElement
-            }}/>;
+            page = <RandomPage viewbinding={this.constructViewBinding()}/>;
             this.mypage = page;
         } else if (this.state.page === "settings") {
             page = <SettingsPage/>;
             this.mypage = page;
         } else if (this.state.page === "categories") {
-            page = <CategoryPage viewbinding={{
-                changeRootElement: this.changeRootElement,
-                returnToLastElement: this.returnToLastElement
-            }}/>;
+            page = <CategoryPage viewbinding={this.constructViewBinding()}/>;
             this.mypage = page;
         } else if (this.state.page === "video") {
             // show videoelement if neccessary
@@ -61,7 +81,7 @@ class App extends React.Component {
         return (
             <div className="App">
                 <nav className="navbar navbar-expand-sm bg-primary navbar-dark">
-                    <div className="navbar-brand">OpenMediaCenter</div>
+                    <div className="navbar-brand">{this.state.mediacentername}</div>
 
                     <ul className="navbar-nav">
                         <li className="nav-item">
@@ -90,7 +110,7 @@ class App extends React.Component {
                         </li>
                     </ul>
                 </nav>
-                {this.MainBody()}
+                {this.state.generalSettingsLoaded ? this.MainBody() : "loading"}
             </div>
         );
     }

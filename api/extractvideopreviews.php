@@ -1,6 +1,7 @@
 <?php
 require 'Database.php';
 require 'TMDBMovie.php';
+require 'SSettings.php';
 
 writeLog("starting extraction!\n");
 
@@ -10,9 +11,12 @@ $tmdb = new TMDBMovie();
 $tmdbgenres = $tmdb->getAllGenres();
 
 $conn = Database::getInstance()->getConnection();
+$settings = new SSettings();
 
-$scandir = "../videos/prn/";
+// load video path from settings
+$scandir = "../" . $settings->getVideoPath();
 $arr = scandir($scandir);
+$TMDB_enabled = $settings->isTMDBGrabbingEnabled();
 
 $all = 0;
 $added = 0;
@@ -33,14 +37,21 @@ foreach ($arr as $elem) {
                 $poster = -1;
                 $genres = -1;
                 if (!is_null($dta = $tmdb->searchMovie($moviename))) {
-                    $pic = file_get_contents($tmdb->picturebase . $dta->poster_path);
                     $poster = shell_exec("ffmpeg -hide_banner -loglevel panic -ss 00:04:00 -i \"../videos/prn/$elem\" -vframes 1 -q:v 2 -f singlejpeg pipe:1 2>/dev/null");
 
-                    // error handling for download error
-                    if (!$pic) {
+                    // check if tmdb support is enabled
+                    if ($TMDB_enabled) {
+                        $pic = file_get_contents($tmdb->picturebase . $dta->poster_path);
+
+                        // error handling for download error
+                        if (!$pic) {
+                            $pic = $poster;
+                            $poster = -1;
+                            echo "Failed to load Picture from TMDB!  \n";
+                        }
+                    } else {
                         $pic = $poster;
                         $poster = -1;
-                        echo "Failed to load Picture from TMDB!  \n";
                     }
 
                     $genres = $dta->genre_ids;

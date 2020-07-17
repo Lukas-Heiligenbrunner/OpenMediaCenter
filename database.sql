@@ -29,9 +29,22 @@ create table if not exists video_tags
         foreign key (video_id) references videos (movie_id)
 );
 
+create table settings
+(
+    id enum(1) NOT NULL default 0,
+    video_path       varchar(255)                          null,
+    episode_path     varchar(255)                          null,
+    password         varchar(32) default '-1'              null,
+    mediacenter_name varchar(32) default 'OpenMediaCenter' null,
+    PRIMARY KEY (id)
+);
+
 INSERT INTO tags (tag_id, tag_name)
 VALUES (2, 'fullhd');
 INSERT INTO tags (tag_id, tag_name)
 VALUES (3, 'lowquality');
 INSERT INTO tags (tag_id, tag_name)
 VALUES (4, 'hd');
+
+INSERT INTO settings (video_path, episode_path, password, mediacenter_name)
+VALUES ('./videos/', './tvshows/', -1, 'OpenMediaCenter');

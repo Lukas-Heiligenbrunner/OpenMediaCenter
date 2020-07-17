@@ -16,26 +16,33 @@ describe('<RandomPage/>', function () {
         wrapper.unmount();
     });
 
-    it('received text renders into dom', function () {
+    it('simulate topic clicka', function () {
         const wrapper = shallow(<SettingsPage/>);
 
-        wrapper.setState({
-            text: [
-                "firstline",
-                "secline"
-            ]
-        });
+        simulateSideBarClick("General", wrapper);
+        expect(wrapper.state().currentpage).toBe("general");
+        expect(wrapper.find(".SettingsContent").find("GeneralSettings")).toHaveLength(1);
 
-        expect(wrapper.find(".indextextarea").find(".textarea-element")).toHaveLength(2);
+        simulateSideBarClick("Movies", wrapper);
+        expect(wrapper.state().currentpage).toBe("movies");
+        expect(wrapper.find(".SettingsContent").find("MovieSettings")).toHaveLength(1);
+
+        simulateSideBarClick("TV Shows", wrapper);
+        expect(wrapper.state().currentpage).toBe("tv");
+        expect(wrapper.find(".SettingsContent").find("span")).toHaveLength(1);
     });
 
-    it('test simulate reindex', function () {
-        global.fetch = prepareFetchApi({});
+    function simulateSideBarClick(name, wrapper) {
+        wrapper.find(".SettingSidebarElement").findWhere(it =>
+            it.text() === name &&
+            it.type() === "div").simulate("click");
+    }
+
+    it('simulate unknown topic', function () {
         const wrapper = shallow(<SettingsPage/>);
+        wrapper.setState({currentpage: "unknown"});
 
-        wrapper.find(".reindexbtn").simulate("click");
+        expect(wrapper.find(".SettingsContent").text()).toBe("unknown button clicked");
 
-        // initial send of reindex request to server
-        expect(global.fetch).toBeCalledTimes(1);
     });
 });
