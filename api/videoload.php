@@ -14,7 +14,7 @@ if (isset($_POST['action'])) {
     $action = $_POST['action'];
     switch ($action) {
         case "getMovies":
-            $query = "SELECT movie_id,movie_name FROM videos ORDER BY likes DESC, create_date DESC, movie_name ASC";
+            $query = "SELECT movie_id,movie_name FROM videos ORDER BY create_date DESC, movie_name ASC";
             if (isset($_POST['tag'])) {
                 $tag = $_POST['tag'];
                 if ($_POST['tag'] != "all") {
@@ -112,10 +112,12 @@ if (isset($_POST['action'])) {
 
             break;
         case "getDbSize":
+            $dbname = Database::getInstance()->getDatabaseName();
+
             $query = "SELECT table_schema AS \"Database\", 
                         ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS \"Size\" 
                         FROM information_schema.TABLES 
-                        WHERE TABLE_SCHEMA='hub'
+                        WHERE TABLE_SCHEMA='$dbname'
                         GROUP BY table_schema;";
             $result = $conn->query($query);
 
