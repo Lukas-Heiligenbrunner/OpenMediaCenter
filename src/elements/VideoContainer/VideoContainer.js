@@ -36,6 +36,7 @@ class VideoContainer extends React.Component {
                 {/*todo css for no items to show*/}
                 {this.state.loadeditems.length === 0 ?
                     "no items to show!" : null}
+                {this.props.children}
             </div>
         );
     }

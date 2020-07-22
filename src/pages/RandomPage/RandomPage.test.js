@@ -29,6 +29,11 @@ describe('<RandomPage/>', function () {
 
         const wrapper = shallow(<RandomPage/>);
 
+        // simulate at least one existing element
+        wrapper.setState({videos: [
+                {}
+            ]});
+
         wrapper.find(".btnshuffle").simulate("click");
 
         expect(global.fetch).toBeCalledTimes(2);

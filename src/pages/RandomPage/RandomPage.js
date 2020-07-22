@@ -1,9 +1,9 @@
 import React from "react";
-import Preview from "../../elements/Preview/Preview";
 import style from "./RandomPage.module.css"
 import SideBar, {SideBarTitle} from "../../elements/SideBar/SideBar";
 import Tag from "../../elements/Tag/Tag";
 import PageTitle from "../../elements/PageTitle/PageTitle";
+import VideoContainer from "../../elements/VideoContainer/VideoContainer";
 
 class RandomPage extends React.Component {
     constructor(props, context) {
@@ -35,18 +35,17 @@ class RandomPage extends React.Component {
                     ))}
                 </SideBar>
 
-                <div className='maincontent'>
-                    {this.state.videos.map(elem => (
-                        <Preview
-                            key={elem.movie_id}
-                            name={elem.movie_name}
-                            movie_id={elem.movie_id}
-                            viewbinding={this.props.viewbinding}/>
-                    ))}
-                    <div className={style.Shufflebutton}>
-                        <button onClick={() => this.shuffleclick()} className={style.btnshuffle}>Shuffle</button>
-                    </div>
-                </div>
+                {this.state.videos.length !== 0 ?
+                    <VideoContainer
+                        data={this.state.videos}
+                        viewbinding={this.props.viewbinding}>
+                        <div className={style.Shufflebutton}>
+                            <button onClick={() => this.shuffleclick()} className={style.btnshuffle}>Shuffle</button>
+                        </div>
+                    </VideoContainer>
+                    :
+                    <div>No Data found!</div>}
+
             </div>
         );
     }
@@ -65,6 +64,8 @@ class RandomPage extends React.Component {
             .then((response) => response.json()
                 .then((result) => {
                     console.log(result);
+
+                    this.setState({videos: []}); // needed to trigger rerender of main videoview
                     this.setState({
                         videos: result.rows,
                         tags: result.tags
