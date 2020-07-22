@@ -16,7 +16,6 @@ $settings = new SSettings();
 // load video path from settings
 $scandir = "../" . $settings->getVideoPath();
 $arr = scandir($scandir);
-$TMDB_enabled = $settings->isTMDBGrabbingEnabled();
 
 $all = 0;
 $added = 0;
@@ -33,38 +32,31 @@ foreach ($arr as $elem) {
 
             // insert if not available in db
             if (!mysqli_fetch_assoc($result)) {
-                // try to fetch data from TMDB
-                $poster = -1;
                 $genres = -1;
-                if (!is_null($dta = $tmdb->searchMovie($moviename))) {
-                    $poster = shell_exec("ffmpeg -hide_banner -loglevel panic -ss 00:04:00 -i \"../videos/prn/$elem\" -vframes 1 -q:v 2 -f singlejpeg pipe:1 2>/dev/null");
-
-                    // check if tmdb support is enabled
-                    if ($TMDB_enabled) {
-                        $pic = file_get_contents($tmdb->picturebase . $dta->poster_path);
+                $poster = -1; // initially disable poster supp
+                // extract poster from video
+                $pic = shell_exec("ffmpeg -hide_banner -loglevel panic -ss 00:04:00 -i \"../videos/prn/$elem\" -vframes 1 -q:v 2 -f singlejpeg pipe:1 2>/dev/null");
+                // check if tmdb grabbing is enabled
+                if ($settings->isTMDBGrabbingEnabled()) {
+                    // search in tmdb api
+                    if (!is_null($dta = $tmdb->searchMovie($moviename))) {
+                        $poster = file_get_contents($tmdb->picturebase . $dta->poster_path);
 
                         // error handling for download error
-                        if (!$pic) {
-                            $pic = $poster;
-                            $poster = -1;
+                        if (!$poster) {
                             echo "Failed to load Picture from TMDB!  \n";
                         }
+                        // store genre ids for parsing later
+                        $genres = $dta->genre_ids;
                     } else {
-                        $pic = $poster;
-                        $poster = -1;
+                        // nothing found with tmdb
+                        echo "nothing found with TMDB!\n";
+                        writeLog("nothing found with TMDB!\n");
                     }
-
-                    $genres = $dta->genre_ids;
-                } else {
-                    echo "nothing found with TMDB!\n";
-                    writeLog("nothing found with TMDB!\n");
-                    $pic = shell_exec("ffmpeg -hide_banner -loglevel panic -ss 00:04:00 -i \"../videos/prn/$elem\" -vframes 1 -q:v 2 -f singlejpeg pipe:1 2>/dev/null");
                 }
 
-                //convert video to base64
-                $image_base64 = base64_encode($pic);
-                // add base64 fileinfo
-                $image = 'data:image/jpeg;base64,' . $image_base64;
+                // convert video to base64
+                $image = 'data:image/jpeg;base64,' . base64_encode($pic);
 
                 // extract other video attributes
                 $video_attributes = _get_video_attributes($elem);
@@ -79,7 +71,7 @@ foreach ($arr as $elem) {
                 }
 
 
-                if ($poster != -1) {
+                if (!$poster) {
                     $poster_base64 = 'data:image/jpeg;base64,' . base64_encode($poster);
 
                     $query = "INSERT INTO videos(movie_name,movie_url,poster,thumbnail,quality,length) 
