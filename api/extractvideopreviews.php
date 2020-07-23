@@ -3,6 +3,9 @@ require 'Database.php';
 require 'TMDBMovie.php';
 require 'SSettings.php';
 
+// allow UTF8 characters
+setlocale(LC_ALL, 'en_US.UTF-8');
+
 writeLog("starting extraction!\n");
 
 $ffmpeg = 'ffmpeg'; //or: /usr/bin/ffmpeg , or /usr/local/bin/ffmpeg - depends on your installation (type which ffmpeg into a console to find the install path)
@@ -23,141 +26,140 @@ $deleted = 0;
 $failed = 0;
 
 foreach ($arr as $elem) {
-    if ($elem != "." && $elem != "..") {
-        if (strpos($elem, '.mp4') !== false) {
-            $moviename = substr($elem, 0, -4);
+    $ext = pathinfo($elem, PATHINFO_EXTENSION);
+    if ($ext == "mp4") {
+        $moviename = substr($elem, 0, -4);
 
-            $query = "SELECT * FROM videos WHERE movie_name = '" . mysqli_real_escape_string($conn, $moviename) . "'";
-            $result = $conn->query($query);
+        $query = "SELECT * FROM videos WHERE movie_name = '" . mysqli_real_escape_string($conn, $moviename) . "'";
+        $result = $conn->query($query);
 
-            // insert if not available in db
-            if (!mysqli_fetch_assoc($result)) {
-                $genres = -1;
-                $poster = -1; // initially disable poster supp
-                // extract poster from video
-                $pic = shell_exec("ffmpeg -hide_banner -loglevel panic -ss 00:04:00 -i \"../videos/prn/$elem\" -vframes 1 -q:v 2 -f singlejpeg pipe:1 2>/dev/null");
-                // check if tmdb grabbing is enabled
-                if ($settings->isTMDBGrabbingEnabled()) {
-                    // search in tmdb api
-                    if (!is_null($dta = $tmdb->searchMovie($moviename))) {
-                        $poster = file_get_contents($tmdb->picturebase . $dta->poster_path);
+        // insert if not available in db
+        if (!mysqli_fetch_assoc($result)) {
+            $genres = -1;
+            $poster = -1; // initially disable poster supp
+            // extract poster from video
+            $pic = shell_exec("ffmpeg -hide_banner -loglevel panic -ss 00:04:00 -i \"../videos/prn/$elem\" -vframes 1 -q:v 2 -f singlejpeg pipe:1 2>/dev/null");
+            // check if tmdb grabbing is enabled
+            if ($settings->isTMDBGrabbingEnabled()) {
+                // search in tmdb api
+                if (!is_null($dta = $tmdb->searchMovie($moviename))) {
+                    $poster = file_get_contents($tmdb->picturebase . $dta->poster_path);
 
-                        // error handling for download error
-                        if (!$poster) {
-                            echo "Failed to load Picture from TMDB!  \n";
-                        }
-                        // store genre ids for parsing later
-                        $genres = $dta->genre_ids;
-                    } else {
-                        // nothing found with tmdb
-                        echo "nothing found with TMDB!\n";
-                        writeLog("nothing found with TMDB!\n");
+                    // error handling for download error
+                    if (!$poster) {
+                        echo "Failed to load Picture from TMDB!  \n";
                     }
+                    // store genre ids for parsing later
+                    $genres = $dta->genre_ids;
+                } else {
+                    // nothing found with tmdb
+                    echo "nothing found with TMDB!\n";
+                    writeLog("nothing found with TMDB!\n");
                 }
+            }
 
-                // convert video to base64
-                $image = 'data:image/jpeg;base64,' . base64_encode($pic);
+            // convert video to base64
+            $image = 'data:image/jpeg;base64,' . base64_encode($pic);
 
-                // extract other video attributes
-                $video_attributes = _get_video_attributes($elem);
-                $duration = 0;
-                $size = 0;
-                $width = 0;
+            // extract other video attributes
+            $video_attributes = _get_video_attributes($elem);
+            $duration = 0;
+            $size = 0;
+            $width = 0;
 
-                if ($video_attributes) {
-                    $duration = $video_attributes->media->track[0]->Duration; // in seconds
-                    $size = $video_attributes->media->track[0]->FileSize; // in Bytes
-                    $width = $video_attributes->media->track[1]->Width; // width
-                }
+            if ($video_attributes) {
+                $duration = $video_attributes->media->track[0]->Duration; // in seconds
+                $size = $video_attributes->media->track[0]->FileSize; // in Bytes
+                $width = $video_attributes->media->track[1]->Width; // width
+            }
 
 
-                if (!$poster) {
-                    $poster_base64 = 'data:image/jpeg;base64,' . base64_encode($poster);
+            if (!$poster) {
+                $poster_base64 = 'data:image/jpeg;base64,' . base64_encode($poster);
 
-                    $query = "INSERT INTO videos(movie_name,movie_url,poster,thumbnail,quality,length) 
+                $query = "INSERT INTO videos(movie_name,movie_url,poster,thumbnail,quality,length) 
                             VALUES ('" . mysqli_real_escape_string($conn, $moviename) . "',
                             '" . mysqli_real_escape_string($conn, 'videos/prn/' . $elem) . "',
                             '$poster_base64',
                             '$image',
                             '$width',
                             '$duration')";
-                } else {
-                    $query = "INSERT INTO videos(movie_name,movie_url,thumbnail,quality,length) 
+            } else {
+                $query = "INSERT INTO videos(movie_name,movie_url,thumbnail,quality,length) 
                             VALUES ('" . mysqli_real_escape_string($conn, $moviename) . "',
                             '" . mysqli_real_escape_string($conn, 'videos/prn/' . $elem) . "',
                             '$image',
                             '$width',
                             '$duration')";
+            }
+
+
+            if ($conn->query($query) === TRUE) {
+                echo('successfully added ' . $elem . " to video gravity\n");
+                writeLog('successfully added ' . $elem . " to video gravity\n");
+
+                // add this entry to the default tags
+                $last_id = $conn->insert_id;
+
+                // full hd
+                if ($width >= 1900) {
+                    $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,2)";
+                    if ($conn->query($query) !== TRUE) {
+                        echo "failed to add default tag here.\n";
+                        writeLog("failed to add default tag here.\n");
+                    }
+                }
+
+                // HD
+                if ($width >= 1250 && $width < 1900) {
+                    $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,4)";
+                    if ($conn->query($query) !== TRUE) {
+                        echo "failed to add default tag here.\n";
+                        writeLog("failed to add default tag here.\n");
+                    }
+                }
+
+                // SD
+                if ($width < 1250 && $width > 0) {
+                    $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,3)";
+                    if ($conn->query($query) !== TRUE) {
+                        echo "failed to add default tag here.\n";
+                        writeLog("failed to add default tag here.\n");
+                    }
+                }
+
+                // handle tmdb genres here!
+                if ($genres != -1) {
+                    // transform genre ids in valid names
+                    foreach ($genres as $genreid) {
+                        // check if genre is already a tag in db if not insert it
+                        $tagname = array_column($tmdbgenres, 'name', 'id')[$genreid];
+                        $tagid = tagExists($tagname);
+
+                        $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,$tagid)";
+                        if ($conn->query($query) !== TRUE) {
+                            echo "failed to add $genreid tag here.\n";
+                            writeLog("failed to add $genreid tag here.\n");
+                        }
+                    }
                 }
 
 
-                if ($conn->query($query) === TRUE) {
-                    echo('successfully added ' . $elem . " to video gravity\n");
-                    writeLog('successfully added ' . $elem . " to video gravity\n");
-
-                    // add this entry to the default tags
-                    $last_id = $conn->insert_id;
-
-                    // full hd
-                    if ($width >= 1900) {
-                        $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,2)";
-                        if ($conn->query($query) !== TRUE) {
-                            echo "failed to add default tag here.\n";
-                            writeLog("failed to add default tag here.\n");
-                        }
-                    }
-
-                    // HD
-                    if ($width >= 1250 && $width < 1900) {
-                        $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,4)";
-                        if ($conn->query($query) !== TRUE) {
-                            echo "failed to add default tag here.\n";
-                            writeLog("failed to add default tag here.\n");
-                        }
-                    }
-
-                    // SD
-                    if ($width < 1250 && $width > 0) {
-                        $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,3)";
-                        if ($conn->query($query) !== TRUE) {
-                            echo "failed to add default tag here.\n";
-                            writeLog("failed to add default tag here.\n");
-                        }
-                    }
-
-                    // handle tmdb genres here!
-                    if ($genres != -1) {
-                        // transform genre ids in valid names
-                        foreach ($genres as $genreid) {
-                            // check if genre is already a tag in db if not insert it
-                            $tagname = array_column($tmdbgenres, 'name', 'id')[$genreid];
-                            $tagid = tagExists($tagname);
-
-                            $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($last_id,$tagid)";
-                            if ($conn->query($query) !== TRUE) {
-                                echo "failed to add $genreid tag here.\n";
-                                writeLog("failed to add $genreid tag here.\n");
-                            }
-                        }
-                    }
-
-
-                    $added++;
-                    $all++;
-                } else {
-                    echo('errored item: ' . $elem . "\n");
-                    writeLog('errored item: ' . $elem . "\n");
-                    echo('{"data":"' . $conn->error . '"}\n');
-                    writeLog('{"data":"' . $conn->error . '"}\n');
-                    $failed++;
-                }
-            } else {
+                $added++;
                 $all++;
+            } else {
+                echo('errored item: ' . $elem . "\n");
+                writeLog('errored item: ' . $elem . "\n");
+                echo('{"data":"' . $conn->error . '"}\n');
+                writeLog('{"data":"' . $conn->error . '"}\n');
+                $failed++;
             }
         } else {
-            echo($elem . " does not contain a .mp4 extension! - skipping \n");
-            writeLog($elem . " does not contain a .mp4 extension! - skipping \n");
+            $all++;
         }
+    } else {
+        echo($elem . " does not contain a .mp4 extension! - skipping \n");
+        writeLog($elem . " does not contain a .mp4 extension! - skipping \n");
     }
 }
 
@@ -179,7 +181,7 @@ if ($all < $r['count']) {
 
     while ($r = mysqli_fetch_assoc($result)) {
         if (!file_exists("../" . $r['movie_url'])) {
-            $query = "DELETE FROM videos WHERE movie_id='" . $r['movie_id'] . "'";
+            $query = "SET foreign_key_checks = 0; DELETE FROM videos WHERE movie_id='" . $r['movie_id'] . "'";
             if ($conn->query($query) === TRUE) {
                 echo('successfully deleted ' . $r['movie_url'] . " from video gravity\n");
                 writeLog('successfully deleted ' . $r['movie_url'] . " from video gravity\n");
