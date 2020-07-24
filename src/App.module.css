@@ -1,0 +1,51 @@
+.navitem {
+    float: left;
+    margin-left: 20px;
+
+    cursor: pointer;
+    opacity: 0.6;
+
+    font-size: large;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.navitem:hover {
+    opacity: 1;
+    transition: opacity .5s;
+}
+
+.navitem::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 2px;
+    background: #FFF;
+    transition: width .3s;
+}
+
+.navitem:hover::after {
+    width: 100%;
+}
+
+
+.navitemselected{
+    opacity: 0.85;
+}
+
+.navcontainer {
+    padding-top: 20px;
+    width: 100%;
+    padding-bottom: 30px;
+}
+
+.navbrand {
+    margin-left: 20px;
+    margin-right: 20px;
+    font-size: large;
+    font-weight: bold;
+    text-transform: capitalize;
+    float:left;
+}
+
+

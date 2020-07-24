@@ -1,0 +1,8 @@
+.navcontainer{
+    background-color: white;
+    color: black;
+}
+
+.navitem::after {
+    background: black;
+}
