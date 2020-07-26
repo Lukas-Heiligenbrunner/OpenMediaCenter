@@ -1,8 +1,5 @@
 .pageheader {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    padding-left: 22%;
-    padding-right: 12%;
+    padding: 20px 12% 20px 22%;
 }
 
 .pageheadertitle {

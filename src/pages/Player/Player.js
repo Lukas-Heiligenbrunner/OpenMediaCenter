@@ -1,10 +1,14 @@
 import React from "react";
 import style from "./Player.module.css"
+import darktheme from "../../AppDarkTheme.module.css"
+import lighttheme from "../../AppLightTheme.module.css"
+
 import {PlyrComponent} from 'plyr-react';
 import SideBar, {SideBarTitle, SideBarItem} from "../../elements/SideBar/SideBar";
 import Tag from "../../elements/Tag/Tag";
 import AddTagPopup from "../../elements/AddTagPopup/AddTagPopup";
 import PageTitle from "../../elements/PageTitle/PageTitle";
+import StaticInfos from "../../GlobalInfos";
 
 
 class Player extends React.Component {
@@ -45,6 +49,7 @@ class Player extends React.Component {
     }
 
     render() {
+        const themeStyle = StaticInfos.isDarkTheme() ? darktheme : lighttheme;
         return (
             <div id='videocontainer'>
                 <PageTitle
@@ -53,7 +58,7 @@ class Player extends React.Component {
 
                 <SideBar>
                     <SideBarTitle>Infos:</SideBarTitle>
-                    <hr/>
+                    <hr className={themeStyle.hrcolor}/>
                     <SideBarItem><b>{this.state.likes}</b> Likes!</SideBarItem>
                     {this.state.quality !== 0 ?
                         <SideBarItem><b>{this.state.quality}p</b> Quality!</SideBarItem> : null}

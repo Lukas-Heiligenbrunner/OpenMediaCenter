@@ -83,21 +83,23 @@ class App extends React.Component {
 
     render() {
         const themeStyle = StaticInfos.isDarkTheme() ? darktheme : lighttheme;
+        // add the main theme to the page body
+        document.body.className += ' ' + themeStyle.backgroundcolor;
         return (
             <div className="App">
-                <div className={[style.navcontainer, themeStyle.navcontainer].join(' ')}>
+                <div className={[style.navcontainer, themeStyle.backgroundcolor, themeStyle.textcolor, themeStyle.hrcolor].join(' ')}>
                     <div className={style.navbrand}>{this.state.mediacentername}</div>
 
-                    <div className={[style.navitem, this.state.page === "default" ? style.navitemselected : {}].join(' ')}
+                    <div className={[style.navitem, themeStyle.navitem, this.state.page === "default" ? style.navitemselected : {}].join(' ')}
                          onClick={() => this.setState({page: "default"})}>Home
                     </div>
-                    <div className={[style.navitem, this.state.page === "random" ? style.navitemselected : {}].join(' ')}
+                    <div className={[style.navitem, themeStyle.navitem, this.state.page === "random" ? style.navitemselected : {}].join(' ')}
                          onClick={() => this.setState({page: "random"})}>Random Video
                     </div>
-                    <div className={[style.navitem, this.state.page === "categories" ? style.navitemselected : {}].join(' ')}
+                    <div className={[style.navitem, themeStyle.navitem, this.state.page === "categories" ? style.navitemselected : {}].join(' ')}
                          onClick={() => this.setState({page: "categories"})}>Categories
                     </div>
-                    <div className={[style.navitem, this.state.page === "settings" ? style.navitemselected : {}].join(' ')}
+                    <div className={[style.navitem, themeStyle.navitem, this.state.page === "settings" ? style.navitemselected : {}].join(' ')}
                          onClick={() => this.setState({page: "settings"})}>Settings
                     </div>
                 </div>

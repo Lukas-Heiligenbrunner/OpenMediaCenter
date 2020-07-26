@@ -1,8 +1,19 @@
-.navcontainer{
+.navitem::after {
+    background: black;
+}
+
+.backgroundcolor {
     background-color: white;
+}
+
+.textcolor {
     color: black;
 }
 
-.navitem::after {
-    background: black;
+.hrcolor {
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.previewhover:hover{
+    box-shadow: rgba(2, 12, 27, 0.7) 0 0 0 5px;
 }
