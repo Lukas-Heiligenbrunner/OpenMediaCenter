@@ -1,9 +1,17 @@
+/**
+ * The coloring elements for dark theme
+ */
+
 .backgroundcolor{
     background-color: #141520;
 }
 
 .textcolor{
     color: white;
+}
+
+.subtextcolor{
+    color: #dedad6;
 }
 
 .navitem::after {

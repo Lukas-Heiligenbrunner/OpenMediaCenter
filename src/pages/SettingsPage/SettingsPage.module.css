@@ -3,8 +3,11 @@
     float: left;
     width: 10%;
     background-color: #d3dcef;
-    min-height: calc(100vh - 56px);
+    min-height: calc(100vh - 62px);
     min-width: 110px;
+
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 .SettingsSidebarTitle {

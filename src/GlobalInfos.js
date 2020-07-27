@@ -1,7 +1,13 @@
 class GlobalInfos {
+    #darktheme = false;
+
     isDarkTheme() {
-        return true;
+        return this.#darktheme;
     };
+
+    enableDarkTheme(enable = true){
+        this.#darktheme = enable;
+    }
 }
 
 const StaticInfos = new GlobalInfos();

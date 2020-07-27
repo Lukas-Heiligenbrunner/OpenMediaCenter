@@ -1,6 +1,9 @@
 import React from "react";
 import {Button, Col, Form} from "react-bootstrap";
 import style from "./GeneralSettings.module.css"
+import StaticInfos from "../../GlobalInfos";
+import darktheme from "../../AppDarkTheme.module.css";
+import lighttheme from "../../AppLightTheme.module.css";
 
 class GeneralSettings extends React.Component {
     constructor(props) {
@@ -37,9 +40,10 @@ class GeneralSettings extends React.Component {
     }
 
     render() {
+        const themeStyle = StaticInfos.isDarkTheme() ? darktheme : lighttheme;
         return (
             <>
-                <div className={style.GeneralForm}>
+                <div className={style.GeneralForm + ' ' + themeStyle.subtextcolor}>
                     <Form data-testid='mainformsettings' onSubmit={(e) => {
                         e.preventDefault();
                         this.saveSettings();

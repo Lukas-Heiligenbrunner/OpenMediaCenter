@@ -1,3 +1,7 @@
+/**
+ * The coloring elements for light theme
+ */
+
 .navitem::after {
     background: black;
 }
@@ -10,10 +14,14 @@
     color: black;
 }
 
+.subtextcolor {
+    color: #212529;
+}
+
 .hrcolor {
     border-color: rgba(0, 0, 0, 0.1);
 }
 
-.previewhover:hover{
+.previewhover:hover {
     box-shadow: rgba(2, 12, 27, 0.7) 0 0 0 5px;
 }
