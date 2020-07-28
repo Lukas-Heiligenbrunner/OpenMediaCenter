@@ -74,6 +74,14 @@ class GeneralSettings extends React.Component {
                             }}
                         />
 
+                        {this.state.passwordsupport ?
+                            <Form.Group data-testid="passwordfield">
+                                <Form.Label>Password</Form.Label>
+                                <Form.Control type="password" placeholder="**********" value={this.state.password}
+                                              onChange={(e) => this.setState({password: e.target.value})}/>
+                            </Form.Group> : null
+                        }
+
                         <Form.Check
                             type="switch"
                             id="custom-switch-2"
@@ -85,13 +93,18 @@ class GeneralSettings extends React.Component {
                             }}
                         />
 
-                        {this.state.passwordsupport ?
-                            <Form.Group data-testid="passwordfield">
-                                <Form.Label>Password</Form.Label>
-                                <Form.Control type="password" placeholder="**********" value={this.state.password}
-                                              onChange={(e) => this.setState({password: e.target.value})}/>
-                            </Form.Group> : null
-                        }
+                        <Form.Check
+                            type="switch"
+                            id="custom-switch-3"
+                            data-testid='darktheme-switch'
+                            label="Enable Dark-Theme"
+                            checked={StaticInfos.isDarkTheme()}
+                            onChange={() => {
+                                StaticInfos.enableDarkTheme(!StaticInfos.isDarkTheme());
+                                this.forceUpdate();
+                                // todo initiate rerender
+                            }}
+                        />
 
                         <Form.Group className={style.mediacenternameform} data-testid="nameform">
                             <Form.Label>The name of the Mediacenter</Form.Label>

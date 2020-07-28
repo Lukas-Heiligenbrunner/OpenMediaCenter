@@ -34,13 +34,14 @@ class App extends React.Component {
         fetch('/api/Settings.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
-                    console.log(result);
+                    // set theme
+                    StaticInfos.enableDarkTheme(result.DarkMode);
+
                     this.setState({
                         generalSettingsLoaded: true,
                         passwordsupport: result.passwordEnabled,
                         mediacentername: result.mediacenter_name
                     });
-                    console.log(this.state);
                 }));
     }
 
@@ -84,7 +85,7 @@ class App extends React.Component {
     render() {
         const themeStyle = StaticInfos.isDarkTheme() ? darktheme : lighttheme;
         // add the main theme to the page body
-        document.body.className += ' ' + themeStyle.backgroundcolor;
+        document.body.className = themeStyle.backgroundcolor;
         return (
             <div className="App">
                 <div className={[style.navcontainer, themeStyle.backgroundcolor, themeStyle.textcolor, themeStyle.hrcolor].join(' ')}>

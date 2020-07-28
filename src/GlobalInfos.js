@@ -1,5 +1,5 @@
 class GlobalInfos {
-    #darktheme = false;
+    #darktheme = true;
 
     isDarkTheme() {
         return this.#darktheme;
@@ -11,6 +11,6 @@ class GlobalInfos {
 }
 
 const StaticInfos = new GlobalInfos();
-Object.freeze(StaticInfos);
+//Object.freeze(StaticInfos);
 
 export default StaticInfos;

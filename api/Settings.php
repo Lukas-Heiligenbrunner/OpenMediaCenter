@@ -59,6 +59,8 @@ if (isset($_POST['action'])) {
                 $r['passwordEnabled'] = false;
             }
             unset($r['password']);
+
+            $r['DarkMode'] = ($r['DarkMode'] != '0');
             echo json_encode($r);
             break;
     }
