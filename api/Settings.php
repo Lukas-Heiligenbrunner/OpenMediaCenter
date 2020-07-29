@@ -29,13 +29,15 @@ if (isset($_POST['action'])) {
             $videopath = $_POST['videopath'];
             $tvshowpath = $_POST['tvshowpath'];
             $tmdbsupport = $_POST['tmdbsupport'];
+            $darkmodeenabled = $_POST['darkmodeenabled'];
 
             $query = "UPDATE settings SET 
                         video_path='$videopath',
                         episode_path='$tvshowpath',
                         password='$password',
                         mediacenter_name='$mediacentername',
-                        TMDB_grabbing=$tmdbsupport
+                        TMDB_grabbing=$tmdbsupport, 
+                        DarkMode=$darkmodeenabled
                     WHERE 1";
 
             if ($conn->query($query) === true) {

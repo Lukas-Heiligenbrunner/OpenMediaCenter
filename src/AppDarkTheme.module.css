@@ -2,15 +2,15 @@
  * The coloring elements for dark theme
  */
 
-.backgroundcolor{
+.backgroundcolor {
     background-color: #141520;
 }
 
-.textcolor{
+.textcolor {
     color: white;
 }
 
-.subtextcolor{
+.subtextcolor {
     color: #dedad6;
 }
 
@@ -18,11 +18,11 @@
     background: white;
 }
 
-.hrcolor{
-    border-color: rgba(255,255,255,.1);
+.hrcolor {
+    border-color: rgba(255, 255, 255, .1);
 }
 
-.previewhover:hover{
+.previewhover:hover {
     box-shadow: rgba(255, 255, 255, 0.7) 0 0 0 5px;
 }
 
