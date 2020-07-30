@@ -1,31 +1,30 @@
 <?php
-require 'Database.php';
+require_once 'RequestBase.php';
 
-$conn = Database::getInstance()->getConnection();
-
-if (isset($_POST['action'])) {
-    $action = $_POST['action'];
-    switch ($action) {
-        case "getAllTags":
+class Tags extends RequestBase {
+    function initHandlers() {
+        $this->addActionHandler("getAllTags", function () {
             $query = "SELECT tag_name,tag_id from tags";
 
-            $result = $conn->query($query);
+            $result = $this->conn->query($query);
             $rows = array();
             while ($r = mysqli_fetch_assoc($result)) {
                 array_push($rows, $r);
             }
             echo json_encode($rows);
+        });
 
-            break;
-
-        case "createTag":
+        $this->addActionHandler("createTag", function (){
             $query = "INSERT INTO tags (tag_name) VALUES ('" . $_POST['tagname'] . "')";
 
-            if ($conn->query($query) === TRUE) {
+            if ($this->conn->query($query) === TRUE) {
                 echo('{"result":"success"}');
             } else {
-                echo('{"result":"' . $conn->error . '"}');
+                echo('{"result":"' . $this->conn->error . '"}');
             }
-            break;
+        });
     }
 }
+
+$tags = new Tags();
+$tags->handleAction();
