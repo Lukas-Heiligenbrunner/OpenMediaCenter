@@ -2,8 +2,8 @@
 require 'RequestBase.php';
 
 class Settings extends RequestBase {
-    function initIdentifiers() {
-        $this->addIdentifier("loadGeneralSettings", function () {
+    function initHandlers() {
+        $this->addActionHandler("loadGeneralSettings", function () {
             $query = "SELECT * from settings";
 
             $result = $this->conn->query($query);
@@ -19,7 +19,7 @@ class Settings extends RequestBase {
             echo json_encode($r);
         });
 
-        $this->addIdentifier("saveGeneralSettings", function () {
+        $this->addActionHandler("saveGeneralSettings", function () {
             $mediacentername = $_POST['mediacentername'];
             $password = $_POST['password'];
             $videopath = $_POST['videopath'];
@@ -41,7 +41,7 @@ class Settings extends RequestBase {
             }
         });
 
-        $this->addIdentifier("loadInitialData", function () {
+        $this->addActionHandler("loadInitialData", function () {
             $query = "SELECT * from settings";
 
             $result = $this->conn->query($query);
