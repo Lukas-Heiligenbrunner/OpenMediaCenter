@@ -14,7 +14,7 @@ class Video extends RequestBase {
 
     function initHandlers() {
         $this->addActionHandler("getMovies", function () {
-            $query = "SELECT movie_id,movie_name FROM videos ORDER BY create_date DESC, movie_name ASC";
+            $query = "SELECT movie_id,movie_name FROM videos ORDER BY create_date DESC, movie_name";
             if (isset($_POST['tag'])) {
                 $tag = $_POST['tag'];
                 if ($_POST['tag'] != "all") {
@@ -22,7 +22,7 @@ class Video extends RequestBase {
                             INNER JOIN video_tags vt on videos.movie_id = vt.video_id
                             INNER JOIN tags t on vt.tag_id = t.tag_id
                             WHERE t.tag_name = '$tag'
-                            ORDER BY likes DESC, create_date ASC, movie_name ASC";
+                            ORDER BY likes DESC, create_date, movie_name";
                 }
             }
             $result = $this->conn->query($query);
@@ -67,7 +67,7 @@ class Video extends RequestBase {
 
             $query = "SELECT movie_id,movie_name FROM videos 
                         WHERE movie_name LIKE '%$search%'
-                        ORDER BY likes DESC, create_date DESC, movie_name ASC";
+                        ORDER BY likes DESC, create_date DESC, movie_name";
             $result = $this->conn->query($query);
             $rows = array();
             while ($r = mysqli_fetch_assoc($result)) {

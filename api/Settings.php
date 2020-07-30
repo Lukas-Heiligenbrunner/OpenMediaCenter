@@ -7,9 +7,6 @@ class Settings extends RequestBase {
             $query = "SELECT * from settings";
 
             $result = $this->conn->query($query);
-            if ($result->num_rows > 1) {
-                // todo throw error
-            }
 
             $r = mysqli_fetch_assoc($result);
             // booleans need to be set manually
@@ -45,9 +42,6 @@ class Settings extends RequestBase {
             $query = "SELECT * from settings";
 
             $result = $this->conn->query($query);
-            if ($result->num_rows > 1) {
-                // todo throw error
-            }
 
             $r = mysqli_fetch_assoc($result);
             if ($r['password'] != "-1") {
