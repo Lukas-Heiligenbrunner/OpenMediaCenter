@@ -28,6 +28,7 @@ build:
     expire_in: 7 days
     paths:
       - build/
+  needs: ["prepare"]
 
 test:
   stage: test
@@ -37,6 +38,7 @@ test:
     reports:
       junit:
         - ./junit.xml
+  needs: ["prepare"]
 
 coverage:
   stage: test
@@ -46,3 +48,4 @@ coverage:
     reports:
       cobertura:
         - ./coverage/cobertura-coverage.xml
+  needs: ["prepare"]
