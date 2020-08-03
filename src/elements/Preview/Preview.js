@@ -38,8 +38,8 @@ class Preview extends React.Component {
     render() {
         const themeStyle = StaticInfos.isDarkTheme() ? darktheme : lighttheme;
         return (
-            <div className={style.videopreview + ' ' + themeStyle.previewhover} onClick={() => this.itemClick()}>
-                <div className={style.previewtitle}>{this.state.name}</div>
+            <div className={style.videopreview + ' ' + themeStyle.secbackground + ' '+ themeStyle.preview} onClick={() => this.itemClick()}>
+                <div className={style.previewtitle + ' '+ themeStyle.lighttextcolor}>{this.state.name}</div>
                 <div className={style.previewpic}>
                     {this.state.previewpicture != null ?
                         <img className={style.previewimage}

@@ -18,10 +18,18 @@
     color: #212529;
 }
 
+.lighttextcolor {
+    color: #3d3d3d;
+}
+
 .hrcolor {
     border-color: rgba(0, 0, 0, 0.1);
 }
 
-.previewhover:hover {
+.secbackground {
+    background-color: #a8c3ff;
+}
+
+.preview:hover {
     box-shadow: rgba(2, 12, 27, 0.7) 0 0 0 5px;
 }
