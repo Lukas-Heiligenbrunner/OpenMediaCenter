@@ -30,6 +30,10 @@ build:
       - build/
   needs: ["prepare"]
 
+sast:
+  stage: test
+  needs: []
+
 test:
   stage: test
   script:
