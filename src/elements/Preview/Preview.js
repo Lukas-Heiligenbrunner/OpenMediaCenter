@@ -3,8 +3,6 @@ import style from "./Preview.module.css";
 import Player from "../../pages/Player/Player";
 import {Spinner} from "react-bootstrap";
 import StaticInfos from "../../GlobalInfos";
-import darktheme from "../../AppDarkTheme.module.css";
-import lighttheme from "../../AppLightTheme.module.css";
 
 class Preview extends React.Component {
     constructor(props, context) {
@@ -36,7 +34,7 @@ class Preview extends React.Component {
     }
 
     render() {
-        const themeStyle = StaticInfos.isDarkTheme() ? darktheme : lighttheme;
+        const themeStyle = StaticInfos.getThemeStyle();
         return (
             <div className={style.videopreview + ' ' + themeStyle.secbackground + ' '+ themeStyle.preview} onClick={() => this.itemClick()}>
                 <div className={style.previewtitle + ' '+ themeStyle.lighttextcolor}>{this.state.name}</div>
@@ -67,9 +65,10 @@ class Preview extends React.Component {
 
 export class TagPreview extends React.Component {
     render() {
+        const themeStyle = StaticInfos.getThemeStyle();
         return (
-            <div className={style.videopreview + ' ' + style.tagpreview} onClick={() => this.itemClick()}>
-                <div className={style.tagpreviewtitle}>
+            <div className={style.videopreview + ' ' + style.tagpreview + ' ' + themeStyle.secbackground + ' '+ themeStyle.preview} onClick={() => this.itemClick()}>
+                <div className={style.tagpreviewtitle + ' ' + themeStyle.lighttextcolor}>
                     {this.props.name}
                 </div>
             </div>

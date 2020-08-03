@@ -30,6 +30,10 @@
     background-color: #a8c3ff;
 }
 
+.thirdbackground {
+    background-color: #8ca3fc;
+}
+
 .preview:hover {
     box-shadow: rgba(2, 12, 27, 0.7) 0 0 0 5px;
 }

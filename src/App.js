@@ -6,8 +6,6 @@ import StaticInfos from "./GlobalInfos";
 // include bootstraps css
 import 'bootstrap/dist/css/bootstrap.min.css';
 import style from './App.module.css'
-import lighttheme from './AppLightTheme.module.css'
-import darktheme from './AppDarkTheme.module.css'
 
 import SettingsPage from "./pages/SettingsPage/SettingsPage";
 import CategoryPage from "./pages/CategoryPage/CategoryPage";
@@ -83,7 +81,7 @@ class App extends React.Component {
     }
 
     render() {
-        const themeStyle = StaticInfos.isDarkTheme() ? darktheme : lighttheme;
+        const themeStyle = StaticInfos.getThemeStyle();
         // add the main theme to the page body
         document.body.className = themeStyle.backgroundcolor;
         return (

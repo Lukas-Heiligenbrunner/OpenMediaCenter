@@ -1,7 +1,5 @@
 import React from "react";
 import style from "./PageTitle.module.css"
-import darktheme from "../../AppDarkTheme.module.css"
-import lighttheme from "../../AppLightTheme.module.css"
 import StaticInfos from "../../GlobalInfos";
 
 class PageTitle extends React.Component {
@@ -13,7 +11,7 @@ class PageTitle extends React.Component {
     }
 
     render() {
-        const themeStyle = StaticInfos.isDarkTheme() ? darktheme : lighttheme;
+        const themeStyle = StaticInfos.getThemeStyle();
         return (
             <div className={style.pageheader + ' ' + themeStyle.backgroundcolor}>
                 <span className={style.pageheadertitle + ' ' + themeStyle.textcolor}>{this.props.title}</span>
@@ -21,8 +19,23 @@ class PageTitle extends React.Component {
                 <>
                     {this.props.children}
                 </>
-                <hr className={themeStyle.hrcolor}/>
+                <Line/>
             </div>
+        );
+    }
+}
+
+/**
+ * class to override default <hr> color and styling
+ * use this for horizontal lines to use the current active theming
+ */
+export class Line extends React.Component {
+    render() {
+        const themeStyle = StaticInfos.getThemeStyle();
+        return (
+            <>
+                <hr className={themeStyle.hrcolor}/>
+            </>
         );
     }
 }

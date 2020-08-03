@@ -1,14 +1,11 @@
 import React from "react";
 import style from "./Player.module.css"
-import darktheme from "../../AppDarkTheme.module.css"
-import lighttheme from "../../AppLightTheme.module.css"
 
 import {PlyrComponent} from 'plyr-react';
 import SideBar, {SideBarTitle, SideBarItem} from "../../elements/SideBar/SideBar";
 import Tag from "../../elements/Tag/Tag";
 import AddTagPopup from "../../elements/AddTagPopup/AddTagPopup";
-import PageTitle from "../../elements/PageTitle/PageTitle";
-import StaticInfos from "../../GlobalInfos";
+import PageTitle, {Line} from "../../elements/PageTitle/PageTitle";
 
 
 class Player extends React.Component {
@@ -49,7 +46,6 @@ class Player extends React.Component {
     }
 
     render() {
-        const themeStyle = StaticInfos.isDarkTheme() ? darktheme : lighttheme;
         return (
             <div id='videocontainer'>
                 <PageTitle
@@ -58,13 +54,13 @@ class Player extends React.Component {
 
                 <SideBar>
                     <SideBarTitle>Infos:</SideBarTitle>
-                    <hr className={themeStyle.hrcolor}/>
+                    <Line/>
                     <SideBarItem><b>{this.state.likes}</b> Likes!</SideBarItem>
                     {this.state.quality !== 0 ?
                         <SideBarItem><b>{this.state.quality}p</b> Quality!</SideBarItem> : null}
                     {this.state.length !== 0 ?
                         <SideBarItem><b>{Math.round(this.state.length / 60)}</b> Minutes of length!</SideBarItem>: null}
-                    <hr/>
+                    <Line/>
                     <SideBarTitle>Tags:</SideBarTitle>
                     {this.state.tags.map((m) => (
                         <Tag

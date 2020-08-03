@@ -1,3 +1,6 @@
+import darktheme from "./AppDarkTheme.module.css";
+import lighttheme from "./AppLightTheme.module.css";
+
 class GlobalInfos {
     #darktheme = true;
 
@@ -7,6 +10,10 @@ class GlobalInfos {
 
     enableDarkTheme(enable = true){
         this.#darktheme = enable;
+    }
+
+    getThemeStyle(){
+        return this.isDarkTheme() ? darktheme : lighttheme;
     }
 }
 

@@ -4,7 +4,7 @@ import Tag from "../../elements/Tag/Tag";
 import VideoContainer from "../../elements/VideoContainer/VideoContainer";
 
 import style from "./HomePage.module.css"
-import PageTitle from "../../elements/PageTitle/PageTitle";
+import PageTitle, {Line} from "../../elements/PageTitle/PageTitle";
 
 class HomePage extends React.Component {
     constructor(props, context) {
@@ -138,13 +138,13 @@ class HomePage extends React.Component {
                 </PageTitle>
                 <SideBar>
                     <SideBarTitle>Infos:</SideBarTitle>
-                    <hr/>
+                    <Line/>
                     <SideBarItem><b>{this.state.sideinfo.videonr}</b> Videos Total!</SideBarItem>
                     <SideBarItem><b>{this.state.sideinfo.fullhdvideonr}</b> FULL-HD Videos!</SideBarItem>
                     <SideBarItem><b>{this.state.sideinfo.hdvideonr}</b> HD Videos!</SideBarItem>
                     <SideBarItem><b>{this.state.sideinfo.sdvideonr}</b> SD Videos!</SideBarItem>
                     <SideBarItem><b>{this.state.sideinfo.tagnr}</b> different Tags!</SideBarItem>
-                    <hr/>
+                    <Line/>
                     <SideBarTitle>Default Tags:</SideBarTitle>
                     <Tag viewbinding={this.props.viewbinding}>All</Tag>
                     <Tag viewbinding={this.props.viewbinding}>FullHd</Tag>

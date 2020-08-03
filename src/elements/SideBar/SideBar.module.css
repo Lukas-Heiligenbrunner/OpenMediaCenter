@@ -4,7 +4,6 @@
     padding: 20px;
     margin-top: 25px;
     margin-left: 15px;
-    background-color: #b4c7fe;
     border-radius: 20px;
     border: 2px #3574fe solid;
     overflow: hidden;
@@ -17,7 +16,6 @@
 
 .sidebarinfo {
     margin-top: 5px;
-    background-color: #8ca3fc;
     border-radius: 5px;
     padding: 2px 10px 2px 15px;
     width: 220px;
