@@ -31,8 +31,8 @@ class SettingsPage extends React.Component {
         const themestyle = StaticInfos.getThemeStyle();
         return (
             <div>
-                <div className={style.SettingsSidebar + ' ' + themestyle.secbackground}> {/* todo: test style */}
-                    <div className={style.SettingsSidebarTitle}>Settings</div>
+                <div className={style.SettingsSidebar + ' ' + themestyle.secbackground}>
+                    <div className={style.SettingsSidebarTitle + ' ' + themestyle.lighttextcolor}>Settings</div>
                     <div onClick={() => this.setState({currentpage: "general"})}
                          className={style.SettingSidebarElement}>General
                     </div>

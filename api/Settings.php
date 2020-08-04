@@ -18,7 +18,7 @@ if (isset($_POST['action'])) {
 
             $r = mysqli_fetch_assoc($result);
             // booleans need to be set manually
-            $r['passwordEnabled']  = $r['password'] != "-1";
+            $r['passwordEnabled'] = $r['password'] != "-1";
             $r['TMDB_grabbing'] = ($r['TMDB_grabbing'] != '0');
 
             echo json_encode($r);
@@ -55,14 +55,10 @@ if (isset($_POST['action'])) {
             }
 
             $r = mysqli_fetch_assoc($result);
-            if ($r['password'] != "-1") {
-                $r['passwordEnabled'] = true;
-            } else {
-                $r['passwordEnabled'] = false;
-            }
-            unset($r['password']);
 
-            $r['DarkMode'] = ($r['DarkMode'] != '0');
+            $r['passwordEnabled'] = $r['password'] != "-1";
+            unset($r['password']);
+            $r['DarkMode'] = (bool)($r['DarkMode'] != '0');
             echo json_encode($r);
             break;
     }

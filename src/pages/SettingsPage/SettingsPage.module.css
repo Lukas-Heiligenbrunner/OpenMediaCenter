@@ -2,7 +2,6 @@
     padding-top: 20px;
     float: left;
     width: 10%;
-    background-color: #d3dcef;
     min-height: calc(100vh - 62px);
     min-width: 110px;
 
@@ -28,7 +27,7 @@
 .SettingSidebarElement {
     margin: 10px 5px 5px;
     padding: 5px;
-    background-color: #a8b2de;
+    background-color: #919fd9;
     text-align: center;
     font-weight: bold;
     border-radius: 7px;
