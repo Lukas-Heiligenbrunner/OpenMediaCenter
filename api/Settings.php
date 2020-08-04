@@ -1,20 +1,12 @@
 <?php
-require 'Database.php';
-require 'SSettings.php';
+require 'RequestBase.php';
 
-$conn = Database::getInstance()->getConnection();
-$settings = new SSettings();
-
-if (isset($_POST['action'])) {
-    $action = $_POST['action'];
-    switch ($action) {
-        case "loadGeneralSettings":
+class Settings extends RequestBase {
+    function initHandlers() {
+        $this->addActionHandler("loadGeneralSettings", function () {
             $query = "SELECT * from settings";
 
-            $result = $conn->query($query);
-            if ($result->num_rows > 1) {
-                // todo throw error
-            }
+            $result = $this->conn->query($query);
 
             $r = mysqli_fetch_assoc($result);
             // booleans need to be set manually
@@ -22,8 +14,9 @@ if (isset($_POST['action'])) {
             $r['TMDB_grabbing'] = ($r['TMDB_grabbing'] != '0');
 
             echo json_encode($r);
-            break;
-        case "saveGeneralSettings":
+        });
+
+        $this->addActionHandler("saveGeneralSettings", function () {
             $mediacentername = $_POST['mediacentername'];
             $password = $_POST['password'];
             $videopath = $_POST['videopath'];
@@ -40,19 +33,17 @@ if (isset($_POST['action'])) {
                         DarkMode=$darkmodeenabled
                     WHERE 1";
 
-            if ($conn->query($query) === true) {
+            if ($this->conn->query($query) === true) {
                 echo '{"success": true}';
             } else {
                 echo '{"success": true}';
             }
-            break;
-        case "loadInitialData":
+        });
+
+        $this->addActionHandler("loadInitialData", function () {
             $query = "SELECT * from settings";
 
-            $result = $conn->query($query);
-            if ($result->num_rows > 1) {
-                // todo throw error
-            }
+            $result = $this->conn->query($query);
 
             $r = mysqli_fetch_assoc($result);
 
@@ -60,6 +51,9 @@ if (isset($_POST['action'])) {
             unset($r['password']);
             $r['DarkMode'] = (bool)($r['DarkMode'] != '0');
             echo json_encode($r);
-            break;
+        });
     }
 }
+
+$sett = new Settings();
+$sett->handleAction();

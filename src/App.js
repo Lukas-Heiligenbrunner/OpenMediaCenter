@@ -40,6 +40,8 @@ class App extends React.Component {
                         passwordsupport: result.passwordEnabled,
                         mediacentername: result.mediacenter_name
                     });
+                    // set tab title to received mediacenter name
+                    document.title = result.mediacenter_name;
                 }));
     }
 
