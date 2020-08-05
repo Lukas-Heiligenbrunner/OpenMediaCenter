@@ -11,6 +11,7 @@ cache:
 
 include:
   - template: SAST.gitlab-ci.yml
+  - template: Code-Quality.gitlab-ci.yml
 
 variables:
   SAST_DISABLE_DIND: "true"
