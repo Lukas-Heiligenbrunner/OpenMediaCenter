@@ -65,5 +65,6 @@ deploy_test1:
     - ssh-add <(echo "$SSH_PRIVATE_KEY")
     - mkdir -p ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-    - ssh root@192.168.0.42 "cd /var/www/html/ && git fetch origin && git rebase origin/master && exit"
+    - scp -r build/* root@192.168.0.42:/var/www/html/
+    - scp -r api/ root@192.168.0.42:/var/www/html/
 
