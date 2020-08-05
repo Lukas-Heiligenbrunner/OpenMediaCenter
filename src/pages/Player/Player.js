@@ -2,28 +2,13 @@ import React from "react";
 import style from "./Player.module.css"
 
 import {PlyrComponent} from 'plyr-react';
-import SideBar, {SideBarTitle, SideBarItem} from "../../elements/SideBar/SideBar";
+import SideBar, {SideBarItem, SideBarTitle} from "../../elements/SideBar/SideBar";
 import Tag from "../../elements/Tag/Tag";
 import AddTagPopup from "../../elements/AddTagPopup/AddTagPopup";
 import PageTitle, {Line} from "../../elements/PageTitle/PageTitle";
 
 
 class Player extends React.Component {
-    constructor(props, context) {
-        super(props, context);
-
-        this.state = {
-            sources: null,
-            movie_id: null,
-            movie_name: null,
-            likes: null,
-            quality: null,
-            length: null,
-            tags: [],
-            popupvisible: false
-        };
-    }
-
     options = {
         controls: [
             'play-large', // The large play button in the center
@@ -40,6 +25,21 @@ class Player extends React.Component {
             'fullscreen', // Toggle fullscreen
         ]
     };
+
+    constructor(props, context) {
+        super(props, context);
+
+        this.state = {
+            sources: null,
+            movie_id: null,
+            movie_name: null,
+            likes: null,
+            quality: null,
+            length: null,
+            tags: [],
+            popupvisible: false
+        };
+    }
 
     componentDidMount() {
         this.fetchMovieData();

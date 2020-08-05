@@ -1,42 +1,41 @@
 .SettingsSidebar {
-    padding-top: 20px;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
     float: left;
-    width: 10%;
     min-height: calc(100vh - 62px);
     min-width: 110px;
-
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
+    padding-top: 20px;
+    width: 10%;
 }
 
 .SettingsSidebarTitle {
-    text-align: center;
-    font-weight: bold;
-    text-transform: uppercase;
     font-size: larger;
+    font-weight: bold;
     margin-bottom: 25px;
+    text-align: center;
+    text-transform: uppercase;
 }
 
 .SettingsContent {
     float: left;
-    width: 80%;
     padding-left: 30px;
     padding-top: 30px;
+    width: 80%;
 }
 
 .SettingSidebarElement {
+    background-color: #919fd9;
+    border-radius: 7px;
+    font-weight: bold;
     margin: 10px 5px 5px;
     padding: 5px;
-    background-color: #919fd9;
     text-align: center;
-    font-weight: bold;
-    border-radius: 7px;
 }
 
 .SettingSidebarElement:hover {
-    font-weight: bolder;
     background-color: #7d8dd4;
     box-shadow: #7d8dd4 0 0 0 5px;
-    transition: all 300ms;
     cursor: pointer;
+    font-weight: bolder;
+    transition: all 300ms;
 }

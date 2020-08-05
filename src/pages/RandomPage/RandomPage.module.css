@@ -1,19 +1,19 @@
 .Shufflebutton {
-    width: 100%;
     align-content: center;
+    width: 100%;
 }
 
 .btnshuffle {
     background-color: #39a945;
 
-    color: white;
-    margin-top: 20px;
-    margin-left: 45%;
     border: none;
     border-radius: 10px;
-    padding: 15px 25px 15px 25px;
-    font-weight: bold;
+    color: white;
     font-size: larger;
+    font-weight: bold;
+    margin-left: 45%;
+    margin-top: 20px;
+    padding: 15px 25px 15px 25px;
 }
 
 .btnshuffle:focus {

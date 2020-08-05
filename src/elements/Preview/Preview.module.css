@@ -1,15 +1,17 @@
 .previewtitle {
     height: 20px;
     text-align: center;
-    font-weight: bold;
-    max-width: 266px;
     font-size: smaller;
+    font-weight: bold;
+    height: 20px;
+    max-width: 266px;
+    text-align: center;
 }
 
 .previewpic {
-    min-width: 266px;
-    min-height: 150px;
     height: 80%;
+    min-height: 150px;
+    min-width: 266px;
     overflow: hidden;
     text-align: center;
 }
@@ -17,14 +19,14 @@
 .loadAnimation {
     display: inline-block;
     line-height: 150px;
-    vertical-align: center;
+    vertical-align: middle;
 }
 
 .previewimage {
-    min-height: 150px;
     max-height: 400px;
-    min-width: 266px;
     max-width: 410px;
+    min-height: 150px;
+    min-width: 266px;
 }
 
 .previewbottom {
@@ -32,12 +34,12 @@
 }
 
 .videopreview {
+    border-radius: 20px;
+    cursor: pointer;
     float: left;
     margin-left: 25px;
     margin-top: 25px;
-    cursor: pointer;
     opacity: 0.85;
-    border-radius: 20px;
 }
 
 .videopreview:hover {
@@ -46,11 +48,11 @@
 }
 
 .tagpreview {
-    text-transform: uppercase;
-    font-weight: bolder;
     font-size: x-large;
-    text-align: center;
+    font-weight: bolder;
     height: 150px;
+    text-align: center;
+    text-transform: uppercase;
     width: 266px;
 }
 

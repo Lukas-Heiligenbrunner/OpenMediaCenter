@@ -8,3 +8,16 @@ import {configure} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
 configure({adapter: new Adapter()});
+
+global.prepareFetchApi = (response) => {
+    const mockJsonPromise = Promise.resolve(response);
+    const mockFetchPromise = Promise.resolve({
+        json: () => mockJsonPromise,
+    });
+    return (jest.fn().mockImplementation(() => mockFetchPromise));
+}
+
+global.prepareFailingFetchApi = () => {
+    const mockFetchPromise = Promise.reject("myreason");
+    return (jest.fn().mockImplementation(() => mockFetchPromise));
+}

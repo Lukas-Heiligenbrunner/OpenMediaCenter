@@ -5,14 +5,6 @@ import "@testing-library/jest-dom"
 import {shallow} from 'enzyme'
 
 describe('<Tag/>', function () {
-    function prepareFetchApi(response) {
-        const mockJsonPromise = Promise.resolve(response);
-        const mockFetchPromise = Promise.resolve({
-            json: () => mockJsonPromise,
-        });
-        return (jest.fn().mockImplementation(() => mockFetchPromise));
-    }
-
     it('renders without crashing ', function () {
         const wrapper = shallow(<Tag>test</Tag>);
         wrapper.unmount();
@@ -24,7 +16,7 @@ describe('<Tag/>', function () {
     });
 
     it('click event triggered and setvideo callback called', function () {
-        global.fetch = prepareFetchApi({});
+        global.fetch = global.prepareFetchApi({});
         const func = jest.fn();
         const elem = {
             changeRootElement: () => func()

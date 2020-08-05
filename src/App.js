@@ -11,6 +11,8 @@ import SettingsPage from "./pages/SettingsPage/SettingsPage";
 import CategoryPage from "./pages/CategoryPage/CategoryPage";
 
 class App extends React.Component {
+    newElement = null;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -44,8 +46,6 @@ class App extends React.Component {
                     document.title = result.mediacenter_name;
                 }));
     }
-
-    newElement = null;
 
     constructViewBinding() {
         return {

@@ -2,14 +2,6 @@ import {mount, shallow} from "enzyme";
 import React from "react";
 import CategoryPage from "./CategoryPage";
 
-function prepareFetchApi(response) {
-    const mockJsonPromise = Promise.resolve(response);
-    const mockFetchPromise = Promise.resolve({
-        json: () => mockJsonPromise,
-    });
-    return (jest.fn().mockImplementation(() => mockFetchPromise));
-}
-
 describe('<CategoryPage/>', function () {
     it('renders without crashing ', function () {
         const wrapper = shallow(<CategoryPage/>);
@@ -17,7 +9,7 @@ describe('<CategoryPage/>', function () {
     });
 
     it('test tag fetch call', done => {
-        global.fetch = prepareFetchApi(["first", "second"]);
+        global.fetch = global.prepareFetchApi(["first", "second"]);
 
         const wrapper = shallow(<CategoryPage/>);
 
@@ -33,14 +25,14 @@ describe('<CategoryPage/>', function () {
     });
 
     it('test errored fetch call', done => {
-        global.fetch = prepareFetchApi({});
+        global.fetch = global.prepareFetchApi({});
 
         let message;
         global.console.log = jest.fn((m) => {
             message = m;
         });
 
-        const wrapper = shallow(<CategoryPage/>);
+        shallow(<CategoryPage/>);
 
         expect(global.fetch).toHaveBeenCalledTimes(1);
 
@@ -67,7 +59,7 @@ describe('<CategoryPage/>', function () {
     });
 
     it('test setpage callback', done => {
-        global.fetch = prepareFetchApi([{}, {}]);
+        global.fetch = global.prepareFetchApi([{}, {}]);
 
         const wrapper = mount(<CategoryPage/>);
 
@@ -106,7 +98,7 @@ describe('<CategoryPage/>', function () {
         const func = jest.fn();
         CategoryPage.prototype.fetchVideoData = func;
 
-        const wrapper = shallow(<CategoryPage category="fullhd"/>);
+        shallow(<CategoryPage category="fullhd"/>);
 
         expect(func).toBeCalledTimes(1);
     });
