@@ -2,14 +2,6 @@ import {shallow} from "enzyme";
 import React from "react";
 import GeneralSettings from "./GeneralSettings";
 
-function prepareFetchApi(response) {
-    const mockJsonPromise = Promise.resolve(response);
-    const mockFetchPromise = Promise.resolve({
-        json: () => mockJsonPromise,
-    });
-    return (jest.fn().mockImplementation(() => mockFetchPromise));
-}
-
 describe('<GeneralSettings/>', function () {
     it('renders without crashing ', function () {
         const wrapper = shallow(<GeneralSettings/>);
@@ -28,7 +20,7 @@ describe('<GeneralSettings/>', function () {
     it('test savesettings', done => {
         const wrapper = shallow(<GeneralSettings/>);
 
-        global.fetch = prepareFetchApi({success: true});
+        global.fetch = global.prepareFetchApi({success: true});
 
         expect(global.fetch).toBeCalledTimes(0);
         const fakeEvent = {preventDefault: () => console.log('preventDefault')};
@@ -46,7 +38,7 @@ describe('<GeneralSettings/>', function () {
     it('test failing savesettings', done => {
         const wrapper = shallow(<GeneralSettings/>);
 
-        global.fetch = prepareFetchApi({success: false});
+        global.fetch = global.prepareFetchApi({success: false});
 
         expect(global.fetch).toBeCalledTimes(0);
         const fakeEvent = {preventDefault: () => console.log('preventDefault')};

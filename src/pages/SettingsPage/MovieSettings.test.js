@@ -2,14 +2,6 @@ import {shallow} from "enzyme";
 import React from "react";
 import MovieSettings from "./MovieSettings";
 
-function prepareFetchApi(response) {
-    const mockJsonPromise = Promise.resolve(response);
-    const mockFetchPromise = Promise.resolve({
-        json: () => mockJsonPromise,
-    });
-    return (jest.fn().mockImplementation(() => mockFetchPromise));
-}
-
 describe('<MovieSettings/>', function () {
     it('renders without crashing ', function () {
         const wrapper = shallow(<MovieSettings/>);
@@ -30,7 +22,7 @@ describe('<MovieSettings/>', function () {
     });
 
     it('test simulate reindex', function () {
-        global.fetch = prepareFetchApi({});
+        global.fetch = global.prepareFetchApi({});
         const wrapper = shallow(<MovieSettings/>);
 
         wrapper.find(".reindexbtn").simulate("click");
@@ -40,7 +32,7 @@ describe('<MovieSettings/>', function () {
     });
 
     it('content available received and in state', done => {
-        global.fetch = prepareFetchApi({
+        global.fetch = global.prepareFetchApi({
             contentAvailable: true,
             message: "firstline\nsecondline"
         });

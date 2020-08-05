@@ -1,12 +1,12 @@
 .tagbtn {
-    color: white;
-    margin: 10px;
     background-color: #3574fe;
     border: none;
     border-radius: 10px;
-    padding: 5px 15px 5px 15px;
-    /*font-weight: bold;*/
+    color: white;
     display: block;
+    margin: 10px;
+    /*font-weight: bold;*/
+    padding: 5px 15px 5px 15px;
 }
 
 .tagbtn:focus {

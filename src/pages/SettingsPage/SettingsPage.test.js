@@ -2,14 +2,6 @@ import {shallow} from "enzyme";
 import React from "react";
 import SettingsPage from "./SettingsPage";
 
-function prepareFetchApi(response) {
-    const mockJsonPromise = Promise.resolve(response);
-    const mockFetchPromise = Promise.resolve({
-        json: () => mockJsonPromise,
-    });
-    return (jest.fn().mockImplementation(() => mockFetchPromise));
-}
-
 describe('<RandomPage/>', function () {
     it('renders without crashing ', function () {
         const wrapper = shallow(<SettingsPage/>);
