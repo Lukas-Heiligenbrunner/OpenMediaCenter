@@ -3,19 +3,6 @@ import React from "react";
 import HomePage from "./HomePage";
 import VideoContainer from "../../elements/VideoContainer/VideoContainer";
 
-function prepareFetchApi(response) {
-    const mockJsonPromise = Promise.resolve(response);
-    const mockFetchPromise = Promise.resolve({
-        json: () => mockJsonPromise,
-    });
-    return (jest.fn().mockImplementation(() => mockFetchPromise));
-}
-
-function prepareFailingFetchApi() {
-    const mockFetchPromise = Promise.reject("myreason");
-    return (jest.fn().mockImplementation(() => mockFetchPromise));
-}
-
 describe('<HomePage/>', function () {
     it('renders without crashing ', function () {
         const wrapper = shallow(<HomePage/>);
@@ -51,7 +38,7 @@ describe('<HomePage/>', function () {
     });
 
     it('test search field', done => {
-        global.fetch = prepareFetchApi([{}, {}]);
+        global.fetch = global.prepareFetchApi([{}, {}]);
 
         const wrapper = shallow(<HomePage/>);
 
@@ -68,7 +55,7 @@ describe('<HomePage/>', function () {
     });
 
     it('test form submit', done => {
-        global.fetch = prepareFetchApi([{}, {}]);
+        global.fetch = global.prepareFetchApi([{}, {}]);
 
         const wrapper = shallow(<HomePage/>);
 
@@ -88,14 +75,14 @@ describe('<HomePage/>', function () {
 
     it('test no backend connection behaviour', done => {
         // this test assumes a console.log within every connection fail
-        global.fetch = prepareFailingFetchApi();
+        global.fetch = global.prepareFailingFetchApi();
 
         let count = 0;
-        global.console.log = jest.fn((m) => {
+        global.console.log = jest.fn(() => {
             count++;
         });
 
-        const wrapper = shallow(<HomePage/>);
+        shallow(<HomePage/>);
 
         process.nextTick(() => {
             // state to be set correctly with response

@@ -37,7 +37,7 @@ class Preview extends React.Component {
             <div className={style.videopreview} onClick={() => this.itemClick()}>
                 <div className={style.previewtitle}>{this.state.name}</div>
                 <div className={style.previewpic}>
-                    {this.state.previewpicture != null ?
+                    {this.state.previewpicture !== null ?
                         <img className={style.previewimage}
                              src={this.state.previewpicture}
                              alt='Pic loading.'/> :

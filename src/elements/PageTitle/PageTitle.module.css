@@ -1,6 +1,6 @@
 .pageheader {
-    margin-top: 20px;
     margin-bottom: 20px;
+    margin-top: 20px;
     padding-left: 22%;
     padding-right: 12%;
 }
@@ -11,7 +11,7 @@
 }
 
 .pageheadersubtitle {
-    margin-left: 20px;
     font-size: 23pt;
+    margin-left: 20px;
     opacity: 0.6;
 }

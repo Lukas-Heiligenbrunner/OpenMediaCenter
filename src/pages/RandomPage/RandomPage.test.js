@@ -2,14 +2,6 @@ import {shallow} from "enzyme";
 import React from "react";
 import RandomPage from "./RandomPage";
 
-function prepareFetchApi(response) {
-    const mockJsonPromise = Promise.resolve(response);
-    const mockFetchPromise = Promise.resolve({
-        json: () => mockJsonPromise,
-    });
-    return (jest.fn().mockImplementation(() => mockFetchPromise));
-}
-
 describe('<RandomPage/>', function () {
     it('renders without crashing ', function () {
         const wrapper = shallow(<RandomPage/>);
@@ -17,22 +9,24 @@ describe('<RandomPage/>', function () {
     });
 
     it('test shuffleload fetch', function () {
-        global.fetch = prepareFetchApi({});
+        global.fetch = global.prepareFetchApi({});
 
-        const wrapper = shallow(<RandomPage/>);
+        shallow(<RandomPage/>);
 
         expect(global.fetch).toBeCalledTimes(1);
     });
 
     it('btnshuffle click test', function () {
-        global.fetch = prepareFetchApi({});
+        global.fetch = global.prepareFetchApi({});
 
         const wrapper = shallow(<RandomPage/>);
 
         // simulate at least one existing element
-        wrapper.setState({videos: [
+        wrapper.setState({
+            videos: [
                 {}
-            ]});
+            ]
+        });
 
         wrapper.find(".btnshuffle").simulate("click");
 

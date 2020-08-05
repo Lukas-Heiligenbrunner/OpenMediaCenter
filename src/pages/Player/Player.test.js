@@ -2,14 +2,6 @@ import {shallow} from "enzyme";
 import React from "react";
 import Player from "./Player";
 
-function prepareFetchApi(response) {
-    const mockJsonPromise = Promise.resolve(response);
-    const mockFetchPromise = Promise.resolve({
-        json: () => mockJsonPromise,
-    });
-    return (jest.fn().mockImplementation(() => mockFetchPromise));
-}
-
 describe('<Player/>', function () {
     it('renders without crashing ', function () {
         const wrapper = shallow(<Player/>);
@@ -32,7 +24,7 @@ describe('<Player/>', function () {
     });
 
     it('likebtn click', done => {
-        global.fetch = prepareFetchApi({result: 'success'});
+        global.fetch = global.prepareFetchApi({result: 'success'});
 
         const func = jest.fn();
 
@@ -59,7 +51,7 @@ describe('<Player/>', function () {
     });
 
     it('errored likebtn click', done => {
-        global.fetch = prepareFetchApi({result: 'nosuccess'});
+        global.fetch = global.prepareFetchApi({result: 'nosuccess'});
         const func = jest.fn();
 
         const wrapper = shallow(<Player/>);
