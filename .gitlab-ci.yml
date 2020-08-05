@@ -32,10 +32,6 @@ build:
       - build/
   needs: ["prepare"]
 
-sast:
-  stage: test
-  needs: []
-
 test:
   stage: test
   script:
@@ -59,11 +55,15 @@ coverage:
 deploy_test1:
   stage: deploy
   image: luki42/alpineopenssh:latest
-  needs: ["test"]
+  needs:
+    - test
+    - build
+  only:
+    - master
   script:
     - eval $(ssh-agent -s)
     - ssh-add <(echo "$SSH_PRIVATE_KEY")
     - mkdir -p ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-    - ssh root@192.168.0.42 "cd /var/www/ && git fetch origin && git rebase origin/master && exit"
+    - ssh root@192.168.0.42 "cd /var/www/html/ && git fetch origin && git rebase origin/master && exit"
 
