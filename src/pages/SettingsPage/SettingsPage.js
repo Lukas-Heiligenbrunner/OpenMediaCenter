@@ -2,7 +2,7 @@ import React from "react";
 import MovieSettings from "./MovieSettings";
 import GeneralSettings from "./GeneralSettings";
 import style from "./SettingsPage.module.css"
-import StaticInfos from "../../GlobalInfos";
+import GlobalInfos from "../../GlobalInfos";
 
 
 class SettingsPage extends React.Component {
@@ -28,7 +28,7 @@ class SettingsPage extends React.Component {
     }
 
     render() {
-        const themestyle = StaticInfos.getThemeStyle();
+        const themestyle = GlobalInfos.getThemeStyle();
         return (
             <div>
                 <div className={style.SettingsSidebar + ' ' + themestyle.secbackground}>

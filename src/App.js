@@ -1,7 +1,7 @@
 import React from 'react';
 import HomePage from "./pages/HomePage/HomePage";
 import RandomPage from "./pages/RandomPage/RandomPage";
-import StaticInfos from "./GlobalInfos";
+import GlobalInfos from "./GlobalInfos";
 
 // include bootstraps css
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -33,7 +33,7 @@ class App extends React.Component {
             .then((response) => response.json()
                 .then((result) => {
                     // set theme
-                    StaticInfos.enableDarkTheme(result.DarkMode);
+                    GlobalInfos.enableDarkTheme(result.DarkMode);
 
                     this.setState({
                         generalSettingsLoaded: true,
@@ -83,7 +83,7 @@ class App extends React.Component {
     }
 
     render() {
-        const themeStyle = StaticInfos.getThemeStyle();
+        const themeStyle = GlobalInfos.getThemeStyle();
         // add the main theme to the page body
         document.body.className = themeStyle.backgroundcolor;
         return (

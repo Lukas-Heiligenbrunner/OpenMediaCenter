@@ -1,7 +1,7 @@
 import React from "react";
 import {Button, Col, Form} from "react-bootstrap";
 import style from "./GeneralSettings.module.css"
-import StaticInfos from "../../GlobalInfos";
+import GlobalInfos from "../../GlobalInfos";
 
 class GeneralSettings extends React.Component {
     constructor(props) {
@@ -38,7 +38,7 @@ class GeneralSettings extends React.Component {
     }
 
     render() {
-        const themeStyle = StaticInfos.getThemeStyle();
+        const themeStyle = GlobalInfos.getThemeStyle();
         return (
             <>
                 <div className={style.GeneralForm + ' ' + themeStyle.subtextcolor}>
@@ -96,9 +96,9 @@ class GeneralSettings extends React.Component {
                             id="custom-switch-3"
                             data-testid='darktheme-switch'
                             label="Enable Dark-Theme"
-                            checked={StaticInfos.isDarkTheme()}
+                            checked={GlobalInfos.isDarkTheme()}
                             onChange={() => {
-                                StaticInfos.enableDarkTheme(!StaticInfos.isDarkTheme());
+                                GlobalInfos.enableDarkTheme(!GlobalInfos.isDarkTheme());
                                 this.forceUpdate();
                                 // todo initiate rerender
                             }}
@@ -128,7 +128,7 @@ class GeneralSettings extends React.Component {
         updateRequest.append('tvshowpath', this.state.tvshowpath);
         updateRequest.append('mediacentername', this.state.mediacentername);
         updateRequest.append("tmdbsupport", this.state.tmdbsupport);
-        updateRequest.append("darkmodeenabled", StaticInfos.isDarkTheme());
+        updateRequest.append("darkmodeenabled", GlobalInfos.isDarkTheme());
 
         fetch('/api/Settings.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()

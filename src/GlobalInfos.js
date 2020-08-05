@@ -1,7 +1,7 @@
 import darktheme from "./AppDarkTheme.module.css";
 import lighttheme from "./AppLightTheme.module.css";
 
-class GlobalInfos {
+class StaticInfos {
     #darktheme = true;
 
     isDarkTheme() {
@@ -17,7 +17,7 @@ class GlobalInfos {
     }
 }
 
-const StaticInfos = new GlobalInfos();
+const GlobalInfos = new StaticInfos();
 //Object.freeze(StaticInfos);
 
-export default StaticInfos;
+export default GlobalInfos;

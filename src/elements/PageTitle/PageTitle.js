@@ -1,6 +1,6 @@
 import React from "react";
 import style from "./PageTitle.module.css"
-import StaticInfos from "../../GlobalInfos";
+import GlobalInfos from "../../GlobalInfos";
 
 class PageTitle extends React.Component {
     constructor(props) {
@@ -11,7 +11,7 @@ class PageTitle extends React.Component {
     }
 
     render() {
-        const themeStyle = StaticInfos.getThemeStyle();
+        const themeStyle = GlobalInfos.getThemeStyle();
         return (
             <div className={style.pageheader + ' ' + themeStyle.backgroundcolor}>
                 <span className={style.pageheadertitle + ' ' + themeStyle.textcolor}>{this.props.title}</span>
@@ -31,7 +31,7 @@ class PageTitle extends React.Component {
  */
 export class Line extends React.Component {
     render() {
-        const themeStyle = StaticInfos.getThemeStyle();
+        const themeStyle = GlobalInfos.getThemeStyle();
         return (
             <>
                 <hr className={themeStyle.hrcolor}/>
