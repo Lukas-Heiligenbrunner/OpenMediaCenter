@@ -5,7 +5,7 @@ import videocontainerstyle from "../../elements/VideoContainer/VideoContainer.mo
 
 import {TagPreview} from "../../elements/Preview/Preview";
 import NewTagPopup from "../../elements/NewTagPopup/NewTagPopup";
-import PageTitle from "../../elements/PageTitle/PageTitle";
+import PageTitle, {Line} from "../../elements/PageTitle/PageTitle";
 import VideoContainer from "../../elements/VideoContainer/VideoContainer";
 
 class CategoryPage extends React.Component {
@@ -56,7 +56,7 @@ class CategoryPage extends React.Component {
                             this.loadTag(e.props.category)
                         }
                     }}>HD</Tag>
-                    <hr/>
+                    <Line/>
                     <button data-testid='btnaddtag' className='btn btn-success' onClick={() => {
                         this.setState({popupvisible: true})
                     }}>Add a new Tag!

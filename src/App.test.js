@@ -10,19 +10,19 @@ describe('<App/>', function () {
 
     it('renders title', () => {
         const wrapper = shallow(<App/>);
-        expect(wrapper.find('.navbar-brand').text()).toBe('OpenMediaCenter');
+        expect(wrapper.find('.navbrand').text()).toBe('OpenMediaCenter');
     });
 
     it('are navlinks correct', function () {
         const wrapper = shallow(<App/>);
-        expect(wrapper.find('nav').find('li')).toHaveLength(4);
+        expect(wrapper.find('.navitem')).toHaveLength(4);
     });
 
     it('simulate video view change ', function () {
         const wrapper = shallow(<App/>);
         wrapper.setState({generalSettingsLoaded: true}); // simulate fetch to have already finisheed
 
-        wrapper.instance().changeRootElement(<div id='testit'></div>);
+        wrapper.instance().changeRootElement(<div id='testit'/>);
 
         expect(wrapper.find("#testit")).toHaveLength(1);
     });
@@ -31,7 +31,7 @@ describe('<App/>', function () {
         const wrapper = shallow(<App/>);
         wrapper.setState({generalSettingsLoaded: true}); // simulate fetch to have already finisheed
 
-        wrapper.instance().changeRootElement(<div id='testit'></div>);
+        wrapper.instance().changeRootElement(<div id='testit'/>);
 
         expect(wrapper.find("#testit")).toHaveLength(1);
 
@@ -44,9 +44,9 @@ describe('<App/>', function () {
         const wrapper = shallow(<App/>);
         wrapper.setState({generalSettingsLoaded: true}); // simulate fetch to have already finisheed
 
-        wrapper.find(".nav-link").findWhere(t => t.text() === "Random Video" && t.type() === "div").simulate("click");
+        wrapper.find(".navitem").findWhere(t => t.text() === "Random Video" && t.type() === "div").simulate("click");
 
-        wrapper.instance().changeRootElement(<div id='testit'></div>);
+        wrapper.instance().changeRootElement(<div id='testit'/>);
 
         expect(wrapper.find("#testit")).toHaveLength(1);
 
@@ -61,7 +61,7 @@ describe('<App/>', function () {
 
         wrapper.setState({page: "wrongvalue"});
         expect(wrapper.find("HomePage")).toHaveLength(0);
-        wrapper.find(".nav-link").findWhere(t => t.text() === "Home" && t.type() === "div").simulate("click");
+        wrapper.find(".navitem").findWhere(t => t.text() === "Home" && t.type() === "div").simulate("click");
         expect(wrapper.find("HomePage")).toHaveLength(1);
     });
 
@@ -70,7 +70,7 @@ describe('<App/>', function () {
         wrapper.setState({generalSettingsLoaded: true}); // simulate fetch to have already finisheed
 
         expect(wrapper.find("CategoryPage")).toHaveLength(0);
-        wrapper.find(".nav-link").findWhere(t => t.text() === "Categories" && t.type() === "div").simulate("click");
+        wrapper.find(".navitem").findWhere(t => t.text() === "Categories" && t.type() === "div").simulate("click");
         expect(wrapper.find("CategoryPage")).toHaveLength(1);
     });
 
@@ -79,7 +79,7 @@ describe('<App/>', function () {
         wrapper.setState({generalSettingsLoaded: true}); // simulate fetch to have already finisheed
 
         expect(wrapper.find("SettingsPage")).toHaveLength(0);
-        wrapper.find(".nav-link").findWhere(t => t.text() === "Settings" && t.type() === "div").simulate("click");
+        wrapper.find(".navitem").findWhere(t => t.text() === "Settings" && t.type() === "div").simulate("click");
         expect(wrapper.find("SettingsPage")).toHaveLength(1);
     });
 

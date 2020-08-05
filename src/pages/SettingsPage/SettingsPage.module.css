@@ -1,7 +1,8 @@
 .SettingsSidebar {
-    background-color: #d3dcef;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
     float: left;
-    min-height: calc(100vh - 56px);
+    min-height: calc(100vh - 62px);
     min-width: 110px;
     padding-top: 20px;
     width: 10%;
@@ -23,7 +24,7 @@
 }
 
 .SettingSidebarElement {
-    background-color: #a8b2de;
+    background-color: #919fd9;
     border-radius: 7px;
     font-weight: bold;
     margin: 10px 5px 5px;

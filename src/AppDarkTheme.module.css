@@ -1,0 +1,40 @@
+/**
+ * The coloring elements for dark theme
+ */
+
+.backgroundcolor {
+    background-color: #141520;
+}
+
+.textcolor {
+    color: white;
+}
+
+.subtextcolor {
+    color: #dedad6;
+}
+
+.lighttextcolor {
+    color: #d5d5d5;
+}
+
+.navitem::after {
+    background: white;
+}
+
+.hrcolor {
+    border-color: rgba(255, 255, 255, .1);
+}
+
+.secbackground {
+    background-color: #3c3d48;
+}
+
+.thirdbackground {
+    background-color: #141520;
+}
+
+.preview:hover {
+    box-shadow: rgba(255, 255, 255, 0.7) 0 0 0 5px;
+}
+

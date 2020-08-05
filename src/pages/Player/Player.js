@@ -1,10 +1,11 @@
 import React from "react";
 import style from "./Player.module.css"
+
 import {PlyrComponent} from 'plyr-react';
 import SideBar, {SideBarItem, SideBarTitle} from "../../elements/SideBar/SideBar";
 import Tag from "../../elements/Tag/Tag";
 import AddTagPopup from "../../elements/AddTagPopup/AddTagPopup";
-import PageTitle from "../../elements/PageTitle/PageTitle";
+import PageTitle, {Line} from "../../elements/PageTitle/PageTitle";
 
 
 class Player extends React.Component {
@@ -53,14 +54,13 @@ class Player extends React.Component {
 
                 <SideBar>
                     <SideBarTitle>Infos:</SideBarTitle>
-                    <hr/>
+                    <Line/>
                     <SideBarItem><b>{this.state.likes}</b> Likes!</SideBarItem>
                     {this.state.quality !== 0 ?
                         <SideBarItem><b>{this.state.quality}p</b> Quality!</SideBarItem> : null}
                     {this.state.length !== 0 ?
-                        <SideBarItem><b>{Math.round(this.state.length / 60)}</b> Minutes of
-                            length!</SideBarItem> : null}
-                    <hr/>
+                        <SideBarItem><b>{Math.round(this.state.length / 60)}</b> Minutes of length!</SideBarItem>: null}
+                    <Line/>
                     <SideBarTitle>Tags:</SideBarTitle>
                     {this.state.tags.map((m) => (
                         <Tag

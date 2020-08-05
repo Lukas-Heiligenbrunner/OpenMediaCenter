@@ -2,6 +2,7 @@ import React from "react";
 import style from "./Preview.module.css";
 import Player from "../../pages/Player/Player";
 import {Spinner} from "react-bootstrap";
+import GlobalInfos from "../../GlobalInfos";
 
 class Preview extends React.Component {
     constructor(props, context) {
@@ -33,9 +34,10 @@ class Preview extends React.Component {
     }
 
     render() {
+        const themeStyle = GlobalInfos.getThemeStyle();
         return (
-            <div className={style.videopreview} onClick={() => this.itemClick()}>
-                <div className={style.previewtitle}>{this.state.name}</div>
+            <div className={style.videopreview + ' ' + themeStyle.secbackground + ' '+ themeStyle.preview} onClick={() => this.itemClick()}>
+                <div className={style.previewtitle + ' '+ themeStyle.lighttextcolor}>{this.state.name}</div>
                 <div className={style.previewpic}>
                     {this.state.previewpicture !== null ?
                         <img className={style.previewimage}
@@ -63,9 +65,10 @@ class Preview extends React.Component {
 
 export class TagPreview extends React.Component {
     render() {
+        const themeStyle = GlobalInfos.getThemeStyle();
         return (
-            <div className={style.videopreview + ' ' + style.tagpreview} onClick={() => this.itemClick()}>
-                <div className={style.tagpreviewtitle}>
+            <div className={style.videopreview + ' ' + style.tagpreview + ' ' + themeStyle.secbackground + ' '+ themeStyle.preview} onClick={() => this.itemClick()}>
+                <div className={style.tagpreviewtitle + ' ' + themeStyle.lighttextcolor}>
                     {this.props.name}
                 </div>
             </div>

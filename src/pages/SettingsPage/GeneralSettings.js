@@ -1,6 +1,7 @@
 import React from "react";
 import {Button, Col, Form} from "react-bootstrap";
 import style from "./GeneralSettings.module.css"
+import GlobalInfos from "../../GlobalInfos";
 
 class GeneralSettings extends React.Component {
     constructor(props) {
@@ -37,9 +38,10 @@ class GeneralSettings extends React.Component {
     }
 
     render() {
+        const themeStyle = GlobalInfos.getThemeStyle();
         return (
             <>
-                <div className={style.GeneralForm}>
+                <div className={style.GeneralForm + ' ' + themeStyle.subtextcolor}>
                     <Form data-testid='mainformsettings' onSubmit={(e) => {
                         e.preventDefault();
                         this.saveSettings();
@@ -70,6 +72,14 @@ class GeneralSettings extends React.Component {
                             }}
                         />
 
+                        {this.state.passwordsupport ?
+                            <Form.Group data-testid="passwordfield">
+                                <Form.Label>Password</Form.Label>
+                                <Form.Control type="password" placeholder="**********" value={this.state.password}
+                                              onChange={(e) => this.setState({password: e.target.value})}/>
+                            </Form.Group> : null
+                        }
+
                         <Form.Check
                             type="switch"
                             id="custom-switch-2"
@@ -81,13 +91,18 @@ class GeneralSettings extends React.Component {
                             }}
                         />
 
-                        {this.state.passwordsupport ?
-                            <Form.Group data-testid="passwordfield">
-                                <Form.Label>Password</Form.Label>
-                                <Form.Control type="password" placeholder="**********" value={this.state.password}
-                                              onChange={(e) => this.setState({password: e.target.value})}/>
-                            </Form.Group> : null
-                        }
+                        <Form.Check
+                            type="switch"
+                            id="custom-switch-3"
+                            data-testid='darktheme-switch'
+                            label="Enable Dark-Theme"
+                            checked={GlobalInfos.isDarkTheme()}
+                            onChange={() => {
+                                GlobalInfos.enableDarkTheme(!GlobalInfos.isDarkTheme());
+                                this.forceUpdate();
+                                // todo initiate rerender
+                            }}
+                        />
 
                         <Form.Group className={style.mediacenternameform} data-testid="nameform">
                             <Form.Label>The name of the Mediacenter</Form.Label>
@@ -113,6 +128,7 @@ class GeneralSettings extends React.Component {
         updateRequest.append('tvshowpath', this.state.tvshowpath);
         updateRequest.append('mediacentername', this.state.mediacentername);
         updateRequest.append("tmdbsupport", this.state.tmdbsupport);
+        updateRequest.append("darkmodeenabled", GlobalInfos.isDarkTheme());
 
         fetch('/api/Settings.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()

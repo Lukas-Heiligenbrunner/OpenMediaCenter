@@ -22,13 +22,15 @@ class Settings extends RequestBase {
             $videopath = $_POST['videopath'];
             $tvshowpath = $_POST['tvshowpath'];
             $tmdbsupport = $_POST['tmdbsupport'];
+            $darkmodeenabled = $_POST['darkmodeenabled'];
 
             $query = "UPDATE settings SET 
                         video_path='$videopath',
                         episode_path='$tvshowpath',
                         password='$password',
                         mediacenter_name='$mediacentername',
-                        TMDB_grabbing=$tmdbsupport
+                        TMDB_grabbing=$tmdbsupport, 
+                        DarkMode=$darkmodeenabled
                     WHERE 1";
 
             if ($this->conn->query($query) === true) {
@@ -44,12 +46,10 @@ class Settings extends RequestBase {
             $result = $this->conn->query($query);
 
             $r = mysqli_fetch_assoc($result);
-            if ($r['password'] != "-1") {
-                $r['passwordEnabled'] = true;
-            } else {
-                $r['passwordEnabled'] = false;
-            }
+
+            $r['passwordEnabled'] = $r['password'] != "-1";
             unset($r['password']);
+            $r['DarkMode'] = (bool)($r['DarkMode'] != '0');
             echo json_encode($r);
         });
     }

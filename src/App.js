@@ -1,10 +1,12 @@
 import React from 'react';
-import "./App.css"
 import HomePage from "./pages/HomePage/HomePage";
 import RandomPage from "./pages/RandomPage/RandomPage";
+import GlobalInfos from "./GlobalInfos";
 
 // include bootstraps css
 import 'bootstrap/dist/css/bootstrap.min.css';
+import style from './App.module.css'
+
 import SettingsPage from "./pages/SettingsPage/SettingsPage";
 import CategoryPage from "./pages/CategoryPage/CategoryPage";
 
@@ -32,7 +34,9 @@ class App extends React.Component {
         fetch('/api/Settings.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
-                    console.log(result);
+                    // set theme
+                    GlobalInfos.enableDarkTheme(result.DarkMode);
+
                     this.setState({
                         generalSettingsLoaded: true,
                         passwordsupport: result.passwordEnabled,
@@ -79,38 +83,27 @@ class App extends React.Component {
     }
 
     render() {
+        const themeStyle = GlobalInfos.getThemeStyle();
+        // add the main theme to the page body
+        document.body.className = themeStyle.backgroundcolor;
         return (
             <div className="App">
-                <nav className="navbar navbar-expand-sm bg-primary navbar-dark">
-                    <div className="navbar-brand">{this.state.mediacentername}</div>
+                <div className={[style.navcontainer, themeStyle.backgroundcolor, themeStyle.textcolor, themeStyle.hrcolor].join(' ')}>
+                    <div className={style.navbrand}>{this.state.mediacentername}</div>
 
-                    <ul className="navbar-nav">
-                        <li className="nav-item">
-                            <div className="nav-link"
-                                 style={this.state.page === "default" ? {color: "rgba(255,255,255,.75"} : {}}
-                                 onClick={() => this.setState({page: "default"})}>Home
-                            </div>
-                        </li>
-                        <li className="nav-item">
-                            <div className="nav-link"
-                                 style={this.state.page === "random" ? {color: "rgba(255,255,255,.75"} : {}}
-                                 onClick={() => this.setState({page: "random"})}>Random Video
-                            </div>
-                        </li>
-                        <li className="nav-item">
-                            <div className="nav-link"
-                                 style={this.state.page === "categories" ? {color: "rgba(255,255,255,.75"} : {}}
-                                 onClick={() => this.setState({page: "categories"})}>Categories
-                            </div>
-                        </li>
-                        <li className="nav-item">
-                            <div className="nav-link"
-                                 style={this.state.page === "settings" ? {color: "rgba(255,255,255,.75"} : {}}
-                                 onClick={() => this.setState({page: "settings"})}>Settings
-                            </div>
-                        </li>
-                    </ul>
-                </nav>
+                    <div className={[style.navitem, themeStyle.navitem, this.state.page === "default" ? style.navitemselected : {}].join(' ')}
+                         onClick={() => this.setState({page: "default"})}>Home
+                    </div>
+                    <div className={[style.navitem, themeStyle.navitem, this.state.page === "random" ? style.navitemselected : {}].join(' ')}
+                         onClick={() => this.setState({page: "random"})}>Random Video
+                    </div>
+                    <div className={[style.navitem, themeStyle.navitem, this.state.page === "categories" ? style.navitemselected : {}].join(' ')}
+                         onClick={() => this.setState({page: "categories"})}>Categories
+                    </div>
+                    <div className={[style.navitem, themeStyle.navitem, this.state.page === "settings" ? style.navitemselected : {}].join(' ')}
+                         onClick={() => this.setState({page: "settings"})}>Settings
+                    </div>
+                </div>
                 {this.state.generalSettingsLoaded ? this.MainBody() : "loading"}
             </div>
         );

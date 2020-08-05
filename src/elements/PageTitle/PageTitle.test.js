@@ -19,7 +19,7 @@ describe('<Preview/>', function () {
     it('renders pagetitle prop', function () {
         const wrapper = shallow(<PageTitle title='testtitle'/>);
 
-        expect(wrapper.find(".pageheader").text()).toBe("testtitle");
+        expect(wrapper.find(".pageheader").text()).toBe("testtitle<Line />");
     });
 
     it('renders subtitle prop', function () {

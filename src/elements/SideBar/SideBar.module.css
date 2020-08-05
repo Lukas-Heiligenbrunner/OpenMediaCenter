@@ -1,5 +1,4 @@
 .sideinfo {
-    background-color: #b4c7fe;
     border: 2px #3574fe solid;
     border-radius: 20px;
     float: left;
@@ -16,7 +15,6 @@
 }
 
 .sidebarinfo {
-    background-color: #8ca3fc;
     border-radius: 5px;
     margin-top: 5px;
     padding: 2px 10px 2px 15px;

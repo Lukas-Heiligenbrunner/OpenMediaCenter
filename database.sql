@@ -36,6 +36,8 @@ create table settings
     episode_path     varchar(255)                          null,
     password         varchar(32) default '-1'              null,
     mediacenter_name varchar(32) default 'OpenMediaCenter' null,
+    TMDB_grabbing    tinyint           null,
+    DarkMode         tinyint default 0 null
     PRIMARY KEY (id)
 );
 

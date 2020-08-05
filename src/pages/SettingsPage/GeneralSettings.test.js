@@ -1,6 +1,7 @@
 import {shallow} from "enzyme";
 import React from "react";
 import GeneralSettings from "./GeneralSettings";
+import GlobalInfos from "../../GlobalInfos";
 
 describe('<GeneralSettings/>', function () {
     it('renders without crashing ', function () {
@@ -15,6 +16,15 @@ describe('<GeneralSettings/>', function () {
         wrapper.find("FormCheck").findWhere(it => it.props().label === "Enable Password support").simulate("change");
 
         expect(wrapper.find("[data-testid='passwordfield']")).toHaveLength(1);
+    });
+
+    it('test theme switchbutton', function () {
+        const wrapper = shallow(<GeneralSettings/>);
+
+        GlobalInfos.enableDarkTheme(false);
+        expect(GlobalInfos.isDarkTheme()).toBe(false);
+        wrapper.find("[data-testid='darktheme-switch']").simulate("change");
+        expect(GlobalInfos.isDarkTheme()).toBe(true);
     });
 
     it('test savesettings', done => {
