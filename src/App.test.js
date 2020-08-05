@@ -2,14 +2,6 @@ import React from 'react';
 import App from './App';
 import {shallow} from 'enzyme'
 
-function prepareFetchApi(response) {
-    const mockJsonPromise = Promise.resolve(response);
-    const mockFetchPromise = Promise.resolve({
-        json: () => mockJsonPromise,
-    });
-    return (jest.fn().mockImplementation(() => mockFetchPromise));
-}
-
 describe('<App/>', function () {
     it('renders without crashing ', function () {
         const wrapper = shallow(<App/>);
@@ -92,7 +84,7 @@ describe('<App/>', function () {
     });
 
     it('test initial fetch from api', done => {
-        global.fetch = prepareFetchApi({
+        global.fetch = global.prepareFetchApi({
             generalSettingsLoaded: true,
             passwordsupport: true,
             mediacentername: "testname"

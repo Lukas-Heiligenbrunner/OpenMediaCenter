@@ -3,6 +3,9 @@ import Preview from "../Preview/Preview";
 import style from "./VideoContainer.module.css"
 
 class VideoContainer extends React.Component {
+    // stores current index of loaded elements
+    loadindex = 0;
+
     constructor(props, context) {
         super(props, context);
 
@@ -13,9 +16,6 @@ class VideoContainer extends React.Component {
             selectionnr: null
         };
     }
-
-    // stores current index of loaded elements
-    loadindex = 0;
 
     componentDidMount() {
         document.addEventListener('scroll', this.trackScrolling);

@@ -1,5 +1,5 @@
 import React from "react";
-import SideBar, {SideBarTitle, SideBarItem} from "../../elements/SideBar/SideBar";
+import SideBar, {SideBarItem, SideBarTitle} from "../../elements/SideBar/SideBar";
 import Tag from "../../elements/Tag/Tag";
 import VideoContainer from "../../elements/VideoContainer/VideoContainer";
 
@@ -7,6 +7,9 @@ import style from "./HomePage.module.css"
 import PageTitle from "../../elements/PageTitle/PageTitle";
 
 class HomePage extends React.Component {
+    /** keyword variable needed temporary store search keyword */
+    keyword = "";
+
     constructor(props, context) {
         super(props, context);
 
@@ -23,9 +26,6 @@ class HomePage extends React.Component {
             selectionnr: 0
         };
     }
-
-    /** keyword variable needed temporary store search keyword */
-    keyword = "";
 
     componentDidMount() {
         // initial get of all videos
