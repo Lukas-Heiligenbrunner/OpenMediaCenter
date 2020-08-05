@@ -4,6 +4,7 @@ stages:
   - prepare
   - build
   - test
+  - deploy
 
 cache:
   paths:
@@ -54,3 +55,15 @@ coverage:
       cobertura:
         - ./coverage/cobertura-coverage.xml
   needs: ["prepare"]
+
+deploy_test1:
+  stage: deploy
+  image: luki42/alpineopenssh:latest
+  needs: ["test"]
+  script:
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - mkdir -p ~/.ssh
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - ssh root@192.168.0.42 "cd /var/www/ && git fetch origin && git rebase origin/master && exit"
+
