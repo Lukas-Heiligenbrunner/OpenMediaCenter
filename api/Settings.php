@@ -1,6 +1,10 @@
 <?php
 require 'RequestBase.php';
 
+/**
+ * Class Settings
+ * Backend for the Settings page
+ */
 class Settings extends RequestBase {
     function initHandlers() {
         $this->addActionHandler("loadGeneralSettings", function () {

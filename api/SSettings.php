@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Class SSettings
+ * class handling all Settings used by php scripts
+ */
 class SSettings
 {
     private ?Database $database;
@@ -11,6 +15,10 @@ class SSettings
         $this->database = Database::getInstance();
     }
 
+    /**
+     * get the videopath saved in db
+     * @return string videopath
+     */
     public function getVideoPath() {
         $query = "SELECT video_path from settings";
 
