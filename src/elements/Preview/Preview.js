@@ -4,6 +4,10 @@ import Player from "../../pages/Player/Player";
 import {Spinner} from "react-bootstrap";
 import GlobalInfos from "../../GlobalInfos";
 
+/**
+ * Component for single preview tile
+ * floating side by side
+ */
 class Preview extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -53,6 +57,9 @@ class Preview extends React.Component {
         );
     }
 
+    /**
+    * handle the click event of a tile
+    */
     itemClick() {
         console.log("item clicked!" + this.state.name);
 
@@ -63,6 +70,9 @@ class Preview extends React.Component {
     }
 }
 
+/**
+ * Component for a Tag-name tile (used in category page)
+ */
 export class TagPreview extends React.Component {
     render() {
         const themeStyle = GlobalInfos.getThemeStyle();
@@ -75,6 +85,9 @@ export class TagPreview extends React.Component {
         );
     }
 
+    /**
+     * handle the click event of a Tag tile
+     */
     itemClick() {
         this.props.categorybinding(this.props.name);
     }
