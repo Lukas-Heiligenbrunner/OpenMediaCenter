@@ -8,6 +8,10 @@ import NewTagPopup from "../../elements/NewTagPopup/NewTagPopup";
 import PageTitle, {Line} from "../../elements/PageTitle/PageTitle";
 import VideoContainer from "../../elements/VideoContainer/VideoContainer";
 
+/**
+ * Component for Category Page
+ * Contains a Tag Overview and loads specific Tag videos in VideoContainer
+ */
 class CategoryPage extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -100,10 +104,18 @@ class CategoryPage extends React.Component {
         );
     }
 
+    /**
+     * load a specific tag into a new previewcontainer
+     * @param tagname
+     */
     loadTag = (tagname) => {
         this.fetchVideoData(tagname);
     };
 
+    /**
+     * fetch data for a specific tag from backend
+     * @param tag tagname
+     */
     fetchVideoData(tag) {
         console.log(tag);
         const updateRequest = new FormData();
@@ -125,6 +137,9 @@ class CategoryPage extends React.Component {
             });
     }
 
+    /**
+     * go back to the default category overview
+     */
     loadCategoryPageDefault = () => {
         this.setState({selected: null});
         this.loadTags();

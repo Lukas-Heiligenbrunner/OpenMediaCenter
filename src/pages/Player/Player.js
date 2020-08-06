@@ -8,6 +8,10 @@ import AddTagPopup from "../../elements/AddTagPopup/AddTagPopup";
 import PageTitle, {Line} from "../../elements/PageTitle/PageTitle";
 
 
+/**
+ * Player page loads when a video is selected to play and handles the video view
+ * and actions such as tag adding and liking
+ */
 class Player extends React.Component {
     options = {
         controls: [
@@ -98,6 +102,9 @@ class Player extends React.Component {
         );
     }
 
+    /**
+     * fetch all the required infos of a video from backend
+     */
     fetchMovieData() {
         const updateRequest = new FormData();
         updateRequest.append('action', 'loadVideo');
@@ -129,7 +136,9 @@ class Player extends React.Component {
     }
 
 
-    /* Click Listener */
+    /**
+     * click handler for the like btn
+     */
     likebtn() {
         const updateRequest = new FormData();
         updateRequest.append('action', 'addLike');
@@ -147,6 +156,10 @@ class Player extends React.Component {
                 }));
     }
 
+    /**
+     * closebtn click handler
+     * calls callback to viewbinding to show previous page agains
+     */
     closebtn() {
         this.props.viewbinding.returnToLastElement();
     }

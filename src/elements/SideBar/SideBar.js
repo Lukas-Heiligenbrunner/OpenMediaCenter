@@ -2,6 +2,9 @@ import React from "react";
 import style from "./SideBar.module.css"
 import GlobalInfos from "../../GlobalInfos";
 
+/**
+ * component for sidebar-info
+ */
 class SideBar extends React.Component {
     render() {
         const themeStyle = GlobalInfos.getThemeStyle();
@@ -11,6 +14,9 @@ class SideBar extends React.Component {
     }
 }
 
+/**
+ * The title of the sidebar
+ */
 export class SideBarTitle extends React.Component {
     render() {
         const themeStyle = GlobalInfos.getThemeStyle();
@@ -20,6 +26,9 @@ export class SideBarTitle extends React.Component {
     }
 }
 
+/**
+ * An item of the sidebar
+ */
 export class SideBarItem extends React.Component {
     render() {
         const themeStyle = GlobalInfos.getThemeStyle();

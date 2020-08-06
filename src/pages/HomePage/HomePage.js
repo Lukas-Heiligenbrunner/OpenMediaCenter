@@ -6,6 +6,9 @@ import VideoContainer from "../../elements/VideoContainer/VideoContainer";
 import style from "./HomePage.module.css"
 import PageTitle, {Line} from "../../elements/PageTitle/PageTitle";
 
+/**
+ * The home page component showing on the initial pageload
+ */
 class HomePage extends React.Component {
     /** keyword variable needed temporary store search keyword */
     keyword = "";

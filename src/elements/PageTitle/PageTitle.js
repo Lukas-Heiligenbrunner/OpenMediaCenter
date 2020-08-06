@@ -6,13 +6,6 @@ import GlobalInfos from "../../GlobalInfos";
  * Component for generating PageTitle with bottom Line
  */
 class PageTitle extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.props = props;
-
-    }
-
     render() {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (

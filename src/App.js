@@ -10,6 +10,9 @@ import style from './App.module.css'
 import SettingsPage from "./pages/SettingsPage/SettingsPage";
 import CategoryPage from "./pages/CategoryPage/CategoryPage";
 
+/**
+ * The main App handles the main tabs and which content to show
+ */
 class App extends React.Component {
     newElement = null;
 
@@ -47,6 +50,10 @@ class App extends React.Component {
                 }));
     }
 
+    /**
+     * create a viewbinding to call APP functions from child elements
+     * @returns a set of callback functions
+     */
     constructViewBinding() {
         return {
             changeRootElement: this.changeRootElement,
@@ -54,6 +61,10 @@ class App extends React.Component {
         };
     }
 
+    /**
+     * load the selected component into the main view
+     * @returns {JSX.Element} body element of selected page
+     */
     MainBody() {
         let page;
         if (this.state.page === "default") {
@@ -109,6 +120,9 @@ class App extends React.Component {
         );
     }
 
+    /**
+     * render a new root element into the main body
+     */
     changeRootElement(element) {
         this.newElement = element;
 
@@ -117,6 +131,9 @@ class App extends React.Component {
         });
     }
 
+    /**
+     * return from page to the previous page before a change
+     */
     returnToLastElement() {
         this.setState({
             page: "lastpage"
