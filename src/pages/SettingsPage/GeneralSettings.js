@@ -115,7 +115,7 @@ class GeneralSettings extends React.Component {
         const updateRequest = new FormData();
         updateRequest.append('action', 'loadGeneralSettings');
 
-        fetch('/api/Settings.php', {method: 'POST', body: updateRequest})
+        fetch('/api/settings.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
                     console.log(result);
@@ -144,7 +144,7 @@ class GeneralSettings extends React.Component {
         updateRequest.append("tmdbsupport", this.state.tmdbsupport);
         updateRequest.append("darkmodeenabled", GlobalInfos.isDarkTheme());
 
-        fetch('/api/Settings.php', {method: 'POST', body: updateRequest})
+        fetch('/api/settings.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
                     if (result.success) {

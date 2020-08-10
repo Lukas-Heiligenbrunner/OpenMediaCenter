@@ -1,5 +1,5 @@
 <?php
-require 'RequestBase.php';
+require_once 'RequestBase.php';
 
 /**
  * Class Settings
@@ -38,9 +38,9 @@ class Settings extends RequestBase {
                     WHERE 1";
 
             if ($this->conn->query($query) === true) {
-                echo '{"success": true}';
+                $this->commitMessage('{"success": true}');
             } else {
-                echo '{"success": true}';
+                $this->commitMessage('{"success": true}');
             }
         });
 
@@ -54,10 +54,7 @@ class Settings extends RequestBase {
             $r['passwordEnabled'] = $r['password'] != "-1";
             unset($r['password']);
             $r['DarkMode'] = (bool)($r['DarkMode'] != '0');
-            echo json_encode($r);
+            $this->commitMessage(json_encode($r));
         });
     }
 }
-
-$sett = new Settings();
-$sett->handleAction();

@@ -50,7 +50,7 @@ class HomePage extends React.Component {
         console.log("fetching data");
 
         // fetch all videos available
-        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/video.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
                     this.setState({
@@ -74,7 +74,7 @@ class HomePage extends React.Component {
         updateRequest.append('action', 'getStartData');
 
         // fetch all videos available
-        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/video.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
                     this.setState({
@@ -105,7 +105,7 @@ class HomePage extends React.Component {
         updateRequest.append('keyword', keyword);
 
         // fetch all videos available
-        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/video.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
                     this.setState({

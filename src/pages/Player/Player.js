@@ -110,7 +110,7 @@ class Player extends React.Component {
         updateRequest.append('action', 'loadVideo');
         updateRequest.append('movieid', this.props.movie_id);
 
-        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/video.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json())
             .then((result) => {
                 this.setState({
@@ -144,7 +144,7 @@ class Player extends React.Component {
         updateRequest.append('action', 'addLike');
         updateRequest.append('movieid', this.props.movie_id);
 
-        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/video.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
                     if (result.result === "success") {

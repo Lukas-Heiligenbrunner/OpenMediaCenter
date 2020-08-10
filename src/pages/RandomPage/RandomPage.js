@@ -70,7 +70,7 @@ class RandomPage extends React.Component {
         updateRequest.append('number', nr);
 
         // fetch all videos available
-        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/video.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
                     console.log(result);

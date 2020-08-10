@@ -34,7 +34,7 @@ class App extends React.Component {
         const updateRequest = new FormData();
         updateRequest.append('action', 'loadInitialData');
 
-        fetch('/api/Settings.php', {method: 'POST', body: updateRequest})
+        fetch('/api/settings.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
                     // set theme

@@ -1,7 +1,7 @@
 <?php
-require 'Database.php';
-require 'TMDBMovie.php';
-require 'SSettings.php';
+require_once './src/Database.php';
+require_once './src/TMDBMovie.php';
+require_once './src/SSettings.php';
 
 // allow UTF8 characters
 setlocale(LC_ALL, 'en_US.UTF-8');
@@ -226,8 +226,7 @@ writeLog("-42"); // terminating characters to stop webui requesting infos
  * @param $video string name including extension
  * @return object all infos as object
  */
-function _get_video_attributes($video)
-{
+function _get_video_attributes($video) {
     $command = "mediainfo \"../videos/prn/$video\" --Output=JSON";
     $output = shell_exec($command);
     return json_decode($output);
@@ -238,8 +237,7 @@ function _get_video_attributes($video)
  *
  * @param string $message message to write
  */
-function writeLog(string $message)
-{
+function writeLog(string $message) {
     file_put_contents("/tmp/output.log", $message, FILE_APPEND);
     flush();
 }
@@ -249,8 +247,7 @@ function writeLog(string $message)
  * @param string $tagname the name of the tag
  * @return integer the id of the inserted tag
  */
-function tagExists(string $tagname)
-{
+function tagExists(string $tagname) {
     global $conn;
 
     $query = "SELECT * FROM tags WHERE tag_name='$tagname'";

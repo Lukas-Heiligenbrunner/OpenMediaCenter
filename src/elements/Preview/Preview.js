@@ -28,7 +28,7 @@ class Preview extends React.Component {
         updateRequest.append('action', 'readThumbnail');
         updateRequest.append('movieid', this.props.movie_id);
 
-        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/video.php', {method: 'POST', body: updateRequest})
             .then((response) => response.text()
                 .then((result) => {
                     this.setState({

@@ -56,7 +56,7 @@ class NewTagPopup extends React.Component {
         updateRequest.append('action', 'createTag');
         updateRequest.append('tagname', this.value);
 
-        fetch('/api/Tags.php', {method: 'POST', body: updateRequest})
+        fetch('/api/tags.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json())
             .then((result) => {
                 if (result.result !== "success") {
