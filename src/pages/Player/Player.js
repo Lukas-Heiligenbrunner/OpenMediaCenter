@@ -63,7 +63,8 @@ class Player extends React.Component {
                     {this.state.quality !== 0 ?
                         <SideBarItem><b>{this.state.quality}p</b> Quality!</SideBarItem> : null}
                     {this.state.length !== 0 ?
-                        <SideBarItem><b>{Math.round(this.state.length / 60)}</b> Minutes of length!</SideBarItem>: null}
+                        <SideBarItem><b>{Math.round(this.state.length / 60)}</b> Minutes of
+                            length!</SideBarItem> : null}
                     <Line/>
                     <SideBarTitle>Tags:</SideBarTitle>
                     {this.state.tags.map((m) => (

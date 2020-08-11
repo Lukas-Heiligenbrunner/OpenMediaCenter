@@ -7,6 +7,11 @@ require_once 'RequestBase.php';
  */
 class Tags extends RequestBase {
     function initHandlers() {
+        $this->addToDB();
+        $this->getFromDB();
+    }
+
+    private function getFromDB(){
         /**
          * returns all available tags from database
          */
@@ -20,7 +25,9 @@ class Tags extends RequestBase {
             }
             $this->commitMessage(json_encode($rows));
         });
+    }
 
+    private function addToDB(){
         /**
          * creates a new tag
          * query requirements:

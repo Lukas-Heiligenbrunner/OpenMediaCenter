@@ -16,6 +16,15 @@ class Video extends RequestBase {
     }
 
     function initHandlers() {
+        $this->getVideos();
+        $this->loadVideos();
+        $this->addToVideo();
+    }
+
+    /**
+     * function handles load of all videos and search for videos
+     */
+    private function getVideos() {
         $this->addActionHandler("getMovies", function () {
             $query = "SELECT movie_id,movie_name FROM videos ORDER BY create_date DESC, movie_name";
             if (isset($_POST['tag'])) {
@@ -79,7 +88,12 @@ class Video extends RequestBase {
 
             $this->commitMessage(json_encode($rows));
         });
+    }
 
+    /**
+     * function to handle stuff for loading specific videos and startdata
+     */
+    private function loadVideos() {
         $this->addActionHandler("loadVideo", function () {
             $query = "SELECT movie_name,movie_id,movie_url,thumbnail,poster,likes,quality,length FROM videos WHERE movie_id='" . $_POST['movieid'] . "'";
 
@@ -123,18 +137,6 @@ class Video extends RequestBase {
             $row = $result->fetch_assoc();
 
             $this->commitMessage($row["thumbnail"]);
-        });
-
-        $this->addActionHandler("addLike", function () {
-            $movieid = $_POST['movieid'];
-
-            $query = "update videos set likes = likes + 1 where movie_id = '$movieid'";
-
-            if ($this->conn->query($query) === TRUE) {
-                $this->commitMessage('{"result":"success"}');
-            } else {
-                $this->commitMessage('{"result":"' . $this->conn->error . '"}');
-            }
         });
 
         $this->addActionHandler("getStartData", function () {
@@ -182,6 +184,23 @@ class Video extends RequestBase {
             $arr['tags'] = $r['nr'];
 
             $this->commitMessage(json_encode($arr));
+        });
+    }
+
+    /**
+     * function to handle api handlers for stuff to add to video or database
+     */
+    private function addToVideo() {
+        $this->addActionHandler("addLike", function () {
+            $movieid = $_POST['movieid'];
+
+            $query = "update videos set likes = likes + 1 where movie_id = '$movieid'";
+
+            if ($this->conn->query($query) === TRUE) {
+                $this->commitMessage('{"result":"success"}');
+            } else {
+                $this->commitMessage('{"result":"' . $this->conn->error . '"}');
+            }
         });
     }
 }

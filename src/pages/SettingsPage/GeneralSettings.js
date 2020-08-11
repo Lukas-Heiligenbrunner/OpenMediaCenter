@@ -111,7 +111,7 @@ class GeneralSettings extends React.Component {
     /**
      * inital load of already specified settings from backend
      */
-    loadSettings(){
+    loadSettings() {
         const updateRequest = new FormData();
         updateRequest.append('action', 'loadGeneralSettings');
 

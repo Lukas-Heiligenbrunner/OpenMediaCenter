@@ -7,6 +7,17 @@ require_once 'RequestBase.php';
  */
 class Settings extends RequestBase {
     function initHandlers() {
+        $this->getFromDB();
+        $this->saveToDB();
+    }
+
+    /**
+     * handle settings stuff to load from db
+     */
+    private function getFromDB(){
+        /**
+         * load currently set settings form db for init of settings page
+         */
         $this->addActionHandler("loadGeneralSettings", function () {
             $query = "SELECT * from settings";
 
@@ -20,6 +31,30 @@ class Settings extends RequestBase {
             echo json_encode($r);
         });
 
+        /**
+         * load initial data for home page load to check if pwd is set
+         */
+        $this->addActionHandler("loadInitialData", function () {
+            $query = "SELECT * from settings";
+
+            $result = $this->conn->query($query);
+
+            $r = mysqli_fetch_assoc($result);
+
+            $r['passwordEnabled'] = $r['password'] != "-1";
+            unset($r['password']);
+            $r['DarkMode'] = (bool)($r['DarkMode'] != '0');
+            $this->commitMessage(json_encode($r));
+        });
+    }
+
+    /**
+     * handle setting stuff to save to db
+     */
+    private function saveToDB(){
+        /**
+         * save changed settings to db
+         */
         $this->addActionHandler("saveGeneralSettings", function () {
             $mediacentername = $_POST['mediacentername'];
             $password = $_POST['password'];
@@ -42,19 +77,6 @@ class Settings extends RequestBase {
             } else {
                 $this->commitMessage('{"success": true}');
             }
-        });
-
-        $this->addActionHandler("loadInitialData", function () {
-            $query = "SELECT * from settings";
-
-            $result = $this->conn->query($query);
-
-            $r = mysqli_fetch_assoc($result);
-
-            $r['passwordEnabled'] = $r['password'] != "-1";
-            unset($r['password']);
-            $r['DarkMode'] = (bool)($r['DarkMode'] != '0');
-            $this->commitMessage(json_encode($r));
         });
     }
 }

@@ -20,7 +20,7 @@ class StaticInfos {
      * setter to enable or disable the dark or light theme
      * @param enable enable the dark theme?
      */
-    enableDarkTheme(enable = true){
+    enableDarkTheme(enable = true) {
         this.#darktheme = enable;
     }
 
@@ -28,7 +28,7 @@ class StaticInfos {
      * get the currently selected theme stylesheet
      * @returns {*} the style object of the current active theme
      */
-    getThemeStyle(){
+    getThemeStyle() {
         return this.isDarkTheme() ? darktheme : lighttheme;
     }
 }
