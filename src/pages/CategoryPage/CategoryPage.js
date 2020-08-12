@@ -76,7 +76,7 @@ class CategoryPage extends React.Component {
     render() {
         return (
             <>
-                <renderSideBarATitle/>
+                {this.renderSideBarATitle()}
 
                 {this.state.selected ?
                     <>
