@@ -31,7 +31,11 @@ class CategoryPage extends React.Component {
         }
     }
 
-    render() {
+    /**
+     * render the Title and SideBar component for the Category page
+     * @returns {JSX.Element} corresponding jsx element for Title and Sidebar
+     */
+    renderSideBarATitle() {
         return (
             <>
                 <PageTitle
@@ -65,7 +69,14 @@ class CategoryPage extends React.Component {
                         this.setState({popupvisible: true})
                     }}>Add a new Tag!
                     </button>
-                </SideBar>
+                </SideBar></>
+        );
+    }
+
+    render() {
+        return (
+            <>
+                <renderSideBarATitle/>
 
                 {this.state.selected ?
                     <>
