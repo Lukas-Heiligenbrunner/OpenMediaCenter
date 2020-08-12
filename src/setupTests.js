@@ -9,6 +9,11 @@ import Adapter from 'enzyme-adapter-react-16';
 
 configure({adapter: new Adapter()});
 
+/**
+ * prepares fetch api for a virtual test call
+ * @param response the response fetch should give you back
+ * @returns {jest.Mock<any, any>} a jest mock function simulating a fetch
+ */
 global.prepareFetchApi = (response) => {
     const mockJsonPromise = Promise.resolve(response);
     const mockFetchPromise = Promise.resolve({
@@ -17,6 +22,10 @@ global.prepareFetchApi = (response) => {
     return (jest.fn().mockImplementation(() => mockFetchPromise));
 }
 
+/**
+ * prepares a failing virtual fetch api call
+ * @returns {jest.Mock<any, any>} a jest moch function simulating a failing fetch call
+ */
 global.prepareFailingFetchApi = () => {
     const mockFetchPromise = Promise.reject("myreason");
     return (jest.fn().mockImplementation(() => mockFetchPromise));

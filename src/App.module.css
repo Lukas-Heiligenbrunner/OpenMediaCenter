@@ -1,12 +1,12 @@
 .navitem {
-    float: left;
-    margin-left: 20px;
-
     cursor: pointer;
-    opacity: 0.6;
+    float: left;
 
     font-size: large;
     font-weight: bold;
+
+    margin-left: 20px;
+    opacity: 0.6;
     text-transform: capitalize;
 }
 
@@ -18,9 +18,9 @@
 .navitem::after {
     content: '';
     display: block;
-    width: 0;
     height: 2px;
     transition: width .3s;
+    width: 0;
 }
 
 .navitem:hover::after {
@@ -33,22 +33,22 @@
 }
 
 .navcontainer {
+    border-bottom-width: 2px;
+    border-style: dotted;
+    border-width: 0;
+
+    padding-bottom: 40px;
     padding-top: 20px;
     width: 100%;
-    padding-bottom: 40px;
-
-    border-width: 0;
-    border-style: dotted;
-    border-bottom-width: 2px;
 }
 
 .navbrand {
-    margin-left: 20px;
-    margin-right: 20px;
+    float: left;
     font-size: large;
     font-weight: bold;
+    margin-left: 20px;
+    margin-right: 20px;
     text-transform: capitalize;
-    float: left;
 }
 
 

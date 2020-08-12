@@ -5,6 +5,9 @@ import Tag from "../../elements/Tag/Tag";
 import PageTitle from "../../elements/PageTitle/PageTitle";
 import VideoContainer from "../../elements/VideoContainer/VideoContainer";
 
+/**
+ * Randompage shuffles random viedeopreviews and provides a shuffle btn
+ */
 class RandomPage extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -50,17 +53,24 @@ class RandomPage extends React.Component {
         );
     }
 
+    /**
+     * click handler for shuffle btn
+     */
     shuffleclick() {
         this.loadShuffledvideos(4);
     }
 
+    /**
+     * load random videos from backend
+     * @param nr number of videos to load
+     */
     loadShuffledvideos(nr) {
         const updateRequest = new FormData();
         updateRequest.append('action', 'getRandomMovies');
         updateRequest.append('number', nr);
 
         // fetch all videos available
-        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/video.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
                     console.log(result);

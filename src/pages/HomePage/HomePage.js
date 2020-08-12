@@ -6,6 +6,9 @@ import VideoContainer from "../../elements/VideoContainer/VideoContainer";
 import style from "./HomePage.module.css"
 import PageTitle, {Line} from "../../elements/PageTitle/PageTitle";
 
+/**
+ * The home page component showing on the initial pageload
+ */
 class HomePage extends React.Component {
     /** keyword variable needed temporary store search keyword */
     keyword = "";
@@ -47,7 +50,7 @@ class HomePage extends React.Component {
         console.log("fetching data");
 
         // fetch all videos available
-        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/video.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
                     this.setState({
@@ -71,7 +74,7 @@ class HomePage extends React.Component {
         updateRequest.append('action', 'getStartData');
 
         // fetch all videos available
-        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/video.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
                     this.setState({
@@ -102,7 +105,7 @@ class HomePage extends React.Component {
         updateRequest.append('keyword', keyword);
 
         // fetch all videos available
-        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/video.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
                     this.setState({

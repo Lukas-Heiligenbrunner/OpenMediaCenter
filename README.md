@@ -8,14 +8,18 @@ Feel free to contribute or open an issue here: https://gitlab.heili.eu/lukas/ope
 ## What is this?
 Open Media Center is an open source solution for a mediacenter in your home network.
 Transform your webserver into a mediaserver.
-It's based on Reactjs and PHP is used as backend.
+It's based on Reactjs and PHP is used for backend.
 It is optimized for general videos as well as for movies. 
 For grabbing movie data TMDB is used. 
-For organizing videos tags are used.
+With the help of tags you can organize your video gravity.
 
-Here you can see an example main page:
+Here you can see an example main page in light mode:
 
-![Image of OpenMediaCenter](https://i.ibb.co/2PC3fmk/Screenshot-20200604-163448.png)
+![Image of OpenMediaCenter](https://i.ibb.co/pnDjgNT/Screenshot-20200812-172945.png)
+
+and in dark mode:
+
+![](https://i.ibb.co/xzhdsbJ/Screenshot-20200812-172926.png)
 
 ## Installation
 First of all clone the repository.
@@ -32,9 +36,9 @@ You need also to setup a Database with the structure described in [SQL Style Ref
 The login data to this database needs to be specified in the `api/Database.php` file.
  
 ## Usage
-To index Videos run on your server: `php extractvideopreviews.php`.
+Now you can access your MediaCenter via your servers global ip (:
 
-Now you can access your MediaCenter via the servers global ip (:
+At the settings tab you can set the correct videopath on server and click reindex afterwards. 
 
 ## Contact
 Any contribution is appreciated. 

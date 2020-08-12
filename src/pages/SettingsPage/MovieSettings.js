@@ -1,6 +1,10 @@
 import React from "react";
 import style from "./MovieSettings.module.css"
 
+/**
+ * Component for MovieSettings on Settingspage
+ * handles settings concerning to movies in general
+ */
 class MovieSettings extends React.Component {
     constructor(props) {
         super(props);
@@ -36,6 +40,9 @@ class MovieSettings extends React.Component {
         );
     }
 
+    /**
+     * starts the reindex process of the videos in the specified folder
+     */
     startReindex() {
         // clear output text before start
         this.setState({text: []});
@@ -60,6 +67,9 @@ class MovieSettings extends React.Component {
         this.myinterval = setInterval(this.updateStatus, 1000);
     }
 
+    /**
+     * This interval function reloads the current status of reindexing from backend
+     */
     updateStatus = () => {
         const updateRequest = new FormData();
         fetch('/api/extractionData.php', {method: 'POST', body: updateRequest})

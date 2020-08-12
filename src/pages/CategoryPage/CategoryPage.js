@@ -8,6 +8,10 @@ import NewTagPopup from "../../elements/NewTagPopup/NewTagPopup";
 import PageTitle, {Line} from "../../elements/PageTitle/PageTitle";
 import VideoContainer from "../../elements/VideoContainer/VideoContainer";
 
+/**
+ * Component for Category Page
+ * Contains a Tag Overview and loads specific Tag videos in VideoContainer
+ */
 class CategoryPage extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -27,7 +31,11 @@ class CategoryPage extends React.Component {
         }
     }
 
-    render() {
+    /**
+     * render the Title and SideBar component for the Category page
+     * @returns {JSX.Element} corresponding jsx element for Title and Sidebar
+     */
+    renderSideBarATitle() {
         return (
             <>
                 <PageTitle
@@ -61,7 +69,14 @@ class CategoryPage extends React.Component {
                         this.setState({popupvisible: true})
                     }}>Add a new Tag!
                     </button>
-                </SideBar>
+                </SideBar></>
+        );
+    }
+
+    render() {
+        return (
+            <>
+                {this.renderSideBarATitle()}
 
                 {this.state.selected ?
                     <>
@@ -100,10 +115,18 @@ class CategoryPage extends React.Component {
         );
     }
 
+    /**
+     * load a specific tag into a new previewcontainer
+     * @param tagname
+     */
     loadTag = (tagname) => {
         this.fetchVideoData(tagname);
     };
 
+    /**
+     * fetch data for a specific tag from backend
+     * @param tag tagname
+     */
     fetchVideoData(tag) {
         console.log(tag);
         const updateRequest = new FormData();
@@ -113,7 +136,7 @@ class CategoryPage extends React.Component {
         console.log("fetching data");
 
         // fetch all videos available
-        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/video.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
                     this.videodata = result;
@@ -125,6 +148,9 @@ class CategoryPage extends React.Component {
             });
     }
 
+    /**
+     * go back to the default category overview
+     */
     loadCategoryPageDefault = () => {
         this.setState({selected: null});
         this.loadTags();
@@ -138,7 +164,7 @@ class CategoryPage extends React.Component {
         updateRequest.append('action', 'getAllTags');
 
         // fetch all videos available
-        fetch('/api/Tags.php', {method: 'POST', body: updateRequest})
+        fetch('/api/tags.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
                     this.setState({loadedtags: result});

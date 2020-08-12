@@ -1,8 +1,11 @@
 <?php
-require_once 'Database.php';
-require_once 'SSettings.php';
+require_once 'src/SSettings.php';
 require_once 'RequestBase.php';
 
+/**
+ * Class Video
+ * backend for all interactions with videoloads and receiving of video infos
+ */
 class Video extends RequestBase {
     private string $videopath;
 
@@ -13,6 +16,15 @@ class Video extends RequestBase {
     }
 
     function initHandlers() {
+        $this->getVideos();
+        $this->loadVideos();
+        $this->addToVideo();
+    }
+
+    /**
+     * function handles load of all videos and search for videos
+     */
+    private function getVideos() {
         $this->addActionHandler("getMovies", function () {
             $query = "SELECT movie_id,movie_name FROM videos ORDER BY create_date DESC, movie_name";
             if (isset($_POST['tag'])) {
@@ -31,7 +43,7 @@ class Video extends RequestBase {
                 array_push($rows, $r);
             }
 
-            echo(json_encode($rows));
+            $this->commitMessage(json_encode($rows));
         });
 
         $this->addActionHandler("getRandomMovies", function () {
@@ -59,7 +71,7 @@ class Video extends RequestBase {
                 array_push($return->tags, $r);
             }
 
-            echo(json_encode($return));
+            $this->commitMessage(json_encode($return));
         });
 
         $this->addActionHandler("getSearchKeyWord", function () {
@@ -74,9 +86,14 @@ class Video extends RequestBase {
                 array_push($rows, $r);
             }
 
-            echo(json_encode($rows));
+            $this->commitMessage(json_encode($rows));
         });
+    }
 
+    /**
+     * function to handle stuff for loading specific videos and startdata
+     */
+    private function loadVideos() {
         $this->addActionHandler("loadVideo", function () {
             $query = "SELECT movie_name,movie_id,movie_url,thumbnail,poster,likes,quality,length FROM videos WHERE movie_id='" . $_POST['movieid'] . "'";
 
@@ -110,23 +127,7 @@ class Video extends RequestBase {
                 array_push($arr['tags'], $r);
             }
 
-            echo(json_encode($arr));
-        });
-
-        $this->addActionHandler("getDbSize", function () {
-            $dbname = Database::getInstance()->getDatabaseName();
-
-            $query = "SELECT table_schema AS \"Database\", 
-                        ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS \"Size\" 
-                        FROM information_schema.TABLES 
-                        WHERE TABLE_SCHEMA='$dbname'
-                        GROUP BY table_schema;";
-            $result = $this->conn->query($query);
-
-            if ($result->num_rows == 1) {
-                $row = $result->fetch_assoc();
-                echo '{"data":"' . $row["Size"] . 'MB"}';
-            }
+            $this->commitMessage(json_encode($arr));
         });
 
         $this->addActionHandler("readThumbnail", function () {
@@ -135,38 +136,7 @@ class Video extends RequestBase {
             $result = $this->conn->query($query);
             $row = $result->fetch_assoc();
 
-            echo($row["thumbnail"]);
-        });
-
-        $this->addActionHandler("getTags", function () {
-            // todo add this to loadVideo maybe
-            $movieid = $_POST['movieid'];
-
-            $query = "SELECT tag_name FROM video_tags 
-                        INNER JOIN tags t on video_tags.tag_id = t.tag_id 
-                        WHERE video_id='$movieid'";
-
-            $result = $this->conn->query($query);
-
-            $rows = array();
-            $rows['tags'] = array();
-            while ($r = mysqli_fetch_assoc($result)) {
-                array_push($rows['tags'], $r['tag_name']);
-            }
-
-            echo(json_encode($rows));
-        });
-
-        $this->addActionHandler("addLike", function () {
-            $movieid = $_POST['movieid'];
-
-            $query = "update videos set likes = likes + 1 where movie_id = '$movieid'";
-
-            if ($this->conn->query($query) === TRUE) {
-                echo('{"result":"success"}');
-            } else {
-                echo('{"result":"' . $this->conn->error . '"}');
-            }
+            $this->commitMessage($row["thumbnail"]);
         });
 
         $this->addActionHandler("getStartData", function () {
@@ -213,34 +183,24 @@ class Video extends RequestBase {
             $r = mysqli_fetch_assoc($result);
             $arr['tags'] = $r['nr'];
 
-            echo(json_encode($arr));
+            $this->commitMessage(json_encode($arr));
         });
+    }
 
-        $this->addActionHandler("getAllTags", function () {
-            $query = "SELECT tag_name,tag_id from tags";
-            $result = $this->conn->query($query);
-
-            $rows = array();
-            while ($r = mysqli_fetch_assoc($result)) {
-                array_push($rows, $r);
-            }
-            echo(json_encode($rows));
-        });
-
-        $this->addActionHandler("addTag", function () {
+    /**
+     * function to handle api handlers for stuff to add to video or database
+     */
+    private function addToVideo() {
+        $this->addActionHandler("addLike", function () {
             $movieid = $_POST['movieid'];
-            $tagid = $_POST['id'];
 
-            $query = "INSERT INTO video_tags(tag_id, video_id) VALUES ('$tagid','$movieid')";
+            $query = "update videos set likes = likes + 1 where movie_id = '$movieid'";
 
             if ($this->conn->query($query) === TRUE) {
-                echo('{"result":"success"}');
+                $this->commitMessage('{"result":"success"}');
             } else {
-                echo('{"result":"' . $this->conn->error . '"}');
+                $this->commitMessage('{"result":"' . $this->conn->error . '"}');
             }
         });
     }
 }
-
-$video = new Video();
-$video->handleAction();

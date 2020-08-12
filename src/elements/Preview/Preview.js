@@ -4,6 +4,10 @@ import Player from "../../pages/Player/Player";
 import {Spinner} from "react-bootstrap";
 import GlobalInfos from "../../GlobalInfos";
 
+/**
+ * Component for single preview tile
+ * floating side by side
+ */
 class Preview extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -24,7 +28,7 @@ class Preview extends React.Component {
         updateRequest.append('action', 'readThumbnail');
         updateRequest.append('movieid', this.props.movie_id);
 
-        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/video.php', {method: 'POST', body: updateRequest})
             .then((response) => response.text()
                 .then((result) => {
                     this.setState({
@@ -36,8 +40,8 @@ class Preview extends React.Component {
     render() {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
-            <div className={style.videopreview + ' ' + themeStyle.secbackground + ' '+ themeStyle.preview} onClick={() => this.itemClick()}>
-                <div className={style.previewtitle + ' '+ themeStyle.lighttextcolor}>{this.state.name}</div>
+            <div className={style.videopreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview} onClick={() => this.itemClick()}>
+                <div className={style.previewtitle + ' ' + themeStyle.lighttextcolor}>{this.state.name}</div>
                 <div className={style.previewpic}>
                     {this.state.previewpicture !== null ?
                         <img className={style.previewimage}
@@ -53,6 +57,9 @@ class Preview extends React.Component {
         );
     }
 
+    /**
+     * handle the click event of a tile
+     */
     itemClick() {
         console.log("item clicked!" + this.state.name);
 
@@ -63,11 +70,14 @@ class Preview extends React.Component {
     }
 }
 
+/**
+ * Component for a Tag-name tile (used in category page)
+ */
 export class TagPreview extends React.Component {
     render() {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
-            <div className={style.videopreview + ' ' + style.tagpreview + ' ' + themeStyle.secbackground + ' '+ themeStyle.preview} onClick={() => this.itemClick()}>
+            <div className={style.videopreview + ' ' + style.tagpreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview} onClick={() => this.itemClick()}>
                 <div className={style.tagpreviewtitle + ' ' + themeStyle.lighttextcolor}>
                     {this.props.name}
                 </div>
@@ -75,6 +85,9 @@ export class TagPreview extends React.Component {
         );
     }
 
+    /**
+     * handle the click event of a Tag tile
+     */
     itemClick() {
         this.props.categorybinding(this.props.name);
     }

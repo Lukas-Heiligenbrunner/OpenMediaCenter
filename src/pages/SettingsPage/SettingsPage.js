@@ -4,7 +4,10 @@ import GeneralSettings from "./GeneralSettings";
 import style from "./SettingsPage.module.css"
 import GlobalInfos from "../../GlobalInfos";
 
-
+/**
+ * The Settingspage handles all kinds of settings for the mediacenter
+ * and is basically a wrapper for child-tabs
+ */
 class SettingsPage extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -14,6 +17,10 @@ class SettingsPage extends React.Component {
         };
     }
 
+    /**
+     * load the selected tab
+     * @returns {JSX.Element|string} the jsx element of the selected tab
+     */
     getContent() {
         switch (this.state.currentpage) {
             case "general":

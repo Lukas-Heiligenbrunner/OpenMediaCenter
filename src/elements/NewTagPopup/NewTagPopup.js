@@ -2,6 +2,9 @@ import React from "react";
 import Modal from 'react-bootstrap/Modal'
 import {Form} from "react-bootstrap";
 
+/**
+ * creates modal overlay to define a new Tag
+ */
 class NewTagPopup extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -45,12 +48,15 @@ class NewTagPopup extends React.Component {
         );
     }
 
+    /**
+     * store the filled in form to the backend
+     */
     storeselection() {
         const updateRequest = new FormData();
         updateRequest.append('action', 'createTag');
         updateRequest.append('tagname', this.value);
 
-        fetch('/api/Tags.php', {method: 'POST', body: updateRequest})
+        fetch('/api/tags.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json())
             .then((result) => {
                 if (result.result !== "success") {

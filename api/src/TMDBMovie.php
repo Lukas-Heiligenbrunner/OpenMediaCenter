@@ -1,10 +1,13 @@
 <?php
 
-class TMDBMovie
-{
+/**
+ * Class TMDBMovie
+ * class to handle all interactions with the tmdb api
+ */
+class TMDBMovie {
+    public $picturebase = "https://image.tmdb.org/t/p/w500";
     private $apikey = "9fd90530b11447f5646f8e6fb4733fb4";
     private $baseurl = "https://api.themoviedb.org/3/";
-    public $picturebase = "https://image.tmdb.org/t/p/w500";
 
     /**
      * search for a specific movie
@@ -12,8 +15,7 @@ class TMDBMovie
      * @param string $moviename moviename
      * @return object movie object or null if not found
      */
-    public function searchMovie(string $moviename)
-    {
+    public function searchMovie(string $moviename) {
         $reply = json_decode(file_get_contents($this->baseurl . "search/movie?api_key=" . $this->apikey . "&query=" . urlencode($moviename)));
         if ($reply->total_results == 0) {
             // no results found
@@ -29,8 +31,7 @@ class TMDBMovie
      *
      * @return array of all available genres
      */
-    public function getAllGenres()
-    {
+    public function getAllGenres() {
         $reply = json_decode(file_get_contents($this->baseurl . "genre/movie/list?api_key=" . $this->apikey));
         return $reply->genres;
     }
