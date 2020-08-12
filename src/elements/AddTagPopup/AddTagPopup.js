@@ -3,6 +3,9 @@ import Modal from 'react-bootstrap/Modal'
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 
+/**
+ * component creates overlay to add a new tag to a video
+ */
 class AddTagPopup extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -22,7 +25,7 @@ class AddTagPopup extends React.Component {
         const updateRequest = new FormData();
         updateRequest.append('action', 'getAllTags');
 
-        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/tags.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json())
             .then((result) => {
                 this.setState({
@@ -68,13 +71,16 @@ class AddTagPopup extends React.Component {
         );
     }
 
+    /**
+     * store the filled in form to the backend
+     */
     storeselection() {
         const updateRequest = new FormData();
         updateRequest.append('action', 'addTag');
         updateRequest.append('id', this.state.selection.id);
         updateRequest.append('movieid', this.props.movie_id);
 
-        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/tags.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
                     if (result.result !== "success") {

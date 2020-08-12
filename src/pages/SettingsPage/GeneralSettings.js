@@ -3,6 +3,10 @@ import {Button, Col, Form} from "react-bootstrap";
 import style from "./GeneralSettings.module.css"
 import GlobalInfos from "../../GlobalInfos";
 
+/**
+ * Component for Generalsettings tag on Settingspage
+ * handles general settings of mediacenter which concerns to all pages
+ */
 class GeneralSettings extends React.Component {
     constructor(props) {
         super(props);
@@ -19,22 +23,7 @@ class GeneralSettings extends React.Component {
     }
 
     componentDidMount() {
-        const updateRequest = new FormData();
-        updateRequest.append('action', 'loadGeneralSettings');
-
-        fetch('/api/Settings.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json()
-                .then((result) => {
-                    console.log(result);
-                    this.setState({
-                        videopath: result.video_path,
-                        tvshowpath: result.episode_path,
-                        mediacentername: result.mediacenter_name,
-                        password: result.password,
-                        passwordsupport: result.passwordEnabled,
-                        tmdbsupport: result.TMDB_grabbing
-                    });
-                }));
+        this.loadSettings();
     }
 
     render() {
@@ -119,6 +108,31 @@ class GeneralSettings extends React.Component {
         );
     }
 
+    /**
+     * inital load of already specified settings from backend
+     */
+    loadSettings() {
+        const updateRequest = new FormData();
+        updateRequest.append('action', 'loadGeneralSettings');
+
+        fetch('/api/settings.php', {method: 'POST', body: updateRequest})
+            .then((response) => response.json()
+                .then((result) => {
+                    console.log(result);
+                    this.setState({
+                        videopath: result.video_path,
+                        tvshowpath: result.episode_path,
+                        mediacentername: result.mediacenter_name,
+                        password: result.password,
+                        passwordsupport: result.passwordEnabled,
+                        tmdbsupport: result.TMDB_grabbing
+                    });
+                }));
+    }
+
+    /**
+     * save the selected and typed settings to the backend
+     */
     saveSettings() {
         const updateRequest = new FormData();
         updateRequest.append('action', 'saveGeneralSettings');
@@ -130,7 +144,7 @@ class GeneralSettings extends React.Component {
         updateRequest.append("tmdbsupport", this.state.tmdbsupport);
         updateRequest.append("darkmodeenabled", GlobalInfos.isDarkTheme());
 
-        fetch('/api/Settings.php', {method: 'POST', body: updateRequest})
+        fetch('/api/settings.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
                     if (result.success) {

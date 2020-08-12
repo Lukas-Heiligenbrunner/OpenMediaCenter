@@ -5,8 +5,7 @@
  *
  * Class with all neccessary stuff for the Database connections.
  */
-class Database
-{
+class Database {
     private static ?Database $instance = null;
     private mysqli $conn;
 
@@ -16,8 +15,7 @@ class Database
     private string $dbname = "mediacenter";
 
     // The db connection is established in the private constructor.
-    private function __construct()
-    {
+    private function __construct() {
         // Create connection
         $this->conn = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
 
@@ -32,8 +30,7 @@ class Database
      *
      * @return Database dbobject
      */
-    public static function getInstance()
-    {
+    public static function getInstance() {
         if (!self::$instance) {
             self::$instance = new Database();
         }
@@ -46,8 +43,7 @@ class Database
      *
      * @return mysqli mysqli instance
      */
-    public function getConnection()
-    {
+    public function getConnection() {
         return $this->conn;
     }
 
@@ -55,7 +51,7 @@ class Database
      * get name of current active database
      * @return string name
      */
-    public function getDatabaseName(){
+    public function getDatabaseName() {
         return $this->dbname;
     }
 }

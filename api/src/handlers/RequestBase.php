@@ -1,14 +1,9 @@
 <?php
-require_once 'Database.php';
+require_once 'src/Database.php';
 
 abstract class RequestBase {
-    private array $actions = array();
     protected mysqli $conn;
-
-    /**
-     * add the action handlers in this abstract method
-     */
-    abstract function initHandlers();
+    private array $actions = array();
 
     /**
      * adds a new action handler to the current api file
@@ -38,4 +33,18 @@ abstract class RequestBase {
             echo('{data:"error"}');
         }
     }
+
+    /**
+     * Send response message and exit script
+     * @param $message string the response message
+     */
+    function commitMessage($message){
+        echo $message;
+        exit(0);
+    }
+
+    /**
+     * add the action handlers in this abstract method
+     */
+    abstract function initHandlers();
 }

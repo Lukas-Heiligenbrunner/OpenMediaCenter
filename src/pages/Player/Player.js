@@ -8,6 +8,10 @@ import AddTagPopup from "../../elements/AddTagPopup/AddTagPopup";
 import PageTitle, {Line} from "../../elements/PageTitle/PageTitle";
 
 
+/**
+ * Player page loads when a video is selected to play and handles the video view
+ * and actions such as tag adding and liking
+ */
 class Player extends React.Component {
     options = {
         controls: [
@@ -59,7 +63,8 @@ class Player extends React.Component {
                     {this.state.quality !== 0 ?
                         <SideBarItem><b>{this.state.quality}p</b> Quality!</SideBarItem> : null}
                     {this.state.length !== 0 ?
-                        <SideBarItem><b>{Math.round(this.state.length / 60)}</b> Minutes of length!</SideBarItem>: null}
+                        <SideBarItem><b>{Math.round(this.state.length / 60)}</b> Minutes of
+                            length!</SideBarItem> : null}
                     <Line/>
                     <SideBarTitle>Tags:</SideBarTitle>
                     {this.state.tags.map((m) => (
@@ -98,12 +103,15 @@ class Player extends React.Component {
         );
     }
 
+    /**
+     * fetch all the required infos of a video from backend
+     */
     fetchMovieData() {
         const updateRequest = new FormData();
         updateRequest.append('action', 'loadVideo');
         updateRequest.append('movieid', this.props.movie_id);
 
-        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/video.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json())
             .then((result) => {
                 this.setState({
@@ -129,13 +137,15 @@ class Player extends React.Component {
     }
 
 
-    /* Click Listener */
+    /**
+     * click handler for the like btn
+     */
     likebtn() {
         const updateRequest = new FormData();
         updateRequest.append('action', 'addLike');
         updateRequest.append('movieid', this.props.movie_id);
 
-        fetch('/api/videoload.php', {method: 'POST', body: updateRequest})
+        fetch('/api/video.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
                     if (result.result === "success") {
@@ -147,6 +157,10 @@ class Player extends React.Component {
                 }));
     }
 
+    /**
+     * closebtn click handler
+     * calls callback to viewbinding to show previous page agains
+     */
     closebtn() {
         this.props.viewbinding.returnToLastElement();
     }
