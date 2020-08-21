@@ -16,6 +16,9 @@ $tmdbgenres = $tmdb->getAllGenres();
 $conn = Database::getInstance()->getConnection();
 $settings = new SSettings();
 
+$TMDBenabled = $settings->isTMDBGrabbingEnabled();
+echo("TMDB grabbing is " . ($TMDBenabled ? "" : "not") . " enabled \n");
+
 // load video path from settings
 $scandir = "../" . $settings->getVideoPath();
 $arr = scandir($scandir);
@@ -37,29 +40,7 @@ foreach ($arr as $elem) {
         if (!mysqli_fetch_assoc($result)) {
             $genres = -1;
             $poster = -1; // initially disable poster supp
-            // extract poster from video
-            $pic = shell_exec("ffmpeg -hide_banner -loglevel panic -ss 00:04:00 -i \"../videos/prn/$elem\" -vframes 1 -q:v 2 -f singlejpeg pipe:1 2>/dev/null");
-            // check if tmdb grabbing is enabled
-            if ($settings->isTMDBGrabbingEnabled()) {
-                // search in tmdb api
-                if (!is_null($dta = $tmdb->searchMovie($moviename))) {
-                    $poster = file_get_contents($tmdb->picturebase . $dta->poster_path);
-
-                    // error handling for download error
-                    if (!$poster) {
-                        echo "Failed to load Picture from TMDB!  \n";
-                    }
-                    // store genre ids for parsing later
-                    $genres = $dta->genre_ids;
-                } else {
-                    // nothing found with tmdb
-                    echo "nothing found with TMDB!\n";
-                    writeLog("nothing found with TMDB!\n");
-                }
-            }
-
-            // convert video to base64
-            $image = 'data:image/jpeg;base64,' . base64_encode($pic);
+            $insert_query = "";
 
             // extract other video attributes
             $video_attributes = _get_video_attributes($elem);
@@ -73,28 +54,52 @@ foreach ($arr as $elem) {
                 $width = $video_attributes->media->track[1]->Width; // width
             }
 
+            // extract poster from video
+            $backpic = shell_exec("ffmpeg -hide_banner -loglevel panic -ss 00:04:00 -i \"../videos/prn/$elem\" -vframes 1 -q:v 2 -f singlejpeg pipe:1 2>/dev/null");
+            // convert video to base64
+            $backpic64 = 'data:image/jpeg;base64,' . base64_encode($backpic);
 
-            if (!$poster) {
-                $poster_base64 = 'data:image/jpeg;base64,' . base64_encode($poster);
+            // check if tmdb grabbing is enabled
+            if ($TMDBenabled) {
+                // search in tmdb api
+                try {
+                    if (!is_null($dta = $tmdb->searchMovie($moviename))) {
+                        $poster = file_get_contents($tmdb->picturebase . $dta->poster_path);
 
-                $query = "INSERT INTO videos(movie_name,movie_url,poster,thumbnail,quality,length) 
+                        // error handling for download error
+                        if ($poster) {
+                            $poster_base64 = 'data:image/jpeg;base64,' . base64_encode($poster);
+
+                            $insert_query = "INSERT INTO videos(movie_name,movie_url,poster,thumbnail,quality,length) 
                             VALUES ('" . mysqli_real_escape_string($conn, $moviename) . "',
                             '" . mysqli_real_escape_string($conn, 'videos/prn/' . $elem) . "',
+                            '$backpic64',
                             '$poster_base64',
-                            '$image',
                             '$width',
                             '$duration')";
-            } else {
-                $query = "INSERT INTO videos(movie_name,movie_url,thumbnail,quality,length) 
+                        } else {
+                            throw new Exception("faild to load pic");
+                        }
+                        // store genre ids for parsing later
+                        $genres = $dta->genre_ids;
+                    } else {
+                        // nothing found with tmdb
+                        writeLog("nothing found with TMDB!\n");
+                        throw new Exception("not found in tmdb");
+                    }
+                } catch (Exception $e) {
+                    echo $e->getMessage();
+
+                    $insert_query = "INSERT INTO videos(movie_name,movie_url,thumbnail,quality,length) 
                             VALUES ('" . mysqli_real_escape_string($conn, $moviename) . "',
                             '" . mysqli_real_escape_string($conn, 'videos/prn/' . $elem) . "',
-                            '$image',
+                            '$backpic64',
                             '$width',
                             '$duration')";
+                }
             }
 
-
-            if ($conn->query($query) === TRUE) {
+            if ($conn->query($insert_query) === TRUE) {
                 echo('successfully added ' . $elem . " to video gravity\n");
                 writeLog('successfully added ' . $elem . " to video gravity\n");
 
