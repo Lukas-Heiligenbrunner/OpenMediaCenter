@@ -98,7 +98,7 @@ class App extends React.Component {
         // add the main theme to the page body
         document.body.className = themeStyle.backgroundcolor;
         return (
-            <div className="App">
+            <div className={style.app}>
                 <div className={[style.navcontainer, themeStyle.backgroundcolor, themeStyle.textcolor, themeStyle.hrcolor].join(' ')}>
                     <div className={style.navbrand}>{this.state.mediacentername}</div>
 
