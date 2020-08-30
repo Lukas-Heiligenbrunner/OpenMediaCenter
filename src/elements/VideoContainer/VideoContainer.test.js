@@ -8,11 +8,11 @@ describe('<VideoContainer/>', function () {
         wrapper.unmount();
     });
 
-    it('inserts tiles correctly', () => {
+    it('inserts tiles correctly if enough available', () => {
         const wrapper = shallow(<VideoContainer data={[
-            {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}
+            {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}
         ]}/>);
-        expect(wrapper.find('Preview')).toHaveLength(12);
+        expect(wrapper.find('Preview')).toHaveLength(16);
     });
 
     it('inserts tiles correctly if not enough available', () => {

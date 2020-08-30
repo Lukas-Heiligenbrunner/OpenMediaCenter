@@ -1,3 +1,7 @@
+.app {
+    user-select: none;
+}
+
 .navitem {
     cursor: pointer;
     float: left;
