@@ -15,14 +15,14 @@ class TMDBMovie {
      * @param string $moviename moviename
      * @return object movie object or null if not found
      */
-    public function searchMovie(string $moviename) {
+    public function searchMovie(string $moviename, string $year = null) {
         $reply = json_decode(file_get_contents($this->baseurl . "search/movie?api_key=" . $this->apikey . "&query=" . urlencode($moviename)));
         if ($reply->total_results == 0) {
             // no results found
             // todo maybe parse first pictures somehow
             return null;
         } else {
-            return $reply->results[0];
+            return $reply->results[0]; // todo check year and not use first one
         }
     }
 

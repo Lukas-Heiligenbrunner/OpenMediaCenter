@@ -100,6 +100,11 @@ class VideoParser {
     private function processVideo(string $filename) {
         $moviename = substr($filename, 0, -4);
 
+        $regex = "\([0-9]{4}?\)"; //match year pattern
+        preg_match($moviename, $regex, $matches);
+        preg_replace($regex, '', $moviename);
+        $year = substr($matches[count($matches)], 1, 5);
+
         $query = "SELECT * FROM videos WHERE movie_name = '" . mysqli_real_escape_string($this->conn, $moviename) . "'";
         $result = $this->conn->query($query);
 
@@ -129,7 +134,7 @@ class VideoParser {
             if ($this->TMDBenabled) {
                 // search in tmdb api
                 try {
-                    if (!is_null($dta = $this->tmdb->searchMovie($moviename))) {
+                    if (!is_null($dta = $this->tmdb->searchMovie($movienamej, $year))) {
                         $poster = file_get_contents($this->tmdb->picturebase . $dta->poster_path);
 
                         // error handling for download error
