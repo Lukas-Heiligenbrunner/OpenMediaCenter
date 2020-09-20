@@ -13,20 +13,24 @@ class VideoParser {
     private string $ffmpeg = 'ffmpeg';
     private TMDBMovie $tmdb;
     /// initial load of all available movie genres
-    private $tmdbgenres;
+    private array $tmdbgenres;
     private string $videopath;
 
     /// db connection instance
-    private $conn;
+    private mysqli $conn;
 
     /// settings object instance
-    private $settings;
+    private SSettings $settings;
 
-    private $TMDBenabled;
-    private $added;
-    private $all;
-    private $failed;
-    private $deleted;
+    private bool $TMDBenabled;
+    /// videos added in this run
+    private int $added;
+    /// all videos in this run
+    private int $all;
+    /// failed videos in this run
+    private int $failed;
+    /// deleted videos in this run
+    private int $deleted;
 
     /**
      * VideoParser constructor.
@@ -43,9 +47,9 @@ class VideoParser {
 
     /**
      * searches a folder for mp4 videos and adds them to video gravity
-     * @param $foldername the folder where to search (relative to the webserver root)
+     * @param $foldername string the folder where to search (relative to the webserver root)
      */
-    public function extractVideos($foldername) {
+    public function extractVideos(string $foldername) {
         echo("TMDB grabbing is " . ($this->TMDBenabled ? "" : "not") . " enabled \n");
         $arr = scandir($foldername);
 
@@ -91,8 +95,9 @@ class VideoParser {
 
     /**
      * processes one mp4 video, extracts tags and adds it to the database
+     * @param $filename string filename of the video to process
      */
-    private function processVideo($filename) {
+    private function processVideo(string $filename) {
         $moviename = substr($filename, 0, -4);
 
         $query = "SELECT * FROM videos WHERE movie_name = '" . mysqli_real_escape_string($this->conn, $moviename) . "'";
@@ -202,8 +207,10 @@ class VideoParser {
 
     /**
      * insert the corresponding videosize tag to a specific videoid
+     * @param $width int video width
+     * @param $videoid int id of video
      */
-    private function insertSizeTag($width, $videoid){
+    private function insertSizeTag(int $width, int $videoid){
         // full hd
         if ($width >= 1900) {
             $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($videoid,2)";
@@ -238,7 +245,7 @@ class VideoParser {
      * @param $video string name including extension
      * @return object all infos as object
      */
-    private function _get_video_attributes($video) {
+    private function _get_video_attributes(string $video) {
         $command = "mediainfo \"../$this->videopath$video\" --Output=JSON";
         $output = shell_exec($command);
         return json_decode($output);
@@ -304,7 +311,7 @@ class VideoParser {
                     if ($this->conn->query($query) === TRUE) {
                         echo('successfully deleted ' . $r['movie_url'] . " from video gravity\n");
                         $this->writeLog('successfully deleted ' . $r['movie_url'] . " from video gravity\n");
-                        $deleted++;
+                        $this->deleted++;
                     } else {
                         echo "failed to delete " . $r['movie_url'] . " from gravity: " . $this->conn->error . "\n";
                         $this->writeLog("failed to delete " . $r['movie_url'] . " from gravity: " . $this->conn->error . "\n");
