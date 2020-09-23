@@ -60,6 +60,7 @@ package_debian:
     - mkdir -p "./var/www/openmediacenter/"
     - cp -r ../build/* ./var/www/openmediacenter/
     - cp -r ../api ./var/www/openmediacenter/
+    - chmod -R 0775 *
     - dpkg-deb --build OpenMediaCenter
     - mv OpenMediaCenter.deb OpenMediaCenter-0.1_amd64.deb
   artifacts:
