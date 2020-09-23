@@ -1,5 +1,6 @@
 Package: OpenMediaCenter
 Version: 0.1
+Depends: nginx, php-fpm, php-mysqli
 Section: custom
 Priority: optional
 Architecture: all
