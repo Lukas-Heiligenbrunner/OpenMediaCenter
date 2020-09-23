@@ -57,6 +57,7 @@ package_debian:
   image: debian
   script:
     - cd deb
+    - mkdir -p "./var/www/openmediacenter/"
     - cp ../build/* ./var/www/openmediacenter/
     - cp ../api ./var/www/openmediacenter/
     - dpkg-deb --build OpenMediaCenter
