@@ -54,12 +54,14 @@ class VideoParser {
         $arr = scandir($foldername);
 
         foreach ($arr as $elem) {
+            if($elem == '.' || $elem == '..') continue;
+
             $ext = pathinfo($elem, PATHINFO_EXTENSION);
             if ($ext == "mp4") {
                 $this->processVideo($elem);
             } else {
-                echo($elem . " does not contain a .mp4 extension! - skipping \n");
-                $this->writeLog($elem . " does not contain a .mp4 extension! - skipping \n");
+                echo($elem . " does not contain a valid .mp4 extension! - skipping \n");
+                $this->writeLog($elem . " does not contain a valid .mp4 extension! - skipping \n");
             }
         }
 
@@ -100,6 +102,15 @@ class VideoParser {
     private function processVideo(string $filename) {
         $moviename = substr($filename, 0, -4);
 
+        $regex = '/\([0-9]{4}?\)/'; //match year pattern
+        preg_match($regex, $moviename, $matches);
+        preg_replace($regex, '', $moviename);
+        $year = null;
+        if (count($matches) > 0) {
+            $year = substr($matches[count($matches) - 1], 1, 4);
+            $moviename = substr($moviename, 0, -6);
+        }
+
         $query = "SELECT * FROM videos WHERE movie_name = '" . mysqli_real_escape_string($this->conn, $moviename) . "'";
         $result = $this->conn->query($query);
 
@@ -128,18 +139,6 @@ class VideoParser {
             // check if tmdb grabbing is enabled
             if ($this->TMDBenabled) {
                 // search in tmdb api
-
-                $regex = '/\([0-9]{4}?\)/'; //match year pattern
-                preg_match($regex, $moviename, $matches);
-                preg_replace($regex, '', $moviename);
-                $year = null;
-                if (count($matches) > 0) {
-                    $year = substr($matches[count($matches) - 1], 1, 4);
-                    $moviename = substr($moviename, 0, -6);
-                    echo "year: $year \n";
-                }
-
-
                 try {
                     if (!is_null($dta = $this->tmdb->searchMovie($moviename, $year))) {
                         $poster = file_get_contents($this->tmdb->picturebase . $dta->poster_path);
@@ -307,7 +306,7 @@ class VideoParser {
         $r = mysqli_fetch_assoc($result);
 
         if ($this->all < $r['count']) {
-            echo "should be in gravity: " . $this->all . "\n";
+            echo "\n\nshould be in gravity: " . $this->all . "\n";
             $this->writeLog("should be in gravity: " . $this->all . "\n");
             echo "really in gravity: " . $r['count'] . "\n";
             $this->writeLog("really in gravity: " . $r['count'] . "\n");
