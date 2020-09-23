@@ -24,13 +24,13 @@ class VideoParser {
 
     private bool $TMDBenabled;
     /// videos added in this run
-    private int $added;
+    private int $added = 0;
     /// all videos in this run
-    private int $all;
+    private int $all = 0;
     /// failed videos in this run
-    private int $failed;
+    private int $failed = 0;
     /// deleted videos in this run
-    private int $deleted;
+    private int $deleted = 0;
 
     /**
      * VideoParser constructor.
@@ -100,11 +100,6 @@ class VideoParser {
     private function processVideo(string $filename) {
         $moviename = substr($filename, 0, -4);
 
-        $regex = "\([0-9]{4}?\)"; //match year pattern
-        preg_match($moviename, $regex, $matches);
-        preg_replace($regex, '', $moviename);
-        $year = substr($matches[count($matches)], 1, 5);
-
         $query = "SELECT * FROM videos WHERE movie_name = '" . mysqli_real_escape_string($this->conn, $moviename) . "'";
         $result = $this->conn->query($query);
 
@@ -133,8 +128,20 @@ class VideoParser {
             // check if tmdb grabbing is enabled
             if ($this->TMDBenabled) {
                 // search in tmdb api
+
+                $regex = '/\([0-9]{4}?\)/'; //match year pattern
+                preg_match($regex, $moviename, $matches);
+                preg_replace($regex, '', $moviename);
+                $year = null;
+                if (count($matches) > 0) {
+                    $year = substr($matches[count($matches) - 1], 1, 4);
+                    $moviename = substr($moviename, 0, -6);
+                    echo "year: $year \n";
+                }
+
+
                 try {
-                    if (!is_null($dta = $this->tmdb->searchMovie($movienamej, $year))) {
+                    if (!is_null($dta = $this->tmdb->searchMovie($moviename, $year))) {
                         $poster = file_get_contents($this->tmdb->picturebase . $dta->poster_path);
 
                         // error handling for download error
@@ -155,8 +162,10 @@ class VideoParser {
                         $genres = $dta->genre_ids;
                     } else {
                         // nothing found with tmdb
-                        $this->writeLog("nothing found with TMDB!\n");
-                        throw new Exception("not found in tmdb");
+                        echo "my moviename: " . $moviename;
+
+                        $this->writeLog("nothing found with TMDB! -- $moviename\n");
+                        throw new Exception("nothing found with TMDB! -- $moviename");
                     }
                 } catch (Exception $e) {
                     echo $e->getMessage();
@@ -215,7 +224,7 @@ class VideoParser {
      * @param $width int video width
      * @param $videoid int id of video
      */
-    private function insertSizeTag(int $width, int $videoid){
+    private function insertSizeTag(int $width, int $videoid) {
         // full hd
         if ($width >= 1900) {
             $query = "INSERT INTO video_tags(video_id,tag_id) VALUES ($videoid,2)";
@@ -272,19 +281,17 @@ class VideoParser {
      * @return integer the id of the inserted tag
      */
     private function tagExists(string $tagname) {
-        global $conn;
-
         $query = "SELECT * FROM tags WHERE tag_name='$tagname'";
 
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         if ($result->num_rows == 0) {
             // tag does not exist --> create it
             $query = "INSERT INTO tags (tag_name) VALUES ('$tagname')";
-            if ($conn->query($query) !== TRUE) {
+            if ($this->conn->query($query) !== TRUE) {
                 echo "failed to create $tagname tag in database\n";
                 $this->writeLog("failed to create $tagname tag in database\n");
             }
-            return $conn->insert_id;
+            return $this->conn->insert_id;
         } else {
             return $result->fetch_assoc()['tag_id'];
         }

@@ -19,10 +19,23 @@ class TMDBMovie {
         $reply = json_decode(file_get_contents($this->baseurl . "search/movie?api_key=" . $this->apikey . "&query=" . urlencode($moviename)));
         if ($reply->total_results == 0) {
             // no results found
-            // todo maybe parse first pictures somehow
             return null;
+        } elseif ($year != null) {
+            // if year is defined check year
+            $regex = '/[0-9]{4}?/'; // matches year of string
+
+            for ($i = 0; $i < count($reply->results); $i++) {
+                $releasedate = $reply->results[$i]->release_date;
+
+                preg_match($regex, $releasedate, $matches);
+                if (count($matches) > 0) {
+                    $curryear = $matches[0];
+                    if ($curryear == $year)
+                        return $reply->results[$i];
+                }
+            }
         } else {
-            return $reply->results[0]; // todo check year and not use first one
+            return $reply->results[0];
         }
     }
 

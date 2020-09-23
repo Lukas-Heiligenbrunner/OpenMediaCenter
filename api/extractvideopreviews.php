@@ -8,7 +8,7 @@ require_once './src/VideoParser.php';
 setlocale(LC_ALL, 'en_US.UTF-8');
 
 $vp = new VideoParser();
-$vp->writeLog("starting extraction!\n");
+$vp->writeLog("starting extraction!!\n");
 
 $sett = new SSettings();
 
