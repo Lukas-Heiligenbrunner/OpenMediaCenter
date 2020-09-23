@@ -32,7 +32,7 @@ class SSettings {
      * @return bool isenabled?
      */
     public function isTMDBGrabbingEnabled(): bool {
-        $query = "SELECT TMDB_grabbing from settings";
+        $query = "SELECT TMDB_grabbing from settings WHERE 1";
 
         $result = $this->database->getConnection()->query($query);
         if (!$result) {
