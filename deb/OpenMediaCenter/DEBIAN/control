@@ -1,0 +1,9 @@
+Package: OpenMediaCenter
+Version: 0.1
+Section: custom
+Priority: optional
+Architecture: all
+Essential: no
+Installed-Size: 1024
+Maintainer: heili.eu
+Description: OpenMediaCenter

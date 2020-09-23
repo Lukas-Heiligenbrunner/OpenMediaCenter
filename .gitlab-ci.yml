@@ -4,6 +4,7 @@ stages:
   - prepare
   - build
   - test
+  - packaging
   - deploy
 
 cache:
@@ -11,7 +12,6 @@ cache:
     - node_modules/
 
 include:
-  - template: SAST.gitlab-ci.yml
   - template: Code-Quality.gitlab-ci.yml
 
 variables:
@@ -51,6 +51,20 @@ coverage:
       cobertura:
         - ./coverage/cobertura-coverage.xml
   needs: ["prepare"]
+
+package_debian:
+  stage: packaging
+  image: debian
+  script:
+    - cd deb
+    - cp ../build/* ./var/www/openmediacenter/
+    - cp ../api ./var/www/openmediacenter/
+    - dpkg-deb --build OpenMediaCenter
+    - mv OpenMediaCenter.deb OpenMediaCenter-0.1_amd64.deb
+  artifacts:
+    paths:
+      - deb/OpenMediaCenter-0.1_amd64.deb
+  needs: ["build"]
 
 deploy_test1:
   stage: deploy
