@@ -117,4 +117,46 @@ describe('<Player/>', function () {
 
         expect(wrapper.find("Tag")).toHaveLength(2);
     });
+
+    it('inserts tag quickadd correctly', function () {
+        const wrapper = shallow(<Player/>);
+
+        expect(wrapper.find("Tag")).toHaveLength(0);
+
+        wrapper.setState({
+            suggesttag: [
+                {tag_name: 'first', tag_id: 1},
+                {tag_name: 'second', tag_id: 2}
+            ]
+        });
+
+        expect(wrapper.find("Tag")).toHaveLength(2);
+    });
+
+    it('test click of quickadd tag btn', done => {
+        const wrapper = shallow(<Player/>);
+
+        expect(wrapper.find("Tag")).toHaveLength(0);
+
+        wrapper.setState({
+            suggesttag: [
+                {tag_name: 'first', tag_id: 1},
+            ]
+        });
+
+        expect(wrapper.find("Tag")).toHaveLength(1);
+
+        global.fetch = prepareFetchApi({result: 'success'});
+
+        // render tag subcomponent
+        const tag = wrapper.find("Tag").first().dive();
+        tag.simulate('click');
+
+        process.nextTick(() => {
+            expect(global.fetch).toHaveBeenCalledTimes(1);
+
+            global.fetch.mockClear();
+            done();
+        });
+    });
 });

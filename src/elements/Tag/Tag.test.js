@@ -31,4 +31,17 @@ describe('<Tag/>', function () {
 
         expect(func).toBeCalledTimes(1);
     });
+
+    it('test custom onclick function', function () {
+        const func = jest.fn();
+
+        const wrapper = shallow(<Tag
+            onclick={() => {func()}}>test</Tag>);
+
+        expect(func).toBeCalledTimes(0);
+
+        wrapper.simulate("click");
+
+        expect(func).toBeCalledTimes(1);
+    });
 });

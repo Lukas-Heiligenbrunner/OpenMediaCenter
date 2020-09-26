@@ -18,8 +18,7 @@ class Tag extends React.Component {
      * click handling for a Tag
      */
     TagClick() {
-        // need !! to get valid true/false value
-        if (!!this.props.onclick) {
+        if (this.props.onclick) {
             this.props.onclick();
             return;
         }

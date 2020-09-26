@@ -87,8 +87,18 @@ class Player extends React.Component {
                                             console.log("error occured while writing to db -- todo error handling");
                                             console.log(result.result);
                                         } else {
-                                            // todo neccessary to refetch all?
-                                            this.fetchMovieData();
+                                            // update tags if successful
+                                            let array = [...this.state.suggesttag]; // make a separate copy of the array
+                                            const index = array.map(function(e) { return e.tag_id; }).indexOf(m.tag_id);
+
+                                            if (index !== -1) {
+                                                array.splice(index, 1);
+
+                                                this.setState({
+                                                    tags: [...this.state.tags, {tag_name: m.tag_name}],
+                                                    suggesttag: array
+                                                });
+                                            }
                                         }
                                     }));
                         }}>
