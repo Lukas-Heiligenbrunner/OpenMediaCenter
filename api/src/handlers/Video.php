@@ -95,8 +95,10 @@ class Video extends RequestBase {
      */
     private function loadVideos() {
         $this->addActionHandler("loadVideo", function () {
+            $video_id = $_POST['movieid'];
+
             $query = "  SELECT movie_name,movie_id,movie_url,thumbnail,poster,likes,quality,length 
-                        FROM videos WHERE movie_id='" . $_POST['movieid'] . "'";
+                        FROM videos WHERE movie_id=$video_id";
 
             $result = $this->conn->query($query);
             $row = $result->fetch_assoc();
@@ -121,7 +123,7 @@ class Video extends RequestBase {
             $arr['tags'] = array();
             $query = "SELECT t.tag_name FROM video_tags 
                         INNER JOIN tags t on video_tags.tag_id = t.tag_id
-                        WHERE video_tags.video_id=" . $_POST['movieid'] . "
+                        WHERE video_tags.video_id=$video_id
                         GROUP BY t.tag_name";
             $result = $this->conn->query($query);
             while ($r = mysqli_fetch_assoc($result)) {
@@ -130,8 +132,12 @@ class Video extends RequestBase {
 
             // get the random predict tags
             $arr['suggesttag'] = array();
+            // select 5 random tags which are not selected for current video
             $query = "SELECT * FROM tags
-                        order by rand()
+                        WHERE tag_id NOT IN (
+                            SELECT video_tags.tag_id FROM video_tags
+                            WHERE video_id=$video_id)
+                        ORDER BY rand()
                         LIMIT 5";
             $result = $this->conn->query($query);
             while ($r = mysqli_fetch_assoc($result)) {

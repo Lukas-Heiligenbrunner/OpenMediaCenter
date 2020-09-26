@@ -18,7 +18,8 @@ class Tag extends React.Component {
      * click handling for a Tag
      */
     TagClick() {
-        if (typeof this.props.onClick === "undefined") {
+        // need !! to get valid true/false value
+        if (!!this.props.onclick) {
             this.props.onclick();
             return;
         }
