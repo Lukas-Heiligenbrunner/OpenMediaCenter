@@ -18,6 +18,11 @@ class Tag extends React.Component {
      * click handling for a Tag
      */
     TagClick() {
+        if (this.props.onclick) {
+            this.props.onclick();
+            return;
+        }
+
         const tag = this.props.children.toString().toLowerCase();
 
         // call callback functin to switch to category page with specified tag

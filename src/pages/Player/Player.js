@@ -41,12 +41,86 @@ class Player extends React.Component {
             quality: null,
             length: null,
             tags: [],
+            suggesttag: [],
             popupvisible: false
         };
     }
 
     componentDidMount() {
         this.fetchMovieData();
+    }
+
+    /**
+     * quick add callback to add tag to db and change gui correctly
+     * @param tag_id id of tag to add
+     * @param tag_name name of tag to add
+     */
+    quickAddTag(tag_id, tag_name) {
+        // save the tag
+        const updateRequest = new FormData();
+        updateRequest.append('action', 'addTag');
+        updateRequest.append('id', tag_id);
+        updateRequest.append('movieid', this.props.movie_id);
+
+        fetch('/api/tags.php', {method: 'POST', body: updateRequest})
+            .then((response) => response.json()
+                .then((result) => {
+                    if (result.result !== "success") {
+                        console.error("error occured while writing to db -- todo error handling");
+                        console.error(result.result);
+                    } else {
+                        // update tags if successful
+                        let array = [...this.state.suggesttag]; // make a separate copy of the array
+                        const index = array.map(function (e) {
+                            return e.tag_id;
+                        }).indexOf(tag_id);
+
+                        if (index !== -1) {
+                            array.splice(index, 1);
+
+                            this.setState({
+                                tags: [...this.state.tags, {tag_name: tag_name}],
+                                suggesttag: array
+                            });
+                        }
+                    }
+                }));
+    }
+
+    /**
+     * generate sidebar with all items
+     */
+    assembleSideBar() {
+        return (
+            <SideBar>
+                <SideBarTitle>Infos:</SideBarTitle>
+                <Line/>
+                <SideBarItem><b>{this.state.likes}</b> Likes!</SideBarItem>
+                {this.state.quality !== 0 ?
+                    <SideBarItem><b>{this.state.quality}p</b> Quality!</SideBarItem> : null}
+                {this.state.length !== 0 ?
+                    <SideBarItem><b>{Math.round(this.state.length / 60)}</b> Minutes of
+                        length!</SideBarItem> : null}
+                <Line/>
+                <SideBarTitle>Tags:</SideBarTitle>
+                {this.state.tags.map((m) => (
+                    <Tag
+                        key={m.tag_name}
+                        viewbinding={this.props.viewbinding}>{m.tag_name}</Tag>
+                ))}
+                <Line/>
+                <SideBarTitle>Tag Quickadd:</SideBarTitle>
+                {this.state.suggesttag.map((m) => (
+                    <Tag
+                        key={m.tag_name}
+                        onclick={() => {
+                            this.quickAddTag(m.tag_id, m.tag_name);
+                        }}>
+                        {m.tag_name}
+                    </Tag>
+                ))}
+            </SideBar>
+        );
     }
 
     render() {
@@ -56,23 +130,7 @@ class Player extends React.Component {
                     title='Watch'
                     subtitle={this.state.movie_name}/>
 
-                <SideBar>
-                    <SideBarTitle>Infos:</SideBarTitle>
-                    <Line/>
-                    <SideBarItem><b>{this.state.likes}</b> Likes!</SideBarItem>
-                    {this.state.quality !== 0 ?
-                        <SideBarItem><b>{this.state.quality}p</b> Quality!</SideBarItem> : null}
-                    {this.state.length !== 0 ?
-                        <SideBarItem><b>{Math.round(this.state.length / 60)}</b> Minutes of
-                            length!</SideBarItem> : null}
-                    <Line/>
-                    <SideBarTitle>Tags:</SideBarTitle>
-                    {this.state.tags.map((m) => (
-                        <Tag
-                            key={m.tag_name}
-                            viewbinding={this.props.viewbinding}>{m.tag_name}</Tag>
-                    ))}
-                </SideBar>
+                {this.assembleSideBar()}
 
                 <div className={style.videowrapper}>
                     {/* video component is added here */}
@@ -131,8 +189,10 @@ class Player extends React.Component {
                     likes: result.likes,
                     quality: result.quality,
                     length: result.length,
-                    tags: result.tags
+                    tags: result.tags,
+                    suggesttag: result.suggesttag
                 });
+                console.log(this.state);
             });
     }
 
@@ -149,10 +209,11 @@ class Player extends React.Component {
             .then((response) => response.json()
                 .then((result) => {
                     if (result.result === "success") {
-                        this.fetchMovieData();
+                        // likes +1 --> avoid reload of all data
+                        this.setState({likes: this.state.likes + 1})
                     } else {
-                        console.log("an error occured while liking");
-                        console.log(result);
+                        console.error("an error occured while liking");
+                        console.error(result);
                     }
                 }));
     }
