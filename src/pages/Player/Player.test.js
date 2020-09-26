@@ -23,17 +23,8 @@ describe('<Player/>', function () {
         expect(wrapper.find("r")).toHaveLength(1);
     });
 
-    it('likebtn click', done => {
-        global.fetch = global.prepareFetchApi({result: 'success'});
-
-        const func = jest.fn();
-
+    function simulateLikeButtonClick(){
         const wrapper = shallow(<Player/>);
-        wrapper.setProps({
-            onHide: () => {
-                func()
-            }
-        });
 
         // initial fetch for getting movie data
         expect(global.fetch).toHaveBeenCalledTimes(1);
@@ -41,9 +32,19 @@ describe('<Player/>', function () {
         // fetch for liking
         expect(global.fetch).toHaveBeenCalledTimes(2);
 
+        return wrapper;
+    }
+
+    it('likebtn click', done => {
+        global.fetch = global.prepareFetchApi({result: 'success'});
+        global.console.error = jest.fn();
+
+        simulateLikeButtonClick();
+
+
         process.nextTick(() => {
-            // refetch is called so fetch called 3 times
-            expect(global.fetch).toHaveBeenCalledTimes(3);
+            expect(global.fetch).toHaveBeenCalledTimes(2);
+            expect(global.console.error).toHaveBeenCalledTimes(0);
 
             global.fetch.mockClear();
             done();
@@ -52,24 +53,14 @@ describe('<Player/>', function () {
 
     it('errored likebtn click', done => {
         global.fetch = global.prepareFetchApi({result: 'nosuccess'});
-        const func = jest.fn();
+        global.console.error = jest.fn();
 
-        const wrapper = shallow(<Player/>);
-        wrapper.setProps({
-            onHide: () => {
-                func()
-            }
-        });
-
-        // initial fetch for getting movie data
-        expect(global.fetch).toHaveBeenCalledTimes(1);
-        wrapper.find('.videoactions').find("button").first().simulate('click');
-        // fetch for liking
-        expect(global.fetch).toHaveBeenCalledTimes(2);
+        simulateLikeButtonClick();
 
         process.nextTick(() => {
             // refetch is called so fetch called 3 times
             expect(global.fetch).toHaveBeenCalledTimes(2);
+            expect(global.console.error).toHaveBeenCalledTimes(2);
 
             global.fetch.mockClear();
             done();
@@ -119,32 +110,11 @@ describe('<Player/>', function () {
     });
 
     it('inserts tag quickadd correctly', function () {
-        const wrapper = shallow(<Player/>);
-
-        expect(wrapper.find("Tag")).toHaveLength(0);
-
-        wrapper.setState({
-            suggesttag: [
-                {tag_name: 'first', tag_id: 1},
-                {tag_name: 'second', tag_id: 2}
-            ]
-        });
-
-        expect(wrapper.find("Tag")).toHaveLength(2);
+        generatetag();
     });
 
     it('test click of quickadd tag btn', done => {
-        const wrapper = shallow(<Player/>);
-
-        expect(wrapper.find("Tag")).toHaveLength(0);
-
-        wrapper.setState({
-            suggesttag: [
-                {tag_name: 'first', tag_id: 1},
-            ]
-        });
-
-        expect(wrapper.find("Tag")).toHaveLength(1);
+        const wrapper = generatetag();
 
         global.fetch = prepareFetchApi({result: 'success'});
 
@@ -159,4 +129,38 @@ describe('<Player/>', function () {
             done();
         });
     });
+
+    it('test failing quickadd', done => {
+        const wrapper = generatetag();
+
+        global.fetch = prepareFetchApi({result: 'nonsuccess'});
+        global.console.error = jest.fn();
+
+        // render tag subcomponent
+        const tag = wrapper.find("Tag").first().dive();
+        tag.simulate('click');
+
+        process.nextTick(() => {
+            expect(global.console.error).toHaveBeenCalledTimes(2);
+
+            global.fetch.mockClear();
+            done();
+        });
+    });
+
+    function generatetag(){
+        const wrapper = shallow(<Player/>);
+
+        expect(wrapper.find("Tag")).toHaveLength(0);
+
+        wrapper.setState({
+            suggesttag: [
+                {tag_name: 'first', tag_id: 1},
+            ]
+        });
+
+        expect(wrapper.find("Tag")).toHaveLength(1);
+
+        return wrapper;
+    }
 });

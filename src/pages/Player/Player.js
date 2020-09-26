@@ -50,6 +50,46 @@ class Player extends React.Component {
         this.fetchMovieData();
     }
 
+    /**
+     * quick add callback to add tag to db and change gui correctly
+     * @param tag_id id of tag to add
+     * @param tag_name name of tag to add
+     */
+    quickAddTag(tag_id, tag_name) {
+        // save the tag
+        const updateRequest = new FormData();
+        updateRequest.append('action', 'addTag');
+        updateRequest.append('id', tag_id);
+        updateRequest.append('movieid', this.props.movie_id);
+
+        fetch('/api/tags.php', {method: 'POST', body: updateRequest})
+            .then((response) => response.json()
+                .then((result) => {
+                    if (result.result !== "success") {
+                        console.error("error occured while writing to db -- todo error handling");
+                        console.error(result.result);
+                    } else {
+                        // update tags if successful
+                        let array = [...this.state.suggesttag]; // make a separate copy of the array
+                        const index = array.map(function (e) {
+                            return e.tag_id;
+                        }).indexOf(tag_id);
+
+                        if (index !== -1) {
+                            array.splice(index, 1);
+
+                            this.setState({
+                                tags: [...this.state.tags, {tag_name: tag_name}],
+                                suggesttag: array
+                            });
+                        }
+                    }
+                }));
+    }
+
+    /**
+     * generate sidebar with all items
+     */
     assembleSideBar() {
         return (
             <SideBar>
@@ -74,33 +114,7 @@ class Player extends React.Component {
                     <Tag
                         key={m.tag_name}
                         onclick={() => {
-                            // save the tag
-                            const updateRequest = new FormData();
-                            updateRequest.append('action', 'addTag');
-                            updateRequest.append('id', m.tag_id);
-                            updateRequest.append('movieid', this.props.movie_id);
-
-                            fetch('/api/tags.php', {method: 'POST', body: updateRequest})
-                                .then((response) => response.json()
-                                    .then((result) => {
-                                        if (result.result !== "success") {
-                                            console.log("error occured while writing to db -- todo error handling");
-                                            console.log(result.result);
-                                        } else {
-                                            // update tags if successful
-                                            let array = [...this.state.suggesttag]; // make a separate copy of the array
-                                            const index = array.map(function(e) { return e.tag_id; }).indexOf(m.tag_id);
-
-                                            if (index !== -1) {
-                                                array.splice(index, 1);
-
-                                                this.setState({
-                                                    tags: [...this.state.tags, {tag_name: m.tag_name}],
-                                                    suggesttag: array
-                                                });
-                                            }
-                                        }
-                                    }));
+                            this.quickAddTag(m.tag_id, m.tag_name);
                         }}>
                         {m.tag_name}
                     </Tag>
@@ -195,10 +209,11 @@ class Player extends React.Component {
             .then((response) => response.json()
                 .then((result) => {
                     if (result.result === "success") {
-                        this.fetchMovieData();
+                        // likes +1 --> avoid reload of all data
+                        this.setState({likes: this.state.likes + 1})
                     } else {
-                        console.log("an error occured while liking");
-                        console.log(result);
+                        console.error("an error occured while liking");
+                        console.error(result);
                     }
                 }));
     }

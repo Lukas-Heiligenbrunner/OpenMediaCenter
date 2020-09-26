@@ -115,7 +115,7 @@ class Video extends RequestBase {
             // todo drop video url from db -- maybe one with and one without extension
             // extension hardcoded here!!!
             $arr["movie_url"] = str_replace("?", "%3F", $this->videopath . $row["movie_name"] . ".mp4");
-            $arr["likes"] = $row["likes"];
+            $arr["likes"] = (int) $row["likes"];
             $arr["quality"] = $row["quality"];
             $arr["length"] = $row["length"];
 
