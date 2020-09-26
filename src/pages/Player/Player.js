@@ -41,12 +41,62 @@ class Player extends React.Component {
             quality: null,
             length: null,
             tags: [],
+            suggesttag: [],
             popupvisible: false
         };
     }
 
     componentDidMount() {
         this.fetchMovieData();
+    }
+
+    assembleSideBar() {
+        return (
+            <SideBar>
+                <SideBarTitle>Infos:</SideBarTitle>
+                <Line/>
+                <SideBarItem><b>{this.state.likes}</b> Likes!</SideBarItem>
+                {this.state.quality !== 0 ?
+                    <SideBarItem><b>{this.state.quality}p</b> Quality!</SideBarItem> : null}
+                {this.state.length !== 0 ?
+                    <SideBarItem><b>{Math.round(this.state.length / 60)}</b> Minutes of
+                        length!</SideBarItem> : null}
+                <Line/>
+                <SideBarTitle>Tags:</SideBarTitle>
+                {this.state.tags.map((m) => (
+                    <Tag
+                        key={m.tag_name}
+                        viewbinding={this.props.viewbinding}>{m.tag_name}</Tag>
+                ))}
+                <Line/>
+                <SideBarTitle>Tag Quickadd:</SideBarTitle>
+                {this.state.suggesttag.map((m) => (
+                    <Tag
+                        key={m.tag_name}
+                        onclick={() => {
+                            // save the tag
+                            const updateRequest = new FormData();
+                            updateRequest.append('action', 'addTag');
+                            updateRequest.append('id', m.tag_id);
+                            updateRequest.append('movieid', this.props.movie_id);
+
+                            fetch('/api/tags.php', {method: 'POST', body: updateRequest})
+                                .then((response) => response.json()
+                                    .then((result) => {
+                                        if (result.result !== "success") {
+                                            console.log("error occured while writing to db -- todo error handling");
+                                            console.log(result.result);
+                                        } else {
+                                            // todo neccessary to refetch all?
+                                            this.fetchMovieData();
+                                        }
+                                    }));
+                        }}>
+                        {m.tag_name}
+                    </Tag>
+                ))}
+            </SideBar>
+        );
     }
 
     render() {
@@ -56,23 +106,7 @@ class Player extends React.Component {
                     title='Watch'
                     subtitle={this.state.movie_name}/>
 
-                <SideBar>
-                    <SideBarTitle>Infos:</SideBarTitle>
-                    <Line/>
-                    <SideBarItem><b>{this.state.likes}</b> Likes!</SideBarItem>
-                    {this.state.quality !== 0 ?
-                        <SideBarItem><b>{this.state.quality}p</b> Quality!</SideBarItem> : null}
-                    {this.state.length !== 0 ?
-                        <SideBarItem><b>{Math.round(this.state.length / 60)}</b> Minutes of
-                            length!</SideBarItem> : null}
-                    <Line/>
-                    <SideBarTitle>Tags:</SideBarTitle>
-                    {this.state.tags.map((m) => (
-                        <Tag
-                            key={m.tag_name}
-                            viewbinding={this.props.viewbinding}>{m.tag_name}</Tag>
-                    ))}
-                </SideBar>
+                {this.assembleSideBar()}
 
                 <div className={style.videowrapper}>
                     {/* video component is added here */}
@@ -131,8 +165,10 @@ class Player extends React.Component {
                     likes: result.likes,
                     quality: result.quality,
                     length: result.length,
-                    tags: result.tags
+                    tags: result.tags,
+                    suggesttag: result.suggesttag
                 });
+                console.log(this.state);
             });
     }
 

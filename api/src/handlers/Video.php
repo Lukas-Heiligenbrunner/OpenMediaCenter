@@ -95,7 +95,8 @@ class Video extends RequestBase {
      */
     private function loadVideos() {
         $this->addActionHandler("loadVideo", function () {
-            $query = "SELECT movie_name,movie_id,movie_url,thumbnail,poster,likes,quality,length FROM videos WHERE movie_id='" . $_POST['movieid'] . "'";
+            $query = "  SELECT movie_name,movie_id,movie_url,thumbnail,poster,likes,quality,length 
+                        FROM videos WHERE movie_id='" . $_POST['movieid'] . "'";
 
             $result = $this->conn->query($query);
             $row = $result->fetch_assoc();
@@ -125,6 +126,16 @@ class Video extends RequestBase {
             $result = $this->conn->query($query);
             while ($r = mysqli_fetch_assoc($result)) {
                 array_push($arr['tags'], $r);
+            }
+
+            // get the random predict tags
+            $arr['suggesttag'] = array();
+            $query = "SELECT * FROM tags
+                        order by rand()
+                        LIMIT 5";
+            $result = $this->conn->query($query);
+            while ($r = mysqli_fetch_assoc($result)) {
+                array_push($arr['suggesttag'], $r);
             }
 
             $this->commitMessage(json_encode($arr));
