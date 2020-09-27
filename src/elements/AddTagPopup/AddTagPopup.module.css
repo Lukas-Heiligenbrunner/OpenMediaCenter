@@ -1,0 +1,28 @@
+.popup {
+    z-index: 2;
+    position: absolute;
+    height: 80%;
+    width: 60%;
+    top: 10%;
+    left: 20%;
+    background-color: black;
+    opacity: 0.9;
+    border-radius: 18px;
+    border-width: 4px;
+    border-style: solid;
+}
+
+.header {
+    font-size: x-large;
+    color: white;
+    opacity: 1;
+    margin-left: 15px;
+    margin-top: 10px;
+}
+
+.content {
+    opacity: 1;
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+}

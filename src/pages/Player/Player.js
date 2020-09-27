@@ -44,6 +44,8 @@ class Player extends React.Component {
             suggesttag: [],
             popupvisible: false
         };
+
+        this.quickAddTag = this.quickAddTag.bind(this);
     }
 
     componentDidMount() {
@@ -75,12 +77,17 @@ class Player extends React.Component {
                             return e.tag_id;
                         }).indexOf(tag_id);
 
+                        // check if tag is available in quickadds
                         if (index !== -1) {
                             array.splice(index, 1);
 
                             this.setState({
                                 tags: [...this.state.tags, {tag_name: tag_name}],
                                 suggesttag: array
+                            });
+                        } else {
+                            this.setState({
+                                tags: [...this.state.tags, {tag_name: tag_name}]
                             });
                         }
                     }
@@ -148,8 +155,8 @@ class Player extends React.Component {
                             <AddTagPopup show={this.state.popupvisible}
                                          onHide={() => {
                                              this.setState({popupvisible: false});
-                                             this.fetchMovieData();
                                          }}
+                                         submit={this.quickAddTag}
                                          movie_id={this.state.movie_id}/> :
                             null
                         }

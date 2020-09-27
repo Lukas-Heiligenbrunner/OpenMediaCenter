@@ -1,7 +1,8 @@
 import React from "react";
-import Modal from 'react-bootstrap/Modal'
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
+import ReactDom from 'react-dom';
+import style from './AddTagPopup.module.css'
+import Tag from "../Tag/Tag";
+import {Line} from "../PageTitle/PageTitle";
 
 /**
  * component creates overlay to add a new tag to a video
@@ -10,18 +11,14 @@ class AddTagPopup extends React.Component {
     constructor(props, context) {
         super(props, context);
 
-        this.state = {
-            selection: {
-                name: "nothing selected",
-                id: -1
-            },
-            items: []
-        };
-
+        this.state = {items: []};
+        this.handleClickOutside = this.handleClickOutside.bind(this);
         this.props = props;
     }
 
     componentDidMount() {
+        document.addEventListener('click', this.handleClickOutside);
+
         const updateRequest = new FormData();
         updateRequest.append('action', 'getAllTags');
 
@@ -34,50 +31,44 @@ class AddTagPopup extends React.Component {
             });
     }
 
-    render() {
-        return (
-            <>
-                <Modal
-                    show={this.props.show}
-                    onHide={this.props.onHide}
-                    size="lg"
-                    aria-labelledby="contained-modal-title-vcenter"
-                    centered>
-                    <Modal.Header closeButton>
-                        <Modal.Title id="contained-modal-title-vcenter">
-                            Add to Tag
-                        </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <h4>Select a Tag:</h4>
-                        <DropdownButton id="dropdown-basic-button" title={this.state.selection.name}>
-                            {this.state.items ?
-                                this.state.items.map((i) => (
-                                    <Dropdown.Item key={i.tag_name} onClick={() => {
-                                        this.setState({selection: {name: i.tag_name, id: i.tag_id}})
-                                    }}>{i.tag_name}</Dropdown.Item>
-                                )) :
-                                <Dropdown.Item>loading tags...</Dropdown.Item>}
-                        </DropdownButton>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <button className='btn btn-primary' onClick={() => {
-                            this.storeselection();
-                        }}>Add
-                        </button>
-                    </Modal.Footer>
-                </Modal>
-            </>
-        );
+    componentWillUnmount() {
+        document.removeEventListener('click', this.handleClickOutside);
     }
 
     /**
-     * store the filled in form to the backend
+     * Alert if clicked on outside of element
      */
-    storeselection() {
+    handleClickOutside(event) {
+        const domNode = ReactDom.findDOMNode(this);
+
+        if (!domNode || !domNode.contains(event.target)) {
+            this.props.onHide();
+        }
+    }
+
+    render() {
+        return (
+            <div className={style.popup}>
+                <div className={style.header}>Add a Tag to this Video:</div>
+                <Line/>
+                <div className={style.content}>
+                    {this.state.items ?
+                        this.state.items.map((i) => (
+                            <Tag onclick={() => {
+                                this.addTag(i.tag_id, i.tag_name);
+                            }}>{i.tag_name}</Tag>
+                        )) : null}
+                </div>
+
+            </div>
+        );
+    }
+
+    addTag(tagid, tagname) {
+        console.log(this.props)
         const updateRequest = new FormData();
         updateRequest.append('action', 'addTag');
-        updateRequest.append('id', this.state.selection.id);
+        updateRequest.append('id', tagid);
         updateRequest.append('movieid', this.props.movie_id);
 
         fetch('/api/tags.php', {method: 'POST', body: updateRequest})
@@ -86,6 +77,8 @@ class AddTagPopup extends React.Component {
                     if (result.result !== "success") {
                         console.log("error occured while writing to db -- todo error handling");
                         console.log(result.result);
+                    } else {
+                        this.props.submit(tagid, tagname);
                     }
                     this.props.onHide();
                 }));
