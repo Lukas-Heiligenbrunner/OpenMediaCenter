@@ -23,7 +23,7 @@ describe('<Player/>', function () {
         expect(wrapper.find("r")).toHaveLength(1);
     });
 
-    function simulateLikeButtonClick(){
+    function simulateLikeButtonClick() {
         const wrapper = shallow(<Player/>);
 
         // initial fetch for getting movie data
@@ -148,7 +148,7 @@ describe('<Player/>', function () {
         });
     });
 
-    function generatetag(){
+    function generatetag() {
         const wrapper = shallow(<Player/>);
 
         expect(wrapper.find("Tag")).toHaveLength(0);

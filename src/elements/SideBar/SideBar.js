@@ -33,7 +33,8 @@ export class SideBarItem extends React.Component {
     render() {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
-            <div className={style.sidebarinfo + ' ' + themeStyle.thirdbackground + ' ' + themeStyle.lighttextcolor}>{this.props.children}</div>
+            <div
+                className={style.sidebarinfo + ' ' + themeStyle.thirdbackground + ' ' + themeStyle.lighttextcolor}>{this.props.children}</div>
         );
     }
 }

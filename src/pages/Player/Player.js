@@ -58,7 +58,6 @@ class Player extends React.Component {
      * @param tag_name name of tag to add
      */
     quickAddTag(tag_id, tag_name) {
-        // save the tag
         const updateRequest = new FormData();
         updateRequest.append('action', 'addTag');
         updateRequest.append('id', tag_id);
