@@ -94,6 +94,26 @@ class Player extends React.Component {
     }
 
     /**
+     * handle the popovers generated according to state changes
+     * @returns {JSX.Element}
+     */
+    handlePopOvers() {
+        return (
+            <>
+                {this.state.popupvisible ?
+                    <AddTagPopup show={this.state.popupvisible}
+                                 onHide={() => {
+                                     this.setState({popupvisible: false});
+                                 }}
+                                 submit={this.quickAddTag}
+                                 movie_id={this.state.movie_id}/> :
+                    null
+                }
+            </>
+        );
+    }
+
+    /**
      * generate sidebar with all items
      */
     assembleSideBar() {
@@ -150,19 +170,13 @@ class Player extends React.Component {
                         <button className='btn btn-info' onClick={() => this.setState({popupvisible: true})}>Give this
                             Video a Tag
                         </button>
-                        {this.state.popupvisible ?
-                            <AddTagPopup show={this.state.popupvisible}
-                                         onHide={() => {
-                                             this.setState({popupvisible: false});
-                                         }}
-                                         submit={this.quickAddTag}
-                                         movie_id={this.state.movie_id}/> :
-                            null
-                        }
-
                     </div>
                 </div>
                 <button className={style.closebutton} onClick={() => this.closebtn()}>Close</button>
+                {
+                    // handle the popovers switched on and off according to state changes
+                    this.handlePopOvers()
+                }
             </div>
         );
     }
