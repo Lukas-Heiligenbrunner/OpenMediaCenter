@@ -144,6 +144,7 @@ class Player extends React.Component {
                         <button className='btn btn-info' onClick={() => this.setState({popupvisible: true})}>Give this
                             Video a Tag
                         </button>
+                        <button className='btn btn-danger' onClick={() =>{this.deleteVideo()}}>Delete Video</button>
                         {this.state.popupvisible ?
                             <AddTagPopup show={this.state.popupvisible}
                                          onHide={() => {
@@ -224,6 +225,27 @@ class Player extends React.Component {
      */
     closebtn() {
         this.props.viewbinding.returnToLastElement();
+    }
+
+    /**
+     * delete the current video and return to last page
+     */
+    deleteVideo() {
+        const updateRequest = new FormData();
+        updateRequest.append('action', 'deleteVideo');
+        updateRequest.append('movieid', this.props.movie_id);
+
+        fetch('/api/video.php', {method: 'POST', body: updateRequest})
+            .then((response) => response.json()
+                .then((result) => {
+                    if (result.result === "success") {
+                        // return to last element if successful
+                        this.props.viewbinding.returnToLastElement();
+                    } else {
+                        console.error("an error occured while liking");
+                        console.error(result);
+                    }
+                }));
     }
 }
 
