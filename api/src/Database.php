@@ -9,9 +9,9 @@ class Database {
     private static ?Database $instance = null;
     private mysqli $conn;
 
-    private string $servername = "192.168.0.30";
-    private string $username = "root";
-    private string $password = "1qayxsw2";
+    private string $servername = "127.0.0.1";
+    private string $username = "mediacenteruser";
+    private string $password = "mediapassword";
     private string $dbname = "mediacenter";
 
     // The db connection is established in the private constructor.
