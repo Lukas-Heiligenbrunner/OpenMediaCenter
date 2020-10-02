@@ -223,7 +223,7 @@ class Video extends RequestBase {
         $this->addActionHandler("deleteVideo", function () {
             $movieid = $_POST['movieid'];
 
-            // todo delete constraint references
+            // delete video entry and corresponding tag infos
             $query = "DELETE FROM videos WHERE movie_id=$movieid";
 
             if ($this->conn->query($query) === TRUE) {

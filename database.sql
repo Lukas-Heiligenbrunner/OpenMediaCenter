@@ -27,6 +27,7 @@ create table if not exists video_tags
         foreign key (tag_id) references tags (tag_id),
     constraint video_tags_videos_movie_id_fk
         foreign key (video_id) references videos (movie_id)
+            on delete cascade
 );
 
 create table settings

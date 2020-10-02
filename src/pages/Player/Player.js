@@ -141,9 +141,7 @@ class Player extends React.Component {
                         <div>not loaded yet</div>}
                     <div className={style.videoactions}>
                         <button className='btn btn-primary' onClick={() => this.likebtn()}>Like this Video!</button>
-                        <button className='btn btn-info' onClick={() => this.setState({popupvisible: true})}>Give this
-                            Video a Tag
-                        </button>
+                        <button className='btn btn-info' onClick={() => this.setState({popupvisible: true})}>Give this Video a Tag</button>
                         <button className='btn btn-danger' onClick={() =>{this.deleteVideo()}}>Delete Video</button>
                         {this.state.popupvisible ?
                             <AddTagPopup show={this.state.popupvisible}

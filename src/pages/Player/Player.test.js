@@ -69,11 +69,29 @@ describe('<Player/>', function () {
 
     it('show tag popup', function () {
         const wrapper = shallow(<Player/>);
-
         expect(wrapper.find("AddTagPopup")).toHaveLength(0);
-        wrapper.find('.videoactions').find("button").last().simulate('click');
+        // todo dynamic button find without index
+        wrapper.find('.videoactions').find("button").at(1).simulate('click');
         // addtagpopup should be showing now
         expect(wrapper.find("AddTagPopup")).toHaveLength(1);
+    });
+
+    it('test delete button', done => {
+        const wrapper = shallow(<Player viewbinding={{
+            returnToLastElement: jest.fn()
+        }}/>);
+        global.fetch = prepareFetchApi({result: "success"});
+
+        wrapper.find('.videoactions').find("button").at(2).simulate('click');
+
+        process.nextTick(() => {
+            // refetch is called so fetch called 3 times
+            expect(global.fetch).toHaveBeenCalledTimes(1);
+            expect(wrapper.instance().props.viewbinding.returnToLastElement).toHaveBeenCalledTimes(1);
+
+            global.fetch.mockClear();
+            done();
+        });
     });
 
     it('hide click ', function () {
