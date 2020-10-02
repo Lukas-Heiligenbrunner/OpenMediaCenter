@@ -1,7 +1,7 @@
 Package: OpenMediaCenter
 Version: 0.1
 Depends: nginx, php-fpm, php-mysqli, mariadb-server
-Section: custom
+Section: web
 Priority: optional
 Architecture: all
 Essential: no
