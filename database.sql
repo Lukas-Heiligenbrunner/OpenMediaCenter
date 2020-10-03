@@ -29,7 +29,7 @@ create table if not exists video_tags
         foreign key (video_id) references videos (movie_id)
 );
 
-create table settings
+create table if not exists settings
 (
     video_path       varchar(255)                          null,
     episode_path     varchar(255)                          null,
