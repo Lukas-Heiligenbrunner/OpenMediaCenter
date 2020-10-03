@@ -6,13 +6,13 @@
  * Class with all neccessary stuff for the Database connections.
  */
 class Database {
-    private static ?Database $instance = null;
-    private mysqli $conn;
+    private static $instance = null;
+    private $conn;
 
-    private string $servername = "127.0.0.1";
-    private string $username = "mediacenteruser";
-    private string $password = "mediapassword";
-    private string $dbname = "mediacenter";
+    private $servername = "127.0.0.1";
+    private $username = "mediacenteruser";
+    private $password = "mediapassword";
+    private $dbname = "mediacenter";
 
     // The db connection is established in the private constructor.
     private function __construct() {

@@ -7,7 +7,7 @@ require_once 'RequestBase.php';
  * backend for all interactions with videoloads and receiving of video infos
  */
 class Video extends RequestBase {
-    private string $videopath;
+    private $videopath;
 
     public function __construct() {
         $settings = new SSettings();

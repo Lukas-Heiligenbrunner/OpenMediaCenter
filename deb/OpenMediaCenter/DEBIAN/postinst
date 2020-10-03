@@ -1,13 +1,18 @@
 #!/bin/bash
+# enable nginx site
 ln -s /etc/nginx/sites-available/OpenMediaCenter.conf /etc/nginx/sites-enabled/OpenMediaCenter.conf
 
+# link general socket to current one
 ln -s /var/run/php/php*-fpm.sock /var/run/php-fpm.sock
 
+# setup database
 mysql -uroot -pPASS -e "CREATE DATABASE mediacenter;"
 mysql -uroot -pPASS -e "CREATE USER 'mediacenteruser'@'localhost' IDENTIFIED BY 'mediapassword';"
 mysql -uroot -pPASS -e "GRANT ALL PRIVILEGES ON mediacenter . * TO 'mediacenteruser'@'localhost';"
 mysql -u mediacenteruser -pmediapassword mediacenter < /tmp/openmediacenter.sql
 
+# removed unused sql style file
 rm /tmp/openmediacenter.sql
 
+# restart services
 systemctl restart nginx
