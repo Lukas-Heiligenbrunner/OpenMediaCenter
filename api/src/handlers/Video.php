@@ -219,5 +219,18 @@ class Video extends RequestBase {
                 $this->commitMessage('{"result":"' . $this->conn->error . '"}');
             }
         });
+
+        $this->addActionHandler("deleteVideo", function () {
+            $movieid = $_POST['movieid'];
+
+            // delete video entry and corresponding tag infos
+            $query = "DELETE FROM videos WHERE movie_id=$movieid";
+
+            if ($this->conn->query($query) === TRUE) {
+                $this->commitMessage('{"result":"success"}');
+            } else {
+                $this->commitMessage('{"result":"' . $this->conn->error . '"}');
+            }
+        });
     }
 }
