@@ -30,16 +30,14 @@ create table if not exists video_tags
             on delete cascade
 );
 
-create table settings
+create table if not exists settings
 (
-    id enum(1) NOT NULL default 0,
     video_path       varchar(255)                          null,
     episode_path     varchar(255)                          null,
     password         varchar(32) default '-1'              null,
     mediacenter_name varchar(32) default 'OpenMediaCenter' null,
     TMDB_grabbing    tinyint           null,
     DarkMode         tinyint default 0 null
-    PRIMARY KEY (id)
 );
 
 INSERT INTO tags (tag_id, tag_name)

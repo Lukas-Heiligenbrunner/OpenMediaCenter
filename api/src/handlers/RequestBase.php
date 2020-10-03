@@ -2,8 +2,8 @@
 require_once 'src/Database.php';
 
 abstract class RequestBase {
-    protected mysqli $conn;
-    private array $actions = array();
+    protected $conn;
+    private $actions = array();
 
     /**
      * adds a new action handler to the current api file
