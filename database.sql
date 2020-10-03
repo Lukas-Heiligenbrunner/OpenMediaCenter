@@ -40,12 +40,12 @@ create table if not exists settings
     DarkMode         tinyint default 0 null
 );
 
-INSERT INTO tags (tag_id, tag_name)
+INSERT IGNORE INTO tags (tag_id, tag_name)
 VALUES (2, 'fullhd');
-INSERT INTO tags (tag_id, tag_name)
+INSERT IGNORE INTO tags (tag_id, tag_name)
 VALUES (3, 'lowquality');
-INSERT INTO tags (tag_id, tag_name)
+INSERT IGNORE INTO tags (tag_id, tag_name)
 VALUES (4, 'hd');
 
-INSERT INTO settings (video_path, episode_path, password, mediacenter_name)
+INSERT IGNORE INTO settings (video_path, episode_path, password, mediacenter_name)
 VALUES ('./videos/', './tvshows/', -1, 'OpenMediaCenter');

@@ -1,8 +1,10 @@
 #!/bin/bash
 # enable nginx site
+rm /etc/nginx/sites-enabled/OpenMediaCenter.conf
 ln -s /etc/nginx/sites-available/OpenMediaCenter.conf /etc/nginx/sites-enabled/OpenMediaCenter.conf
 
 # link general socket to current one
+rm /var/run/php-fpm.sock
 ln -s /var/run/php/php*-fpm.sock /var/run/php-fpm.sock
 
 # setup database
