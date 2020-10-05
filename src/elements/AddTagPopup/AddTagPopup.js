@@ -9,7 +9,9 @@ import GlobalInfos from "../../GlobalInfos";
  * component creates overlay to add a new tag to a video
  */
 class AddTagPopup extends React.Component {
+    /// instance of root element
     element;
+
     constructor(props, context) {
         super(props, context);
 
@@ -25,7 +27,7 @@ class AddTagPopup extends React.Component {
         document.addEventListener('keyup', this.keypress);
 
         // add element drag drop events
-        if(this.element != null){
+        if (this.element != null) {
             this.dragElement();
         }
 
@@ -59,7 +61,7 @@ class AddTagPopup extends React.Component {
     render() {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
-            <div className={[style.popup, themeStyle.thirdbackground].join(' ')} ref={el => this.element = el }>
+            <div className={[style.popup, themeStyle.thirdbackground].join(' ')} ref={el => this.element = el}>
                 <div className={[style.header, themeStyle.textcolor].join(' ')}>Add a Tag to this Video:</div>
                 <Line/>
                 <div className={style.content}>
@@ -105,7 +107,7 @@ class AddTagPopup extends React.Component {
      */
     keypress(event) {
         // hide if escape is pressed
-        if (event.key === "Escape"){
+        if (event.key === "Escape") {
             this.props.onHide();
         }
     }
@@ -115,8 +117,6 @@ class AddTagPopup extends React.Component {
      */
     dragElement() {
         let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-
-        console.log(this.props);
 
         const elmnt = this.element;
         elmnt.firstChild.onmousedown = dragMouseDown;
