@@ -311,15 +311,19 @@ class VideoParser {
             $result = $this->conn->query($query);
 
             while ($r = mysqli_fetch_assoc($result)) {
-                if (!file_exists("../" . $r['movie_url'])) {
-                    $query = "SET foreign_key_checks = 0; DELETE FROM videos WHERE movie_id='" . $r['movie_id'] . "'";
+                $movie_id = $r['movie_id'];
+                $url = $r['movie_url'];
+
+                // todo ORDER BY movie_url and erase duplicates also
+                if (!file_exists("../$url")) {
+                    $query = "DELETE FROM videos WHERE movie_id=$movie_id";
                     if ($this->conn->query($query) === TRUE) {
-                        echo('successfully deleted ' . $r['movie_url'] . " from video gravity\n");
-                        $this->writeLog('successfully deleted ' . $r['movie_url'] . " from video gravity\n");
+                        echo("successfully deleted $url from video gravity\n");
+                        $this->writeLog("successfully deleted $url from video gravity\n");
                         $this->deleted++;
                     } else {
-                        echo "failed to delete " . $r['movie_url'] . " from gravity: " . $this->conn->error . "\n";
-                        $this->writeLog("failed to delete " . $r['movie_url'] . " from gravity: " . $this->conn->error . "\n");
+                        echo "failed to delete $url from gravity: $this->conn->error \n";
+                        $this->writeLog("failed to delete $url from gravity: $this->conn->error \n");
                     }
                 }
             }
