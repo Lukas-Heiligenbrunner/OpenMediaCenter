@@ -45,6 +45,7 @@ class AddTagPopup extends React.Component {
 
     componentWillUnmount() {
         document.removeEventListener('click', this.handleClickOutside);
+        document.removeEventListener('keyup', this.keypress);
     }
 
     /**
@@ -116,7 +117,7 @@ class AddTagPopup extends React.Component {
      * make the element drag and droppable
      */
     dragElement() {
-        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        let xOld = 0, yOld = 0;
 
         const elmnt = this.element;
         elmnt.firstChild.onmousedown = dragMouseDown;
@@ -125,8 +126,8 @@ class AddTagPopup extends React.Component {
         function dragMouseDown(e) {
             e.preventDefault();
             // get the mouse cursor position at startup:
-            pos3 = e.clientX;
-            pos4 = e.clientY;
+            xOld = e.clientX;
+            yOld = e.clientY;
             document.onmouseup = closeDragElement;
             // call a function whenever the cursor moves:
             document.onmousemove = elementDrag;
@@ -135,13 +136,13 @@ class AddTagPopup extends React.Component {
         function elementDrag(e) {
             e.preventDefault();
             // calculate the new cursor position:
-            pos1 = pos3 - e.clientX;
-            pos2 = pos4 - e.clientY;
-            pos3 = e.clientX;
-            pos4 = e.clientY;
+            const dx = xOld - e.clientX;
+            const dy = yOld - e.clientY;
+            xOld = e.clientX;
+            yOld = e.clientY;
             // set the element's new position:
-            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-            elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+            elmnt.style.top = (elmnt.offsetTop - dy) + "px";
+            elmnt.style.left = (elmnt.offsetLeft - dx) + "px";
         }
 
         function closeDragElement() {
