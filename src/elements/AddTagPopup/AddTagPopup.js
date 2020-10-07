@@ -44,19 +44,9 @@ class AddTagPopup extends React.Component {
     }
 
     componentWillUnmount() {
+        // remove the appended listeners
         document.removeEventListener('click', this.handleClickOutside);
         document.removeEventListener('keyup', this.keypress);
-    }
-
-    /**
-     * Alert if clicked on outside of element
-     */
-    handleClickOutside(event) {
-        const domNode = ReactDom.findDOMNode(this);
-
-        if (!domNode || !domNode.contains(event.target)) {
-            this.props.onHide();
-        }
     }
 
     render() {
@@ -75,6 +65,28 @@ class AddTagPopup extends React.Component {
                 </div>
             </div>
         );
+    }
+
+    /**
+     * Alert if clicked on outside of element
+     */
+    handleClickOutside(event) {
+        const domNode = ReactDom.findDOMNode(this);
+
+        if (!domNode || !domNode.contains(event.target)) {
+            this.props.onHide();
+        }
+    }
+
+    /**
+     * key event handling
+     * @param event keyevent
+     */
+    keypress(event) {
+        // hide if escape is pressed
+        if (event.key === "Escape") {
+            this.props.onHide();
+        }
     }
 
     /**
@@ -100,17 +112,6 @@ class AddTagPopup extends React.Component {
                     }
                     this.props.onHide();
                 }));
-    }
-
-    /**
-     * key event handling
-     * @param event keyevent
-     */
-    keypress(event) {
-        // hide if escape is pressed
-        if (event.key === "Escape") {
-            this.props.onHide();
-        }
     }
 
     /**
