@@ -7,7 +7,7 @@ require_once 'RequestBase.php';
  * backend for all interactions with videoloads and receiving of video infos
  */
 class Video extends RequestBase {
-    private string $videopath;
+    private $videopath;
 
     public function __construct() {
         $settings = new SSettings();
@@ -212,6 +212,19 @@ class Video extends RequestBase {
             $movieid = $_POST['movieid'];
 
             $query = "update videos set likes = likes + 1 where movie_id = '$movieid'";
+
+            if ($this->conn->query($query) === TRUE) {
+                $this->commitMessage('{"result":"success"}');
+            } else {
+                $this->commitMessage('{"result":"' . $this->conn->error . '"}');
+            }
+        });
+
+        $this->addActionHandler("deleteVideo", function () {
+            $movieid = $_POST['movieid'];
+
+            // delete video entry and corresponding tag infos
+            $query = "DELETE FROM videos WHERE movie_id=$movieid";
 
             if ($this->conn->query($query) === TRUE) {
                 $this->commitMessage('{"result":"success"}');

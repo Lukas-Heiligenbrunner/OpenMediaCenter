@@ -6,6 +6,7 @@ require_once './src/VideoParser.php';
 
 // allow UTF8 characters
 setlocale(LC_ALL, 'en_US.UTF-8');
+set_time_limit(3600);
 
 $vp = new VideoParser();
 $vp->writeLog("starting extraction!!\n");

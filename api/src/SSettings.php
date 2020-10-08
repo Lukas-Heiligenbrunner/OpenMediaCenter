@@ -5,7 +5,7 @@
  * class handling all Settings used by php scripts
  */
 class SSettings {
-    private ?Database $database;
+    private $database;
 
     /**
      * SSettings constructor.

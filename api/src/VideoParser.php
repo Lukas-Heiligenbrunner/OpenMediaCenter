@@ -54,7 +54,7 @@ class VideoParser {
         $arr = scandir($foldername);
 
         foreach ($arr as $elem) {
-            if($elem == '.' || $elem == '..') continue;
+            if ($elem == '.' || $elem == '..') continue;
 
             $ext = pathinfo($elem, PATHINFO_EXTENSION);
             if ($ext == "mp4") {
@@ -136,45 +136,39 @@ class VideoParser {
             // convert video to base64
             $backpic64 = 'data:image/jpeg;base64,' . base64_encode($backpic);
 
+            // set default insert query without tmdb poster
+            $insert_query = "INSERT INTO videos(movie_name,movie_url,thumbnail,quality,length) 
+                            VALUES ('" . mysqli_real_escape_string($this->conn, $moviename) . "',
+                            '" . mysqli_real_escape_string($this->conn, $this->videopath . $filename) . "',
+                            '$backpic64',
+                            '$width',
+                            '$duration')";
+
             // check if tmdb grabbing is enabled
             if ($this->TMDBenabled) {
                 // search in tmdb api
-                try {
-                    if (!is_null($dta = $this->tmdb->searchMovie($moviename, $year))) {
-                        $poster = file_get_contents($this->tmdb->picturebase . $dta->poster_path);
+                if (!is_null($dta = $this->tmdb->searchMovie($moviename, $year))) {
+                    $poster = file_get_contents($this->tmdb->picturebase . $dta->poster_path);
 
-                        // error handling for download error
-                        if ($poster) {
-                            $poster_base64 = 'data:image/jpeg;base64,' . base64_encode($poster);
+                    // error handling for download error
+                    if ($poster) {
+                        $poster_base64 = 'data:image/jpeg;base64,' . base64_encode($poster);
 
-                            $insert_query = "INSERT INTO videos(movie_name,movie_url,poster,thumbnail,quality,length) 
+                        // override insert query if pic loaded correctly
+                        $insert_query = "INSERT INTO videos(movie_name,movie_url,poster,thumbnail,quality,length) 
                             VALUES ('" . mysqli_real_escape_string($this->conn, $moviename) . "',
                             '" . mysqli_real_escape_string($this->conn, $this->videopath . $filename) . "',
                             '$backpic64',
                             '$poster_base64',
                             '$width',
                             '$duration')";
-                        } else {
-                            throw new Exception("faild to load pic");
-                        }
-                        // store genre ids for parsing later
-                        $genres = $dta->genre_ids;
-                    } else {
-                        // nothing found with tmdb
-                        echo "my moviename: " . $moviename;
-
-                        $this->writeLog("nothing found with TMDB! -- $moviename\n");
-                        throw new Exception("nothing found with TMDB! -- $moviename");
                     }
-                } catch (Exception $e) {
-                    echo $e->getMessage();
-
-                    $insert_query = "INSERT INTO videos(movie_name,movie_url,thumbnail,quality,length) 
-                            VALUES ('" . mysqli_real_escape_string($this->conn, $moviename) . "',
-                            '" . mysqli_real_escape_string($this->conn, $this->videopath . $filename) . "',
-                            '$backpic64',
-                            '$width',
-                            '$duration')";
+                    // store genre ids for parsing later
+                    $genres = $dta->genre_ids;
+                } else {
+                    // nothing found with tmdb
+                    echo "my moviename: " . $moviename;
+                    $this->writeLog("nothing found with TMDB! -- $moviename\n");
                 }
             }
 
@@ -317,15 +311,19 @@ class VideoParser {
             $result = $this->conn->query($query);
 
             while ($r = mysqli_fetch_assoc($result)) {
-                if (!file_exists("../" . $r['movie_url'])) {
-                    $query = "SET foreign_key_checks = 0; DELETE FROM videos WHERE movie_id='" . $r['movie_id'] . "'";
+                $movie_id = $r['movie_id'];
+                $url = $r['movie_url'];
+
+                // todo ORDER BY movie_url and erase duplicates also
+                if (!file_exists("../$url")) {
+                    $query = "DELETE FROM videos WHERE movie_id=$movie_id";
                     if ($this->conn->query($query) === TRUE) {
-                        echo('successfully deleted ' . $r['movie_url'] . " from video gravity\n");
-                        $this->writeLog('successfully deleted ' . $r['movie_url'] . " from video gravity\n");
+                        echo("successfully deleted $url from video gravity\n");
+                        $this->writeLog("successfully deleted $url from video gravity\n");
                         $this->deleted++;
                     } else {
-                        echo "failed to delete " . $r['movie_url'] . " from gravity: " . $this->conn->error . "\n";
-                        $this->writeLog("failed to delete " . $r['movie_url'] . " from gravity: " . $this->conn->error . "\n");
+                        echo "failed to delete $url from gravity: $this->conn->error \n";
+                        $this->writeLog("failed to delete $url from gravity: $this->conn->error \n");
                     }
                 }
             }

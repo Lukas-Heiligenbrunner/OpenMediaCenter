@@ -53,9 +53,9 @@ class MovieSettings extends React.Component {
         const updateRequest = new FormData();
         // fetch all videos available
         fetch('/api/extractvideopreviews.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json()
+            .then((response) => response.text()
                 .then((result) => {
-                    // todo 2020-07-4: some kind of start event
+                    // todo 2020-07-4: some kind of return finished handler
                     console.log("returned");
                 }))
             .catch(() => {
