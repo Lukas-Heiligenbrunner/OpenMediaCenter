@@ -44,6 +44,8 @@ class Player extends React.Component {
             suggesttag: [],
             popupvisible: false
         };
+
+        this.quickAddTag = this.quickAddTag.bind(this);
     }
 
     componentDidMount() {
@@ -56,7 +58,6 @@ class Player extends React.Component {
      * @param tag_name name of tag to add
      */
     quickAddTag(tag_id, tag_name) {
-        // save the tag
         const updateRequest = new FormData();
         updateRequest.append('action', 'addTag');
         updateRequest.append('id', tag_id);
@@ -75,6 +76,7 @@ class Player extends React.Component {
                             return e.tag_id;
                         }).indexOf(tag_id);
 
+                        // check if tag is available in quickadds
                         if (index !== -1) {
                             array.splice(index, 1);
 
@@ -82,9 +84,33 @@ class Player extends React.Component {
                                 tags: [...this.state.tags, {tag_name: tag_name}],
                                 suggesttag: array
                             });
+                        } else {
+                            this.setState({
+                                tags: [...this.state.tags, {tag_name: tag_name}]
+                            });
                         }
                     }
                 }));
+    }
+
+    /**
+     * handle the popovers generated according to state changes
+     * @returns {JSX.Element}
+     */
+    handlePopOvers() {
+        return (
+            <>
+                {this.state.popupvisible ?
+                    <AddTagPopup show={this.state.popupvisible}
+                                 onHide={() => {
+                                     this.setState({popupvisible: false});
+                                 }}
+                                 submit={this.quickAddTag}
+                                 movie_id={this.state.movie_id}/> :
+                    null
+                }
+            </>
+        );
     }
 
     /**
@@ -143,19 +169,13 @@ class Player extends React.Component {
                         <button className='btn btn-primary' onClick={() => this.likebtn()}>Like this Video!</button>
                         <button className='btn btn-info' onClick={() => this.setState({popupvisible: true})}>Give this Video a Tag</button>
                         <button className='btn btn-danger' onClick={() =>{this.deleteVideo()}}>Delete Video</button>
-                        {this.state.popupvisible ?
-                            <AddTagPopup show={this.state.popupvisible}
-                                         onHide={() => {
-                                             this.setState({popupvisible: false});
-                                             this.fetchMovieData();
-                                         }}
-                                         movie_id={this.state.movie_id}/> :
-                            null
-                        }
-
                     </div>
                 </div>
                 <button className={style.closebutton} onClick={() => this.closebtn()}>Close</button>
+                {
+                    // handle the popovers switched on and off according to state changes
+                    this.handlePopOvers()
+                }
             </div>
         );
     }

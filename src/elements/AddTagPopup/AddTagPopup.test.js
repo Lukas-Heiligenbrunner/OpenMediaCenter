@@ -11,47 +11,68 @@ describe('<AddTagPopup/>', function () {
         wrapper.unmount();
     });
 
-    it('test dropdown insertion', function () {
+    it('test tag insertion', function () {
         const wrapper = shallow(<AddTagPopup/>);
-        wrapper.setState({items: ["test1", "test2", "test3"]});
-        expect(wrapper.find('DropdownItem')).toHaveLength(3);
+        wrapper.setState({
+            items: [{tag_id: 1, tag_name: 'test'}, {tag_id: 2, tag_name: "ee"}]
+        }, () => {
+            expect(wrapper.find('Tag')).toHaveLength(2);
+            expect(wrapper.find('Tag').first().dive().text()).toBe("test");
+        });
     });
 
-    it('test storeseletion click event', done => {
-        const mockSuccessResponse = {};
-        const mockJsonPromise = Promise.resolve(mockSuccessResponse);
-        const mockFetchPromise = Promise.resolve({
-            json: () => mockJsonPromise,
-        });
-        global.fetch = jest.fn().mockImplementation(() => mockFetchPromise);
-
-        const func = jest.fn();
-
+    it('test tag click', function () {
         const wrapper = shallow(<AddTagPopup/>);
-        wrapper.setProps({
-            onHide: () => {
-                func()
-            }
-        });
+        wrapper.instance().addTag = jest.fn();
 
         wrapper.setState({
-            items: ["test1", "test2", "test3"],
-            selection: {
-                name: "test1",
-                id: 42
-            }
+            items: [{tag_id: 1, tag_name: 'test'}]
+        }, () => {
+            wrapper.find('Tag').first().dive().simulate('click');
+            expect(wrapper.instance().addTag).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    it('test addtag', done => {
+        const wrapper = shallow(<AddTagPopup/>);
+
+        global.fetch = prepareFetchApi({result: "success"});
+
+        wrapper.setProps({
+            submit: jest.fn((arg1, arg2) => {}),
+            onHide: jest.fn()
+        }, () => {
+            wrapper.instance().addTag(1, "test");
+
+            expect(global.fetch).toHaveBeenCalledTimes(1);
         });
 
-        // first call of fetch is getting of available tags
-        expect(global.fetch).toHaveBeenCalledTimes(1);
-        wrapper.find('ModalFooter').find('button').simulate('click');
+        process.nextTick(() => {
+            expect(wrapper.instance().props.submit).toHaveBeenCalledTimes(1);
+            expect(wrapper.instance().props.onHide).toHaveBeenCalledTimes(1);
 
-        // now called 2 times
-        expect(global.fetch).toHaveBeenCalledTimes(2);
+            global.fetch.mockClear();
+            done();
+        });
+    });
+
+    it('test failing addTag', done => {
+        const wrapper = shallow(<AddTagPopup/>);
+
+        global.fetch = prepareFetchApi({result: "fail"});
+
+        wrapper.setProps({
+            submit: jest.fn((arg1, arg2) => {}),
+            onHide: jest.fn()
+        }, () => {
+            wrapper.instance().addTag(1, "test");
+
+            expect(global.fetch).toHaveBeenCalledTimes(1);
+        });
 
         process.nextTick(() => {
-            //callback to close window should have called
-            expect(func).toHaveBeenCalledTimes(1);
+            expect(wrapper.instance().props.submit).toHaveBeenCalledTimes(0);
+            expect(wrapper.instance().props.onHide).toHaveBeenCalledTimes(1);
 
             global.fetch.mockClear();
             done();
