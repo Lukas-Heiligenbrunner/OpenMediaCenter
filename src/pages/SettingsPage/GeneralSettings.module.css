@@ -1,8 +1,16 @@
 .GeneralForm {
     width: 60%;
+    margin-top: 30px;
 }
 
 .mediacenternameform {
     margin-top: 25px;
     width: 40%;
 }
+
+.infoheader {
+    /* use whole available with - right offset of 15px */
+    height: 100px;
+    width: calc(100% - 15px);
+}
+

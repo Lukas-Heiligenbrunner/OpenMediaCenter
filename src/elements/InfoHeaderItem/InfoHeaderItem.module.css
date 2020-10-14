@@ -1,0 +1,53 @@
+/* styling for tile */
+.infoheaderitem {
+    background-color: lightblue;
+    border-radius: 5px;
+    float: left;
+    height: 130px;
+    margin: 5px;
+    width: calc(25% - 10px);
+}
+
+/* change opacity of icon when hovering whole tile */
+.infoheaderitem:hover .icon {
+    opacity: 0.75;
+    transition: opacity linear 0.4s;
+}
+
+/* change cursor on hover */
+.infoheaderitem:hover {
+    cursor: pointer;
+}
+
+.icon {
+    float: left;
+    height: 130px;
+    margin-left: 5px;
+    margin-right: 10px;
+    margin-top: 20px;
+    opacity: 0.5;
+    text-align: center;
+
+    width: 30%;
+}
+
+/* big main text in tile */
+.maintext {
+    font-size: x-large;
+    font-weight: bold;
+    margin-top: 30px;
+}
+
+/* small subtext in tile */
+.subtext {
+    font-size: large;
+    margin-top: 5px;
+    opacity: 0.7;
+}
+
+.loadAnimation {
+    display: inline-block;
+    line-height: 145px;
+    vertical-align: middle;
+    margin-left: calc(25% - 15px);
+}

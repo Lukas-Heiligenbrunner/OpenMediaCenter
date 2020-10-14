@@ -14,12 +14,35 @@ class Settings extends RequestBase {
     /**
      * handle settings stuff to load from db
      */
-    private function getFromDB(){
+    private function getFromDB() {
         /**
          * load currently set settings form db for init of settings page
          */
         $this->addActionHandler("loadGeneralSettings", function () {
-            $query = "SELECT * from settings";
+            // query settings and infotile values
+            $query = "
+                SELECT (
+                           SELECT COUNT(*)
+                           FROM videos
+                       ) AS videonr,
+                       (
+                           SELECT ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS Size
+                           FROM information_schema.TABLES
+                           WHERE TABLE_SCHEMA = '" . Database::getInstance()->getDatabaseName() . "'
+                           GROUP BY table_schema
+                       ) AS dbsize,
+                       (
+                           SELECT COUNT(*)
+                           FROM tags
+                       ) AS difftagnr,
+                       (
+                           SELECT COUNT(*)
+                           FROM video_tags
+                       ) AS tagsadded,
+                       settings.*
+                FROM settings
+                LIMIT 1
+                ";
 
             $result = $this->conn->query($query);
 
@@ -51,7 +74,7 @@ class Settings extends RequestBase {
     /**
      * handle setting stuff to save to db
      */
-    private function saveToDB(){
+    private function saveToDB() {
         /**
          * save changed settings to db
          */

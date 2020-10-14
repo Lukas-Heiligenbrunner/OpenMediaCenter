@@ -2,6 +2,8 @@ import React from "react";
 import {Button, Col, Form} from "react-bootstrap";
 import style from "./GeneralSettings.module.css"
 import GlobalInfos from "../../GlobalInfos";
+import InfoHeaderItem from "../../elements/InfoHeaderItem/InfoHeaderItem";
+import {faArchive, faBalanceScaleLeft, faRulerVertical, faTruckLoading} from "@fortawesome/free-solid-svg-icons";
 
 /**
  * Component for Generalsettings tag on Settingspage
@@ -18,7 +20,12 @@ class GeneralSettings extends React.Component {
             videopath: "",
             tvshowpath: "",
             mediacentername: "",
-            password: ""
+            password: "",
+
+            videonr: null,
+            dbsize: null,
+            difftagnr: null,
+            tagsadded: null
         };
     }
 
@@ -30,6 +37,12 @@ class GeneralSettings extends React.Component {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
             <>
+                <div className={style.infoheader}>
+                    <InfoHeaderItem backColor='lightblue' text={this.state.videonr} subtext='Videos in Gravity' icon={faArchive}/>
+                    <InfoHeaderItem backColor='yellow' text={this.state.dbsize + " MB"} subtext='Database size' icon={faRulerVertical}/>
+                    <InfoHeaderItem backColor='green' text={this.state.difftagnr} subtext='different Tags' icon={faTruckLoading}/>
+                    <InfoHeaderItem backColor='orange' text={this.state.tagsadded} subtext='tags added' icon={faBalanceScaleLeft}/>
+                </div>
                 <div className={style.GeneralForm + ' ' + themeStyle.subtextcolor}>
                     <Form data-testid='mainformsettings' onSubmit={(e) => {
                         e.preventDefault();
@@ -125,7 +138,12 @@ class GeneralSettings extends React.Component {
                         mediacentername: result.mediacenter_name,
                         password: result.password,
                         passwordsupport: result.passwordEnabled,
-                        tmdbsupport: result.TMDB_grabbing
+                        tmdbsupport: result.TMDB_grabbing,
+
+                        videonr: result.videonr,
+                        dbsize: result.dbsize,
+                        difftagnr: result.difftagnr,
+                        tagsadded: result.tagsadded
                     });
                 }));
     }
