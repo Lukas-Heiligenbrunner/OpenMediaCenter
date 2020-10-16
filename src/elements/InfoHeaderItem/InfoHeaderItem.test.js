@@ -25,4 +25,14 @@ describe('<InfoHeaderItem/>', function () {
         wrapper.simulate("click");
         expect(func).toBeCalledTimes(1);
     });
+
+    it('test insertion of loading spinner', function () {
+        const wrapper = shallow(<InfoHeaderItem text={null}/>);
+        expect(wrapper.find("Spinner").length).toBe(1);
+    });
+
+    it('test loading spinner if undefined', function () {
+        const wrapper = shallow(<InfoHeaderItem/>);
+        expect(wrapper.find("Spinner").length).toBe(1);
+    });
 });

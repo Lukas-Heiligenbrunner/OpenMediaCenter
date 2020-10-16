@@ -19,7 +19,7 @@ class InfoHeaderItem extends React.Component {
                         lineHeight: "130px"
                     }} icon={this.props.icon} size="5x"/>
                 </div>
-                {this.props.text !== null ?
+                {this.props.text !== null && this.props.text !== undefined?
                     <>
                         <div className={style.maintext}>{this.props.text}</div>
                         <div className={style.subtext}>{this.props.subtext}</div>
