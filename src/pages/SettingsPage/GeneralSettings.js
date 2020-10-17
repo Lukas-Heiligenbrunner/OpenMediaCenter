@@ -3,7 +3,8 @@ import {Button, Col, Form} from "react-bootstrap";
 import style from "./GeneralSettings.module.css"
 import GlobalInfos from "../../GlobalInfos";
 import InfoHeaderItem from "../../elements/InfoHeaderItem/InfoHeaderItem";
-import {faArchive, faBalanceScaleLeft, faRulerVertical, faTruckLoading} from "@fortawesome/free-solid-svg-icons";
+import {faArchive, faBalanceScaleLeft, faRulerVertical} from "@fortawesome/free-solid-svg-icons";
+import {faAddressCard} from "@fortawesome/free-regular-svg-icons";
 
 /**
  * Component for Generalsettings tag on Settingspage
@@ -40,7 +41,7 @@ class GeneralSettings extends React.Component {
                 <div className={style.infoheader}>
                     <InfoHeaderItem backColor='lightblue' text={this.state.videonr} subtext='Videos in Gravity' icon={faArchive}/>
                     <InfoHeaderItem backColor='yellow' text={this.state.dbsize + " MB"} subtext='Database size' icon={faRulerVertical}/>
-                    <InfoHeaderItem backColor='green' text={this.state.difftagnr} subtext='different Tags' icon={faTruckLoading}/>
+                    <InfoHeaderItem backColor='green' text={this.state.difftagnr} subtext='different Tags' icon={faAddressCard}/>
                     <InfoHeaderItem backColor='orange' text={this.state.tagsadded} subtext='tags added' icon={faBalanceScaleLeft}/>
                 </div>
                 <div className={style.GeneralForm + ' ' + themeStyle.subtextcolor}>

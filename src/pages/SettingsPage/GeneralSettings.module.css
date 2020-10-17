@@ -1,6 +1,6 @@
 .GeneralForm {
     width: 60%;
-    margin-top: 30px;
+    margin-top: 55px;
 }
 
 .mediacenternameform {
@@ -9,8 +9,14 @@
 }
 
 .infoheader {
-    /* use whole available with - right offset of 15px */
-    height: 100px;
-    width: calc(100% - 15px);
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* On screens that are 722px wide or less, make the columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 722px) {
+    .infoheader {
+        flex-direction: column;
+    }
 }
 

@@ -9,13 +9,18 @@ describe('<InfoHeaderItem/>', function () {
     });
 
     it('renders correct text', function () {
-        const wrapper = shallow(<InfoHeaderItem text='testtext'/>);
-        expect(wrapper.find(".maintext").text()).toBe("testtext");
+        const wrapper = shallow(<InfoHeaderItem text='mytext'/>);
+        expect(wrapper.find(".maintext").text()).toBe("mytext");
     });
 
     it('renders correct subtext', function () {
-        const wrapper = shallow(<InfoHeaderItem subtext='testtext'/>);
+        const wrapper = shallow(<InfoHeaderItem text ="mimi" subtext='testtext'/>);
         expect(wrapper.find(".subtext").text()).toBe("testtext");
+    });
+
+    it('test no subtext if no text defined', function () {
+        const wrapper = shallow(<InfoHeaderItem subtext='testi'/>);
+        expect(wrapper.find(".subtext")).toHaveLength(0);
     });
 
     it('test custom click handler', function () {

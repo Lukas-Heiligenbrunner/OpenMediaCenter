@@ -1,4 +1,7 @@
 version: "2"
+## exclude test files from code quality report
+exclude_patterns:
+  - "**/*.test.js"
 checks:
   argument-count:
     config:
