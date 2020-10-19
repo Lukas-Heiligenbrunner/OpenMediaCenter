@@ -39,10 +39,22 @@ class GeneralSettings extends React.Component {
         return (
             <>
                 <div className={style.infoheader}>
-                    <InfoHeaderItem backColor='lightblue' text={this.state.videonr} subtext='Videos in Gravity' icon={faArchive}/>
-                    <InfoHeaderItem backColor='yellow' text={this.state.dbsize + " MB"} subtext='Database size' icon={faRulerVertical}/>
-                    <InfoHeaderItem backColor='green' text={this.state.difftagnr} subtext='different Tags' icon={faAddressCard}/>
-                    <InfoHeaderItem backColor='orange' text={this.state.tagsadded} subtext='tags added' icon={faBalanceScaleLeft}/>
+                    <InfoHeaderItem backColor='lightblue'
+                                    text={this.state.videonr}
+                                    subtext='Videos in Gravity'
+                                    icon={faArchive}/>
+                    <InfoHeaderItem backColor='yellow'
+                                    text={this.state.dbsize !== undefined ? this.state.dbsize + " MB" : undefined}
+                                    subtext='Database size'
+                                    icon={faRulerVertical}/>
+                    <InfoHeaderItem backColor='green'
+                                    text={this.state.difftagnr}
+                                    subtext='different Tags'
+                                    icon={faAddressCard}/>
+                    <InfoHeaderItem backColor='orange'
+                                    text={this.state.tagsadded}
+                                    subtext='tags added'
+                                    icon={faBalanceScaleLeft}/>
                 </div>
                 <div className={style.GeneralForm + ' ' + themeStyle.subtextcolor}>
                     <Form data-testid='mainformsettings' onSubmit={(e) => {
