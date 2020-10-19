@@ -161,7 +161,7 @@ class GeneralSettings extends React.Component {
         updateRequest.append('tvshowpath', this.state.tvshowpath);
         updateRequest.append('mediacentername', this.state.mediacentername);
         updateRequest.append("tmdbsupport", this.state.tmdbsupport);
-        updateRequest.append("darkmodeenabled", GlobalInfos.isDarkTheme());
+        updateRequest.append("darkmodeenabled", GlobalInfos.isDarkTheme().toString());
 
         fetch('/api/settings.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()

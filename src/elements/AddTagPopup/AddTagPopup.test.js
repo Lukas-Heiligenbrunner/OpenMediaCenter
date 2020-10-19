@@ -39,7 +39,7 @@ describe('<AddTagPopup/>', function () {
         global.fetch = prepareFetchApi({result: "success"});
 
         wrapper.setProps({
-            submit: jest.fn((arg1, arg2) => {}),
+            submit: jest.fn(() => {}),
             onHide: jest.fn()
         }, () => {
             wrapper.instance().addTag(1, "test");
@@ -62,7 +62,7 @@ describe('<AddTagPopup/>', function () {
         global.fetch = prepareFetchApi({result: "fail"});
 
         wrapper.setProps({
-            submit: jest.fn((arg1, arg2) => {}),
+            submit: jest.fn(() => {}),
             onHide: jest.fn()
         }, () => {
             wrapper.instance().addTag(1, "test");
