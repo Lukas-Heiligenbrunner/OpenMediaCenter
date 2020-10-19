@@ -2,6 +2,9 @@ import React from "react";
 import {Button, Col, Form} from "react-bootstrap";
 import style from "./GeneralSettings.module.css"
 import GlobalInfos from "../../GlobalInfos";
+import InfoHeaderItem from "../../elements/InfoHeaderItem/InfoHeaderItem";
+import {faArchive, faBalanceScaleLeft, faRulerVertical} from "@fortawesome/free-solid-svg-icons";
+import {faAddressCard} from "@fortawesome/free-regular-svg-icons";
 
 /**
  * Component for Generalsettings tag on Settingspage
@@ -18,7 +21,12 @@ class GeneralSettings extends React.Component {
             videopath: "",
             tvshowpath: "",
             mediacentername: "",
-            password: ""
+            password: "",
+
+            videonr: null,
+            dbsize: null,
+            difftagnr: null,
+            tagsadded: null
         };
     }
 
@@ -30,31 +38,49 @@ class GeneralSettings extends React.Component {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
             <>
+                <div className={style.infoheader}>
+                    <InfoHeaderItem backColor='lightblue'
+                                    text={this.state.videonr}
+                                    subtext='Videos in Gravity'
+                                    icon={faArchive}/>
+                    <InfoHeaderItem backColor='yellow'
+                                    text={this.state.dbsize !== undefined ? this.state.dbsize + " MB" : undefined}
+                                    subtext='Database size'
+                                    icon={faRulerVertical}/>
+                    <InfoHeaderItem backColor='green'
+                                    text={this.state.difftagnr}
+                                    subtext='different Tags'
+                                    icon={faAddressCard}/>
+                    <InfoHeaderItem backColor='orange'
+                                    text={this.state.tagsadded}
+                                    subtext='tags added'
+                                    icon={faBalanceScaleLeft}/>
+                </div>
                 <div className={style.GeneralForm + ' ' + themeStyle.subtextcolor}>
                     <Form data-testid='mainformsettings' onSubmit={(e) => {
                         e.preventDefault();
                         this.saveSettings();
                     }}>
                         <Form.Row>
-                            <Form.Group as={Col} data-testid="videpathform">
+                            <Form.Group as={Col} data-testid='videpathform'>
                                 <Form.Label>Video Path</Form.Label>
-                                <Form.Control type="text" placeholder="/var/www/html/video" value={this.state.videopath}
+                                <Form.Control type='text' placeholder='/var/www/html/video' value={this.state.videopath}
                                               onChange={(ee) => this.setState({videopath: ee.target.value})}/>
                             </Form.Group>
 
-                            <Form.Group as={Col} data-testid="tvshowpath">
+                            <Form.Group as={Col} data-testid='tvshowpath'>
                                 <Form.Label>TV Show Path</Form.Label>
-                                <Form.Control type='text' placeholder="/var/www/html/tvshow"
+                                <Form.Control type='text' placeholder='/var/www/html/tvshow'
                                               value={this.state.tvshowpath}
                                               onChange={(e) => this.setState({tvshowpath: e.target.value})}/>
                             </Form.Group>
                         </Form.Row>
 
                         <Form.Check
-                            type="switch"
-                            id="custom-switch"
+                            type='switch'
+                            id='custom-switch'
                             data-testid='passwordswitch'
-                            label="Enable Password support"
+                            label='Enable Password support'
                             checked={this.state.passwordsupport}
                             onChange={() => {
                                 this.setState({passwordsupport: !this.state.passwordsupport})
@@ -62,18 +88,18 @@ class GeneralSettings extends React.Component {
                         />
 
                         {this.state.passwordsupport ?
-                            <Form.Group data-testid="passwordfield">
+                            <Form.Group data-testid='passwordfield'>
                                 <Form.Label>Password</Form.Label>
-                                <Form.Control type="password" placeholder="**********" value={this.state.password}
+                                <Form.Control type='password' placeholder='**********' value={this.state.password}
                                               onChange={(e) => this.setState({password: e.target.value})}/>
                             </Form.Group> : null
                         }
 
                         <Form.Check
-                            type="switch"
-                            id="custom-switch-2"
+                            type='switch'
+                            id='custom-switch-2'
                             data-testid='tmdb-switch'
-                            label="Enable TMDB video grabbing support"
+                            label='Enable TMDB video grabbing support'
                             checked={this.state.tmdbsupport}
                             onChange={() => {
                                 this.setState({tmdbsupport: !this.state.tmdbsupport})
@@ -81,10 +107,10 @@ class GeneralSettings extends React.Component {
                         />
 
                         <Form.Check
-                            type="switch"
-                            id="custom-switch-3"
+                            type='switch'
+                            id='custom-switch-3'
                             data-testid='darktheme-switch'
-                            label="Enable Dark-Theme"
+                            label='Enable Dark-Theme'
                             checked={GlobalInfos.isDarkTheme()}
                             onChange={() => {
                                 GlobalInfos.enableDarkTheme(!GlobalInfos.isDarkTheme());
@@ -93,13 +119,13 @@ class GeneralSettings extends React.Component {
                             }}
                         />
 
-                        <Form.Group className={style.mediacenternameform} data-testid="nameform">
+                        <Form.Group className={style.mediacenternameform} data-testid='nameform'>
                             <Form.Label>The name of the Mediacenter</Form.Label>
-                            <Form.Control type="text" placeholder="Mediacentername" value={this.state.mediacentername}
+                            <Form.Control type='text' placeholder='Mediacentername' value={this.state.mediacentername}
                                           onChange={(e) => this.setState({mediacentername: e.target.value})}/>
                         </Form.Group>
 
-                        <Button variant="primary" type="submit">
+                        <Button variant='primary' type='submit'>
                             Submit
                         </Button>
                     </Form>
@@ -125,7 +151,12 @@ class GeneralSettings extends React.Component {
                         mediacentername: result.mediacenter_name,
                         password: result.password,
                         passwordsupport: result.passwordEnabled,
-                        tmdbsupport: result.TMDB_grabbing
+                        tmdbsupport: result.TMDB_grabbing,
+
+                        videonr: result.videonr,
+                        dbsize: result.dbsize,
+                        difftagnr: result.difftagnr,
+                        tagsadded: result.tagsadded
                     });
                 }));
     }
@@ -142,7 +173,7 @@ class GeneralSettings extends React.Component {
         updateRequest.append('tvshowpath', this.state.tvshowpath);
         updateRequest.append('mediacentername', this.state.mediacentername);
         updateRequest.append("tmdbsupport", this.state.tmdbsupport);
-        updateRequest.append("darkmodeenabled", GlobalInfos.isDarkTheme());
+        updateRequest.append("darkmodeenabled", GlobalInfos.isDarkTheme().toString());
 
         fetch('/api/settings.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()

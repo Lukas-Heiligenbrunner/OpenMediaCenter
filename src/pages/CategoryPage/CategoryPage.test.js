@@ -98,7 +98,7 @@ describe('<CategoryPage/>', function () {
         const func = jest.fn();
         CategoryPage.prototype.fetchVideoData = func;
 
-        shallow(<CategoryPage category="fullhd"/>);
+        shallow(<CategoryPage category='fullhd'/>);
 
         expect(func).toBeCalledTimes(1);
     });
@@ -106,7 +106,7 @@ describe('<CategoryPage/>', function () {
     it('test sidebar tag clicks', function () {
         const func = jest.fn();
 
-        const wrapper = mount(<CategoryPage category="fullhd"/>);
+        const wrapper = mount(<CategoryPage category='fullhd'/>);
         wrapper.instance().loadTag = func;
 
         console.log(wrapper.debug());

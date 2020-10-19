@@ -25,9 +25,8 @@ class RandomPage extends React.Component {
     render() {
         return (
             <div>
-                <PageTitle
-                    title='Random Videos'
-                    subtitle='4pc'/>
+                <PageTitle title='Random Videos'
+                           subtitle='4pc'/>
 
                 <SideBar>
                     <SideBarTitle>Visible Tags:</SideBarTitle>

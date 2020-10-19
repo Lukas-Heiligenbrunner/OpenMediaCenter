@@ -2,7 +2,8 @@
     border-bottom-right-radius: 10px;
     border-top-right-radius: 10px;
     float: left;
-    min-height: calc(100vh - 62px);
+    margin-top: 10px;
+    min-height: calc(100vh - 70px);
     min-width: 110px;
     padding-top: 20px;
     width: 10%;
