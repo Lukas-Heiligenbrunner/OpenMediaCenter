@@ -1,4 +1,5 @@
 .GeneralForm {
+    margin-top: 55px;
     width: 60%;
 }
 
@@ -6,3 +7,16 @@
     margin-top: 25px;
     width: 40%;
 }
+
+.infoheader {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* On screens that are 722px wide or less, make the columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 722px) {
+    .infoheader {
+        flex-direction: column;
+    }
+}
+

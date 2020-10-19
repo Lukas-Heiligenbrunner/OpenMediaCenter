@@ -109,4 +109,9 @@ describe('<GeneralSettings/>', function () {
         wrapper.find("[data-testid='tmdb-switch']").simulate("change");
         expect(wrapper.state().tmdbsupport).toBe(false);
     });
+
+    it('test insertion of 4 infoheaderitems', function () {
+        const wrapper = shallow(<GeneralSettings/>);
+        expect(wrapper.find("InfoHeaderItem").length).toBe(4);
+    });
 });

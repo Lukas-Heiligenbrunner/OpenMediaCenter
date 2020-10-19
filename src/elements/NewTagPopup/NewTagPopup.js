@@ -18,21 +18,21 @@ class NewTagPopup extends React.Component {
                 <Modal
                     show={this.props.show}
                     onHide={this.props.onHide}
-                    size="lg"
-                    aria-labelledby="contained-modal-title-vcenter"
+                    size='lg'
+                    aria-labelledby='contained-modal-title-vcenter'
                     centered>
                     <Modal.Header closeButton>
-                        <Modal.Title id="contained-modal-title-vcenter">
+                        <Modal.Title id='contained-modal-title-vcenter'>
                             Create a new Tag!
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form.Group>
                             <Form.Label>Tag Name:</Form.Label>
-                            <Form.Control id='namefield' type="text" placeholder="Enter Tag name" onChange={(v) => {
+                            <Form.Control id='namefield' type='text' placeholder='Enter Tag name' onChange={(v) => {
                                 this.value = v.target.value
                             }}/>
-                            <Form.Text className="text-muted">
+                            <Form.Text className='text-muted'>
                                 This Tag will automatically show up on category page.
                             </Form.Text>
                         </Form.Group>
