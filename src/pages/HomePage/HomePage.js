@@ -131,12 +131,12 @@ class HomePage extends React.Component {
                         e.preventDefault();
                         this.searchVideos(this.keyword);
                     }}>
-                        <input data-testid='searchtextfield' className="form-control mr-sm-2"
-                               type="text" placeholder="Search"
+                        <input data-testid='searchtextfield' className='form-control mr-sm-2'
+                               type='text' placeholder='Search'
                                onChange={(e) => {
                                    this.keyword = e.target.value
                                }}/>
-                        <button data-testid='searchbtnsubmit' className="btn btn-success" type="submit">Search</button>
+                        <button data-testid='searchbtnsubmit' className='btn btn-success' type='submit'>Search</button>
                     </form>
                 </PageTitle>
                 <SideBar>

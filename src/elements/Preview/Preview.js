@@ -48,7 +48,7 @@ class Preview extends React.Component {
                         <img className={style.previewimage}
                              src={this.state.previewpicture}
                              alt='Pic loading.'/> :
-                        <span className={style.loadAnimation}><Spinner animation="border"/></span>}
+                        <span className={style.loadAnimation}><Spinner animation='border'/></span>}
 
                 </div>
                 <div className={style.previewbottom}>

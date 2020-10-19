@@ -14,7 +14,7 @@ describe('<InfoHeaderItem/>', function () {
     });
 
     it('renders correct subtext', function () {
-        const wrapper = shallow(<InfoHeaderItem text ="mimi" subtext='testtext'/>);
+        const wrapper = shallow(<InfoHeaderItem text='mimi' subtext='testtext'/>);
         expect(wrapper.find(".subtext").text()).toBe("testtext");
     });
 

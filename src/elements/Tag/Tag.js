@@ -10,7 +10,7 @@ class Tag extends React.Component {
     render() {
         return (
             <button className={styles.tagbtn} onClick={() => this.TagClick()}
-                    data-testid="Test-Tag">{this.props.children}</button>
+                    data-testid='Test-Tag'>{this.props.children}</button>
         );
     }
 

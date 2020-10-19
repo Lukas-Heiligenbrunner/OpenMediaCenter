@@ -84,7 +84,7 @@ class CategoryPage extends React.Component {
                             <VideoContainer
                                 data={this.videodata}
                                 viewbinding={this.props.viewbinding}/> : null}
-                        <button data-testid='backbtn' className="btn btn-success"
+                        <button data-testid='backbtn' className='btn btn-success'
                                 onClick={this.loadCategoryPageDefault}>Back
                         </button>
                     </> :

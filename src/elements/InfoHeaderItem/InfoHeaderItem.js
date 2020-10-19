@@ -17,14 +17,14 @@ class InfoHeaderItem extends React.Component {
                     <FontAwesomeIcon style={{
                         verticalAlign: "middle",
                         lineHeight: "130px"
-                    }} icon={this.props.icon} size="5x"/>
+                    }} icon={this.props.icon} size='5x'/>
                 </div>
-                {this.props.text !== null && this.props.text !== undefined?
+                {this.props.text !== null && this.props.text !== undefined ?
                     <>
                         <div className={style.maintext}>{this.props.text}</div>
                         <div className={style.subtext}>{this.props.subtext}</div>
                     </>
-                    : <span className={style.loadAnimation}><Spinner animation="border"/></span>
+                    : <span className={style.loadAnimation}><Spinner animation='border'/></span>
                 }
             </div>
         );
