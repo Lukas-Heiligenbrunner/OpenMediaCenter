@@ -1,5 +1,6 @@
 <?php
 require_once 'RequestBase.php';
+require_once __DIR__ . '/../VideoParser.php';
 
 /**
  * Class Settings
@@ -9,12 +10,13 @@ class Settings extends RequestBase {
     function initHandlers() {
         $this->getFromDB();
         $this->saveToDB();
+        $this->reIndexHandling();
     }
 
     /**
      * handle settings stuff to load from db
      */
-    private function getFromDB(){
+    private function getFromDB() {
         /**
          * load currently set settings form db for init of settings page
          */
@@ -51,7 +53,7 @@ class Settings extends RequestBase {
     /**
      * handle setting stuff to save to db
      */
-    private function saveToDB(){
+    private function saveToDB() {
         /**
          * save changed settings to db
          */
@@ -77,6 +79,59 @@ class Settings extends RequestBase {
             } else {
                 $this->commitMessage('{"success": true}');
             }
+        });
+    }
+
+    /**
+     * methods for handling reindexing and cleanup of db gravity
+     */
+    private function reIndexHandling() {
+        $this->addActionHandler("startReindex", function () {
+            $indexrunning = false;
+            if (file_exists("/tmp/output.log")) {
+
+                $out = file_get_contents("/tmp/output.log");
+                if (substr($out, -strlen("-42")) == "-42") {
+                    unlink("/tmp/output.log");
+                } else {
+                    $indexrunning = true;
+                }
+            }
+
+            if (!$indexrunning) {
+                // start extraction of video previews in background
+
+                $cmd = 'php extractvideopreviews.php';
+                exec(sprintf("%s > %s 2>&1 & echo $! >> %s", $cmd, '/dev/zero', '/tmp/openmediacenterpid'));
+
+                $this->commitMessage('{"success": true}');
+            } else {
+                $this->commitMessage('{"success": false}');
+            }
+        });
+
+        $this->addActionHandler("cleanupGravity", function () {
+            $vp = new VideoParser();
+            $vp->cleanUpGravity();
+        });
+
+        $this->addActionHandler("getStatusMessage", function () {
+            $return = new stdClass();
+            if (file_exists("/tmp/output.log")) {
+                $out = file_get_contents("/tmp/output.log");
+                // clear log file
+                file_put_contents("/tmp/output.log", "");
+                $return->message = $out;
+                $return->contentAvailable = true;
+
+                if (substr($out, -strlen("-42")) == "-42") {
+                    unlink("/tmp/output.log");
+                }
+            } else {
+                $return->contentAvailable = false;
+            }
+
+            $this->commitMessage(json_encode($return));
         });
     }
 }

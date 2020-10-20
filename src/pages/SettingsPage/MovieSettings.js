@@ -29,9 +29,12 @@ class MovieSettings extends React.Component {
     render() {
         return (
             <>
-                <button disabled={this.state.startbtnDisabled} className='reindexbtn btn btn-success' onClick={() => {
-                    this.startReindex()
-                }}>Reindex Movies
+                <button disabled={this.state.startbtnDisabled}
+                        className='btn btn-success'
+                        onClick={() => {this.startReindex()}}>Reindex Movie
+                </button>
+                <button className='btn btn-warning'
+                        onClick={() => {this.cleanupGravity()}}>Cleanup Gravity
                 </button>
                 <div className={style.indextextarea}>{this.state.text.map(m => (
                     <div className='textarea-element'>{m}</div>
@@ -50,13 +53,19 @@ class MovieSettings extends React.Component {
         this.setState({startbtnDisabled: true});
 
         console.log("starting");
-        const updateRequest = new FormData();
+        const request = new FormData();
+        request.append("action", "startReindex");
         // fetch all videos available
-        fetch('/api/extractvideopreviews.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.text()
+        fetch('/api/settings.php', {method: 'POST', body: request})
+            .then((response) => response.json()
                 .then((result) => {
-                    // todo 2020-07-4: some kind of return finished handler
-                    console.log("returned");
+                    console.log(result);
+                    if (result.success) {
+                        console.log("started successfully");
+                    } else {
+                        console.log("error, reindex already running");
+                        this.setState({startbtnDisabled: true});
+                    }
                 }))
             .catch(() => {
                 console.log("no connection to backend");
@@ -71,8 +80,10 @@ class MovieSettings extends React.Component {
      * This interval function reloads the current status of reindexing from backend
      */
     updateStatus = () => {
-        const updateRequest = new FormData();
-        fetch('/api/extractionData.php', {method: 'POST', body: updateRequest})
+        const request = new FormData();
+        request.append("action", "getStatusMessage");
+
+        fetch('/api/settings.php', {method: 'POST', body: request})
             .then((response) => response.json()
                 .then((result) => {
                     if (result.contentAvailable === true) {
@@ -94,6 +105,25 @@ class MovieSettings extends React.Component {
                 console.log("no connection to backend");
             });
     };
+
+    /**
+     * send request to cleanup db gravity
+     */
+    cleanupGravity() {
+        const request = new FormData();
+        request.append("action", "cleanupGravity");
+
+        fetch('/api/settings.php', {method: 'POST', body: request})
+            .then((response) => response.text()
+                .then((result) => {
+                    this.setState({
+                        text: ['successfully cleaned up gravity!']
+                    });
+                }))
+            .catch(() => {
+                console.log("no connection to backend");
+            });
+    }
 }
 
 export default MovieSettings;
