@@ -10,6 +10,7 @@ stages:
 cache:
   paths:
     - node_modules/
+    - vendor/
 
 include:
   - template: Code-Quality.gitlab-ci.yml
@@ -21,6 +22,12 @@ prepare:
   stage: prepare
   script:
     - npm install --progress=false
+
+prepare-php:
+  stage: prepare
+  image: composer:latest
+  script:
+    - composer install
 
 build:
   stage: build
@@ -51,6 +58,17 @@ coverage:
       cobertura:
         - ./coverage/cobertura-coverage.xml
   needs: ["prepare"]
+
+test-php:
+  stage: test
+  image: composer:latest
+  script:
+    - ./vendor/bin/phpunit api/tests --testdox tests --log-junit phpunit.xml
+  artifacts:
+    reports:
+      junit:
+        - ./phpunit.xml
+  needs: ["prepare-php"]
 
 package_debian:
   stage: packaging
