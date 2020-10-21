@@ -25,7 +25,7 @@ describe('<MovieSettings/>', function () {
         global.fetch = global.prepareFetchApi({});
         const wrapper = shallow(<MovieSettings/>);
 
-        wrapper.find(".reindexbtn").simulate("click");
+        wrapper.find("button").findWhere(e => e.text() === "Reindex Movie" && e.type() === "button").simulate("click");
 
         // initial send of reindex request to server
         expect(global.fetch).toBeCalledTimes(1);

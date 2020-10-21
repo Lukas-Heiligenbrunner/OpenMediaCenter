@@ -9,10 +9,10 @@ class Database {
     private static $instance = null;
     private $conn;
 
-    private string $servername = "192.168.0.30";
-    private string $username = "root";
-    private string $password = "1qayxsw2";
-    private string $dbname = "mediacenter";
+    private $servername = "127.0.0.1";
+    private $username = "mediacenteruser";
+    private $password = "mediapassword";
+    private $dbname = "mediacenter";
 
     // The db connection is established in the private constructor.
     private function __construct() {
