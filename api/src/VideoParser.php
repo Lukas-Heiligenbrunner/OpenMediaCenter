@@ -1,7 +1,7 @@
 <?php
-require_once './src/Database.php';
-require_once './src/TMDBMovie.php';
-require_once './src/SSettings.php';
+require_once 'Database.php';
+require_once 'TMDBMovie.php';
+require_once 'SSettings.php';
 
 /**
  * Class VideoParser

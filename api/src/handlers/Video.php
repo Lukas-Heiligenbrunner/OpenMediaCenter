@@ -1,5 +1,5 @@
 <?php
-require_once 'src/SSettings.php';
+require_once __DIR__.'/../SSettings.php';
 require_once 'RequestBase.php';
 
 /**
