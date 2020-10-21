@@ -18,6 +18,7 @@ global.prepareFetchApi = (response) => {
     const mockJsonPromise = Promise.resolve(response);
     const mockFetchPromise = Promise.resolve({
         json: () => mockJsonPromise,
+        text: () => mockJsonPromise
     });
     return (jest.fn().mockImplementation(() => mockFetchPromise));
 }

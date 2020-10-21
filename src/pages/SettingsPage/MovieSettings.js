@@ -16,9 +16,6 @@ class MovieSettings extends React.Component {
     }
 
     componentDidMount() {
-        if (this.myinterval) {
-            clearInterval(this.myinterval);
-        }
         this.myinterval = setInterval(this.updateStatus, 1000);
     }
 
