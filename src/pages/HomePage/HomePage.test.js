@@ -1,7 +1,7 @@
-import {shallow} from "enzyme";
-import React from "react";
-import HomePage from "./HomePage";
-import VideoContainer from "../../elements/VideoContainer/VideoContainer";
+import {shallow} from 'enzyme';
+import React from 'react';
+import HomePage from './HomePage';
+import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 
 describe('<HomePage/>', function () {
     it('renders without crashing ', function () {
@@ -12,7 +12,7 @@ describe('<HomePage/>', function () {
     it('test data insertion', function () {
         const wrapper = shallow(<HomePage/>);
 
-        expect(wrapper.find("VideoContainer")).toHaveLength(0);
+        expect(wrapper.find('VideoContainer')).toHaveLength(0);
 
         wrapper.setState({
             data: [
@@ -21,20 +21,20 @@ describe('<HomePage/>', function () {
         });
 
         // there shoud be loaded the Videocontainer element into dom after fetching videos correctly
-        expect(wrapper.find("VideoContainer")).toHaveLength(1);
+        expect(wrapper.find('VideoContainer')).toHaveLength(1);
     });
 
     it('test title and nr insertions', function () {
         const wrapper = shallow(<HomePage/>);
 
-        expect(wrapper.find("PageTitle").props().subtitle).toBe("All Videos - 0");
+        expect(wrapper.find('PageTitle').props().subtitle).toBe('All Videos - 0');
 
         wrapper.setState({
-            tag: "testtag",
+            subtitle: 'testsubtitle',
             selectionnr: 42
         });
 
-        expect(wrapper.find("PageTitle").props().subtitle).toBe("testtag Videos - 42");
+        expect(wrapper.find('PageTitle').props().subtitle).toBe('testsubtitle - 42');
     });
 
     it('test search field', done => {
@@ -43,7 +43,7 @@ describe('<HomePage/>', function () {
         const wrapper = shallow(<HomePage/>);
 
         wrapper.find('[data-testid="searchtextfield"]').simulate('change', {target: {value: 'testvalue'}});
-        wrapper.find('[data-testid="searchbtnsubmit"]').simulate("click");
+        wrapper.find('[data-testid="searchbtnsubmit"]').simulate('click');
 
         process.nextTick(() => {
             // state to be set correctly with response
@@ -60,7 +60,7 @@ describe('<HomePage/>', function () {
         const wrapper = shallow(<HomePage/>);
 
         const fakeEvent = {preventDefault: () => console.log('preventDefault')};
-        wrapper.find(".searchform").simulate('submit', fakeEvent);
+        wrapper.find('.searchform').simulate('submit', fakeEvent);
 
         expect(wrapper.state().selectionnr).toBe(0);
 

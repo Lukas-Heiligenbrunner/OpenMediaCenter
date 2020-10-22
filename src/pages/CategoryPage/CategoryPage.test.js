@@ -1,6 +1,6 @@
-import {mount, shallow} from "enzyme";
-import React from "react";
-import CategoryPage from "./CategoryPage";
+import {mount, shallow} from 'enzyme';
+import React from 'react';
+import CategoryPage from './CategoryPage';
 
 describe('<CategoryPage/>', function () {
     it('renders without crashing ', function () {
@@ -9,7 +9,7 @@ describe('<CategoryPage/>', function () {
     });
 
     it('test tag fetch call', done => {
-        global.fetch = global.prepareFetchApi(["first", "second"]);
+        global.fetch = global.prepareFetchApi(['first', 'second']);
 
         const wrapper = shallow(<CategoryPage/>);
 
@@ -38,7 +38,7 @@ describe('<CategoryPage/>', function () {
 
         process.nextTick(() => {
             //callback to close window should have called
-            expect(message).toBe("no connection to backend");
+            expect(message).toBe('no connection to backend');
 
             global.fetch.mockClear();
             done();
@@ -48,14 +48,14 @@ describe('<CategoryPage/>', function () {
     it('test new tag popup', function () {
         const wrapper = mount(<CategoryPage/>);
 
-        expect(wrapper.find("NewTagPopup")).toHaveLength(0);
+        expect(wrapper.find('NewTagPopup')).toHaveLength(0);
         wrapper.find('[data-testid="btnaddtag"]').simulate('click');
         // newtagpopup should be showing now
-        expect(wrapper.find("NewTagPopup")).toHaveLength(1);
+        expect(wrapper.find('NewTagPopup')).toHaveLength(1);
 
         // click close button in modal
-        wrapper.find(".modal-header").find("button").simulate("click");
-        expect(wrapper.find("NewTagPopup")).toHaveLength(0);
+        wrapper.find('.modal-header').find('button').simulate('click');
+        expect(wrapper.find('NewTagPopup')).toHaveLength(0);
     });
 
     it('test setpage callback', done => {
@@ -66,17 +66,17 @@ describe('<CategoryPage/>', function () {
         wrapper.setState({
             loadedtags: [
                 {
-                    tag_name: "testname",
+                    tag_name: 'testname',
                     tag_id: 42
                 }
             ]
         });
 
-        wrapper.find("TagPreview").find("div").first().simulate("click");
+        wrapper.find('TagPreview').find('div').first().simulate('click');
 
         process.nextTick(() => {
             // expect callback to have loaded correct tag
-            expect(wrapper.state().selected).toBe("testname");
+            expect(wrapper.state().selected).toBe('testname');
 
             global.fetch.mockClear();
             done();
@@ -87,10 +87,10 @@ describe('<CategoryPage/>', function () {
         const wrapper = shallow(<CategoryPage/>);
 
         wrapper.setState({
-            selected: "test"
+            selected: 'test'
         });
         expect(wrapper.state().selected).not.toBeNull();
-        wrapper.find('[data-testid="backbtn"]').simulate("click");
+        wrapper.find('[data-testid="backbtn"]').simulate('click');
         expect(wrapper.state().selected).toBeNull();
     });
 
@@ -112,9 +112,9 @@ describe('<CategoryPage/>', function () {
         console.log(wrapper.debug());
 
         expect(func).toBeCalledTimes(0);
-        wrapper.find("SideBar").find("Tag").forEach(e => {
-            e.simulate("click");
-        })
+        wrapper.find('SideBar').find('Tag').forEach(e => {
+            e.simulate('click');
+        });
 
         expect(func).toBeCalledTimes(4);
 

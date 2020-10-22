@@ -1,8 +1,8 @@
-import React from "react";
-import Tag from './Tag'
+import React from 'react';
+import Tag from './Tag';
 
-import "@testing-library/jest-dom"
-import {shallow} from 'enzyme'
+import '@testing-library/jest-dom';
+import {shallow} from 'enzyme';
 
 describe('<Tag/>', function () {
     it('renders without crashing ', function () {
@@ -12,7 +12,7 @@ describe('<Tag/>', function () {
 
     it('renders childs correctly', function () {
         const wrapper = shallow(<Tag>test</Tag>);
-        expect(wrapper.children().text()).toBe("test");
+        expect(wrapper.children().text()).toBe('test');
     });
 
     it('click event triggered and setvideo callback called', function () {
@@ -27,7 +27,7 @@ describe('<Tag/>', function () {
 
         expect(func).toBeCalledTimes(0);
 
-        wrapper.simulate("click");
+        wrapper.simulate('click');
 
         expect(func).toBeCalledTimes(1);
     });
@@ -36,11 +36,11 @@ describe('<Tag/>', function () {
         const func = jest.fn();
 
         const wrapper = shallow(<Tag
-            onclick={() => {func()}}>test</Tag>);
+            onclick={() => {func();}}>test</Tag>);
 
         expect(func).toBeCalledTimes(0);
 
-        wrapper.simulate("click");
+        wrapper.simulate('click');
 
         expect(func).toBeCalledTimes(1);
     });

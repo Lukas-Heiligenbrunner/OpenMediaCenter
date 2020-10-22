@@ -1,6 +1,6 @@
-import {shallow} from "enzyme";
-import React from "react";
-import SettingsPage from "./SettingsPage";
+import {shallow} from 'enzyme';
+import React from 'react';
+import SettingsPage from './SettingsPage';
 
 describe('<RandomPage/>', function () {
     it('renders without crashing ', function () {
@@ -11,30 +11,30 @@ describe('<RandomPage/>', function () {
     it('simulate topic clicka', function () {
         const wrapper = shallow(<SettingsPage/>);
 
-        simulateSideBarClick("General", wrapper);
-        expect(wrapper.state().currentpage).toBe("general");
-        expect(wrapper.find(".SettingsContent").find("GeneralSettings")).toHaveLength(1);
+        simulateSideBarClick('General', wrapper);
+        expect(wrapper.state().currentpage).toBe('general');
+        expect(wrapper.find('.SettingsContent').find('GeneralSettings')).toHaveLength(1);
 
-        simulateSideBarClick("Movies", wrapper);
-        expect(wrapper.state().currentpage).toBe("movies");
-        expect(wrapper.find(".SettingsContent").find("MovieSettings")).toHaveLength(1);
+        simulateSideBarClick('Movies', wrapper);
+        expect(wrapper.state().currentpage).toBe('movies');
+        expect(wrapper.find('.SettingsContent').find('MovieSettings')).toHaveLength(1);
 
-        simulateSideBarClick("TV Shows", wrapper);
-        expect(wrapper.state().currentpage).toBe("tv");
-        expect(wrapper.find(".SettingsContent").find("span")).toHaveLength(1);
+        simulateSideBarClick('TV Shows', wrapper);
+        expect(wrapper.state().currentpage).toBe('tv');
+        expect(wrapper.find('.SettingsContent').find('span')).toHaveLength(1);
     });
 
     function simulateSideBarClick(name, wrapper) {
-        wrapper.find(".SettingSidebarElement").findWhere(it =>
+        wrapper.find('.SettingSidebarElement').findWhere(it =>
             it.text() === name &&
-            it.type() === "div").simulate("click");
+            it.type() === 'div').simulate('click');
     }
 
     it('simulate unknown topic', function () {
         const wrapper = shallow(<SettingsPage/>);
-        wrapper.setState({currentpage: "unknown"});
+        wrapper.setState({currentpage: 'unknown'});
 
-        expect(wrapper.find(".SettingsContent").text()).toBe("unknown button clicked");
+        expect(wrapper.find('.SettingsContent').text()).toBe('unknown button clicked');
 
     });
 });

@@ -1,8 +1,8 @@
-import React from "react";
-import style from "./Preview.module.css";
-import Player from "../../pages/Player/Player";
-import {Spinner} from "react-bootstrap";
-import GlobalInfos from "../../GlobalInfos";
+import React from 'react';
+import style from './Preview.module.css';
+import Player from '../../pages/Player/Player';
+import {Spinner} from 'react-bootstrap';
+import GlobalInfos from '../../GlobalInfos';
 
 /**
  * Component for single preview tile
@@ -62,7 +62,7 @@ class Preview extends React.Component {
      * handle the click event of a tile
      */
     itemClick() {
-        console.log("item clicked!" + this.state.name);
+        console.log('item clicked!' + this.state.name);
 
         this.props.viewbinding.changeRootElement(
             <Player

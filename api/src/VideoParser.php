@@ -213,6 +213,28 @@ class VideoParser {
     }
 
     /**
+     * get all videoinfos of a video file
+     *
+     * @param $video string name including extension
+     * @return object all infos as object
+     */
+    private function _get_video_attributes(string $video) {
+        $command = "mediainfo \"../$this->videopath$video\" --Output=JSON";
+        $output = shell_exec($command);
+        return json_decode($output);
+    }
+
+    /**
+     * write a line to the output log file
+     *
+     * @param string $message message to write
+     */
+    public function writeLog(string $message) {
+        file_put_contents("/tmp/output.log", $message, FILE_APPEND);
+        flush();
+    }
+
+    /**
      * insert the corresponding videosize tag to a specific videoid
      * @param $width int video width
      * @param $videoid int id of video
@@ -244,28 +266,6 @@ class VideoParser {
                 $this->writeLog("failed to add default tag here.\n");
             }
         }
-    }
-
-    /**
-     * get all videoinfos of a video file
-     *
-     * @param $video string name including extension
-     * @return object all infos as object
-     */
-    private function _get_video_attributes(string $video) {
-        $command = "mediainfo \"../$this->videopath$video\" --Output=JSON";
-        $output = shell_exec($command);
-        return json_decode($output);
-    }
-
-    /**
-     * write a line to the output log file
-     *
-     * @param string $message message to write
-     */
-    public function writeLog(string $message) {
-        file_put_contents("/tmp/output.log", $message, FILE_APPEND);
-        flush();
     }
 
     /**

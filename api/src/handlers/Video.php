@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__.'/../SSettings.php';
+require_once __DIR__ . '/../SSettings.php';
 require_once 'RequestBase.php';
 
 /**
@@ -29,7 +29,8 @@ class Video extends RequestBase {
             $query = "SELECT movie_id,movie_name FROM videos ORDER BY create_date DESC, movie_name";
             if (isset($_POST['tag'])) {
                 $tag = $_POST['tag'];
-                if ($_POST['tag'] != "all") {
+                // if not all tags allowed filter for specific one
+                if (strtolower($_POST['tag']) != "all") {
                     $query = "SELECT movie_id,movie_name FROM videos 
                             INNER JOIN video_tags vt on videos.movie_id = vt.video_id
                             INNER JOIN tags t on vt.tag_id = t.tag_id
@@ -115,7 +116,7 @@ class Video extends RequestBase {
             // todo drop video url from db -- maybe one with and one without extension
             // extension hardcoded here!!!
             $arr["movie_url"] = str_replace("?", "%3F", $this->videopath . $row["movie_name"] . ".mp4");
-            $arr["likes"] = (int) $row["likes"];
+            $arr["likes"] = (int)$row["likes"];
             $arr["quality"] = $row["quality"];
             $arr["length"] = $row["length"];
 
