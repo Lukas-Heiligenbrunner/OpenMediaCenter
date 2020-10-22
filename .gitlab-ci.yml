@@ -65,7 +65,7 @@ package_debian:
     - cp ../database.sql ./OpenMediaCenter/tmp/openmediacenter.sql
     - chmod -R 0775 *
     - dpkg-deb --build OpenMediaCenter
-    - mv OpenMediaCenter.deb OpenMediaCenter-0.1_amd64.deb
+    - mv OpenMediaCenter-0.1.deb OpenMediaCenter-0.1_amd64.deb
   artifacts:
     paths:
       - deb/OpenMediaCenter-0.1_amd64.deb
@@ -76,7 +76,7 @@ deploy_test1:
   image: luki42/alpineopenssh:latest
   needs:
     - test
-    - build
+    - package_debian
   only:
     - master
   script:
@@ -84,6 +84,6 @@ deploy_test1:
     - ssh-add <(echo "$SSH_PRIVATE_KEY")
     - mkdir -p ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-    - scp -r build/* root@192.168.0.42:/var/www/html/
-    - scp -r api/ root@192.168.0.42:/var/www/html/
+    - scp deb/OpenMediaCenter-*.deb root@192.168.0.42:/tmp/
+    - ssh root@192.168.0.42 "apt-get --reinstall  install /tmp/OpenMediaCenter-*.deb"
 
