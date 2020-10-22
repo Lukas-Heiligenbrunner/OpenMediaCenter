@@ -85,6 +85,5 @@ deploy_test1:
     - mkdir -p ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
     - scp deb/OpenMediaCenter-*.deb root@192.168.0.42:/tmp/
-    - ssh root@192.168.0.42 "apt-get --reinstall  install /tmp/OpenMediaCenter-*.deb"
-    - rm /tmp/OpenMediaCenter-*.deb
+    - ssh root@192.168.0.42 "DEBIAN_FRONTEND=noninteractive apt-get --reinstall  -y -qq install /tmp/OpenMediaCenter-*.deb && rm /tmp/OpenMediaCenter-*.deb"
 
