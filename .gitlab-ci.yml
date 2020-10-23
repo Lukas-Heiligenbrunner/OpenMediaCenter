@@ -1,4 +1,4 @@
-image: node:14-alpine3.12
+image: node:14-buster
 
 stages:
   - prepare
