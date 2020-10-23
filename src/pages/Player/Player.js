@@ -70,20 +70,19 @@ class Player extends React.Component {
                         console.error('error occured while writing to db -- todo error handling');
                         console.error(result.result);
                     } else {
-                        // update tags if successful
-                        let array = [...this.state.suggesttag]; // make a separate copy of the array
-                        const quickaddindex = array.map(function (e) {
-                            return e.tag_id;
-                        }).indexOf(tag_id);
-
                         // check if tag has already been added
                         const tagindwx = this.state.tags.map(function (e) {
-                            return e.tag_id;
-                        }).indexOf(tag_id);
+                            return e.tag_name;
+                        }).indexOf(tag_name);
 
-                        // todo 2020-10-23: index of tag not correct becuse id is not saved in array!
-                        // check if tag has already this tag
-                        if (tagindwx !== -1) {
+                        // only add tag if it isn't already there
+                        if (tagindwx === -1) {
+                            // update tags if successful
+                            let array = [...this.state.suggesttag]; // make a separate copy of the array (because of setState)
+                            const quickaddindex = this.state.suggesttag.map(function (e) {
+                                return e.tag_id;
+                            }).indexOf(tag_id);
+
                             // check if tag is available in quickadds
                             if (quickaddindex !== -1) {
                                 array.splice(quickaddindex, 1);
