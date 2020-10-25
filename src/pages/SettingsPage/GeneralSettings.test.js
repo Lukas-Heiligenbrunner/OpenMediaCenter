@@ -1,7 +1,7 @@
-import {shallow} from "enzyme";
-import React from "react";
-import GeneralSettings from "./GeneralSettings";
-import GlobalInfos from "../../GlobalInfos";
+import {shallow} from 'enzyme';
+import React from 'react';
+import GeneralSettings from './GeneralSettings';
+import GlobalInfos from '../../GlobalInfos';
 
 describe('<GeneralSettings/>', function () {
     it('renders without crashing ', function () {
@@ -12,10 +12,10 @@ describe('<GeneralSettings/>', function () {
     it('test password hide/show switchbutton', function () {
         const wrapper = shallow(<GeneralSettings/>);
 
-        expect(wrapper.find("[data-testid='passwordfield']")).toHaveLength(0);
-        wrapper.find("FormCheck").findWhere(it => it.props().label === "Enable Password support").simulate("change");
+        expect(wrapper.find('[data-testid=\'passwordfield\']')).toHaveLength(0);
+        wrapper.find('FormCheck').findWhere(it => it.props().label === 'Enable Password support').simulate('change');
 
-        expect(wrapper.find("[data-testid='passwordfield']")).toHaveLength(1);
+        expect(wrapper.find('[data-testid=\'passwordfield\']')).toHaveLength(1);
     });
 
     it('test theme switchbutton', function () {
@@ -23,7 +23,7 @@ describe('<GeneralSettings/>', function () {
 
         GlobalInfos.enableDarkTheme(false);
         expect(GlobalInfos.isDarkTheme()).toBe(false);
-        wrapper.find("[data-testid='darktheme-switch']").simulate("change");
+        wrapper.find('[data-testid=\'darktheme-switch\']').simulate('change');
         expect(GlobalInfos.isDarkTheme()).toBe(true);
     });
 
@@ -34,7 +34,7 @@ describe('<GeneralSettings/>', function () {
 
         expect(global.fetch).toBeCalledTimes(0);
         const fakeEvent = {preventDefault: () => console.log('preventDefault')};
-        wrapper.find("[data-testid='mainformsettings']").simulate("submit", fakeEvent);
+        wrapper.find('[data-testid=\'mainformsettings\']').simulate('submit', fakeEvent);
         expect(global.fetch).toBeCalledTimes(1);
 
         process.nextTick(() => {
@@ -52,7 +52,7 @@ describe('<GeneralSettings/>', function () {
 
         expect(global.fetch).toBeCalledTimes(0);
         const fakeEvent = {preventDefault: () => console.log('preventDefault')};
-        wrapper.find("[data-testid='mainformsettings']").simulate("submit", fakeEvent);
+        wrapper.find('[data-testid=\'mainformsettings\']').simulate('submit', fakeEvent);
         expect(global.fetch).toBeCalledTimes(1);
 
         process.nextTick(() => {
@@ -66,39 +66,39 @@ describe('<GeneralSettings/>', function () {
     it('test videopath change event', function () {
         const wrapper = shallow(<GeneralSettings/>);
 
-        expect(wrapper.state().videopath).not.toBe("test");
+        expect(wrapper.state().videopath).not.toBe('test');
 
-        const event = {target: {name: "pollName", value: "test"}};
-        wrapper.find("[data-testid='videpathform']").find("FormControl").simulate("change", event);
-        expect(wrapper.state().videopath).toBe("test");
+        const event = {target: {name: 'pollName', value: 'test'}};
+        wrapper.find('[data-testid=\'videpathform\']').find('FormControl').simulate('change', event);
+        expect(wrapper.state().videopath).toBe('test');
     });
 
     it('test tvshowpath change event', function () {
         const wrapper = shallow(<GeneralSettings/>);
 
-        const event = {target: {name: "pollName", value: "test"}};
-        expect(wrapper.state().tvshowpath).not.toBe("test");
-        wrapper.find("[data-testid='tvshowpath']").find("FormControl").simulate("change", event);
-        expect(wrapper.state().tvshowpath).toBe("test");
+        const event = {target: {name: 'pollName', value: 'test'}};
+        expect(wrapper.state().tvshowpath).not.toBe('test');
+        wrapper.find('[data-testid=\'tvshowpath\']').find('FormControl').simulate('change', event);
+        expect(wrapper.state().tvshowpath).toBe('test');
     });
 
     it('test mediacentername-form change event', function () {
         const wrapper = shallow(<GeneralSettings/>);
 
-        const event = {target: {name: "pollName", value: "test"}};
-        expect(wrapper.state().mediacentername).not.toBe("test");
-        wrapper.find("[data-testid='nameform']").find("FormControl").simulate("change", event);
-        expect(wrapper.state().mediacentername).toBe("test");
+        const event = {target: {name: 'pollName', value: 'test'}};
+        expect(wrapper.state().mediacentername).not.toBe('test');
+        wrapper.find('[data-testid=\'nameform\']').find('FormControl').simulate('change', event);
+        expect(wrapper.state().mediacentername).toBe('test');
     });
 
     it('test password-form change event', function () {
         const wrapper = shallow(<GeneralSettings/>);
         wrapper.setState({passwordsupport: true});
 
-        const event = {target: {name: "pollName", value: "test"}};
-        expect(wrapper.state().password).not.toBe("test");
-        wrapper.find("[data-testid='passwordfield']").find("FormControl").simulate("change", event);
-        expect(wrapper.state().password).toBe("test");
+        const event = {target: {name: 'pollName', value: 'test'}};
+        expect(wrapper.state().password).not.toBe('test');
+        wrapper.find('[data-testid=\'passwordfield\']').find('FormControl').simulate('change', event);
+        expect(wrapper.state().password).toBe('test');
     });
 
     it('test tmdbsupport change event', function () {
@@ -106,12 +106,12 @@ describe('<GeneralSettings/>', function () {
         wrapper.setState({tmdbsupport: true});
 
         expect(wrapper.state().tmdbsupport).toBe(true);
-        wrapper.find("[data-testid='tmdb-switch']").simulate("change");
+        wrapper.find('[data-testid=\'tmdb-switch\']').simulate('change');
         expect(wrapper.state().tmdbsupport).toBe(false);
     });
 
     it('test insertion of 4 infoheaderitems', function () {
         const wrapper = shallow(<GeneralSettings/>);
-        expect(wrapper.find("InfoHeaderItem").length).toBe(4);
+        expect(wrapper.find('InfoHeaderItem').length).toBe(4);
     });
 });

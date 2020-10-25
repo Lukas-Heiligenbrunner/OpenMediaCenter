@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 import style from './InfoHeaderItem.module.css';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Spinner} from "react-bootstrap";
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {Spinner} from 'react-bootstrap';
 
 /**
  * a component to display one of the short quickinfo tiles on dashboard
@@ -15,8 +15,8 @@ class InfoHeaderItem extends React.Component {
             }} className={style.infoheaderitem} style={{backgroundColor: this.props.backColor}}>
                 <div className={style.icon}>
                     <FontAwesomeIcon style={{
-                        verticalAlign: "middle",
-                        lineHeight: "130px"
+                        verticalAlign: 'middle',
+                        lineHeight: '130px'
                     }} icon={this.props.icon} size='5x'/>
                 </div>
                 {this.props.text !== null && this.props.text !== undefined ?

@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 
-import {shallow} from 'enzyme'
-import "@testing-library/jest-dom"
-import NewTagPopup from "./NewTagPopup";
+import {shallow} from 'enzyme';
+import '@testing-library/jest-dom';
+import NewTagPopup from './NewTagPopup';
 
 describe('<NewTagPopup/>', function () {
     it('renders without crashing ', function () {
@@ -14,7 +14,7 @@ describe('<NewTagPopup/>', function () {
         const mockSuccessResponse = {};
         const mockJsonPromise = Promise.resolve(mockSuccessResponse);
         const mockFetchPromise = Promise.resolve({
-            json: () => mockJsonPromise,
+            json: () => mockJsonPromise
         });
         global.fetch = jest.fn().mockImplementation(() => mockFetchPromise);
 
@@ -23,7 +23,7 @@ describe('<NewTagPopup/>', function () {
         const wrapper = shallow(<NewTagPopup/>);
         wrapper.setProps({
             onHide: () => {
-                func()
+                func();
             }
         });
 

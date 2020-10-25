@@ -1,5 +1,5 @@
-import darktheme from "./AppDarkTheme.module.css";
-import lighttheme from "./AppLightTheme.module.css";
+import darktheme from './AppDarkTheme.module.css';
+import lighttheme from './AppLightTheme.module.css';
 
 /**
  * This class is available for all components in project

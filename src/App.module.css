@@ -37,8 +37,8 @@
 }
 
 .navcontainer {
-    border-width: 0 0 2px 0;
     border-style: dotted;
+    border-width: 0 0 2px 0;
 
     padding-bottom: 40px;
     padding-top: 20px;

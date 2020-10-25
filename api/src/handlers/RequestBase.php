@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__.'/../Database.php';
+require_once __DIR__ . '/../Database.php';
 
 abstract class RequestBase {
     protected $conn;
@@ -35,16 +35,16 @@ abstract class RequestBase {
     }
 
     /**
-     * Send response message and exit script
-     * @param $message string the response message
-     */
-    function commitMessage($message){
-        echo $message;
-        exit(0);
-    }
-
-    /**
      * add the action handlers in this abstract method
      */
     abstract function initHandlers();
+
+    /**
+     * Send response message and exit script
+     * @param $message string the response message
+     */
+    function commitMessage($message) {
+        echo $message;
+        exit(0);
+    }
 }

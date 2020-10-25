@@ -10,14 +10,14 @@
     "bootstrap": "^4.5.3",
     "plyr-react": "^2.2.0",
     "react": "^16.14.0",
-    "react-bootstrap": "^1.3.0",
+    "react-bootstrap": "^1.4.0",
     "react-dom": "^16.14.0",
-    "react-scripts": "^3.4.3"
+    "react-scripts": "^3.4.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --reporters=jest-junit --reporters=default --ci --silent",
+    "test": "react-scripts test --reporters=jest-junit --reporters=default",
     "coverage": "react-scripts test --coverage --watchAll=false",
     "eject": "react-scripts eject"
   },
@@ -31,7 +31,7 @@
       "text-summary"
     ]
   },
-  "proxy": "http://192.168.0.42",
+  "proxy": "http://192.168.0.42:8080",
   "homepage": "/",
   "eslintConfig": {
     "extends": "react-app"

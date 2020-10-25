@@ -1,9 +1,9 @@
-import React from "react";
-import style from "./RandomPage.module.css"
-import SideBar, {SideBarTitle} from "../../elements/SideBar/SideBar";
-import Tag from "../../elements/Tag/Tag";
-import PageTitle from "../../elements/PageTitle/PageTitle";
-import VideoContainer from "../../elements/VideoContainer/VideoContainer";
+import React from 'react';
+import style from './RandomPage.module.css';
+import SideBar, {SideBarTitle} from '../../elements/SideBar/SideBar';
+import Tag from '../../elements/Tag/Tag';
+import PageTitle from '../../elements/PageTitle/PageTitle';
+import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 
 /**
  * Randompage shuffles random viedeopreviews and provides a shuffle btn
@@ -81,7 +81,7 @@ class RandomPage extends React.Component {
                     });
                 }))
             .catch(() => {
-                console.log("no connection to backend");
+                console.log('no connection to backend');
             });
     }
 }

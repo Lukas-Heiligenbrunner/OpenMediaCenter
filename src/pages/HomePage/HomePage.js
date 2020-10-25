@@ -1,17 +1,17 @@
-import React from "react";
-import SideBar, {SideBarItem, SideBarTitle} from "../../elements/SideBar/SideBar";
-import Tag from "../../elements/Tag/Tag";
-import VideoContainer from "../../elements/VideoContainer/VideoContainer";
+import React from 'react';
+import SideBar, {SideBarItem, SideBarTitle} from '../../elements/SideBar/SideBar';
+import Tag from '../../elements/Tag/Tag';
+import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 
-import style from "./HomePage.module.css"
-import PageTitle, {Line} from "../../elements/PageTitle/PageTitle";
+import style from './HomePage.module.css';
+import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
 
 /**
  * The home page component showing on the initial pageload
  */
 class HomePage extends React.Component {
     /** keyword variable needed temporary store search keyword */
-    keyword = "";
+    keyword = '';
 
     constructor(props, context) {
         super(props, context);
@@ -24,7 +24,7 @@ class HomePage extends React.Component {
                 sdvideonr: null,
                 tagnr: null
             },
-            tag: "All",
+            subtitle: 'All Videos',
             data: [],
             selectionnr: 0
         };
@@ -32,7 +32,7 @@ class HomePage extends React.Component {
 
     componentDidMount() {
         // initial get of all videos
-        this.fetchVideoData("all");
+        this.fetchVideoData('All');
         this.fetchStartData();
     }
 
@@ -47,7 +47,7 @@ class HomePage extends React.Component {
         updateRequest.append('action', 'getMovies');
         updateRequest.append('tag', tag);
 
-        console.log("fetching data");
+        console.log('fetching data from' + tag);
 
         // fetch all videos available
         fetch('/api/video.php', {method: 'POST', body: updateRequest})
@@ -58,11 +58,12 @@ class HomePage extends React.Component {
                     });
                     this.setState({
                         data: result,
-                        selectionnr: result.length
+                        selectionnr: result.length,
+                        tag: tag + ' Videos'
                     });
                 }))
             .catch(() => {
-                console.log("no connection to backend");
+                console.log('no connection to backend');
             });
     }
 
@@ -88,7 +89,7 @@ class HomePage extends React.Component {
                     });
                 }))
             .catch(() => {
-                console.log("no connection to backend");
+                console.log('no connection to backend');
             });
     }
 
@@ -98,7 +99,7 @@ class HomePage extends React.Component {
      * @param keyword The keyword to search for
      */
     searchVideos(keyword) {
-        console.log("search called");
+        console.log('search called');
 
         const updateRequest = new FormData();
         updateRequest.append('action', 'getSearchKeyWord');
@@ -113,11 +114,12 @@ class HomePage extends React.Component {
                     });
                     this.setState({
                         data: result,
-                        selectionnr: result.length
+                        selectionnr: result.length,
+                        tag: 'Search result: ' + keyword
                     });
                 }))
             .catch(() => {
-                console.log("no connection to backend");
+                console.log('no connection to backend');
             });
     }
 
@@ -126,15 +128,15 @@ class HomePage extends React.Component {
             <>
                 <PageTitle
                     title='Home Page'
-                    subtitle={this.state.tag + " Videos - " + this.state.selectionnr}>
-                    <form className={"form-inline " + style.searchform} onSubmit={(e) => {
+                    subtitle={this.state.subtitle + ' - ' + this.state.selectionnr}>
+                    <form className={'form-inline ' + style.searchform} onSubmit={(e) => {
                         e.preventDefault();
                         this.searchVideos(this.keyword);
                     }}>
                         <input data-testid='searchtextfield' className='form-control mr-sm-2'
                                type='text' placeholder='Search'
                                onChange={(e) => {
-                                   this.keyword = e.target.value
+                                   this.keyword = e.target.value;
                                }}/>
                         <button data-testid='searchbtnsubmit' className='btn btn-success' type='submit'>Search</button>
                     </form>
@@ -149,10 +151,10 @@ class HomePage extends React.Component {
                     <SideBarItem><b>{this.state.sideinfo.tagnr}</b> different Tags!</SideBarItem>
                     <Line/>
                     <SideBarTitle>Default Tags:</SideBarTitle>
-                    <Tag viewbinding={this.props.viewbinding}>All</Tag>
-                    <Tag viewbinding={this.props.viewbinding}>FullHd</Tag>
-                    <Tag viewbinding={this.props.viewbinding}>LowQuality</Tag>
-                    <Tag viewbinding={this.props.viewbinding}>HD</Tag>
+                    <Tag onclick={() => this.fetchVideoData('All')}>All</Tag>
+                    <Tag onclick={() => this.fetchVideoData('FullHd')}>FullHd</Tag>
+                    <Tag onclick={() => this.fetchVideoData('LowQuality')}>LowQuality</Tag>
+                    <Tag onclick={() => this.fetchVideoData('HD')}>HD</Tag>
                 </SideBar>
                 {this.state.data.length !== 0 ?
                     <VideoContainer

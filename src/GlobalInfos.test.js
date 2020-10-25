@@ -1,5 +1,5 @@
-import React from "react";
-import GlobalInfos from "./GlobalInfos";
+import React from 'react';
+import GlobalInfos from './GlobalInfos';
 
 describe('<GlobalInfos/>', function () {
     it('always same instance ', function () {

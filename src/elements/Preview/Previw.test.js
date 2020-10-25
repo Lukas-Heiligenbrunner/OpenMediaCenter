@@ -1,7 +1,7 @@
 import React from 'react';
-import {shallow} from 'enzyme'
+import {shallow} from 'enzyme';
 
-import Preview, {TagPreview} from "./Preview";
+import Preview, {TagPreview} from './Preview';
 
 describe('<Preview/>', function () {
     it('renders without crashing ', function () {
@@ -23,7 +23,7 @@ describe('<Preview/>', function () {
         wrapper.setProps({
             viewbinding: {
                 changeRootElement: () => {
-                    func()
+                    func();
                 }
             }
         });
@@ -38,7 +38,7 @@ describe('<Preview/>', function () {
         const mockSuccessResponse = 'testsrc';
         const mockJsonPromise = Promise.resolve(mockSuccessResponse);
         const mockFetchPromise = Promise.resolve({
-            text: () => mockJsonPromise,
+            text: () => mockJsonPromise
         });
         global.fetch = jest.fn().mockImplementation(() => mockFetchPromise);
 
@@ -49,7 +49,7 @@ describe('<Preview/>', function () {
 
         process.nextTick(() => {
             // received picture should be rendered into wrapper
-            expect(wrapper.find(".previewimage").props().src).not.toBeNull();
+            expect(wrapper.find('.previewimage').props().src).not.toBeNull();
 
             global.fetch.mockClear();
             done();
@@ -61,7 +61,7 @@ describe('<Preview/>', function () {
         const wrapper = shallow(<Preview/>);
 
         // expect load animation to be visible
-        expect(wrapper.find(".loadAnimation")).toHaveLength(1);
+        expect(wrapper.find('.loadAnimation')).toHaveLength(1);
     });
 });
 
@@ -84,7 +84,7 @@ describe('<TagPreview/>', function () {
         const wrapper = shallow(<TagPreview/>);
         wrapper.setProps({
             categorybinding: () => {
-                func()
+                func();
             }
         });
 

@@ -1,11 +1,11 @@
-import React from "react";
-import style from "./Player.module.css"
+import React from 'react';
+import style from './Player.module.css';
 
 import {PlyrComponent} from 'plyr-react';
-import SideBar, {SideBarItem, SideBarTitle} from "../../elements/SideBar/SideBar";
-import Tag from "../../elements/Tag/Tag";
-import AddTagPopup from "../../elements/AddTagPopup/AddTagPopup";
-import PageTitle, {Line} from "../../elements/PageTitle/PageTitle";
+import SideBar, {SideBarItem, SideBarTitle} from '../../elements/SideBar/SideBar';
+import Tag from '../../elements/Tag/Tag';
+import AddTagPopup from '../../elements/AddTagPopup/AddTagPopup';
+import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
 
 
 /**
@@ -26,7 +26,7 @@ class Player extends React.Component {
             'settings', // Settings menu
             'airplay', // Airplay (currently Safari only)
             'download', // Show a download button with a link to either the current source or a custom URL you specify in your options
-            'fullscreen', // Toggle fullscreen
+            'fullscreen' // Toggle fullscreen
         ]
     };
 
@@ -66,28 +66,36 @@ class Player extends React.Component {
         fetch('/api/tags.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
-                    if (result.result !== "success") {
-                        console.error("error occured while writing to db -- todo error handling");
+                    if (result.result !== 'success') {
+                        console.error('error occured while writing to db -- todo error handling');
                         console.error(result.result);
                     } else {
-                        // update tags if successful
-                        let array = [...this.state.suggesttag]; // make a separate copy of the array
-                        const index = array.map(function (e) {
-                            return e.tag_id;
-                        }).indexOf(tag_id);
+                        // check if tag has already been added
+                        const tagindwx = this.state.tags.map(function (e) {
+                            return e.tag_name;
+                        }).indexOf(tag_name);
 
-                        // check if tag is available in quickadds
-                        if (index !== -1) {
-                            array.splice(index, 1);
+                        // only add tag if it isn't already there
+                        if (tagindwx === -1) {
+                            // update tags if successful
+                            let array = [...this.state.suggesttag]; // make a separate copy of the array (because of setState)
+                            const quickaddindex = this.state.suggesttag.map(function (e) {
+                                return e.tag_id;
+                            }).indexOf(tag_id);
 
-                            this.setState({
-                                tags: [...this.state.tags, {tag_name: tag_name}],
-                                suggesttag: array
-                            });
-                        } else {
-                            this.setState({
-                                tags: [...this.state.tags, {tag_name: tag_name}]
-                            });
+                            // check if tag is available in quickadds
+                            if (quickaddindex !== -1) {
+                                array.splice(quickaddindex, 1);
+
+                                this.setState({
+                                    tags: [...this.state.tags, {tag_name: tag_name}],
+                                    suggesttag: array
+                                });
+                            } else {
+                                this.setState({
+                                    tags: [...this.state.tags, {tag_name: tag_name}]
+                                });
+                            }
                         }
                     }
                 }));
@@ -170,7 +178,7 @@ class Player extends React.Component {
                         <button className='btn btn-info' onClick={() => this.setState({popupvisible: true})}>Give this
                                                                                                              Video a Tag
                         </button>
-                        <button className='btn btn-danger' onClick={() => {this.deleteVideo()}}>Delete Video</button>
+                        <button className='btn btn-danger' onClick={() => {this.deleteVideo();}}>Delete Video</button>
                     </div>
                 </div>
                 <button className={style.closebutton} onClick={() => this.closebtn()}>Close</button>
@@ -200,7 +208,7 @@ class Player extends React.Component {
                             {
                                 src: result.movie_url,
                                 type: 'video/mp4',
-                                size: 1080,
+                                size: 1080
                             }
                         ],
                         poster: result.thumbnail
@@ -229,11 +237,11 @@ class Player extends React.Component {
         fetch('/api/video.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
-                    if (result.result === "success") {
+                    if (result.result === 'success') {
                         // likes +1 --> avoid reload of all data
-                        this.setState({likes: this.state.likes + 1})
+                        this.setState({likes: this.state.likes + 1});
                     } else {
-                        console.error("an error occured while liking");
+                        console.error('an error occured while liking');
                         console.error(result);
                     }
                 }));
@@ -258,11 +266,11 @@ class Player extends React.Component {
         fetch('/api/video.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
-                    if (result.result === "success") {
+                    if (result.result === 'success') {
                         // return to last element if successful
                         this.props.viewbinding.returnToLastElement();
                     } else {
-                        console.error("an error occured while liking");
+                        console.error('an error occured while liking');
                         console.error(result);
                     }
                 }));

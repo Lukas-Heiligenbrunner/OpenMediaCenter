@@ -1,9 +1,9 @@
-import React from "react";
+import React from 'react';
 
-import {shallow} from 'enzyme'
-import "@testing-library/jest-dom"
+import {shallow} from 'enzyme';
+import '@testing-library/jest-dom';
 
-import AddTagPopup from "./AddTagPopup";
+import AddTagPopup from './AddTagPopup';
 
 describe('<AddTagPopup/>', function () {
     it('renders without crashing ', function () {
@@ -14,10 +14,10 @@ describe('<AddTagPopup/>', function () {
     it('test tag insertion', function () {
         const wrapper = shallow(<AddTagPopup/>);
         wrapper.setState({
-            items: [{tag_id: 1, tag_name: 'test'}, {tag_id: 2, tag_name: "ee"}]
+            items: [{tag_id: 1, tag_name: 'test'}, {tag_id: 2, tag_name: 'ee'}]
         }, () => {
             expect(wrapper.find('Tag')).toHaveLength(2);
-            expect(wrapper.find('Tag').first().dive().text()).toBe("test");
+            expect(wrapper.find('Tag').first().dive().text()).toBe('test');
         });
     });
 
@@ -36,13 +36,13 @@ describe('<AddTagPopup/>', function () {
     it('test addtag', done => {
         const wrapper = shallow(<AddTagPopup/>);
 
-        global.fetch = prepareFetchApi({result: "success"});
+        global.fetch = prepareFetchApi({result: 'success'});
 
         wrapper.setProps({
             submit: jest.fn(() => {}),
             onHide: jest.fn()
         }, () => {
-            wrapper.instance().addTag(1, "test");
+            wrapper.instance().addTag(1, 'test');
 
             expect(global.fetch).toHaveBeenCalledTimes(1);
         });
@@ -59,13 +59,13 @@ describe('<AddTagPopup/>', function () {
     it('test failing addTag', done => {
         const wrapper = shallow(<AddTagPopup/>);
 
-        global.fetch = prepareFetchApi({result: "fail"});
+        global.fetch = prepareFetchApi({result: 'fail'});
 
         wrapper.setProps({
             submit: jest.fn(() => {}),
             onHide: jest.fn()
         }, () => {
-            wrapper.instance().addTag(1, "test");
+            wrapper.instance().addTag(1, 'test');
 
             expect(global.fetch).toHaveBeenCalledTimes(1);
         });
