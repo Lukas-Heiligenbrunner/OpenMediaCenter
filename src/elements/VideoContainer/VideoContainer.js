@@ -1,6 +1,6 @@
-import React from "react";
-import Preview from "../Preview/Preview";
-import style from "./VideoContainer.module.css"
+import React from 'react';
+import Preview from '../Preview/Preview';
+import style from './VideoContainer.module.css';
 
 /**
  * A videocontainer storing lots of Preview elements
@@ -39,7 +39,7 @@ class VideoContainer extends React.Component {
                 ))}
                 {/*todo css for no items to show*/}
                 {this.state.loadeditems.length === 0 ?
-                    "no items to show!" : null}
+                    'no items to show!' : null}
                 {this.props.children}
             </div>
         );
@@ -56,7 +56,7 @@ class VideoContainer extends React.Component {
      * @param nr number of previews to load
      */
     loadPreviewBlock(nr) {
-        console.log("loadpreviewblock called ...")
+        console.log('loadpreviewblock called ...');
         let ret = [];
         for (let i = 0; i < nr; i++) {
             // only add if not end
@@ -84,7 +84,7 @@ class VideoContainer extends React.Component {
         if (window.innerHeight + document.documentElement.scrollTop + 200 >= document.documentElement.offsetHeight) {
             this.loadPreviewBlock(8);
         }
-    }
+    };
 }
 
 export default VideoContainer;

@@ -1,6 +1,6 @@
-import {shallow} from "enzyme";
-import React from "react";
-import VideoContainer from "./VideoContainer";
+import {shallow} from 'enzyme';
+import React from 'react';
+import VideoContainer from './VideoContainer';
 
 describe('<VideoContainer/>', function () {
     it('renders without crashing ', function () {
@@ -25,6 +25,6 @@ describe('<VideoContainer/>', function () {
     it('no items available', () => {
         const wrapper = shallow(<VideoContainer data={[]}/>);
         expect(wrapper.find('Preview')).toHaveLength(0);
-        expect(wrapper.find(".maincontent").text()).toBe("no items to show!");
+        expect(wrapper.find('.maincontent').text()).toBe('no items to show!');
     });
 });

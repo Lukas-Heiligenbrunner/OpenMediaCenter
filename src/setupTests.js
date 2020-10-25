@@ -21,13 +21,13 @@ global.prepareFetchApi = (response) => {
         text: () => mockJsonPromise
     });
     return (jest.fn().mockImplementation(() => mockFetchPromise));
-}
+};
 
 /**
  * prepares a failing virtual fetch api call
  * @returns {jest.Mock<any, any>} a jest moch function simulating a failing fetch call
  */
 global.prepareFailingFetchApi = () => {
-    const mockFetchPromise = Promise.reject("myreason");
+    const mockFetchPromise = Promise.reject('myreason');
     return (jest.fn().mockImplementation(() => mockFetchPromise));
-}
+};

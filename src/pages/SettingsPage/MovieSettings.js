@@ -1,5 +1,5 @@
-import React from "react";
-import style from "./MovieSettings.module.css"
+import React from 'react';
+import style from './MovieSettings.module.css';
 
 /**
  * Component for MovieSettings on Settingspage
@@ -28,10 +28,10 @@ class MovieSettings extends React.Component {
             <>
                 <button disabled={this.state.startbtnDisabled}
                         className='btn btn-success'
-                        onClick={() => {this.startReindex()}}>Reindex Movie
+                        onClick={() => {this.startReindex();}}>Reindex Movie
                 </button>
                 <button className='btn btn-warning'
-                        onClick={() => {this.cleanupGravity()}}>Cleanup Gravity
+                        onClick={() => {this.cleanupGravity();}}>Cleanup Gravity
                 </button>
                 <div className={style.indextextarea}>{this.state.text.map(m => (
                     <div className='textarea-element'>{m}</div>
@@ -49,23 +49,23 @@ class MovieSettings extends React.Component {
 
         this.setState({startbtnDisabled: true});
 
-        console.log("starting");
+        console.log('starting');
         const request = new FormData();
-        request.append("action", "startReindex");
+        request.append('action', 'startReindex');
         // fetch all videos available
         fetch('/api/settings.php', {method: 'POST', body: request})
             .then((response) => response.json()
                 .then((result) => {
                     console.log(result);
                     if (result.success) {
-                        console.log("started successfully");
+                        console.log('started successfully');
                     } else {
-                        console.log("error, reindex already running");
+                        console.log('error, reindex already running');
                         this.setState({startbtnDisabled: true});
                     }
                 }))
             .catch(() => {
-                console.log("no connection to backend");
+                console.log('no connection to backend');
             });
         if (this.myinterval) {
             clearInterval(this.myinterval);
@@ -78,7 +78,7 @@ class MovieSettings extends React.Component {
      */
     updateStatus = () => {
         const request = new FormData();
-        request.append("action", "getStatusMessage");
+        request.append('action', 'getStatusMessage');
 
         fetch('/api/settings.php', {method: 'POST', body: request})
             .then((response) => response.json()
@@ -88,7 +88,7 @@ class MovieSettings extends React.Component {
                         // todo 2020-07-4: scroll to bottom of div here
                         this.setState({
                             // insert a string for each line
-                            text: [...result.message.split("\n"),
+                            text: [...result.message.split('\n'),
                                 ...this.state.text]
                         });
                     } else {
@@ -99,7 +99,7 @@ class MovieSettings extends React.Component {
                     }
                 }))
             .catch(() => {
-                console.log("no connection to backend");
+                console.log('no connection to backend');
             });
     };
 
@@ -108,7 +108,7 @@ class MovieSettings extends React.Component {
      */
     cleanupGravity() {
         const request = new FormData();
-        request.append("action", "cleanupGravity");
+        request.append('action', 'cleanupGravity');
 
         fetch('/api/settings.php', {method: 'POST', body: request})
             .then((response) => response.text()
@@ -118,7 +118,7 @@ class MovieSettings extends React.Component {
                     });
                 }))
             .catch(() => {
-                console.log("no connection to backend");
+                console.log('no connection to backend');
             });
     }
 }

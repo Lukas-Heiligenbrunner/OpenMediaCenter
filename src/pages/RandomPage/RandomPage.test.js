@@ -1,6 +1,6 @@
-import {shallow} from "enzyme";
-import React from "react";
-import RandomPage from "./RandomPage";
+import {shallow} from 'enzyme';
+import React from 'react';
+import RandomPage from './RandomPage';
 
 describe('<RandomPage/>', function () {
     it('renders without crashing ', function () {
@@ -28,7 +28,7 @@ describe('<RandomPage/>', function () {
             ]
         });
 
-        wrapper.find(".btnshuffle").simulate("click");
+        wrapper.find('.btnshuffle').simulate('click');
 
         expect(global.fetch).toBeCalledTimes(2);
     });
@@ -38,11 +38,11 @@ describe('<RandomPage/>', function () {
 
         wrapper.setState({
             tags: [
-                {tag_name: "test1"},
-                {tag_name: "test2"}
+                {tag_name: 'test1'},
+                {tag_name: 'test2'}
             ]
         });
 
-        expect(wrapper.find("Tag")).toHaveLength(2);
+        expect(wrapper.find('Tag')).toHaveLength(2);
     });
 });

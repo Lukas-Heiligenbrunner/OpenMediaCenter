@@ -1,6 +1,6 @@
-import React from "react";
-import style from "./PageTitle.module.css"
-import GlobalInfos from "../../GlobalInfos";
+import React from 'react';
+import style from './PageTitle.module.css';
+import GlobalInfos from '../../GlobalInfos';
 
 /**
  * Component for generating PageTitle with bottom Line

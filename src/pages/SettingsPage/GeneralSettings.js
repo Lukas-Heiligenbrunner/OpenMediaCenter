@@ -1,10 +1,10 @@
-import React from "react";
-import {Button, Col, Form} from "react-bootstrap";
-import style from "./GeneralSettings.module.css"
-import GlobalInfos from "../../GlobalInfos";
-import InfoHeaderItem from "../../elements/InfoHeaderItem/InfoHeaderItem";
-import {faArchive, faBalanceScaleLeft, faRulerVertical} from "@fortawesome/free-solid-svg-icons";
-import {faAddressCard} from "@fortawesome/free-regular-svg-icons";
+import React from 'react';
+import {Button, Col, Form} from 'react-bootstrap';
+import style from './GeneralSettings.module.css';
+import GlobalInfos from '../../GlobalInfos';
+import InfoHeaderItem from '../../elements/InfoHeaderItem/InfoHeaderItem';
+import {faArchive, faBalanceScaleLeft, faRulerVertical} from '@fortawesome/free-solid-svg-icons';
+import {faAddressCard} from '@fortawesome/free-regular-svg-icons';
 
 /**
  * Component for Generalsettings tag on Settingspage
@@ -18,10 +18,10 @@ class GeneralSettings extends React.Component {
             passwordsupport: false,
             tmdbsupport: null,
 
-            videopath: "",
-            tvshowpath: "",
-            mediacentername: "",
-            password: "",
+            videopath: '',
+            tvshowpath: '',
+            mediacentername: '',
+            password: '',
 
             videonr: null,
             dbsize: null,
@@ -44,7 +44,7 @@ class GeneralSettings extends React.Component {
                                     subtext='Videos in Gravity'
                                     icon={faArchive}/>
                     <InfoHeaderItem backColor='yellow'
-                                    text={this.state.dbsize !== undefined ? this.state.dbsize + " MB" : undefined}
+                                    text={this.state.dbsize !== undefined ? this.state.dbsize + ' MB' : undefined}
                                     subtext='Database size'
                                     icon={faRulerVertical}/>
                     <InfoHeaderItem backColor='green'
@@ -83,7 +83,7 @@ class GeneralSettings extends React.Component {
                             label='Enable Password support'
                             checked={this.state.passwordsupport}
                             onChange={() => {
-                                this.setState({passwordsupport: !this.state.passwordsupport})
+                                this.setState({passwordsupport: !this.state.passwordsupport});
                             }}
                         />
 
@@ -102,7 +102,7 @@ class GeneralSettings extends React.Component {
                             label='Enable TMDB video grabbing support'
                             checked={this.state.tmdbsupport}
                             onChange={() => {
-                                this.setState({tmdbsupport: !this.state.tmdbsupport})
+                                this.setState({tmdbsupport: !this.state.tmdbsupport});
                             }}
                         />
 
@@ -168,21 +168,21 @@ class GeneralSettings extends React.Component {
         const updateRequest = new FormData();
         updateRequest.append('action', 'saveGeneralSettings');
 
-        updateRequest.append('password', this.state.passwordsupport ? this.state.password : "-1");
+        updateRequest.append('password', this.state.passwordsupport ? this.state.password : '-1');
         updateRequest.append('videopath', this.state.videopath);
         updateRequest.append('tvshowpath', this.state.tvshowpath);
         updateRequest.append('mediacentername', this.state.mediacentername);
-        updateRequest.append("tmdbsupport", this.state.tmdbsupport);
-        updateRequest.append("darkmodeenabled", GlobalInfos.isDarkTheme().toString());
+        updateRequest.append('tmdbsupport', this.state.tmdbsupport);
+        updateRequest.append('darkmodeenabled', GlobalInfos.isDarkTheme().toString());
 
         fetch('/api/settings.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
                     if (result.success) {
-                        console.log("successfully saved settings");
+                        console.log('successfully saved settings');
                         // todo 2020-07-10: popup success
                     } else {
-                        console.log("failed to save settings");
+                        console.log('failed to save settings');
                         // todo 2020-07-10: popup error
                     }
                 }));

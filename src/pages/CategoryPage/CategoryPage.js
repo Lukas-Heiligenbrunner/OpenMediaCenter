@@ -1,12 +1,12 @@
-import React from "react";
-import SideBar, {SideBarTitle} from "../../elements/SideBar/SideBar";
-import Tag from "../../elements/Tag/Tag";
-import videocontainerstyle from "../../elements/VideoContainer/VideoContainer.module.css"
+import React from 'react';
+import SideBar, {SideBarTitle} from '../../elements/SideBar/SideBar';
+import Tag from '../../elements/Tag/Tag';
+import videocontainerstyle from '../../elements/VideoContainer/VideoContainer.module.css';
 
-import {TagPreview} from "../../elements/Preview/Preview";
-import NewTagPopup from "../../elements/NewTagPopup/NewTagPopup";
-import PageTitle, {Line} from "../../elements/PageTitle/PageTitle";
-import VideoContainer from "../../elements/VideoContainer/VideoContainer";
+import {TagPreview} from '../../elements/Preview/Preview';
+import NewTagPopup from '../../elements/NewTagPopup/NewTagPopup';
+import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
+import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 
 /**
  * Component for Category Page
@@ -40,33 +40,33 @@ class CategoryPage extends React.Component {
             <>
                 <PageTitle
                     title='Categories'
-                    subtitle={!this.state.selected ? this.state.loadedtags.length + " different Tags" : this.state.selected}/>
+                    subtitle={!this.state.selected ? this.state.loadedtags.length + ' different Tags' : this.state.selected}/>
 
                 <SideBar>
                     <SideBarTitle>Default Tags:</SideBarTitle>
                     <Tag viewbinding={{
                         changeRootElement: (e) => {
-                            this.loadTag(e.props.category)
+                            this.loadTag(e.props.category);
                         }
                     }}>All</Tag>
                     <Tag viewbinding={{
                         changeRootElement: (e) => {
-                            this.loadTag(e.props.category)
+                            this.loadTag(e.props.category);
                         }
                     }}>FullHd</Tag>
                     <Tag viewbinding={{
                         changeRootElement: (e) => {
-                            this.loadTag(e.props.category)
+                            this.loadTag(e.props.category);
                         }
                     }}>LowQuality</Tag>
                     <Tag viewbinding={{
                         changeRootElement: (e) => {
-                            this.loadTag(e.props.category)
+                            this.loadTag(e.props.category);
                         }
                     }}>HD</Tag>
                     <Line/>
                     <button data-testid='btnaddtag' className='btn btn-success' onClick={() => {
-                        this.setState({popupvisible: true})
+                        this.setState({popupvisible: true});
                     }}>Add a new Tag!
                     </button>
                 </SideBar></>
@@ -98,7 +98,7 @@ class CategoryPage extends React.Component {
                                     viewbinding={this.props.viewbinding}
                                     categorybinding={this.loadTag}/>
                             )) :
-                            "loading"}
+                            'loading'}
                     </div>
                 }
 
@@ -133,7 +133,7 @@ class CategoryPage extends React.Component {
         updateRequest.append('action', 'getMovies');
         updateRequest.append('tag', tag);
 
-        console.log("fetching data");
+        console.log('fetching data');
 
         // fetch all videos available
         fetch('/api/video.php', {method: 'POST', body: updateRequest})
@@ -144,7 +144,7 @@ class CategoryPage extends React.Component {
                     this.setState({selected: tag});
                 }))
             .catch(() => {
-                console.log("no connection to backend");
+                console.log('no connection to backend');
             });
     }
 
@@ -170,7 +170,7 @@ class CategoryPage extends React.Component {
                     this.setState({loadedtags: result});
                 }))
             .catch(() => {
-                console.log("no connection to backend");
+                console.log('no connection to backend');
             });
     }
 }

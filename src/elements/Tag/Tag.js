@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 
-import styles from "./Tag.module.css"
-import CategoryPage from "../../pages/CategoryPage/CategoryPage";
+import styles from './Tag.module.css';
+import CategoryPage from '../../pages/CategoryPage/CategoryPage';
 
 /**
  * A Component representing a single Category tag

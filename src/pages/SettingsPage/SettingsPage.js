@@ -1,8 +1,8 @@
-import React from "react";
-import MovieSettings from "./MovieSettings";
-import GeneralSettings from "./GeneralSettings";
-import style from "./SettingsPage.module.css"
-import GlobalInfos from "../../GlobalInfos";
+import React from 'react';
+import MovieSettings from './MovieSettings';
+import GeneralSettings from './GeneralSettings';
+import style from './SettingsPage.module.css';
+import GlobalInfos from '../../GlobalInfos';
 
 /**
  * The Settingspage handles all kinds of settings for the mediacenter
@@ -13,7 +13,7 @@ class SettingsPage extends React.Component {
         super(props, context);
 
         this.state = {
-            currentpage: "general"
+            currentpage: 'general'
         };
     }
 
@@ -23,14 +23,14 @@ class SettingsPage extends React.Component {
      */
     getContent() {
         switch (this.state.currentpage) {
-            case "general":
+            case 'general':
                 return <GeneralSettings/>;
-            case "movies":
+            case 'movies':
                 return <MovieSettings/>;
-            case "tv":
+            case 'tv':
                 return <span/>; // todo this page
             default:
-                return "unknown button clicked";
+                return 'unknown button clicked';
         }
     }
 
@@ -40,13 +40,13 @@ class SettingsPage extends React.Component {
             <div>
                 <div className={style.SettingsSidebar + ' ' + themestyle.secbackground}>
                     <div className={style.SettingsSidebarTitle + ' ' + themestyle.lighttextcolor}>Settings</div>
-                    <div onClick={() => this.setState({currentpage: "general"})}
+                    <div onClick={() => this.setState({currentpage: 'general'})}
                          className={style.SettingSidebarElement}>General
                     </div>
-                    <div onClick={() => this.setState({currentpage: "movies"})}
+                    <div onClick={() => this.setState({currentpage: 'movies'})}
                          className={style.SettingSidebarElement}>Movies
                     </div>
-                    <div onClick={() => this.setState({currentpage: "tv"})}
+                    <div onClick={() => this.setState({currentpage: 'tv'})}
                          className={style.SettingSidebarElement}>TV Shows
                     </div>
                 </div>

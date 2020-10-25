@@ -1,9 +1,9 @@
-import React from "react";
+import React from 'react';
 import ReactDom from 'react-dom';
-import style from './AddTagPopup.module.css'
-import Tag from "../Tag/Tag";
-import {Line} from "../PageTitle/PageTitle";
-import GlobalInfos from "../../GlobalInfos";
+import style from './AddTagPopup.module.css';
+import Tag from '../Tag/Tag';
+import {Line} from '../PageTitle/PageTitle';
+import GlobalInfos from '../../GlobalInfos';
 
 /**
  * component creates overlay to add a new tag to a video
@@ -84,7 +84,7 @@ class AddTagPopup extends React.Component {
      */
     keypress(event) {
         // hide if escape is pressed
-        if (event.key === "Escape") {
+        if (event.key === 'Escape') {
             this.props.onHide();
         }
     }
@@ -95,7 +95,7 @@ class AddTagPopup extends React.Component {
      * @param tagname tag name to add
      */
     addTag(tagid, tagname) {
-        console.log(this.props)
+        console.log(this.props);
         const updateRequest = new FormData();
         updateRequest.append('action', 'addTag');
         updateRequest.append('id', tagid);
@@ -104,8 +104,8 @@ class AddTagPopup extends React.Component {
         fetch('/api/tags.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json()
                 .then((result) => {
-                    if (result.result !== "success") {
-                        console.log("error occured while writing to db -- todo error handling");
+                    if (result.result !== 'success') {
+                        console.log('error occured while writing to db -- todo error handling');
                         console.log(result.result);
                     } else {
                         this.props.submit(tagid, tagname);
@@ -142,8 +142,8 @@ class AddTagPopup extends React.Component {
             xOld = e.clientX;
             yOld = e.clientY;
             // set the element's new position:
-            elmnt.style.top = (elmnt.offsetTop - dy) + "px";
-            elmnt.style.left = (elmnt.offsetLeft - dx) + "px";
+            elmnt.style.top = (elmnt.offsetTop - dy) + 'px';
+            elmnt.style.left = (elmnt.offsetLeft - dx) + 'px';
         }
 
         function closeDragElement() {

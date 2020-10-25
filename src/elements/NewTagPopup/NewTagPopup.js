@@ -1,6 +1,6 @@
-import React from "react";
-import Modal from 'react-bootstrap/Modal'
-import {Form} from "react-bootstrap";
+import React from 'react';
+import Modal from 'react-bootstrap/Modal';
+import {Form} from 'react-bootstrap';
 
 /**
  * creates modal overlay to define a new Tag
@@ -30,7 +30,7 @@ class NewTagPopup extends React.Component {
                         <Form.Group>
                             <Form.Label>Tag Name:</Form.Label>
                             <Form.Control id='namefield' type='text' placeholder='Enter Tag name' onChange={(v) => {
-                                this.value = v.target.value
+                                this.value = v.target.value;
                             }}/>
                             <Form.Text className='text-muted'>
                                 This Tag will automatically show up on category page.
@@ -59,8 +59,8 @@ class NewTagPopup extends React.Component {
         fetch('/api/tags.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json())
             .then((result) => {
-                if (result.result !== "success") {
-                    console.log("error occured while writing to db -- todo error handling");
+                if (result.result !== 'success') {
+                    console.log('error occured while writing to db -- todo error handling');
                     console.log(result.result);
                 }
                 this.props.onHide();
