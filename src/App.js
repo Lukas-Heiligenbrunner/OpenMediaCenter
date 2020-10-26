@@ -1,14 +1,15 @@
 import React from 'react';
 import HomePage from './pages/HomePage/HomePage';
 import RandomPage from './pages/RandomPage/RandomPage';
+import TVShows from './pages/TVShows/TVShows';
+import SettingsPage from './pages/SettingsPage/SettingsPage';
+import CategoryPage from './pages/CategoryPage/CategoryPage';
+
 import GlobalInfos from './GlobalInfos';
 
 // include bootstraps css
 import 'bootstrap/dist/css/bootstrap.min.css';
 import style from './App.module.css';
-
-import SettingsPage from './pages/SettingsPage/SettingsPage';
-import CategoryPage from './pages/CategoryPage/CategoryPage';
 
 /**
  * The main App handles the main tabs and which content to show
@@ -67,29 +68,41 @@ class App extends React.Component {
      */
     MainBody() {
         let page;
-        if (this.state.page === 'default') {
-            page = <HomePage viewbinding={this.constructViewBinding()}/>;
-            this.mypage = page;
-        } else if (this.state.page === 'random') {
-            page = <RandomPage viewbinding={this.constructViewBinding()}/>;
-            this.mypage = page;
-        } else if (this.state.page === 'settings') {
-            page = <SettingsPage/>;
-            this.mypage = page;
-        } else if (this.state.page === 'categories') {
-            page = <CategoryPage viewbinding={this.constructViewBinding()}/>;
-            this.mypage = page;
-        } else if (this.state.page === 'video') {
-            // show videoelement if neccessary
-            page = this.newElement;
 
-            console.log(page);
-        } else if (this.state.page === 'lastpage') {
-            // return back to last page
-            page = this.mypage;
-        } else {
-            page = <div>unimplemented yet!</div>;
+        switch (this.state.page) {
+            case 'default':
+                page = <HomePage viewbinding={this.constructViewBinding()}/>;
+                this.mypage = page;
+                break;
+            case 'random':
+                page = <RandomPage viewbinding={this.constructViewBinding()}/>;
+                this.mypage = page;
+                break;
+            case 'settings':
+                page = <SettingsPage/>;
+                this.mypage = page;
+                break;
+            case 'categories':
+                page = <CategoryPage viewbinding={this.constructViewBinding()}/>;
+                this.mypage = page;
+                break;
+            case 'video':
+                // show videoelement if neccessary
+                page = this.newElement;
+                break;
+            case 'tvshows':
+                page = <TVShows viewbinding={this.constructViewBinding()}/>;
+                break;
+            case 'lastpage':
+                // return back to last page
+                page = this.mypage;
+                break;
+            default:
+                page = <div>unimplemented yet!</div>;
+                break;
         }
+
+        // tvshows
         return (page);
     }
 
@@ -110,6 +123,9 @@ class App extends React.Component {
                     </div>
                     <div className={[style.navitem, themeStyle.navitem, this.state.page === 'categories' ? style.navitemselected : {}].join(' ')}
                          onClick={() => this.setState({page: 'categories'})}>Categories
+                    </div>
+                    <div className={[style.navitem, themeStyle.navitem, this.state.page === 'tvshows' ? style.navitemselected : {}].join(' ')}
+                         onClick={() => this.setState({page: 'tvshows'})}>TV Shows
                     </div>
                     <div className={[style.navitem, themeStyle.navitem, this.state.page === 'settings' ? style.navitemselected : {}].join(' ')}
                          onClick={() => this.setState({page: 'settings'})}>Settings
