@@ -1,8 +1,8 @@
 <?php
-require_once './src/Database.php';
-require_once './src/TMDBMovie.php';
-require_once './src/SSettings.php';
-require_once './src/VideoParser.php';
+require_once __DIR__ . '/src/Database.php';
+require_once __DIR__ . '/src/TMDBMovie.php';
+require_once __DIR__ . '/src/SSettings.php';
+require_once __DIR__ . '/src/VideoParser.php';
 
 // allow UTF8 characters
 setlocale(LC_ALL, 'en_US.UTF-8');
