@@ -32,4 +32,4 @@ chown -R www-data:www-data /var/www/openmediacenter
 systemctl restart nginx
 
 # trigger a movie reindex
-php /var/www/openmediacenter/extractvideopreviews.php
+php /var/www/openmediacenter/api/extractvideopreviews.php
