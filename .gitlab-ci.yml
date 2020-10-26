@@ -1,4 +1,4 @@
-image: node:latest
+image: node:14
 
 stages:
   - prepare
@@ -21,7 +21,6 @@ prepare:
   stage: prepare
   script:
     - npm install --progress=false
-    - npm update --progress=false
 
 build:
   stage: build
