@@ -47,7 +47,7 @@ class HomePage extends React.Component {
         updateRequest.append('action', 'getMovies');
         updateRequest.append('tag', tag);
 
-        console.log('fetching data');
+        console.log('fetching data from' + tag);
 
         // fetch all videos available
         fetch('/api/video.php', {method: 'POST', body: updateRequest})

@@ -92,4 +92,34 @@ describe('<HomePage/>', function () {
             done();
         });
     });
+
+    it('test tag click', done => {
+        global.fetch = prepareFetchApi(['test1', 'test2']);
+
+        const wrapper = shallow(<HomePage/>);
+
+        const tags = wrapper.find('SideBar').dive().find('Tag');
+        let i = 0;
+
+        function testBtn(e) {
+            e.dive().simulate('click');
+
+            process.nextTick(() => {
+                process.nextTick(() => {
+                    // state to be set correctly with response
+                    console.log('see ifits same');
+                    expect(wrapper.state()).toMatchObject({data: ['test1', 'test2']});
+                    wrapper.state.data = [];
+                    i++;
+                    if (i >= tags.length) {
+                        done();
+                    } else {
+                        testBtn(tags.at(i));
+                    }
+                });
+            });
+        }
+
+        testBtn(tags.first());
+    });
 });
