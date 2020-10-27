@@ -14,5 +14,5 @@ $vp->writeLog("starting extraction!!\n");
 $sett = new SSettings();
 
 // load video path from settings
-$scandir = "../" . $sett->getVideoPath();
+$scandir = __DIR__ . "/../" . $sett->getVideoPath();
 $vp->extractVideos($scandir);

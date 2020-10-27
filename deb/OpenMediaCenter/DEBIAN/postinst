@@ -33,3 +33,4 @@ systemctl restart nginx
 
 # trigger a movie reindex
 php /var/www/openmediacenter/api/extractvideopreviews.php
+rm /tmp/output.log
