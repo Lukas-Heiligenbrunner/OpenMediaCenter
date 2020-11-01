@@ -5,7 +5,10 @@ class TVShows extends React.Component {
         super(props);
 
         this.state = {};
+    }
 
+    componentDidMount() {
+        // todo 2020-11-1: load tvshows here
     }
 
     render() {

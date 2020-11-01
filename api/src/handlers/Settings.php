@@ -60,7 +60,7 @@ class Settings extends RequestBase {
          * load initial data for home page load to check if pwd is set
          */
         $this->addActionHandler("loadInitialData", function () {
-            $query = "SELECT * from settings";
+            $query = "SELECT * FROM settings";
 
             $result = $this->conn->query($query);
 

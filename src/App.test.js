@@ -13,9 +13,9 @@ describe('<App/>', function () {
         expect(wrapper.find('.navbrand').text()).toBe('OpenMediaCenter');
     });
 
-    it('are navlinks correct', function () {
+    it('are default navlinks correct', function () {
         const wrapper = shallow(<App/>);
-        expect(wrapper.find('.navitem')).toHaveLength(4);
+        expect(wrapper.find('.navitem')).toHaveLength(5);
     });
 
     it('simulate video view change ', function () {
@@ -61,7 +61,7 @@ describe('<App/>', function () {
 
         wrapper.setState({page: 'wrongvalue'});
         expect(wrapper.find('HomePage')).toHaveLength(0);
-        wrapper.find('.navitem').findWhere(t => t.text() === 'Home' && t.type() === 'div').simulate('click');
+        wrapper.find('.navitem').findWhere(t => t.text() === 'Video' && t.type() === 'div').simulate('click');
         expect(wrapper.find('HomePage')).toHaveLength(1);
     });
 

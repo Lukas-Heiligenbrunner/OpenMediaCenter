@@ -21,6 +21,7 @@ class App extends React.Component {
         super(props, context);
         this.state = {
             page: 'default',
+            activeMediacenterSection: 'video',
             generalSettingsLoaded: false,
             passwordsupport: null,
             mediacentername: 'OpenMediaCenter'
@@ -106,31 +107,49 @@ class App extends React.Component {
         return (page);
     }
 
+    /**
+     * create NavigationBar
+     */
+    assembleNavigationBar(themeStyle) {
+        return (
+            <div className={[style.navcontainer, themeStyle.backgroundcolor, themeStyle.textcolor, themeStyle.hrcolor].join(' ')}>
+                <div className={style.navbrand}>{this.state.mediacentername}</div>
+
+                <div className={[style.navitem, themeStyle.navitem, this.state.page === 'default' ? style.navitemselected : {}].join(' ')}
+                     onClick={() => this.setState({page: 'default', activeMediacenterSection: 'video'})}>Video
+                </div>
+                <div className={[style.navitem, themeStyle.navitem, this.state.page === 'tvshows' ? style.navitemselected : {}].join(' ')}
+                     onClick={() => this.setState({page: 'tvshows', activeMediacenterSection: 'tvshows'})}>TV Shows
+                </div>
+                {this.state.activeMediacenterSection === 'video' ? (
+                    <>
+                        <div className={[style.navitem, themeStyle.navitem, this.state.page === 'random' ? style.navitemselected : {}].join(' ')}
+                             onClick={() => this.setState({page: 'random'})}>Random Video
+                        </div>
+                        <div className={[style.navitem, themeStyle.navitem, this.state.page === 'categories' ? style.navitemselected : {}].join(' ')}
+                             onClick={() => this.setState({page: 'categories'})}>Categories
+                        </div>
+                    </>
+                ) : ( // it is the tv show section
+                    <div className={[style.navitem, themeStyle.navitem, this.state.page === 'todo' ? style.navitemselected : {}].join(' ')}
+                         onClick={() => this.setState({page: 'random'})}>Continue Watching
+                    </div>
+                )}
+                <div className={[style.navitem, themeStyle.navitem, this.state.page === 'settings' ? style.navitemselected : {}].join(' ')}
+                     onClick={() => this.setState({page: 'settings'})}>Settings
+                </div>
+            </div>);
+    }
+
     render() {
         const themeStyle = GlobalInfos.getThemeStyle();
         // add the main theme to the page body
         document.body.className = themeStyle.backgroundcolor;
         return (
             <div className={style.app}>
-                <div className={[style.navcontainer, themeStyle.backgroundcolor, themeStyle.textcolor, themeStyle.hrcolor].join(' ')}>
-                    <div className={style.navbrand}>{this.state.mediacentername}</div>
-
-                    <div className={[style.navitem, themeStyle.navitem, this.state.page === 'default' ? style.navitemselected : {}].join(' ')}
-                         onClick={() => this.setState({page: 'default'})}>Home
-                    </div>
-                    <div className={[style.navitem, themeStyle.navitem, this.state.page === 'random' ? style.navitemselected : {}].join(' ')}
-                         onClick={() => this.setState({page: 'random'})}>Random Video
-                    </div>
-                    <div className={[style.navitem, themeStyle.navitem, this.state.page === 'categories' ? style.navitemselected : {}].join(' ')}
-                         onClick={() => this.setState({page: 'categories'})}>Categories
-                    </div>
-                    <div className={[style.navitem, themeStyle.navitem, this.state.page === 'tvshows' ? style.navitemselected : {}].join(' ')}
-                         onClick={() => this.setState({page: 'tvshows'})}>TV Shows
-                    </div>
-                    <div className={[style.navitem, themeStyle.navitem, this.state.page === 'settings' ? style.navitemselected : {}].join(' ')}
-                         onClick={() => this.setState({page: 'settings'})}>Settings
-                    </div>
-                </div>
+                {/* generate navigaion bar*/}
+                {this.assembleNavigationBar(themeStyle)}
+                {/* generate main body*/}
                 {this.state.generalSettingsLoaded ? this.MainBody() : 'loading'}
             </div>
         );
