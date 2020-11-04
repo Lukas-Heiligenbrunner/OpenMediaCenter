@@ -98,6 +98,7 @@ class Video extends RequestBase {
         $this->addActionHandler("loadVideo", function () {
             $video_id = $_POST['movieid'];
 
+            // todo join with actor db and add actors of movieid
             $query = "  SELECT movie_name,movie_id,movie_url,thumbnail,poster,likes,quality,length 
                         FROM videos WHERE movie_id=$video_id";
 

@@ -180,6 +180,9 @@ class Player extends React.Component {
                         </button>
                         <button className='btn btn-danger' onClick={() => {this.deleteVideo();}}>Delete Video</button>
                     </div>
+                    <div>
+                    {/* todo add the actor tiles here! */}
+                    </div>
                 </div>
                 <button className={style.closebutton} onClick={() => this.closebtn()}>Close</button>
                 {
@@ -219,7 +222,8 @@ class Player extends React.Component {
                     quality: result.quality,
                     length: result.length,
                     tags: result.tags,
-                    suggesttag: result.suggesttag
+                    suggesttag: result.suggesttag,
+                    actors: result.actors
                 });
                 console.log(this.state);
             });
