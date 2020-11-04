@@ -54,13 +54,13 @@ class Player extends React.Component {
 
     /**
      * quick add callback to add tag to db and change gui correctly
-     * @param tag_id id of tag to add
-     * @param tag_name name of tag to add
+     * @param tagId id of tag to add
+     * @param tagName name of tag to add
      */
-    quickAddTag(tag_id, tag_name) {
+    quickAddTag(tagId, tagName) {
         const updateRequest = new FormData();
         updateRequest.append('action', 'addTag');
-        updateRequest.append('id', tag_id);
+        updateRequest.append('id', tagId);
         updateRequest.append('movieid', this.props.movie_id);
 
         fetch('/api/tags.php', {method: 'POST', body: updateRequest})
@@ -71,29 +71,29 @@ class Player extends React.Component {
                         console.error(result.result);
                     } else {
                         // check if tag has already been added
-                        const tagindwx = this.state.tags.map(function (e) {
+                        const tagIndex = this.state.tags.map(function (e) {
                             return e.tag_name;
-                        }).indexOf(tag_name);
+                        }).indexOf(tagName);
 
                         // only add tag if it isn't already there
-                        if (tagindwx === -1) {
+                        if (tagIndex === -1) {
                             // update tags if successful
                             let array = [...this.state.suggesttag]; // make a separate copy of the array (because of setState)
                             const quickaddindex = this.state.suggesttag.map(function (e) {
                                 return e.tag_id;
-                            }).indexOf(tag_id);
+                            }).indexOf(tagId);
 
                             // check if tag is available in quickadds
                             if (quickaddindex !== -1) {
                                 array.splice(quickaddindex, 1);
 
                                 this.setState({
-                                    tags: [...this.state.tags, {tag_name: tag_name}],
+                                    tags: [...this.state.tags, {tag_name: tagName}],
                                     suggesttag: array
                                 });
                             } else {
                                 this.setState({
-                                    tags: [...this.state.tags, {tag_name: tag_name}]
+                                    tags: [...this.state.tags, {tag_name: tagName}]
                                 });
                             }
                         }
