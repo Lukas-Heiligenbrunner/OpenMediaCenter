@@ -5,6 +5,7 @@ import GlobalInfos from '../../GlobalInfos';
 import InfoHeaderItem from '../../elements/InfoHeaderItem/InfoHeaderItem';
 import {faArchive, faBalanceScaleLeft, faRulerVertical} from '@fortawesome/free-solid-svg-icons';
 import {faAddressCard} from '@fortawesome/free-regular-svg-icons';
+import {version} from '../../../package.json';
 
 /**
  * Component for Generalsettings tag on Settingspage
@@ -13,6 +14,8 @@ import {faAddressCard} from '@fortawesome/free-regular-svg-icons';
 class GeneralSettings extends React.Component {
     constructor(props) {
         super(props);
+
+        console.log(version);
 
         this.state = {
             passwordsupport: false,
