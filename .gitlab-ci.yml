@@ -57,14 +57,16 @@ package_debian:
   image: debian
   script:
     - cd deb
+    - vers=$(grep -Po '"version":.*?[^\\]",' package.json | grep -Po '[0-9]+\.[0-9]+\.[0-9]+') # parse the version out of package .json
     - mkdir -p "./OpenMediaCenter/var/www/openmediacenter/videos/"
     - mkdir -p "./OpenMediaCenter/tmp/"
     - cp -r ../build/* ./OpenMediaCenter/var/www/openmediacenter/
     - cp -r ../api ./OpenMediaCenter/var/www/openmediacenter/
     - cp ../database.sql ./OpenMediaCenter/tmp/openmediacenter.sql
+    - echo "Version: ${vers}" >> ./OpenMediaCenter/DEBIAN/control
     - chmod -R 0775 *
     - dpkg-deb --build OpenMediaCenter
-    - mv OpenMediaCenter.deb OpenMediaCenter-0.1_amd64.deb
+    - mv OpenMediaCenter.deb OpenMediaCenter-${vers}_amd64.deb
   artifacts:
     paths:
       - deb/OpenMediaCenter-0.1_amd64.deb
