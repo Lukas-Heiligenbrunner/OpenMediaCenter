@@ -42,6 +42,10 @@ test:
         - ./junit.xml
   needs: ["prepare"]
 
+code_quality:
+  tags:
+    - dind
+
 coverage:
   stage: test
   script:
