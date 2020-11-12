@@ -69,7 +69,7 @@ package_debian:
     - mv OpenMediaCenter.deb OpenMediaCenter-${vers}_amd64.deb
   artifacts:
     paths:
-      - deb/OpenMediaCenter-0.1_amd64.deb
+      - deb/OpenMediaCenter-*.deb
   needs: ["build"]
 
 deploy_test1:
