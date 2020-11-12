@@ -56,8 +56,8 @@ package_debian:
   stage: packaging
   image: debian
   script:
-    - cd deb
     - vers=$(grep -Po '"version":.*?[^\\]",' package.json | grep -Po '[0-9]+\.[0-9]+\.[0-9]+') # parse the version out of package .json
+    - cd deb
     - mkdir -p "./OpenMediaCenter/var/www/openmediacenter/videos/"
     - mkdir -p "./OpenMediaCenter/tmp/"
     - cp -r ../build/* ./OpenMediaCenter/var/www/openmediacenter/
