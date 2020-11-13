@@ -5,6 +5,7 @@ import GlobalInfos from '../../GlobalInfos';
 import InfoHeaderItem from '../../elements/InfoHeaderItem/InfoHeaderItem';
 import {faArchive, faBalanceScaleLeft, faRulerVertical} from '@fortawesome/free-solid-svg-icons';
 import {faAddressCard} from '@fortawesome/free-regular-svg-icons';
+import {version} from '../../../package.json';
 
 /**
  * Component for Generalsettings tag on Settingspage
@@ -129,6 +130,9 @@ class GeneralSettings extends React.Component {
                             Submit
                         </Button>
                     </Form>
+                </div>
+                <div className={style.footer}>
+                    Version: {version}
                 </div>
             </>
         );
