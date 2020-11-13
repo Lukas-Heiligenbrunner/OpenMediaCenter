@@ -15,8 +15,6 @@ class GeneralSettings extends React.Component {
     constructor(props) {
         super(props);
 
-        console.log(version);
-
         this.state = {
             passwordsupport: false,
             tmdbsupport: null,
@@ -132,6 +130,9 @@ class GeneralSettings extends React.Component {
                             Submit
                         </Button>
                     </Form>
+                </div>
+                <div className={style.footer}>
+                    Version: {version}
                 </div>
             </>
         );
