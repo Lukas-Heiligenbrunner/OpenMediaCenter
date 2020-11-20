@@ -6,6 +6,8 @@ import SideBar, {SideBarItem, SideBarTitle} from '../../elements/SideBar/SideBar
 import Tag from '../../elements/Tag/Tag';
 import AddTagPopup from '../../elements/AddTagPopup/AddTagPopup';
 import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faUser} from "@fortawesome/free-solid-svg-icons";
 
 
 /**
@@ -133,8 +135,7 @@ class Player extends React.Component {
                 {this.state.quality !== 0 ?
                     <SideBarItem><b>{this.state.quality}p</b> Quality!</SideBarItem> : null}
                 {this.state.length !== 0 ?
-                    <SideBarItem><b>{Math.round(this.state.length / 60)}</b> Minutes of
-                                                                             length!</SideBarItem> : null}
+                    <SideBarItem><b>{Math.round(this.state.length / 60)}</b> Minutes of length!</SideBarItem> : null}
                 <Line/>
                 <SideBarTitle>Tags:</SideBarTitle>
                 {this.state.tags.map((m) => (
@@ -176,12 +177,26 @@ class Player extends React.Component {
                     <div className={style.videoactions}>
                         <button className='btn btn-primary' onClick={() => this.likebtn()}>Like this Video!</button>
                         <button className='btn btn-info' onClick={() => this.setState({popupvisible: true})}>Give this
-                                                                                                             Video a Tag
+                            Video a Tag
                         </button>
-                        <button className='btn btn-danger' onClick={() => {this.deleteVideo();}}>Delete Video</button>
+                        <button className='btn btn-danger' onClick={() => {
+                            this.deleteVideo();
+                        }}>Delete Video
+                        </button>
                     </div>
-                    <div>
-                    {/* todo add the actor tiles here! */}
+                    <div className={style.actorcontainer}>
+                        {this.state.actors ?
+                            this.state.actors.map((actr) => (
+                                <div className={style.actortile}>
+                                    <div className={style.actortile_thumbnail}>
+                                        {actr.thumbnail === "-1" ? <FontAwesomeIcon style={{
+                                            lineHeight: '130px',
+                                        }} icon={faUser} size='5x'/> : "dfdf" /* todo render picture provided here! */}
+                                    </div>
+                                    <div className={style.actortile_name}>{actr.name}</div>
+                                </div>
+                            )) : <></>
+                        }
                     </div>
                 </div>
                 <button className={style.closebutton} onClick={() => this.closebtn()}>Close</button>

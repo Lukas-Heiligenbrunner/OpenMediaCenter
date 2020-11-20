@@ -19,3 +19,28 @@
 .videoactions {
     margin-top: 15px;
 }
+
+.actorcontainer {
+    margin-top: 13px;
+}
+
+.actortile {
+    float: left;
+    width: 130px;
+    height: 200px;
+    background-color: #0b2e13;
+    margin: 3px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.actortile_thumbnail {
+    height: 100px;
+    text-align: center;
+    margin-top: 5px;
+    color: #c6c6c6;
+}
+
+.actortile_name {
+/*todo dynamic text coloring dependent on theme*/
+}
