@@ -134,7 +134,7 @@ class Player extends React.Component {
                     <SideBarItem><b>{this.state.quality}p</b> Quality!</SideBarItem> : null}
                 {this.state.length !== 0 ?
                     <SideBarItem><b>{Math.round(this.state.length / 60)}</b> Minutes of
-                                                                             length!</SideBarItem> : null}
+                        length!</SideBarItem> : null}
                 <Line/>
                 <SideBarTitle>Tags:</SideBarTitle>
                 {this.state.tags.map((m) => (
@@ -174,11 +174,14 @@ class Player extends React.Component {
                             options={this.options}/> :
                         <div>not loaded yet</div>}
                     <div className={style.videoactions}>
-                        <button className='btn btn-primary' onClick={() => this.likebtn()}>Like this Video!</button>
-                        <button className='btn btn-info' onClick={() => this.setState({popupvisible: true})}>Give this
-                                                                                                             Video a Tag
+                        <button className={style.button} style={{backgroundColor: 'green'}} onClick={() => this.likebtn()}>Like this Video!</button>
+                        <button className={style.button} style={{backgroundColor: '#3574fe'}} onClick={() => this.setState({popupvisible: true})}>
+                            Give this Video a Tag
                         </button>
-                        <button className='btn btn-danger' onClick={() => {this.deleteVideo();}}>Delete Video</button>
+                        <button className={style.button} style={{backgroundColor: 'red'}} onClick={() => {
+                            this.deleteVideo();
+                        }}>Delete Video
+                        </button>
                     </div>
                 </div>
                 <button className={style.closebutton} onClick={() => this.closebtn()}>Close</button>
