@@ -4,7 +4,7 @@ import Tag from '../../elements/Tag/Tag';
 import videocontainerstyle from '../../elements/VideoContainer/VideoContainer.module.css';
 
 import {TagPreview} from '../../elements/Preview/Preview';
-import NewTagPopup from '../../elements/NewTagPopup/NewTagPopup';
+import NewTagPopup from '../../elements/Popups/NewTagPopup/NewTagPopup';
 import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 

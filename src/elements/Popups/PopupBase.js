@@ -1,25 +1,28 @@
-import React from 'react';
-import ReactDom from 'react-dom';
-import style from './AddTagPopup.module.css';
-import Tag from '../Tag/Tag';
-import {Line} from '../PageTitle/PageTitle';
-import GlobalInfos from '../../GlobalInfos';
+import GlobalInfos from "../../GlobalInfos";
+import style from "./PopupBase.module.css";
+import {Line} from "../PageTitle/PageTitle";
+import React from "react";
+import ReactDom from "react-dom";
 
 /**
- * component creates overlay to add a new tag to a video
+ * wrapper class for generic types of popups
  */
-class AddTagPopup extends React.Component {
+class PopupBase extends React.Component {
     /// instance of root element
     element;
 
-    constructor(props, context) {
-        super(props, context);
+    constructor(props) {
+        super(props);
 
         this.state = {items: []};
         this.handleClickOutside = this.handleClickOutside.bind(this);
         this.keypress = this.keypress.bind(this);
 
-        this.props = props;
+        // parse style props
+        this.framedimensions = {
+            width: (this.props.width ? this.props.width : undefined),
+            height: (this.props.height ? this.props.height : undefined)
+        };
     }
 
     componentDidMount() {
@@ -30,17 +33,6 @@ class AddTagPopup extends React.Component {
         if (this.element != null) {
             this.dragElement();
         }
-
-        const updateRequest = new FormData();
-        updateRequest.append('action', 'getAllTags');
-
-        fetch('/api/tags.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json())
-            .then((result) => {
-                this.setState({
-                    items: result
-                });
-            });
     }
 
     componentWillUnmount() {
@@ -52,16 +44,11 @@ class AddTagPopup extends React.Component {
     render() {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
-            <div className={[style.popup, themeStyle.thirdbackground].join(' ')} ref={el => this.element = el}>
-                <div className={[style.header, themeStyle.textcolor].join(' ')}>Add a Tag to this Video:</div>
+            <div style={this.framedimensions} className={[style.popup, themeStyle.thirdbackground].join(' ')} ref={el => this.element = el}>
+                <div className={[style.header, themeStyle.textcolor].join(' ')}>{this.props.title}</div>
                 <Line/>
                 <div className={style.content}>
-                    {this.state.items ?
-                        this.state.items.map((i) => (
-                            <Tag onclick={() => {
-                                this.addTag(i.tag_id, i.tag_name);
-                            }}>{i.tag_name}</Tag>
-                        )) : null}
+                    {this.props.children}
                 </div>
             </div>
         );
@@ -87,31 +74,6 @@ class AddTagPopup extends React.Component {
         if (event.key === 'Escape') {
             this.props.onHide();
         }
-    }
-
-    /**
-     * add a new tag to this video
-     * @param tagid tag id to add
-     * @param tagname tag name to add
-     */
-    addTag(tagid, tagname) {
-        console.log(this.props);
-        const updateRequest = new FormData();
-        updateRequest.append('action', 'addTag');
-        updateRequest.append('id', tagid);
-        updateRequest.append('movieid', this.props.movie_id);
-
-        fetch('/api/tags.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json()
-                .then((result) => {
-                    if (result.result !== 'success') {
-                        console.log('error occured while writing to db -- todo error handling');
-                        console.log(result.result);
-                    } else {
-                        this.props.submit(tagid, tagname);
-                    }
-                    this.props.onHide();
-                }));
     }
 
     /**
@@ -153,5 +115,4 @@ class AddTagPopup extends React.Component {
         }
     }
 }
-
-export default AddTagPopup;
+export default PopupBase;

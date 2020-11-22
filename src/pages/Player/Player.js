@@ -4,10 +4,10 @@ import style from './Player.module.css';
 import {PlyrComponent} from 'plyr-react';
 import SideBar, {SideBarItem, SideBarTitle} from '../../elements/SideBar/SideBar';
 import Tag from '../../elements/Tag/Tag';
-import AddTagPopup from '../../elements/AddTagPopup/AddTagPopup';
+import AddTagPopup from '../../elements/Popups/AddTagPopup/AddTagPopup';
 import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faUser} from "@fortawesome/free-solid-svg-icons";
+import {faUser, faPlusCircle} from "@fortawesome/free-solid-svg-icons";
 
 
 /**
@@ -44,7 +44,8 @@ class Player extends React.Component {
             length: null,
             tags: [],
             suggesttag: [],
-            popupvisible: false
+            popupvisible: false,
+            actorpopupvisible: false
         };
 
         this.quickAddTag = this.quickAddTag.bind(this);
@@ -119,6 +120,10 @@ class Player extends React.Component {
                                  movie_id={this.state.movie_id}/> :
                     null
                 }
+                {
+                    this.state.actorpopupvisible ?
+                        <div></div> : null /* todo render popup here */
+                }
             </>
         );
     }
@@ -184,10 +189,11 @@ class Player extends React.Component {
                         }}>Delete Video
                         </button>
                     </div>
+                    {/* rendering of actor tiles */}
                     <div className={style.actorcontainer}>
                         {this.state.actors ?
                             this.state.actors.map((actr) => (
-                                <div className={style.actortile}>
+                                <div className={style.actortile} onClick={() => this.handleActorClick(actr.id)}>
                                     <div className={style.actortile_thumbnail}>
                                         {actr.thumbnail === "-1" ? <FontAwesomeIcon style={{
                                             lineHeight: '130px',
@@ -197,6 +203,14 @@ class Player extends React.Component {
                                 </div>
                             )) : <></>
                         }
+                        <div style={{backgroundColor: 'transparent'}} className={style.actortile} onClick={() => {this.addActor()}}>
+                            <div className={style.actortile_thumbnail}>
+                                <FontAwesomeIcon style={{
+                                    lineHeight: '130px',
+                                }} icon={faPlusCircle} size='5x'/>
+                            </div>
+                            <div className={style.actortile_name}>Add Actor</div>
+                        </div>
                     </div>
                 </div>
                 <button className={style.closebutton} onClick={() => this.closebtn()}>Close</button>
@@ -293,6 +307,22 @@ class Player extends React.Component {
                         console.error(result);
                     }
                 }));
+    }
+
+    /**
+     * event handling for actor tile click
+     */
+    handleActorClick(actorId) {
+        console.log(actorId);
+
+        // todo 2020-11-22: we should redirect here to the actor page to display infos about actor & movies
+    }
+
+    /**
+     * show the actor add popup
+     */
+    addActor() {
+        this.setState({actorpopupvisible: true});
     }
 }
 

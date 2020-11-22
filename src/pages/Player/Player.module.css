@@ -35,12 +35,14 @@
 }
 
 .actortile_thumbnail {
-    height: 100px;
+    height: 160px;
     text-align: center;
-    margin-top: 5px;
+    margin-top: 10px;
     color: #c6c6c6;
 }
 
 .actortile_name {
+    text-align: center;
+    color: white;
 /*todo dynamic text coloring dependent on theme*/
 }
