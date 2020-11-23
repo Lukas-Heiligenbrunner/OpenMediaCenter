@@ -24,33 +24,10 @@
     margin-top: 13px;
 }
 
-.actortile {
-    float: left;
-    width: 130px;
-    height: 200px;
-    background-color: #0b2e13;
-    margin: 3px;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-.actortile_thumbnail {
-    height: 160px;
-    text-align: center;
-    margin-top: 10px;
-    color: #c6c6c6;
-}
-
-.actortile_name {
-    text-align: center;
-    color: white;
-/*todo dynamic text coloring dependent on theme*/
-}
-
 .button {
-    padding: 6px;
     border-radius: 5px;
-    margin-right: 15px;
-    color: white;
     border-width: 0;
+    color: white;
+    margin-right: 15px;
+    padding: 6px;
 }

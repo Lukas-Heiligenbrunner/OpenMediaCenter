@@ -105,6 +105,7 @@ class CategoryPage extends React.Component {
                 {this.state.popupvisible ?
                     <NewTagPopup show={this.state.popupvisible}
                                  onHide={() => {
+                                     console.error("setstatecalled!");
                                      this.setState({popupvisible: false});
                                      this.loadTags();
                                  }}/> :

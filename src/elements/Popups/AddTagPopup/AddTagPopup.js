@@ -1,6 +1,6 @@
 import React from 'react';
 import Tag from '../../Tag/Tag';
-import PopupBase from "../PopupBase";
+import PopupBase from '../PopupBase';
 
 /**
  * component creates overlay to add a new tag to a video

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 class ActorPage extends React.Component {
     constructor(props) {

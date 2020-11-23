@@ -1,0 +1,22 @@
+.actortile {
+    background-color: #0b2e13;
+    border-radius: 10px;
+    cursor: pointer;
+    float: left;
+    height: 200px;
+    margin: 3px;
+    width: 130px;
+}
+
+.actortile_thumbnail {
+    color: #c6c6c6;
+    height: 160px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.actortile_name {
+    color: white;
+    text-align: center;
+    /*todo dynamic text coloring dependent on theme*/
+}

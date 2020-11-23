@@ -6,8 +6,10 @@ import SideBar, {SideBarItem, SideBarTitle} from '../../elements/SideBar/SideBar
 import Tag from '../../elements/Tag/Tag';
 import AddTagPopup from '../../elements/Popups/AddTagPopup/AddTagPopup';
 import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faUser, faPlusCircle} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
+import AddActorPopup from '../../elements/Popups/AddActorPopup/AddActorPopup';
+import ActorTile from '../../elements/ActorTile/ActorTile';
 
 
 /**
@@ -112,17 +114,15 @@ class Player extends React.Component {
         return (
             <>
                 {this.state.popupvisible ?
-                    <AddTagPopup show={this.state.popupvisible}
-                                 onHide={() => {
-                                     this.setState({popupvisible: false});
-                                 }}
+                    <AddTagPopup onHide={() => {this.setState({popupvisible: false});}}
                                  submit={this.quickAddTag}
                                  movie_id={this.state.movie_id}/> :
                     null
                 }
                 {
                     this.state.actorpopupvisible ?
-                        <div></div> : null /* todo render popup here */
+                        <AddActorPopup onHide={() => {this.setState({actorpopupvisible: false});}}
+                                       movie_id={this.state.movie_id}/> : null
                 }
             </>
         );
@@ -180,7 +180,9 @@ class Player extends React.Component {
                             options={this.options}/> :
                         <div>not loaded yet</div>}
                     <div className={style.videoactions}>
-                        <button className={style.button} style={{backgroundColor: 'green'}} onClick={() => this.likebtn()}>Like this Video!</button>
+                        <button className={style.button} style={{backgroundColor: 'green'}} onClick={() => this.likebtn()}>
+                            Like this Video!
+                        </button>
                         <button className={style.button} style={{backgroundColor: '#3574fe'}} onClick={() => this.setState({popupvisible: true})}>
                             Give this Video a Tag
                         </button>
@@ -193,20 +195,15 @@ class Player extends React.Component {
                     <div className={style.actorcontainer}>
                         {this.state.actors ?
                             this.state.actors.map((actr) => (
-                                <div className={style.actortile} onClick={() => this.handleActorClick(actr.id)}>
-                                    <div className={style.actortile_thumbnail}>
-                                        {actr.thumbnail === "-1" ? <FontAwesomeIcon style={{
-                                            lineHeight: '130px',
-                                        }} icon={faUser} size='5x'/> : "dfdf" /* todo render picture provided here! */}
-                                    </div>
-                                    <div className={style.actortile_name}>{actr.name}</div>
-                                </div>
+                                <ActorTile actor={actr}/>
                             )) : <></>
                         }
-                        <div style={{backgroundColor: 'transparent'}} className={style.actortile} onClick={() => {this.addActor()}}>
+                        <div style={{backgroundColor: 'transparent'}} className={style.actortile} onClick={() => {
+                            this.addActor();
+                        }}>
                             <div className={style.actortile_thumbnail}>
                                 <FontAwesomeIcon style={{
-                                    lineHeight: '130px',
+                                    lineHeight: '130px'
                                 }} icon={faPlusCircle} size='5x'/>
                             </div>
                             <div className={style.actortile_name}>Add Actor</div>

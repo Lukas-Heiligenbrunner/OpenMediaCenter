@@ -1,8 +1,8 @@
-import GlobalInfos from "../../GlobalInfos";
-import style from "./PopupBase.module.css";
-import {Line} from "../PageTitle/PageTitle";
-import React from "react";
-import ReactDom from "react-dom";
+import GlobalInfos from '../../GlobalInfos';
+import style from './PopupBase.module.css';
+import {Line} from '../PageTitle/PageTitle';
+import React from 'react';
+import ReactDom from 'react-dom';
 
 /**
  * wrapper class for generic types of popups
@@ -115,4 +115,5 @@ class PopupBase extends React.Component {
         }
     }
 }
+
 export default PopupBase;

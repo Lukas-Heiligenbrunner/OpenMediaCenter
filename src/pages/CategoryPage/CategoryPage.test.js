@@ -45,17 +45,35 @@ describe('<CategoryPage/>', function () {
         });
     });
 
-    it('test new tag popup', function () {
-        const wrapper = mount(<CategoryPage/>);
+    it('test new tag popup', done => {
+        const wrapper = shallow(<CategoryPage/>);
+
+        global.fetch = global.prepareFetchApi({});
 
         expect(wrapper.find('NewTagPopup')).toHaveLength(0);
         wrapper.find('[data-testid="btnaddtag"]').simulate('click');
         // newtagpopup should be showing now
         expect(wrapper.find('NewTagPopup')).toHaveLength(1);
-
+        console.error('testlog');
         // click close button in modal
-        wrapper.find('.modal-header').find('button').simulate('click');
-        expect(wrapper.find('NewTagPopup')).toHaveLength(0);
+
+        const func = jest.fn();
+
+        wrapper.find('NewTagPopup').dive().setProps({onHide: func});
+
+        console.error(wrapper.find('NewTagPopup').debug());
+
+        wrapper.find('NewTagPopup').dive().find('button').simulate('click');
+
+        process.nextTick(() => {
+            expect(func).toHaveBeenCalledTimes(1);
+            // expect(wrapper.state().popupvisible).toBe(false);
+            //
+            // expect(wrapper.find('NewTagPopup')).toHaveLength(0);
+
+            global.fetch.mockClear();
+            done();
+        });
     });
 
     it('test setpage callback', done => {

@@ -1,8 +1,8 @@
 .savebtn {
     background-color: greenyellow;
     border: 0;
-    padding: 3px;
     border-radius: 4px;
-    margin-top: 30px;
     float: right;
+    margin-top: 30px;
+    padding: 3px;
 }

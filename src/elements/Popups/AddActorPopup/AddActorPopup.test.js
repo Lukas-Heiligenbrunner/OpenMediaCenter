@@ -1,10 +1,10 @@
 import {shallow} from 'enzyme';
 import React from 'react';
-import ActorPage from './ActorPage';
+import AddActorPopup from './AddActorPopup';
 
-describe('<ActorPage/>', function () {
+describe('<AddActorPopup/>', function () {
     it('renders without crashing ', function () {
-        const wrapper = shallow(<ActorPage/>);
+        const wrapper = shallow(<AddActorPopup/>);
         wrapper.unmount();
     });
 

@@ -1,6 +1,6 @@
 import React from 'react';
-import PopupBase from "../PopupBase";
-import style from './NewTagPopup.module.css'
+import PopupBase from '../PopupBase';
+import style from './NewTagPopup.module.css';
 
 /**
  * creates modal overlay to define a new Tag
@@ -13,7 +13,7 @@ class NewTagPopup extends React.Component {
     }
 
     render() {
-        return(
+        return (
             <PopupBase title='Add new Tag' onHide={this.props.onHide} height='200px' width='400px'>
                 <div><input type='text' placeholder='Tagname' onChange={(v) => {
                     this.value = v.target.value;
