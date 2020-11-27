@@ -10,12 +10,29 @@
     z-index: 2;
 }
 
-.header {
+.header{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+
+.title {
     cursor: move;
     font-size: x-large;
     margin-left: 15px;
     margin-top: 10px;
     opacity: 1;
+    float: left;
+    width: 60%;
+}
+
+.banner {
+    width: 40%;
+    float: left;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
 }
 
 .content {

@@ -45,7 +45,11 @@ class PopupBase extends React.Component {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
             <div style={this.framedimensions} className={[style.popup, themeStyle.thirdbackground].join(' ')} ref={el => this.element = el}>
-                <div className={[style.header, themeStyle.textcolor].join(' ')}>{this.props.title}</div>
+                <div className={style.header}>
+                    <div className={[style.title, themeStyle.textcolor].join(' ')}>{this.props.title}</div>
+                    <div className={style.banner}>{this.props.banner}</div>
+                </div>
+
                 <Line/>
                 <div className={style.content}>
                     {this.props.children}
