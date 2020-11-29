@@ -2,19 +2,18 @@ import GlobalInfos from '../../GlobalInfos';
 import style from './PopupBase.module.css';
 import {Line} from '../PageTitle/PageTitle';
 import React from 'react';
-import ReactDom from 'react-dom';
 
 /**
  * wrapper class for generic types of popups
  */
 class PopupBase extends React.Component {
-    /// instance of root element
-    element;
-
     constructor(props) {
         super(props);
 
         this.state = {items: []};
+
+        this.wrapperRef = React.createRef();
+
         this.handleClickOutside = this.handleClickOutside.bind(this);
         this.keypress = this.keypress.bind(this);
 
@@ -26,25 +25,25 @@ class PopupBase extends React.Component {
     }
 
     componentDidMount() {
-        document.addEventListener('click', this.handleClickOutside);
+        document.addEventListener('mousedown', this.handleClickOutside);
         document.addEventListener('keyup', this.keypress);
 
         // add element drag drop events
-        if (this.element != null) {
+        if (this.wrapperRef != null) {
             this.dragElement();
         }
     }
 
     componentWillUnmount() {
         // remove the appended listeners
-        document.removeEventListener('click', this.handleClickOutside);
+        document.removeEventListener('mousedown', this.handleClickOutside);
         document.removeEventListener('keyup', this.keypress);
     }
 
     render() {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
-            <div style={this.framedimensions} className={[style.popup, themeStyle.thirdbackground].join(' ')} ref={el => this.element = el}>
+            <div style={this.framedimensions} className={[style.popup, themeStyle.thirdbackground].join(' ')} ref={this.wrapperRef}>
                 <div className={style.header}>
                     <div className={[style.title, themeStyle.textcolor].join(' ')}>{this.props.title}</div>
                     <div className={style.banner}>{this.props.banner}</div>
@@ -62,9 +61,7 @@ class PopupBase extends React.Component {
      * Alert if clicked on outside of element
      */
     handleClickOutside(event) {
-        const domNode = ReactDom.findDOMNode(this);
-
-        if (!domNode || !domNode.contains(event.target)) {
+        if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
             this.props.onHide();
         }
     }
@@ -86,7 +83,7 @@ class PopupBase extends React.Component {
     dragElement() {
         let xOld = 0, yOld = 0;
 
-        const elmnt = this.element;
+        const elmnt = this.wrapperRef.current;
         elmnt.firstChild.onmousedown = dragMouseDown;
 
 
