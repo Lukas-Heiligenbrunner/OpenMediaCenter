@@ -158,8 +158,7 @@ class HomePage extends React.Component {
                 </SideBar>
                 {this.state.data.length !== 0 ?
                     <VideoContainer
-                        data={this.state.data}
-                        viewbinding={this.props.viewbinding}/> :
+                        data={this.state.data}/> :
                     <div>No Data found!</div>}
                 <div className={style.rightinfo}>
 

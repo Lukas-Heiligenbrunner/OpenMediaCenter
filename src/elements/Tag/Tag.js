@@ -2,6 +2,7 @@ import React from 'react';
 
 import styles from './Tag.module.css';
 import CategoryPage from '../../pages/CategoryPage/CategoryPage';
+import GlobalInfos from '../../GlobalInfos';
 
 /**
  * A Component representing a single Category tag
@@ -18,18 +19,16 @@ class Tag extends React.Component {
      * click handling for a Tag
      */
     TagClick() {
+        const tag = this.props.children.toString().toLowerCase();
+
         if (this.props.onclick) {
-            this.props.onclick();
+            this.props.onclick(tag);
             return;
         }
 
-        const tag = this.props.children.toString().toLowerCase();
-
         // call callback functin to switch to category page with specified tag
-        this.props.viewbinding.changeRootElement(
-            <CategoryPage
-                category={tag}
-                viewbinding={this.props.viewbinding}/>);
+        GlobalInfos.getViewBinding().changeRootElement(
+            <CategoryPage category={tag}/>);
     }
 }
 

@@ -10,6 +10,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import AddActorPopup from '../../elements/Popups/AddActorPopup/AddActorPopup';
 import ActorTile from '../../elements/ActorTile/ActorTile';
+import GlobalInfos from '../../GlobalInfos';
 
 
 /**
@@ -54,6 +55,7 @@ class Player extends React.Component {
     }
 
     componentDidMount() {
+        // initial fetch of current movie data
         this.fetchMovieData();
     }
 
@@ -144,9 +146,7 @@ class Player extends React.Component {
                 <Line/>
                 <SideBarTitle>Tags:</SideBarTitle>
                 {this.state.tags.map((m) => (
-                    <Tag
-                        key={m.tag_name}
-                        viewbinding={this.props.viewbinding}>{m.tag_name}</Tag>
+                    <Tag key={m.tag_name}>{m.tag_name}</Tag>
                 ))}
                 <Line/>
                 <SideBarTitle>Tag Quickadd:</SideBarTitle>
@@ -198,15 +198,15 @@ class Player extends React.Component {
                                 <ActorTile actor={actr}/>
                             )) : <></>
                         }
-                        <div style={{backgroundColor: 'transparent'}} className={style.actortile} onClick={() => {
+                        <div style={{backgroundColor: 'transparent'}} className={style.actorAddTile} onClick={() => {
                             this.addActor();
                         }}>
-                            <div className={style.actortile_thumbnail}>
+                            <div className={style.actorAddTile_thumbnail}>
                                 <FontAwesomeIcon style={{
                                     lineHeight: '130px'
                                 }} icon={faPlusCircle} size='5x'/>
                             </div>
-                            <div className={style.actortile_name}>Add Actor</div>
+                            <div className={style.actorAddTile_name}>Add Actor</div>
                         </div>
                     </div>
                 </div>
@@ -282,7 +282,7 @@ class Player extends React.Component {
      * calls callback to viewbinding to show previous page agains
      */
     closebtn() {
-        this.props.viewbinding.returnToLastElement();
+        GlobalInfos.getViewBinding().returnToLastElement();
     }
 
     /**
@@ -298,21 +298,12 @@ class Player extends React.Component {
                 .then((result) => {
                     if (result.result === 'success') {
                         // return to last element if successful
-                        this.props.viewbinding.returnToLastElement();
+                        GlobalInfos.getViewBinding().returnToLastElement();
                     } else {
                         console.error('an error occured while liking');
                         console.error(result);
                     }
                 }));
-    }
-
-    /**
-     * event handling for actor tile click
-     */
-    handleActorClick(actorId) {
-        console.log(actorId);
-
-        // todo 2020-11-22: we should redirect here to the actor page to display infos about actor & movies
     }
 
     /**

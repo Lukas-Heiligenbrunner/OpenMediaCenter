@@ -2,6 +2,8 @@ import style from './ActorTile.module.css';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faUser} from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
+import GlobalInfos from '../../GlobalInfos';
+import ActorPage from '../../pages/ActorPage/ActorPage';
 
 class ActorTile extends React.Component {
     constructor(props) {
@@ -21,6 +23,14 @@ class ActorTile extends React.Component {
                 <div className={style.actortile_name}>{this.props.actor.name}</div>
             </div>
         );
+    }
+
+    /**
+     * event handling for actor tile click
+     */
+    handleActorClick(actorId) {
+        // Redirect to actor page
+        GlobalInfos.getViewBinding().changeRootElement(<ActorPage actorId={actorId}/>);
     }
 }
 

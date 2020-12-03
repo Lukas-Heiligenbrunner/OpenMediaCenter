@@ -31,3 +31,25 @@
     margin-right: 15px;
     padding: 6px;
 }
+
+.actorAddTile {
+    float: left;
+    padding-left: 25px;
+    padding-top: 50px;
+    cursor: pointer;
+    color: white;
+    transition: opacity ease 0.5s;
+}
+
+.actorAddTile:hover{
+    opacity: 0.7;
+    transition: opacity ease 0.5s;
+}
+
+.actorAddTile_thumbnail {
+    height: 90px;
+}
+
+.actorAddTile_name {
+    bottom: 0;
+}

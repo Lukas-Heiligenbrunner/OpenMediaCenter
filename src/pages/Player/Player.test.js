@@ -77,9 +77,11 @@ describe('<Player/>', function () {
     });
 
     it('test delete button', done => {
-        const wrapper = shallow(<Player viewbinding={{
-            returnToLastElement: jest.fn()
-        }}/>);
+        const wrapper = shallow(<Player/>);
+
+        const func = jest.fn();
+        prepareViewBinding(func)
+
         global.fetch = prepareFetchApi({result: 'success'});
 
         wrapper.find('.videoactions').find('button').at(2).simulate('click');
@@ -87,7 +89,7 @@ describe('<Player/>', function () {
         process.nextTick(() => {
             // refetch is called so fetch called 3 times
             expect(global.fetch).toHaveBeenCalledTimes(1);
-            expect(wrapper.instance().props.viewbinding.returnToLastElement).toHaveBeenCalledTimes(1);
+            expect(func).toHaveBeenCalledTimes(1);
 
             global.fetch.mockClear();
             done();
@@ -96,15 +98,9 @@ describe('<Player/>', function () {
 
     it('hide click ', function () {
         const wrapper = shallow(<Player/>);
-        const func = jest.fn();
 
-        wrapper.setProps({
-            viewbinding: {
-                returnToLastElement: () => {
-                    func();
-                }
-            }
-        });
+        const func = jest.fn();
+        prepareViewBinding(func);
 
         expect(func).toHaveBeenCalledTimes(0);
         wrapper.find('.closebutton').simulate('click');

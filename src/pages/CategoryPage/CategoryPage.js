@@ -44,26 +44,10 @@ class CategoryPage extends React.Component {
 
                 <SideBar>
                     <SideBarTitle>Default Tags:</SideBarTitle>
-                    <Tag viewbinding={{
-                        changeRootElement: (e) => {
-                            this.loadTag(e.props.category);
-                        }
-                    }}>All</Tag>
-                    <Tag viewbinding={{
-                        changeRootElement: (e) => {
-                            this.loadTag(e.props.category);
-                        }
-                    }}>FullHd</Tag>
-                    <Tag viewbinding={{
-                        changeRootElement: (e) => {
-                            this.loadTag(e.props.category);
-                        }
-                    }}>LowQuality</Tag>
-                    <Tag viewbinding={{
-                        changeRootElement: (e) => {
-                            this.loadTag(e.props.category);
-                        }
-                    }}>HD</Tag>
+                    <Tag onclick={(tag) => {this.loadTag(tag);}}>All</Tag>
+                    <Tag onclick={(tag) => {this.loadTag(tag);}}>FullHd</Tag>
+                    <Tag onclick={(tag) => {this.loadTag(tag);}}>LowQuality</Tag>
+                    <Tag onclick={(tag) => {this.loadTag(tag);}}>HD</Tag>
                     <Line/>
                     <button data-testid='btnaddtag' className='btn btn-success' onClick={() => {
                         this.setState({popupvisible: true});
@@ -82,8 +66,7 @@ class CategoryPage extends React.Component {
                     <>
                         {this.videodata ?
                             <VideoContainer
-                                data={this.videodata}
-                                viewbinding={this.props.viewbinding}/> : null}
+                                data={this.videodata}/> : null}
                         <button data-testid='backbtn' className='btn btn-success'
                                 onClick={this.loadCategoryPageDefault}>Back
                         </button>
@@ -95,7 +78,6 @@ class CategoryPage extends React.Component {
                                     key={m.tag_name}
                                     name={m.tag_name}
                                     tag_id={m.tag_id}
-                                    viewbinding={this.props.viewbinding}
                                     categorybinding={this.loadTag}/>
                             )) :
                             'loading'}
