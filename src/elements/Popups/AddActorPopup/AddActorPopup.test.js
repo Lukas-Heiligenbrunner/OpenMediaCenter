@@ -8,5 +8,12 @@ describe('<AddActorPopup/>', function () {
         wrapper.unmount();
     });
 
+    it('simulate change to other page', function () {
+        const wrapper = shallow(<AddActorPopup/>);
 
+        console.log(wrapper.find('PopupBase').dive().debug());
+
+
+        console.log(wrapper.debug());
+    });
 });

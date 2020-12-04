@@ -14,7 +14,7 @@ class ActorTile extends React.Component {
 
     render() {
         return (
-            <div className={style.actortile} onClick={() => this.handleActorClick(this.props.actor.id)}>
+            <div className={style.actortile} onClick={() => this.handleActorClick(this.props.actor)}>
                 <div className={style.actortile_thumbnail}>
                     {this.props.actor.thumbnail === '-1' ? <FontAwesomeIcon style={{
                         lineHeight: '130px'
@@ -28,9 +28,9 @@ class ActorTile extends React.Component {
     /**
      * event handling for actor tile click
      */
-    handleActorClick(actorId) {
+    handleActorClick(actor) {
         // Redirect to actor page
-        GlobalInfos.getViewBinding().changeRootElement(<ActorPage actorId={actorId}/>);
+        GlobalInfos.getViewBinding().changeRootElement(<ActorPage actor={actor}/>);
     }
 }
 

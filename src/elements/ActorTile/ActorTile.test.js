@@ -8,5 +8,14 @@ describe('<ActorTile/>', function () {
         wrapper.unmount();
     });
 
+    it('simulate click', function () {
+        const wrapper = shallow(<ActorTile actor={{thumbnail: "-1", name: "testname", id: 3}}/>);
 
+        const func = jest.fn();
+        prepareViewBinding(func);
+
+        wrapper.simulate('click');
+
+        expect(func).toBeCalledTimes(1);
+    });
 });

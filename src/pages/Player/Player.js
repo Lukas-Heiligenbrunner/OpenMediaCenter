@@ -198,7 +198,7 @@ class Player extends React.Component {
                                 <ActorTile actor={actr}/>
                             )) : <></>
                         }
-                        <div style={{backgroundColor: 'transparent'}} className={style.actorAddTile} onClick={() => {
+                        <div className={style.actorAddTile} onClick={() => {
                             this.addActor();
                         }}>
                             <div className={style.actorAddTile_thumbnail}>
