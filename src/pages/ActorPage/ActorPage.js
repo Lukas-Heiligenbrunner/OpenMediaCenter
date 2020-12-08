@@ -10,7 +10,7 @@ class ActorPage extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {data: []};
+        this.state = {data: undefined};
     }
 
     render() {
@@ -25,7 +25,7 @@ class ActorPage extends React.Component {
                     <Line/>
                     <SideBarItem><b>35</b> Videos Total!</SideBarItem>
                 </SideBar>
-                {this.state.data.length !== 0 ?
+                {this.state.data ?
                     <VideoContainer
                         data={this.state.data}/> :
                     <div>No Data found!</div>}
@@ -42,6 +42,17 @@ class ActorPage extends React.Component {
      */
     getActorInfo() {
         // todo 2020-12-4: fetch to db
+
+        const req = new FormData();
+        req.append('action', 'getActorInfo');
+        req.append('actorid', this.props.actor.actor_id);
+
+        fetch('/api/actor.php', {method: 'POST', body: req})
+            .then((response) => response.json()
+                .then((result) => {
+                    console.log(result);
+                    this.setState({data: result.videos ? result.videos : []});
+                }));
     }
 }
 

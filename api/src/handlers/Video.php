@@ -146,18 +146,12 @@ class Video extends RequestBase {
                 array_push($arr['suggesttag'], $r);
             }
 
-            // todo
-//            test code for creating an actor
-            $arr['actors'] = array(
-                0 => array(
-                    "name" => "act1",
-                    "thumbnail" => "-1",
-                    "id" => 1
-                ),
-                1 => array(
-                    "name" => "act2",
-                    "thumbnail" => "-1",
-                    "id" => 2));
+            // query the actors corresponding to video
+            $query = "SELECT actor_id, name, thumbnail FROM actors_videos
+                        JOIN actors a on actors_videos.actor_id = a.id
+                        WHERE actors_videos.video_id=$video_id";
+            $result = $this->conn->query($query);
+            $arr['actors'] = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
             $this->commitMessage(json_encode($arr));
         });

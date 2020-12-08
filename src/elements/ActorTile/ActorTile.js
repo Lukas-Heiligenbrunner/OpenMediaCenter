@@ -16,7 +16,7 @@ class ActorTile extends React.Component {
         return (
             <div className={style.actortile} onClick={() => this.handleActorClick(this.props.actor)}>
                 <div className={style.actortile_thumbnail}>
-                    {this.props.actor.thumbnail === '-1' ? <FontAwesomeIcon style={{
+                    {this.props.actor.thumbnail === null ? <FontAwesomeIcon style={{
                         lineHeight: '130px'
                     }} icon={faUser} size='5x'/> : 'dfdf' /* todo render picture provided here! */}
                 </div>
@@ -29,6 +29,12 @@ class ActorTile extends React.Component {
      * event handling for actor tile click
      */
     handleActorClick(actor) {
+        // if clicklistender is defined use this one
+        if (this.props.onClick) {
+            this.props.onClick(actor.id);
+            return;
+        }
+
         // Redirect to actor page
         GlobalInfos.getViewBinding().changeRootElement(<ActorPage actor={actor}/>);
     }

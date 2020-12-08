@@ -30,7 +30,7 @@ abstract class RequestBase {
             // call the right handler
             $this->actions[$action]();
         } else {
-            echo('{data:"error"}');
+            $this->commitMessage('{"data": "error"}');
         }
     }
 

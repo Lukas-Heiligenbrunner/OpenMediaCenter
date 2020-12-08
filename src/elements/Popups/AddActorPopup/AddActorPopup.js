@@ -12,8 +12,11 @@ class AddActorPopup extends React.Component {
         super(props);
 
         this.state = {
-            contentDefault: true
+            contentDefault: true,
+            actors: undefined
         };
+
+        this.tileClickHandler = this.tileClickHandler.bind(this);
     }
 
     render() {
@@ -30,13 +33,21 @@ class AddActorPopup extends React.Component {
         );
     }
 
+    componentDidMount() {
+        // fetch the available actors
+        this.loadActors();
+    }
+
     /**
      * selector for current showing popup page
      * @returns {JSX.Element}
      */
     resolvePage() {
-        if (this.state.contentDefault) return(this.getContent());
-        else return (<NewActorPopupContent onHide={() => {this.setState({contentDefault: true});}}/>);
+        if (this.state.contentDefault) return (this.getContent());
+        else return (<NewActorPopupContent onHide={() => {
+            this.loadActors();
+            this.setState({contentDefault: true});
+        }}/>);
     }
 
     /**
@@ -44,7 +55,47 @@ class AddActorPopup extends React.Component {
      * @returns {JSX.Element}
      */
     getContent() {
-        return (<ActorTile actor={{id: 0, name: 'henry', thumbnail: '-1'}}/>);
+        if (this.state.actors) {
+            return (<div>
+                {this.state.actors.map((el) => (<ActorTile actor={el} onClick={this.tileClickHandler}/>))}
+            </div>);
+        } else {
+            return (<div>somekind of loading</div>);
+        }
+    }
+
+    /**
+     * event handling for ActorTile Click
+     */
+    tileClickHandler(actorid) {
+        // fetch the available actors
+        const req = new FormData();
+        req.append('action', 'addActorToVideo');
+        req.append('actorid', actorid);
+        req.append('videoid', this.props.movie_id);
+
+        fetch('/api/actor.php', {method: 'POST', body: req})
+            .then((response) => response.json()
+                .then((result) => {
+                    if (result.result === 'success') {
+                        // return back to player page
+                        this.props.onHide();
+                    } else {
+                        console.error('an error occured while fetching actors');
+                        console.error(result);
+                    }
+                }));
+    }
+
+    loadActors() {
+        const req = new FormData();
+        req.append('action', 'getAllActors');
+
+        fetch('/api/actor.php', {method: 'POST', body: req})
+            .then((response) => response.json()
+                .then((result) => {
+                    this.setState({actors: result});
+                }));
     }
 }
 

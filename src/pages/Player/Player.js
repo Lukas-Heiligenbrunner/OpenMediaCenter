@@ -123,8 +123,10 @@ class Player extends React.Component {
                 }
                 {
                     this.state.actorpopupvisible ?
-                        <AddActorPopup onHide={() => {this.setState({actorpopupvisible: false});}}
-                                       movie_id={this.state.movie_id}/> : null
+                        <AddActorPopup onHide={() => {
+                            this.refetchActors();
+                            this.setState({actorpopupvisible: false});
+                        }} movie_id={this.state.movie_id}/> : null
                 }
             </>
         );
@@ -311,6 +313,20 @@ class Player extends React.Component {
      */
     addActor() {
         this.setState({actorpopupvisible: true});
+    }
+
+    refetchActors() {
+        const req = new FormData();
+        req.append('action', 'getActorsOfVideo');
+        req.append('videoid', this.props.movie_id);
+
+        console.log('refrething actors');
+
+        fetch('/api/actor.php', {method: 'POST', body: req})
+            .then((response) => response.json()
+                .then((result) => {
+                    this.setState({actors: result});
+                }));
     }
 }
 
