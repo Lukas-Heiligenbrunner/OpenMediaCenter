@@ -1,7 +1,9 @@
 import React from 'react';
-import style from './Player.module.css';
 
-import {PlyrComponent} from 'plyr-react';
+import style from './Player.module.css';
+import plyrstyle from 'plyr-react/dist/plyr.css'
+
+import {Plyr} from 'plyr-react';
 import SideBar, {SideBarItem, SideBarTitle} from '../../elements/SideBar/SideBar';
 import Tag from '../../elements/Tag/Tag';
 import AddTagPopup from '../../elements/Popups/AddTagPopup/AddTagPopup';
@@ -176,9 +178,9 @@ class Player extends React.Component {
 
                 <div className={style.videowrapper}>
                     {/* video component is added here */}
-                    {this.state.sources ? <PlyrComponent
-                            className='myvideo'
-                            sources={this.state.sources}
+                    {this.state.sources ? <Plyr
+                        style={plyrstyle}
+                            source={this.state.sources}
                             options={this.options}/> :
                         <div>not loaded yet</div>}
                     <div className={style.videoactions}>

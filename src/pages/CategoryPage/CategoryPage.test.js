@@ -45,39 +45,19 @@ describe('<CategoryPage/>', function () {
         });
     });
 
-    // function currentEventLoopEnd() {
-    //     return new Promise(resolve => setImmediate(resolve));
-    // }
-
-    test('test new tag popup', async() => {
-        const wrapper = await shallow(<CategoryPage/>);
-
-        global.fetch = prepareFetchApi({});
+    it('test new tag popup', function () {
+        const wrapper = shallow(<CategoryPage/>);
 
         expect(wrapper.find('NewTagPopup')).toHaveLength(0);
         await wrapper.find('[data-testid="btnaddtag"]').simulate('click');
         // newtagpopup should be showing now
         expect(wrapper.find('NewTagPopup')).toHaveLength(1);
-        // click close button in modal
-
-        await wrapper.find('NewTagPopup').dive().find('button').simulate('click');
-
-
-        // todo fix test below
-        // await wrapper.find('NewTagPopup').dive().update();
-        // await wrapper.find('NewTagPopup').dive().setProps({});
-        // await wrapper.update();
-        // await wrapper.setProps({});
-        //
-        // await currentEventLoopEnd(); // <-- clean and clear !
-        //
-        // expect(wrapper.find('NewTagPopup')).toHaveLength(0);
     });
 
     it('test setpage callback', done => {
         global.fetch = global.prepareFetchApi([{}, {}]);
 
-        const wrapper = mount(<CategoryPage/>);
+        const wrapper = shallow(<CategoryPage/>);
 
         wrapper.setState({
             loadedtags: [
@@ -88,7 +68,7 @@ describe('<CategoryPage/>', function () {
             ]
         });
 
-        wrapper.find('TagPreview').find('div').first().simulate('click');
+        wrapper.find('TagPreview').dive().find('div').first().simulate('click');
 
         process.nextTick(() => {
             // expect callback to have loaded correct tag
@@ -122,14 +102,12 @@ describe('<CategoryPage/>', function () {
     it('test sidebar tag clicks', function () {
         const func = jest.fn();
 
-        const wrapper = mount(<CategoryPage category='fullhd'/>);
+        const wrapper = shallow(<CategoryPage category='fullhd'/>);
         wrapper.instance().loadTag = func;
-
-        console.log(wrapper.debug());
 
         expect(func).toBeCalledTimes(0);
         wrapper.find('SideBar').find('Tag').forEach(e => {
-            e.simulate('click');
+            e.dive().simulate('click');
         });
 
         expect(func).toBeCalledTimes(4);

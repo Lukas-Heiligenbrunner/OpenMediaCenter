@@ -20,7 +20,8 @@ describe('<Player/>', function () {
                 }
             ]
         });
-        expect(wrapper.find('r')).toHaveLength(1);
+
+        expect(wrapper.find('Plyr').dive().find('video')).toHaveLength(1);
     });
 
     function simulateLikeButtonClick() {
