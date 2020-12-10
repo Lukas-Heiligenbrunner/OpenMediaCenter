@@ -1,6 +1,6 @@
 import React from 'react';
-import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
-import SideBar, {SideBarItem, SideBarTitle} from '../../elements/SideBar/SideBar';
+import PageTitle from '../../elements/PageTitle/PageTitle';
+import SideBar, {SideBarTitle} from '../../elements/SideBar/SideBar';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faUser} from '@fortawesome/free-solid-svg-icons';
 import style from './ActorPage.module.css';
@@ -16,14 +16,12 @@ class ActorPage extends React.Component {
     render() {
         return (
             <>
-                <PageTitle title={this.props.actor.name} subtitle='5 videos'/>
+                <PageTitle title={this.props.actor.name} subtitle={this.state.data ? this.state.data.length + ' videos' : null}/>
                 <SideBar>
                     <div className={style.pic}>
                         <FontAwesomeIcon style={{color: 'white'}} icon={faUser} size='10x'/>
                     </div>
-                    <SideBarTitle>Infos:</SideBarTitle>
-                    <Line/>
-                    <SideBarItem><b>35</b> Videos Total!</SideBarItem>
+                    <SideBarTitle>Attention: This is an early preview!</SideBarTitle>
                 </SideBar>
                 {this.state.data ?
                     <VideoContainer
