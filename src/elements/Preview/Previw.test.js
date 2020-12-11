@@ -20,13 +20,7 @@ describe('<Preview/>', function () {
         const func = jest.fn();
 
         const wrapper = shallow(<Preview/>);
-        wrapper.setProps({
-            viewbinding: {
-                changeRootElement: () => {
-                    func();
-                }
-            }
-        });
+        prepareViewBinding(func);
 
         wrapper.find('.videopreview').simulate('click');
 

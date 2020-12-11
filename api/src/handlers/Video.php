@@ -98,6 +98,7 @@ class Video extends RequestBase {
         $this->addActionHandler("loadVideo", function () {
             $video_id = $_POST['movieid'];
 
+            // todo join with actor db and add actors of movieid
             $query = "  SELECT movie_name,movie_id,movie_url,thumbnail,poster,likes,quality,length 
                         FROM videos WHERE movie_id=$video_id";
 
@@ -144,6 +145,13 @@ class Video extends RequestBase {
             while ($r = mysqli_fetch_assoc($result)) {
                 array_push($arr['suggesttag'], $r);
             }
+
+            // query the actors corresponding to video
+            $query = "SELECT actor_id, name, thumbnail FROM actors_videos
+                        JOIN actors a on actors_videos.actor_id = a.id
+                        WHERE actors_videos.video_id=$video_id";
+            $result = $this->conn->query($query);
+            $arr['actors'] = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
             $this->commitMessage(json_encode($arr));
         });

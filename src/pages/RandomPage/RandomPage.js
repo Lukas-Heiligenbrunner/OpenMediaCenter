@@ -31,16 +31,13 @@ class RandomPage extends React.Component {
                 <SideBar>
                     <SideBarTitle>Visible Tags:</SideBarTitle>
                     {this.state.tags.map((m) => (
-                        <Tag
-                            key={m.tag_name}
-                            viewbinding={this.props.viewbinding}>{m.tag_name}</Tag>
+                        <Tag key={m.tag_name}>{m.tag_name}</Tag>
                     ))}
                 </SideBar>
 
                 {this.state.videos.length !== 0 ?
                     <VideoContainer
-                        data={this.state.videos}
-                        viewbinding={this.props.viewbinding}>
+                        data={this.state.videos}>
                         <div className={style.Shufflebutton}>
                             <button onClick={() => this.shuffleclick()} className={style.btnshuffle}>Shuffle</button>
                         </div>

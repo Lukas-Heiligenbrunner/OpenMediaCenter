@@ -34,8 +34,7 @@ class VideoContainer extends React.Component {
                     <Preview
                         key={elem.movie_id}
                         name={elem.movie_name}
-                        movie_id={elem.movie_id}
-                        viewbinding={this.props.viewbinding}/>
+                        movie_id={elem.movie_id}/>
                 ))}
                 {/*todo css for no items to show*/}
                 {this.state.loadeditems.length === 0 ?

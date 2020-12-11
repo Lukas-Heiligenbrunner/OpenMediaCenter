@@ -6,8 +6,13 @@ import plyrstyle from 'plyr-react/dist/plyr.css'
 import {Plyr} from 'plyr-react';
 import SideBar, {SideBarItem, SideBarTitle} from '../../elements/SideBar/SideBar';
 import Tag from '../../elements/Tag/Tag';
-import AddTagPopup from '../../elements/AddTagPopup/AddTagPopup';
+import AddTagPopup from '../../elements/Popups/AddTagPopup/AddTagPopup';
 import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
+import AddActorPopup from '../../elements/Popups/AddActorPopup/AddActorPopup';
+import ActorTile from '../../elements/ActorTile/ActorTile';
+import GlobalInfos from '../../GlobalInfos';
 
 
 /**
@@ -44,13 +49,15 @@ class Player extends React.Component {
             length: null,
             tags: [],
             suggesttag: [],
-            popupvisible: false
+            popupvisible: false,
+            actorpopupvisible: false
         };
 
         this.quickAddTag = this.quickAddTag.bind(this);
     }
 
     componentDidMount() {
+        // initial fetch of current movie data
         this.fetchMovieData();
     }
 
@@ -111,13 +118,17 @@ class Player extends React.Component {
         return (
             <>
                 {this.state.popupvisible ?
-                    <AddTagPopup show={this.state.popupvisible}
-                                 onHide={() => {
-                                     this.setState({popupvisible: false});
-                                 }}
+                    <AddTagPopup onHide={() => {this.setState({popupvisible: false});}}
                                  submit={this.quickAddTag}
                                  movie_id={this.state.movie_id}/> :
                     null
+                }
+                {
+                    this.state.actorpopupvisible ?
+                        <AddActorPopup onHide={() => {
+                            this.refetchActors();
+                            this.setState({actorpopupvisible: false});
+                        }} movie_id={this.state.movie_id}/> : null
                 }
             </>
         );
@@ -135,14 +146,11 @@ class Player extends React.Component {
                 {this.state.quality !== 0 ?
                     <SideBarItem><b>{this.state.quality}p</b> Quality!</SideBarItem> : null}
                 {this.state.length !== 0 ?
-                    <SideBarItem><b>{Math.round(this.state.length / 60)}</b> Minutes of
-                        length!</SideBarItem> : null}
+                    <SideBarItem><b>{Math.round(this.state.length / 60)}</b> Minutes of length!</SideBarItem> : null}
                 <Line/>
                 <SideBarTitle>Tags:</SideBarTitle>
                 {this.state.tags.map((m) => (
-                    <Tag
-                        key={m.tag_name}
-                        viewbinding={this.props.viewbinding}>{m.tag_name}</Tag>
+                    <Tag key={m.tag_name}>{m.tag_name}</Tag>
                 ))}
                 <Line/>
                 <SideBarTitle>Tag Quickadd:</SideBarTitle>
@@ -176,7 +184,9 @@ class Player extends React.Component {
                             options={this.options}/> :
                         <div>not loaded yet</div>}
                     <div className={style.videoactions}>
-                        <button className={style.button} style={{backgroundColor: 'green'}} onClick={() => this.likebtn()}>Like this Video!</button>
+                        <button className={style.button} style={{backgroundColor: 'green'}} onClick={() => this.likebtn()}>
+                            Like this Video!
+                        </button>
                         <button className={style.button} style={{backgroundColor: '#3574fe'}} onClick={() => this.setState({popupvisible: true})}>
                             Give this Video a Tag
                         </button>
@@ -184,6 +194,24 @@ class Player extends React.Component {
                             this.deleteVideo();
                         }}>Delete Video
                         </button>
+                    </div>
+                    {/* rendering of actor tiles */}
+                    <div className={style.actorcontainer}>
+                        {this.state.actors ?
+                            this.state.actors.map((actr) => (
+                                <ActorTile actor={actr}/>
+                            )) : <></>
+                        }
+                        <div className={style.actorAddTile} onClick={() => {
+                            this.addActor();
+                        }}>
+                            <div className={style.actorAddTile_thumbnail}>
+                                <FontAwesomeIcon style={{
+                                    lineHeight: '130px'
+                                }} icon={faPlusCircle} size='5x'/>
+                            </div>
+                            <div className={style.actorAddTile_name}>Add Actor</div>
+                        </div>
                     </div>
                 </div>
                 <button className={style.closebutton} onClick={() => this.closebtn()}>Close</button>
@@ -224,7 +252,8 @@ class Player extends React.Component {
                     quality: result.quality,
                     length: result.length,
                     tags: result.tags,
-                    suggesttag: result.suggesttag
+                    suggesttag: result.suggesttag,
+                    actors: result.actors
                 });
                 console.log(this.state);
             });
@@ -257,7 +286,7 @@ class Player extends React.Component {
      * calls callback to viewbinding to show previous page agains
      */
     closebtn() {
-        this.props.viewbinding.returnToLastElement();
+        GlobalInfos.getViewBinding().returnToLastElement();
     }
 
     /**
@@ -273,11 +302,32 @@ class Player extends React.Component {
                 .then((result) => {
                     if (result.result === 'success') {
                         // return to last element if successful
-                        this.props.viewbinding.returnToLastElement();
+                        GlobalInfos.getViewBinding().returnToLastElement();
                     } else {
                         console.error('an error occured while liking');
                         console.error(result);
                     }
+                }));
+    }
+
+    /**
+     * show the actor add popup
+     */
+    addActor() {
+        this.setState({actorpopupvisible: true});
+    }
+
+    refetchActors() {
+        const req = new FormData();
+        req.append('action', 'getActorsOfVideo');
+        req.append('videoid', this.props.movie_id);
+
+        console.log('refrething actors');
+
+        fetch('/api/actor.php', {method: 'POST', body: req})
+            .then((response) => response.json()
+                .then((result) => {
+                    this.setState({actors: result});
                 }));
     }
 }

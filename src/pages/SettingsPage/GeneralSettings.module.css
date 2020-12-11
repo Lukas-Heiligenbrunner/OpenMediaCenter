@@ -13,13 +13,13 @@
     flex-wrap: wrap;
 }
 
-.footer{
+.footer {
+    bottom: 3px;
+    color: white;
+    opacity: 0.8;
     position: fixed;
     right: 0;
-    bottom: 3px;
     width: 110px;
-    opacity: 0.8;
-    color: white;
 }
 
 /* On screens that are 722px wide or less, make the columns stack on top of each other instead of next to each other */

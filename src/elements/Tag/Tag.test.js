@@ -16,14 +16,11 @@ describe('<Tag/>', function () {
     });
 
     it('click event triggered and setvideo callback called', function () {
-        global.fetch = global.prepareFetchApi({});
+        global.fetch = prepareFetchApi({});
         const func = jest.fn();
-        const elem = {
-            changeRootElement: () => func()
-        };
+        prepareViewBinding(func);
 
-        const wrapper = shallow(<Tag
-            viewbinding={elem}>test</Tag>);
+        const wrapper = shallow(<Tag>test</Tag>);
 
         expect(func).toBeCalledTimes(0);
 
