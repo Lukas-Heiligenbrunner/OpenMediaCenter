@@ -1,0 +1,43 @@
+.popup {
+    border: 3px #3574fe solid;
+    border-radius: 18px;
+    height: 80%;
+    left: 20%;
+    opacity: 0.95;
+    position: absolute;
+    top: 10%;
+    width: 60%;
+    z-index: 2;
+}
+
+.header{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+
+.title {
+    cursor: move;
+    font-size: x-large;
+    margin-left: 15px;
+    margin-top: 10px;
+    opacity: 1;
+    float: left;
+    width: 60%;
+}
+
+.banner {
+    width: 40%;
+    float: left;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.content {
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 10px;
+    opacity: 1;
+}

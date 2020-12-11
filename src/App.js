@@ -28,6 +28,9 @@ class App extends React.Component {
         // bind this to the method for being able to call methods such as this.setstate
         this.changeRootElement = this.changeRootElement.bind(this);
         this.returnToLastElement = this.returnToLastElement.bind(this);
+
+        // set the main navigation viewbinding to the singleton
+        GlobalInfos.setViewBinding(this.constructViewBinding());
     }
 
     componentDidMount() {
@@ -68,16 +71,16 @@ class App extends React.Component {
     MainBody() {
         let page;
         if (this.state.page === 'default') {
-            page = <HomePage viewbinding={this.constructViewBinding()}/>;
+            page = <HomePage/>;
             this.mypage = page;
         } else if (this.state.page === 'random') {
-            page = <RandomPage viewbinding={this.constructViewBinding()}/>;
+            page = <RandomPage/>;
             this.mypage = page;
         } else if (this.state.page === 'settings') {
             page = <SettingsPage/>;
             this.mypage = page;
         } else if (this.state.page === 'categories') {
-            page = <CategoryPage viewbinding={this.constructViewBinding()}/>;
+            page = <CategoryPage/>;
             this.mypage = page;
         } else if (this.state.page === 'video') {
             // show videoelement if neccessary

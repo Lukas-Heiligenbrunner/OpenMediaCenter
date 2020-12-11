@@ -6,6 +6,7 @@ import '@testing-library/jest-dom/extend-expect';
 
 import {configure} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import GlobalInfos from './GlobalInfos';
 
 configure({adapter: new Adapter()});
 
@@ -31,3 +32,16 @@ global.prepareFailingFetchApi = () => {
     const mockFetchPromise = Promise.reject('myreason');
     return (jest.fn().mockImplementation(() => mockFetchPromise));
 };
+
+/**
+ * prepares a viewbinding instance
+ * @param func a mock function to be called
+ */
+global.prepareViewBinding = (func) => {
+    GlobalInfos.getViewBinding = () => {
+        return {
+            changeRootElement: func,
+            returnToLastElement: func
+        }
+    };
+}

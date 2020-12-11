@@ -11,12 +11,7 @@ describe('<NewTagPopup/>', function () {
     });
 
     it('test storeseletion click event', done => {
-        const mockSuccessResponse = {};
-        const mockJsonPromise = Promise.resolve(mockSuccessResponse);
-        const mockFetchPromise = Promise.resolve({
-            json: () => mockJsonPromise
-        });
-        global.fetch = jest.fn().mockImplementation(() => mockFetchPromise);
+        global.fetch = prepareFetchApi({});
 
         const func = jest.fn();
 
@@ -27,7 +22,7 @@ describe('<NewTagPopup/>', function () {
             }
         });
 
-        wrapper.find('ModalFooter').find('button').simulate('click');
+        wrapper.find('button').simulate('click');
         expect(global.fetch).toHaveBeenCalledTimes(1);
 
         process.nextTick(() => {
