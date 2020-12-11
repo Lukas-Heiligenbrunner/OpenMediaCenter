@@ -1,7 +1,7 @@
 import React from 'react';
 
 import style from './Player.module.css';
-import plyrstyle from 'plyr-react/dist/plyr.css'
+import plyrstyle from 'plyr-react/dist/plyr.css';
 
 import {Plyr} from 'plyr-react';
 import SideBar, {SideBarItem, SideBarTitle} from '../../elements/SideBar/SideBar';
@@ -13,6 +13,7 @@ import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import AddActorPopup from '../../elements/Popups/AddActorPopup/AddActorPopup';
 import ActorTile from '../../elements/ActorTile/ActorTile';
 import GlobalInfos from '../../GlobalInfos';
+import {withRouter} from 'react-router-dom';
 
 
 /**
@@ -179,7 +180,7 @@ class Player extends React.Component {
                 <div className={style.videowrapper}>
                     {/* video component is added here */}
                     {this.state.sources ? <Plyr
-                        style={plyrstyle}
+                            style={plyrstyle}
                             source={this.state.sources}
                             options={this.options}/> :
                         <div>not loaded yet</div>}
@@ -227,13 +228,15 @@ class Player extends React.Component {
      * fetch all the required infos of a video from backend
      */
     fetchMovieData() {
+        console.log(this.props);
         const updateRequest = new FormData();
         updateRequest.append('action', 'loadVideo');
-        updateRequest.append('movieid', this.props.movie_id);
+        updateRequest.append('movieid', this.props.match.params.id);
 
         fetch('/api/video.php', {method: 'POST', body: updateRequest})
             .then((response) => response.json())
             .then((result) => {
+                console.log(result.movie_url);
                 this.setState({
                     sources: {
                         type: 'video',
@@ -286,7 +289,7 @@ class Player extends React.Component {
      * calls callback to viewbinding to show previous page agains
      */
     closebtn() {
-        GlobalInfos.getViewBinding().returnToLastElement();
+        this.props.history.goBack();
     }
 
     /**
@@ -332,4 +335,4 @@ class Player extends React.Component {
     }
 }
 
-export default Player;
+export default withRouter(Player);

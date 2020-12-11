@@ -7,6 +7,7 @@ import {TagPreview} from '../../elements/Preview/Preview';
 import NewTagPopup from '../../elements/Popups/NewTagPopup/NewTagPopup';
 import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
+import {Link, Redirect, Route, Switch, withRouter} from 'react-router-dom';
 
 /**
  * Component for Category Page
@@ -20,6 +21,8 @@ class CategoryPage extends React.Component {
             loadedtags: [],
             selected: null
         };
+
+        console.log(props);
     }
 
     componentDidMount() {
@@ -27,7 +30,7 @@ class CategoryPage extends React.Component {
         if (this.props.category) {
             this.fetchVideoData(this.props.category);
         } else {
-            this.loadTags();
+            // this.loadTags();
         }
     }
 
@@ -61,33 +64,26 @@ class CategoryPage extends React.Component {
         return (
             <>
                 {this.renderSideBarATitle()}
-
-                {this.state.selected ?
-                    <>
-                        {this.videodata ?
-                            <VideoContainer
-                                data={this.videodata}/> : null}
-                        <button data-testid='backbtn' className='btn btn-success'
-                                onClick={this.loadCategoryPageDefault}>Back
-                        </button>
-                    </> :
-                    <div className={videocontainerstyle.maincontent}>
-                        {this.state.loadedtags ?
-                            this.state.loadedtags.map((m) => (
-                                <TagPreview
-                                    key={m.tag_name}
-                                    name={m.tag_name}
-                                    tag_id={m.tag_id}
-                                    categorybinding={this.loadTag}/>
-                            )) :
-                            'loading'}
-                    </div>
-                }
+                <Switch>
+                    <Route path='/categories/:id'>
+                        <>
+                            {this.videodata ?
+                                <VideoContainer
+                                    data={this.videodata}/> : null}
+                            <button data-testid='backbtn' className='btn btn-success'
+                                    onClick={this.loadCategoryPageDefault}>Back
+                            </button>
+                        </>
+                    </Route>
+                    <Route path='/categories'>
+                        <TagView/>
+                    </Route>
+                </Switch>
 
                 {this.state.popupvisible ?
                     <NewTagPopup show={this.state.popupvisible}
                                  onHide={() => {
-                                     console.error("setstatecalled!");
+                                     console.error('setstatecalled!');
                                      this.setState({popupvisible: false});
                                      this.loadTags();
                                  }}/> :
@@ -97,14 +93,6 @@ class CategoryPage extends React.Component {
             </>
         );
     }
-
-    /**
-     * load a specific tag into a new previewcontainer
-     * @param tagname
-     */
-    loadTag = (tagname) => {
-        this.fetchVideoData(tagname);
-    };
 
     /**
      * fetch data for a specific tag from backend
@@ -138,6 +126,33 @@ class CategoryPage extends React.Component {
         this.setState({selected: null});
         this.loadTags();
     };
+}
+
+class TagView extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {loadedtags: []};
+    }
+
+    componentDidMount() {
+        this.loadTags();
+    }
+
+    render() {
+        return (
+            <div className={videocontainerstyle.maincontent}>
+                {this.state.loadedtags ?
+                    this.state.loadedtags.map((m) => (
+                        <Link to={'/categories/'+m.tag_id}><TagPreview
+                            key={m.tag_name}
+                            name={m.tag_name}
+                            tag_id={m.tag_id}/></Link>
+                    )) :
+                    'loading'}
+            </div>
+        );
+    }
 
     /**
      * load all available tags from db.

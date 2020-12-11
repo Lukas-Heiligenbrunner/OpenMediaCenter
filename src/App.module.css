@@ -3,6 +3,7 @@
 }
 
 .navitem {
+    color: white;
     cursor: pointer;
     float: left;
 
@@ -15,8 +16,10 @@
 }
 
 .navitem:hover {
+    color: white;
     opacity: 1;
     transition: opacity .5s;
+    text-decoration: none;
 }
 
 .navitem::after {
