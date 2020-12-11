@@ -84,6 +84,8 @@ class PopupBase extends React.Component {
         let xOld = 0, yOld = 0;
 
         const elmnt = this.wrapperRef.current;
+        if(elmnt === null) return;
+
         elmnt.firstChild.onmousedown = dragMouseDown;
 
 

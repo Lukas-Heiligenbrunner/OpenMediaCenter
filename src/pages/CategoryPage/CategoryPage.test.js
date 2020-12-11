@@ -49,7 +49,7 @@ describe('<CategoryPage/>', function () {
         const wrapper = shallow(<CategoryPage/>);
 
         expect(wrapper.find('NewTagPopup')).toHaveLength(0);
-        await wrapper.find('[data-testid="btnaddtag"]').simulate('click');
+        wrapper.find('[data-testid="btnaddtag"]').simulate('click');
         // newtagpopup should be showing now
         expect(wrapper.find('NewTagPopup')).toHaveLength(1);
     });
