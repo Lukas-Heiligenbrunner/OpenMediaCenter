@@ -2,7 +2,7 @@ import React from 'react';
 import MovieSettings from './MovieSettings';
 import GeneralSettings from './GeneralSettings';
 import style from './SettingsPage.module.css';
-import GlobalInfos from '../../GlobalInfos';
+import GlobalInfos from '../../utils/GlobalInfos';
 
 /**
  * The Settingspage handles all kinds of settings for the mediacenter

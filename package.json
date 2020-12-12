@@ -2,6 +2,7 @@
   "name": "openmediacenter",
   "version": "0.1.2",
   "private": true,
+  "main": "public/electron.js",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-regular-svg-icons": "^5.15.1",
@@ -11,7 +12,8 @@
     "plyr-react": "^3.0.7",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.0",
-    "react-dom": "^17.0.1"
+    "react-dom": "^17.0.1",
+    "typescript": "^4.1.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -19,7 +21,19 @@
     "test": "react-scripts test --reporters=jest-junit --reporters=default",
     "testsec": "set NODE_ENV=test && jest --runInBand --ci --all --detectOpenHandles --forceExit --clearMocks --verbose",
     "coverage": "react-scripts test --coverage --watchAll=false",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "buildlinux": "node build.js --linux",
+    "electron-dev": "electron ."
+  },
+  "build": {
+    "appId": "com.example.electron-cra",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    }
   },
   "jest": {
     "collectCoverageFrom": [
@@ -32,7 +46,7 @@
     ]
   },
   "proxy": "http://192.168.0.209",
-  "homepage": "/",
+  "homepage": "./",
   "eslintConfig": {
     "extends": "react-app"
   },
@@ -49,12 +63,14 @@
     ]
   },
   "devDependencies": {
-    "react-scripts": "^3.4.4",
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.2.2",
+    "electron": "^7.0.1",
+    "electron-builder": "^22.1.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.5",
-    "jest-junit": "^12.0.0"
+    "jest-junit": "^12.0.0",
+    "react-scripts": "^3.4.4"
   }
 }

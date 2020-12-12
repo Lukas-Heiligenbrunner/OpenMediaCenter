@@ -1,7 +1,7 @@
 import {shallow} from 'enzyme';
 import React from 'react';
 import GeneralSettings from './GeneralSettings';
-import GlobalInfos from '../../GlobalInfos';
+import GlobalInfos from '../../utils/GlobalInfos';
 
 describe('<GeneralSettings/>', function () {
     it('renders without crashing ', function () {

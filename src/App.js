@@ -1,7 +1,7 @@
 import React from 'react';
 import HomePage from './pages/HomePage/HomePage';
 import RandomPage from './pages/RandomPage/RandomPage';
-import GlobalInfos from './GlobalInfos';
+import GlobalInfos from './utils/GlobalInfos';
 
 // include bootstraps css
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -9,6 +9,7 @@ import style from './App.module.css';
 
 import SettingsPage from './pages/SettingsPage/SettingsPage';
 import CategoryPage from './pages/CategoryPage/CategoryPage';
+import {callAPI} from './utils/Api';
 
 /**
  * The main App handles the main tabs and which content to show
@@ -34,23 +35,18 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        const updateRequest = new FormData();
-        updateRequest.append('action', 'loadInitialData');
+        callAPI('settings.php', {action: 'loadInitialData'}, (result) =>{
+            // set theme
+            GlobalInfos.enableDarkTheme(result.DarkMode);
 
-        fetch('/api/settings.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json()
-                .then((result) => {
-                    // set theme
-                    GlobalInfos.enableDarkTheme(result.DarkMode);
-
-                    this.setState({
-                        generalSettingsLoaded: true,
-                        passwordsupport: result.passwordEnabled,
-                        mediacentername: result.mediacenter_name
-                    });
-                    // set tab title to received mediacenter name
-                    document.title = result.mediacenter_name;
-                }));
+            this.setState({
+                generalSettingsLoaded: true,
+                passwordsupport: result.passwordEnabled,
+                mediacentername: result.mediacenter_name
+            });
+            // set tab title to received mediacenter name
+            document.title = result.mediacenter_name;
+        });
     }
 
     /**

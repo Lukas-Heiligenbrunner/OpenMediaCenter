@@ -1,4 +1,4 @@
-import GlobalInfos from '../../GlobalInfos';
+import GlobalInfos from '../../utils/GlobalInfos';
 import style from './PopupBase.module.css';
 import {Line} from '../PageTitle/PageTitle';
 import React from 'react';
