@@ -7,7 +7,7 @@ import lighttheme from '../AppLightTheme.module.css';
  */
 class StaticInfos {
     #darktheme = true;
-    #viewbinding = () => {console.warn("Viewbinding not set now!")}
+    #viewbinding = () => {console.warn('Viewbinding not set now!');};
 
     /**
      * check if the current theme is the dark theme
@@ -37,7 +37,7 @@ class StaticInfos {
      * set the global Viewbinding for the main Navigation
      * @param cb
      */
-    setViewBinding(cb){
+    setViewBinding(cb) {
         this.#viewbinding = cb;
     }
 
@@ -45,28 +45,9 @@ class StaticInfos {
      * return the Viewbinding for main navigation
      * @returns {StaticInfos.viewbinding}
      */
-    getViewBinding(){
+    getViewBinding() {
         return this.#viewbinding;
     }
-
-    // getAPIDomain(){
-    //     return 'http://192.168.0.209/api/';
-    // }
-    //
-    // callAPI(apinode, fd,  callback){
-    //     const req = new FormData();
-    //
-    //     for(const i in fd){
-    //         req.append(i, fd[i]);
-    //     }
-    //
-    //     fetch(this.getAPIDomain() + apinode, {method: 'POST', body: req})
-    //         .then((response) => response.json()
-    //             .then((result) => {
-    //                 callback(result);
-    //             }));
-    //
-    // }
 }
 
 const GlobalInfos = new StaticInfos();

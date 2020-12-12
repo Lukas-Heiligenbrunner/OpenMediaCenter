@@ -1,11 +1,15 @@
 function getAPIDomain(): string {
-    const hostname = window.location.hostname;
-    if (hostname !== '') {
-        return (`http://${hostname}/api/`);
+    return getBackendDomain() + '/api/';
+}
+
+export function getBackendDomain(): string{
+    const urlroot = window.location.origin;
+    if (urlroot !== 'file://') {
+        return (urlroot);
     } else {
         // todo we should place an popup here and ask
         // we are in an electron window here...
-        return 'http://192.168.0.209/api/';
+        return 'http://192.168.0.209';
     }
 }
 

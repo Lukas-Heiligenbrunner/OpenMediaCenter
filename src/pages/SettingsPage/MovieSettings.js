@@ -1,5 +1,6 @@
 import React from 'react';
 import style from './MovieSettings.module.css';
+import {callAPI} from '../../utils/Api';
 
 /**
  * Component for MovieSettings on Settingspage
@@ -50,23 +51,17 @@ class MovieSettings extends React.Component {
         this.setState({startbtnDisabled: true});
 
         console.log('starting');
-        const request = new FormData();
-        request.append('action', 'startReindex');
-        // fetch all videos available
-        fetch('/api/settings.php', {method: 'POST', body: request})
-            .then((response) => response.json()
-                .then((result) => {
-                    console.log(result);
-                    if (result.success) {
-                        console.log('started successfully');
-                    } else {
-                        console.log('error, reindex already running');
-                        this.setState({startbtnDisabled: true});
-                    }
-                }))
-            .catch(() => {
-                console.log('no connection to backend');
-            });
+
+        callAPI('settings.php', {action: 'startReindex'}, (result) => {
+            console.log(result);
+            if (result.success) {
+                console.log('started successfully');
+            } else {
+                console.log('error, reindex already running');
+                this.setState({startbtnDisabled: true});
+            }
+        });
+
         if (this.myinterval) {
             clearInterval(this.myinterval);
         }
@@ -77,49 +72,33 @@ class MovieSettings extends React.Component {
      * This interval function reloads the current status of reindexing from backend
      */
     updateStatus = () => {
-        const request = new FormData();
-        request.append('action', 'getStatusMessage');
+        callAPI('settings.php', {action: 'getStatusMessage'}, (result) => {
+            if (result.contentAvailable === true) {
+                console.log(result);
+                // todo 2020-07-4: scroll to bottom of div here
+                this.setState({
+                    // insert a string for each line
+                    text: [...result.message.split('\n'),
+                        ...this.state.text]
+                });
+            } else {
+                // clear refresh interval if no content available
+                clearInterval(this.myinterval);
 
-        fetch('/api/settings.php', {method: 'POST', body: request})
-            .then((response) => response.json()
-                .then((result) => {
-                    if (result.contentAvailable === true) {
-                        console.log(result);
-                        // todo 2020-07-4: scroll to bottom of div here
-                        this.setState({
-                            // insert a string for each line
-                            text: [...result.message.split('\n'),
-                                ...this.state.text]
-                        });
-                    } else {
-                        // clear refresh interval if no content available
-                        clearInterval(this.myinterval);
-
-                        this.setState({startbtnDisabled: false});
-                    }
-                }))
-            .catch(() => {
-                console.log('no connection to backend');
-            });
+                this.setState({startbtnDisabled: false});
+            }
+        });
     };
 
     /**
      * send request to cleanup db gravity
      */
     cleanupGravity() {
-        const request = new FormData();
-        request.append('action', 'cleanupGravity');
-
-        fetch('/api/settings.php', {method: 'POST', body: request})
-            .then((response) => response.text()
-                .then((result) => {
-                    this.setState({
-                        text: ['successfully cleaned up gravity!']
-                    });
-                }))
-            .catch(() => {
-                console.log('no connection to backend');
+        callAPI('settings.php', {action: 'cleanupGravity'}, (result) => {
+            this.setState({
+                text: ['successfully cleaned up gravity!']
             });
+        });
     }
 }
 
