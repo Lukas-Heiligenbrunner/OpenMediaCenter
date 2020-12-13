@@ -10,6 +10,7 @@ import style from './App.module.css';
 import SettingsPage from './pages/SettingsPage/SettingsPage';
 import CategoryPage from './pages/CategoryPage/CategoryPage';
 import {callAPI} from './utils/Api';
+import {NoBackendConnectionPopup} from './elements/Popups/NoBackendConnectionPopup/NoBackendConnectionPopup';
 
 /**
  * The main App handles the main tabs and which content to show
@@ -23,7 +24,8 @@ class App extends React.Component {
             page: 'default',
             generalSettingsLoaded: false,
             passwordsupport: null,
-            mediacentername: 'OpenMediaCenter'
+            mediacentername: 'OpenMediaCenter',
+            onapierror: false
         };
 
         // bind this to the method for being able to call methods such as this.setstate
@@ -34,7 +36,8 @@ class App extends React.Component {
         GlobalInfos.setViewBinding(this.constructViewBinding());
     }
 
-    componentDidMount() {
+    initialAPICall(){
+        // this is the first api call so if it fails we know there is no connection to backend
         callAPI('settings.php', {action: 'loadInitialData'}, (result) =>{
             // set theme
             GlobalInfos.enableDarkTheme(result.DarkMode);
@@ -42,11 +45,18 @@ class App extends React.Component {
             this.setState({
                 generalSettingsLoaded: true,
                 passwordsupport: result.passwordEnabled,
-                mediacentername: result.mediacenter_name
+                mediacentername: result.mediacenter_name,
+                onapierror: false
             });
             // set tab title to received mediacenter name
             document.title = result.mediacenter_name;
+        }, error =>  {
+            this.setState({onapierror: true});
         });
+    }
+
+    componentDidMount() {
+        this.initialAPICall();
     }
 
     /**
@@ -115,6 +125,7 @@ class App extends React.Component {
                     </div>
                 </div>
                 {this.state.generalSettingsLoaded ? this.MainBody() : 'loading'}
+                {this.state.onapierror ? this.ApiError() : null}
             </div>
         );
     }
@@ -137,6 +148,11 @@ class App extends React.Component {
         this.setState({
             page: 'lastpage'
         });
+    }
+
+    ApiError() {
+        // on api error show popup and retry and show again if failing..
+        return (<NoBackendConnectionPopup onHide={() => this.initialAPICall()}/>);
     }
 }
 

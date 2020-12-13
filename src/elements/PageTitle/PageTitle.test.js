@@ -1,7 +1,7 @@
 import React from 'react';
 import {shallow} from 'enzyme';
 
-import PageTitle from './PageTitle';
+import PageTitle, {Line} from './PageTitle';
 
 describe('<Preview/>', function () {
     it('renders without crashing ', function () {
@@ -26,6 +26,13 @@ describe('<Preview/>', function () {
         const wrapper = shallow(<PageTitle subtitle='testsubtitle'/>);
 
         expect(wrapper.find('.pageheadersubtitle').text()).toBe('testsubtitle');
+    });
+});
+
+describe('<Line/>', () => {
+    it('renders without crashing', function () {
+        const wrapper = shallow(<Line/>);
+        wrapper.unmount();
     });
 });
 

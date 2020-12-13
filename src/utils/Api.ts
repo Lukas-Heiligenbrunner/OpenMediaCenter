@@ -1,16 +1,26 @@
+let customBackendURL: string;
+
 function getAPIDomain(): string {
     return getBackendDomain() + '/api/';
 }
 
-export function getBackendDomain(): string{
-    const urlroot = window.location.origin;
-    if (urlroot !== 'file://') {
-        return (urlroot);
+export function getBackendDomain(): string {
+    let userAgent = navigator.userAgent.toLowerCase();
+    if (userAgent.indexOf(' electron/') > -1) {
+        // Electron-specific code - force a custom backendurl
+        return (customBackendURL);
     } else {
-        // todo we should place an popup here and ask
-        // we are in an electron window here...
-        return 'http://192.168.0.209';
+        // use custom only if defined
+        if (customBackendURL) {
+            return (customBackendURL);
+        } else {
+            return (window.location.origin);
+        }
     }
+}
+
+export function setCustomBackendDomain(domain: string) {
+    customBackendURL = domain;
 }
 
 interface ApiBaseRequest {
@@ -28,13 +38,13 @@ function buildFormData(args: ApiBaseRequest): FormData {
     return req;
 }
 
-export function callAPI(apinode: string, fd: ApiBaseRequest, callback: (_: object) => void): void {
+export function callAPI(apinode: string, fd: ApiBaseRequest, callback: (_: object) => void, errorcallback: (_: object) => void = (_: object) => {
+}): void {
     fetch(getAPIDomain() + apinode, {method: 'POST', body: buildFormData(fd)})
         .then((response) => response.json()
             .then((result) => {
                 callback(result);
-            }));
-
+            })).catch(reason => errorcallback(reason));
 }
 
 export function callAPIPlain(apinode: string, fd: ApiBaseRequest, callback: (_: any) => void): void {

@@ -3,6 +3,11 @@
   "version": "0.1.2",
   "private": true,
   "main": "public/electron.js",
+  "author": {
+    "email": "lukas.heiligenbrunner@gmail.com",
+    "name": "Lukas Heiligenbrunner",
+    "url": "https://heili.eu"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-regular-svg-icons": "^5.15.1",
@@ -33,6 +38,9 @@
     ],
     "directories": {
       "buildResources": "assets"
+    },
+    "linux": {
+      "target": ["rpm","deb","snap","AppImage"]
     }
   },
   "jest": {

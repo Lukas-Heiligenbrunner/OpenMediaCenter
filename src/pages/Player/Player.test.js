@@ -81,7 +81,7 @@ describe('<Player/>', function () {
         const wrapper = shallow(<Player/>);
 
         const func = jest.fn();
-        prepareViewBinding(func)
+        prepareViewBinding(func);
 
         global.fetch = prepareFetchApi({result: 'success'});
 
@@ -160,6 +160,20 @@ describe('<Player/>', function () {
 
             global.fetch.mockClear();
             done();
+        });
+    });
+
+    it('showspopups correctly', function () {
+        const wrapper = shallow(<Player/>);
+
+        wrapper.setState({popupvisible: true}, () => {
+            // is the AddTagpopu rendered?
+            expect(wrapper.find('AddTagPopup')).toHaveLength(1);
+            wrapper.setState({popupvisible: false, actorpopupvisible: true}, () => {
+                // actorpopup rendred and tagpopup hidden?
+                expect(wrapper.find('AddTagPopup')).toHaveLength(0);
+                expect(wrapper.find('AddActorPopup')).toHaveLength(1);
+            });
         });
     });
 
