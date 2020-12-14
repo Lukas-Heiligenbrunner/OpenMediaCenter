@@ -1,6 +1,7 @@
 import {shallow} from 'enzyme';
 import React from 'react';
 import Player from './Player';
+import {callAPI} from '../../utils/Api';
 
 describe('<Player/>', function () {
     it('renders without crashing ', function () {
@@ -174,6 +175,49 @@ describe('<Player/>', function () {
                 expect(wrapper.find('AddTagPopup')).toHaveLength(0);
                 expect(wrapper.find('AddActorPopup')).toHaveLength(1);
             });
+        });
+    });
+
+
+    it('quickadd tag correctly', function () {
+        const wrapper = shallow(<Player/>);
+        const helpers = require("../../utils/Api");
+        helpers.callAPI = jest.fn().mockImplementation((_, __, func1) => {func1({result: 'success'})});
+        wrapper.setState({suggesttag: [{tag_name: 'test', tag_id: 1}]}, () => {
+            // mock funtion should have not been called
+            expect(callAPI).toBeCalledTimes(0);
+            wrapper.find('Tag').findWhere(p => p.text() === 'test').parent().dive().simulate('click');
+            // mock function should have been called once
+            expect(callAPI).toBeCalledTimes(1);
+
+            // expect tag added to video tags
+            expect(wrapper.state().tags).toMatchObject([{tag_name: 'test'}]);
+            // expect tag to be removed from tag suggestions
+            expect(wrapper.state().suggesttag).toHaveLength(0);
+
+            jest.resetAllMocks();
+        });
+    });
+
+    it('test adding of already existing tag', function () {
+        const wrapper = shallow(<Player/>);
+        const helpers = require("../../utils/Api");
+        helpers.callAPI = jest.fn().mockImplementation((_, __, func1) => {func1({result: 'success'})});
+
+        wrapper.setState({suggesttag: [{tag_name: 'test', tag_id: 1}], tags: [{tag_name: 'test', tag_id: 1}]}, () => {
+            // mock funtion should have not been called
+            expect(callAPI).toBeCalledTimes(0);
+            wrapper.find('Tag').findWhere(p => p.text() === 'test').last().parent().dive().simulate('click');
+            // mock function should have been called once
+            expect(callAPI).toBeCalledTimes(1);
+
+            // there should not been added a duplicate of tag so object stays same...
+            expect(wrapper.state().tags).toMatchObject([{tag_name: 'test'}]);
+            // the suggestion tag shouldn't be removed (this can't actually happen in rl
+            // because backennd doesn't give dupliacate suggestiontags)
+            expect(wrapper.state().suggesttag).toHaveLength(1);
+
+            jest.resetAllMocks();
         });
     });
 
