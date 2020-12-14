@@ -76,6 +76,18 @@ package_debian:
       - deb/OpenMediaCenter-*.deb
   needs: ["build"]
 
+package_electron:
+  stage: packaging
+  image: electronuserland/builder:wine
+  script:
+    - npm run buildlinux
+  artifacts:
+    expire_in: 2 days
+    paths:
+      - dist/*.*
+  needs: ["build"]
+
+
 deploy_test1:
   stage: deploy
   image: luki42/alpineopenssh:latest
