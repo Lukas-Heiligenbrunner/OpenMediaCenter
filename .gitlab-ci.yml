@@ -84,7 +84,8 @@ package_electron:
   artifacts:
     expire_in: 2 days
     paths:
-      - dist/*.*
+      - dist/*.rpm
+      - dist/*.deb
   needs: ["build"]
 
 
