@@ -20,7 +20,8 @@ class PopupBase extends React.Component {
         // parse style props
         this.framedimensions = {
             width: (this.props.width ? this.props.width : undefined),
-            height: (this.props.height ? this.props.height : undefined)
+            height: (this.props.height ? this.props.height : undefined),
+            minHeight: (this.props.height ? this.props.height : undefined)
         };
     }
 

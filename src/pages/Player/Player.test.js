@@ -181,8 +181,8 @@ describe('<Player/>', function () {
 
     it('quickadd tag correctly', function () {
         const wrapper = shallow(<Player/>);
-        const helpers = require("../../utils/Api");
-        helpers.callAPI = jest.fn().mockImplementation((_, __, func1) => {func1({result: 'success'})});
+        global.callAPIMock({result: 'success'});
+
         wrapper.setState({suggesttag: [{tag_name: 'test', tag_id: 1}]}, () => {
             // mock funtion should have not been called
             expect(callAPI).toBeCalledTimes(0);
@@ -194,15 +194,12 @@ describe('<Player/>', function () {
             expect(wrapper.state().tags).toMatchObject([{tag_name: 'test'}]);
             // expect tag to be removed from tag suggestions
             expect(wrapper.state().suggesttag).toHaveLength(0);
-
-            jest.resetAllMocks();
         });
     });
 
     it('test adding of already existing tag', function () {
         const wrapper = shallow(<Player/>);
-        const helpers = require("../../utils/Api");
-        helpers.callAPI = jest.fn().mockImplementation((_, __, func1) => {func1({result: 'success'})});
+        global.callAPIMock({result: 'success'});
 
         wrapper.setState({suggesttag: [{tag_name: 'test', tag_id: 1}], tags: [{tag_name: 'test', tag_id: 1}]}, () => {
             // mock funtion should have not been called
@@ -216,8 +213,6 @@ describe('<Player/>', function () {
             // the suggestion tag shouldn't be removed (this can't actually happen in rl
             // because backennd doesn't give dupliacate suggestiontags)
             expect(wrapper.state().suggesttag).toHaveLength(1);
-
-            jest.resetAllMocks();
         });
     });
 
@@ -236,4 +231,26 @@ describe('<Player/>', function () {
 
         return wrapper;
     }
+
+    it('test addactor popup showing', function () {
+        const wrapper = shallow(<Player/>);
+
+        expect(wrapper.find('AddActorPopup')).toHaveLength(0);
+
+        wrapper.instance().addActor();
+
+        // check if popup is visible
+        expect(wrapper.find('AddActorPopup')).toHaveLength(1);
+    });
+
+    it('test hiding of addactor popup', function () {
+        const wrapper = shallow(<Player/>);
+        wrapper.instance().addActor();
+
+        expect(wrapper.find('AddActorPopup')).toHaveLength(1);
+
+        wrapper.find('AddActorPopup').props().onHide();
+
+        expect(wrapper.find('AddActorPopup')).toHaveLength(0);
+    });
 });

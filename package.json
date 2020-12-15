@@ -31,10 +31,9 @@
     "electron-dev": "electron ."
   },
   "build": {
-    "appId": "com.example.electron-cra",
+    "appId": "com.heili.openmediacenter",
     "files": [
-      "build/**/*",
-      "node_modules/**/*"
+      "build/**/*"
     ],
     "directories": {
       "buildResources": "assets"
