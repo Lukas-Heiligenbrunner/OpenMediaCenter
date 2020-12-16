@@ -24,10 +24,10 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --reporters=jest-junit --reporters=default",
-    "testsec": "set NODE_ENV=test && jest --runInBand --ci --all --detectOpenHandles --forceExit --clearMocks --verbose",
     "coverage": "react-scripts test --coverage --watchAll=false",
     "eject": "react-scripts eject",
     "buildlinux": "node build.js --linux",
+    "buildwin": "node build.js --win",
     "electron-dev": "electron ."
   },
   "build": {
@@ -40,6 +40,9 @@
     },
     "linux": {
       "target": ["rpm","deb","snap","AppImage"]
+    },
+    "win": {
+      "target": ["nsis"]
     }
   },
   "jest": {

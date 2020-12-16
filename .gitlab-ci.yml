@@ -88,6 +88,17 @@ package_electron:
       - dist/*.deb
   needs: ["build"]
 
+package_electron_win:
+  stage: packaging
+  image: electronuserland/builder:wine
+  script:
+    - npm run buildwin
+  artifacts:
+    expire_in: 2 days
+    paths:
+      - dist/*.exe
+  needs: ["build"]
+
 
 deploy_test1:
   stage: deploy
