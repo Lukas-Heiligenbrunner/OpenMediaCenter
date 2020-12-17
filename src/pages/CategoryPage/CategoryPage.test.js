@@ -24,27 +24,6 @@ describe('<CategoryPage/>', function () {
         });
     });
 
-    it('test errored fetch call', done => {
-        global.fetch = global.prepareFetchApi({});
-
-        let message;
-        global.console.log = jest.fn((m) => {
-            message = m;
-        });
-
-        shallow(<CategoryPage/>);
-
-        expect(global.fetch).toHaveBeenCalledTimes(1);
-
-        process.nextTick(() => {
-            //callback to close window should have called
-            expect(message).toBe('no connection to backend');
-
-            global.fetch.mockClear();
-            done();
-        });
-    });
-
     it('test new tag popup', function () {
         const wrapper = shallow(<CategoryPage/>);
 

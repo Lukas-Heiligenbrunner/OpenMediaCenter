@@ -1,5 +1,5 @@
-import darktheme from './AppDarkTheme.module.css';
-import lighttheme from './AppLightTheme.module.css';
+import darktheme from '../AppDarkTheme.module.css';
+import lighttheme from '../AppLightTheme.module.css';
 
 /**
  * This class is available for all components in project
@@ -7,7 +7,7 @@ import lighttheme from './AppLightTheme.module.css';
  */
 class StaticInfos {
     #darktheme = true;
-    #viewbinding = () => {console.warn("Viewbinding not set now!")}
+    #viewbinding = () => {console.warn('Viewbinding not set now!');};
 
     /**
      * check if the current theme is the dark theme
@@ -37,7 +37,7 @@ class StaticInfos {
      * set the global Viewbinding for the main Navigation
      * @param cb
      */
-    setViewBinding(cb){
+    setViewBinding(cb) {
         this.#viewbinding = cb;
     }
 
@@ -45,7 +45,7 @@ class StaticInfos {
      * return the Viewbinding for main navigation
      * @returns {StaticInfos.viewbinding}
      */
-    getViewBinding(){
+    getViewBinding() {
         return this.#viewbinding;
     }
 }

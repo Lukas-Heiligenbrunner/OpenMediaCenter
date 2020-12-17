@@ -5,6 +5,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faUser} from '@fortawesome/free-solid-svg-icons';
 import style from './ActorPage.module.css';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
+import {callAPI} from '../../utils/Api';
 
 class ActorPage extends React.Component {
     constructor(props) {
@@ -40,17 +41,10 @@ class ActorPage extends React.Component {
      */
     getActorInfo() {
         // todo 2020-12-4: fetch to db
-
-        const req = new FormData();
-        req.append('action', 'getActorInfo');
-        req.append('actorid', this.props.actor.actor_id);
-
-        fetch('/api/actor.php', {method: 'POST', body: req})
-            .then((response) => response.json()
-                .then((result) => {
-                    console.log(result);
-                    this.setState({data: result.videos ? result.videos : []});
-                }));
+        callAPI('actor.php', {action: 'getActorInfo', actorid: this.props.actor.actor_id}, result => {
+            console.log(result);
+            this.setState({data: result.videos ? result.videos : []});
+        });
     }
 }
 

@@ -2,14 +2,18 @@ import React from 'react';
 import MovieSettings from './MovieSettings';
 import GeneralSettings from './GeneralSettings';
 import style from './SettingsPage.module.css';
-import GlobalInfos from '../../GlobalInfos';
+import GlobalInfos from '../../utils/GlobalInfos';
+
+type SettingsPageState = {
+    currentpage: string
+}
 
 /**
  * The Settingspage handles all kinds of settings for the mediacenter
  * and is basically a wrapper for child-tabs
  */
-class SettingsPage extends React.Component {
-    constructor(props, context) {
+class SettingsPage extends React.Component<{}, SettingsPageState> {
+    constructor(props: Readonly<{}> | {}, context?: any) {
         super(props, context);
 
         this.state = {
@@ -21,7 +25,7 @@ class SettingsPage extends React.Component {
      * load the selected tab
      * @returns {JSX.Element|string} the jsx element of the selected tab
      */
-    getContent() {
+    getContent(): JSX.Element | string {
         switch (this.state.currentpage) {
             case 'general':
                 return <GeneralSettings/>;
@@ -34,7 +38,7 @@ class SettingsPage extends React.Component {
         }
     }
 
-    render() {
+    render() : JSX.Element {
         const themestyle = GlobalInfos.getThemeStyle();
         return (
             <div>

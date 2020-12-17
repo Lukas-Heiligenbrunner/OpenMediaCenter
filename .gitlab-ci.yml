@@ -8,6 +8,7 @@ stages:
   - deploy
 
 cache:
+  key: "$CI_COMMIT_REF_SLUG" # use per branch caching
   paths:
     - node_modules/
 
@@ -74,6 +75,20 @@ package_debian:
   artifacts:
     paths:
       - deb/OpenMediaCenter-*.deb
+  needs: ["build"]
+
+electron:
+  stage: packaging
+  image: electronuserland/builder:wine
+  script:
+    - npm run buildlinux
+    - npm run buildwin
+  artifacts:
+    expire_in: 2 days
+    paths:
+      - dist/*.rpm
+      - dist/*.deb
+      - dist/*.exe
   needs: ["build"]
 
 deploy_test1:

@@ -9,12 +9,6 @@ describe('<Preview/>', function () {
         wrapper.unmount();
     });
 
-    // check if preview title renders correctly
-    it('renders title', () => {
-        const wrapper = shallow(<Preview name='test'/>);
-        expect(wrapper.find('.previewtitle').text()).toBe('test');
-    });
-
 
     it('click event triggered', () => {
         const func = jest.fn();
@@ -36,7 +30,7 @@ describe('<Preview/>', function () {
         });
         global.fetch = jest.fn().mockImplementation(() => mockFetchPromise);
 
-        const wrapper = shallow(<Preview/>);
+        const wrapper = shallow(<Preview name='test'/>);
 
         // now called 1 times
         expect(global.fetch).toHaveBeenCalledTimes(1);
@@ -44,6 +38,8 @@ describe('<Preview/>', function () {
         process.nextTick(() => {
             // received picture should be rendered into wrapper
             expect(wrapper.find('.previewimage').props().src).not.toBeNull();
+            // check if preview title renders correctly
+            expect(wrapper.find('.previewtitle').text()).toBe('test');
 
             global.fetch.mockClear();
             done();

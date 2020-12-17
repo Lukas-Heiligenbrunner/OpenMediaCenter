@@ -1,4 +1,4 @@
-import GlobalInfos from '../../GlobalInfos';
+import GlobalInfos from '../../utils/GlobalInfos';
 import style from './PopupBase.module.css';
 import {Line} from '../PageTitle/PageTitle';
 import React from 'react';
@@ -20,7 +20,8 @@ class PopupBase extends React.Component {
         // parse style props
         this.framedimensions = {
             width: (this.props.width ? this.props.width : undefined),
-            height: (this.props.height ? this.props.height : undefined)
+            height: (this.props.height ? this.props.height : undefined),
+            minHeight: (this.props.height ? this.props.height : undefined)
         };
     }
 
