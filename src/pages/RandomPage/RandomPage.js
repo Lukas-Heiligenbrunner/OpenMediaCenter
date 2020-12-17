@@ -4,6 +4,7 @@ import SideBar, {SideBarTitle} from '../../elements/SideBar/SideBar';
 import Tag from '../../elements/Tag/Tag';
 import PageTitle from '../../elements/PageTitle/PageTitle';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
+import {callAPI} from '../../utils/Api';
 
 /**
  * Randompage shuffles random viedeopreviews and provides a shuffle btn
@@ -61,25 +62,15 @@ class RandomPage extends React.Component {
      * @param nr number of videos to load
      */
     loadShuffledvideos(nr) {
-        const updateRequest = new FormData();
-        updateRequest.append('action', 'getRandomMovies');
-        updateRequest.append('number', nr);
+        callAPI('video.php', {action: 'getRandomMovies', number: nr}, result => {
+            console.log(result);
 
-        // fetch all videos available
-        fetch('/api/video.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json()
-                .then((result) => {
-                    console.log(result);
-
-                    this.setState({videos: []}); // needed to trigger rerender of main videoview
-                    this.setState({
-                        videos: result.rows,
-                        tags: result.tags
-                    });
-                }))
-            .catch(() => {
-                console.log('no connection to backend');
+            this.setState({videos: []}); // needed to trigger rerender of main videoview
+            this.setState({
+                videos: result.rows,
+                tags: result.tags
             });
+        });
     }
 }
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import PopupBase from '../PopupBase';
 import style from './NewTagPopup.module.css';
+import {callAPI} from '../../../utils/Api';
 
 /**
  * creates modal overlay to define a new Tag
@@ -27,19 +28,13 @@ class NewTagPopup extends React.Component {
      * store the filled in form to the backend
      */
     storeselection() {
-        const updateRequest = new FormData();
-        updateRequest.append('action', 'createTag');
-        updateRequest.append('tagname', this.value);
-
-        fetch('/api/tags.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json())
-            .then((result) => {
-                if (result.result !== 'success') {
-                    console.log('error occured while writing to db -- todo error handling');
-                    console.log(result.result);
-                }
-                this.props.onHide();
-            });
+        callAPI('tags.php', {action: 'createTag', tagname: this.value}, result => {
+            if (result.result !== 'success') {
+                console.log('error occured while writing to db -- todo error handling');
+                console.log(result.result);
+            }
+            this.props.onHide();
+        });
     }
 }
 

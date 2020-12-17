@@ -1,6 +1,6 @@
 import React from 'react';
 import style from './SideBar.module.css';
-import GlobalInfos from '../../GlobalInfos';
+import GlobalInfos from '../../utils/GlobalInfos';
 
 /**
  * component for sidebar-info

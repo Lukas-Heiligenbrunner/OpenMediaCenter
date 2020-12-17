@@ -3,6 +3,8 @@ import React from 'react';
 import {shallow} from 'enzyme';
 import '@testing-library/jest-dom';
 import NewTagPopup from './NewTagPopup';
+import {NoBackendConnectionPopup} from '../NoBackendConnectionPopup/NoBackendConnectionPopup';
+import {getBackendDomain} from '../../../utils/Api';
 
 describe('<NewTagPopup/>', function () {
     it('renders without crashing ', function () {
@@ -32,5 +34,13 @@ describe('<NewTagPopup/>', function () {
             global.fetch.mockClear();
             done();
         });
+    });
+
+    it('simulate textfield change', function () {
+        const wrapper = shallow(<NewTagPopup/>);
+
+        wrapper.find('input').simulate('change', {target: {value: 'testvalue'}});
+
+        expect(wrapper.instance().value).toBe('testvalue');
     });
 });

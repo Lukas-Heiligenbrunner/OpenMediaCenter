@@ -2,7 +2,7 @@ import React from 'react';
 
 import styles from './Tag.module.css';
 import CategoryPage from '../../pages/CategoryPage/CategoryPage';
-import GlobalInfos from '../../GlobalInfos';
+import GlobalInfos from '../../utils/GlobalInfos';
 
 /**
  * A Component representing a single Category tag

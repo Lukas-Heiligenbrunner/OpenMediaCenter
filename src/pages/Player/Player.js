@@ -1,7 +1,7 @@
 import React from 'react';
 
 import style from './Player.module.css';
-import plyrstyle from 'plyr-react/dist/plyr.css'
+import plyrstyle from 'plyr-react/dist/plyr.css';
 
 import {Plyr} from 'plyr-react';
 import SideBar, {SideBarItem, SideBarTitle} from '../../elements/SideBar/SideBar';
@@ -12,7 +12,8 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import AddActorPopup from '../../elements/Popups/AddActorPopup/AddActorPopup';
 import ActorTile from '../../elements/ActorTile/ActorTile';
-import GlobalInfos from '../../GlobalInfos';
+import GlobalInfos from '../../utils/GlobalInfos';
+import {callAPI, getBackendDomain} from '../../utils/Api';
 
 
 /**
@@ -67,47 +68,40 @@ class Player extends React.Component {
      * @param tagName name of tag to add
      */
     quickAddTag(tagId, tagName) {
-        const updateRequest = new FormData();
-        updateRequest.append('action', 'addTag');
-        updateRequest.append('id', tagId);
-        updateRequest.append('movieid', this.props.movie_id);
+        callAPI('tags.php', {action: 'addTag', id: tagId, movieid: this.props.movie_id}, (result) => {
+            if (result.result !== 'success') {
+                console.error('error occured while writing to db -- todo error handling');
+                console.error(result.result);
+            } else {
+                // check if tag has already been added
+                const tagIndex = this.state.tags.map(function (e) {
+                    return e.tag_name;
+                }).indexOf(tagName);
 
-        fetch('/api/tags.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json()
-                .then((result) => {
-                    if (result.result !== 'success') {
-                        console.error('error occured while writing to db -- todo error handling');
-                        console.error(result.result);
+                // only add tag if it isn't already there
+                if (tagIndex === -1) {
+                    // update tags if successful
+                    let array = [...this.state.suggesttag]; // make a separate copy of the array (because of setState)
+                    const quickaddindex = this.state.suggesttag.map(function (e) {
+                        return e.tag_id;
+                    }).indexOf(tagId);
+
+                    // check if tag is available in quickadds
+                    if (quickaddindex !== -1) {
+                        array.splice(quickaddindex, 1);
+
+                        this.setState({
+                            tags: [...this.state.tags, {tag_name: tagName}],
+                            suggesttag: array
+                        });
                     } else {
-                        // check if tag has already been added
-                        const tagIndex = this.state.tags.map(function (e) {
-                            return e.tag_name;
-                        }).indexOf(tagName);
-
-                        // only add tag if it isn't already there
-                        if (tagIndex === -1) {
-                            // update tags if successful
-                            let array = [...this.state.suggesttag]; // make a separate copy of the array (because of setState)
-                            const quickaddindex = this.state.suggesttag.map(function (e) {
-                                return e.tag_id;
-                            }).indexOf(tagId);
-
-                            // check if tag is available in quickadds
-                            if (quickaddindex !== -1) {
-                                array.splice(quickaddindex, 1);
-
-                                this.setState({
-                                    tags: [...this.state.tags, {tag_name: tagName}],
-                                    suggesttag: array
-                                });
-                            } else {
-                                this.setState({
-                                    tags: [...this.state.tags, {tag_name: tagName}]
-                                });
-                            }
-                        }
+                        this.setState({
+                            tags: [...this.state.tags, {tag_name: tagName}]
+                        });
                     }
-                }));
+                }
+            }
+        });
     }
 
     /**
@@ -179,7 +173,7 @@ class Player extends React.Component {
                 <div className={style.videowrapper}>
                     {/* video component is added here */}
                     {this.state.sources ? <Plyr
-                        style={plyrstyle}
+                            style={plyrstyle}
                             source={this.state.sources}
                             options={this.options}/> :
                         <div>not loaded yet</div>}
@@ -227,36 +221,30 @@ class Player extends React.Component {
      * fetch all the required infos of a video from backend
      */
     fetchMovieData() {
-        const updateRequest = new FormData();
-        updateRequest.append('action', 'loadVideo');
-        updateRequest.append('movieid', this.props.movie_id);
-
-        fetch('/api/video.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json())
-            .then((result) => {
-                this.setState({
-                    sources: {
-                        type: 'video',
-                        sources: [
-                            {
-                                src: result.movie_url,
-                                type: 'video/mp4',
-                                size: 1080
-                            }
-                        ],
-                        poster: result.thumbnail
-                    },
-                    movie_id: result.movie_id,
-                    movie_name: result.movie_name,
-                    likes: result.likes,
-                    quality: result.quality,
-                    length: result.length,
-                    tags: result.tags,
-                    suggesttag: result.suggesttag,
-                    actors: result.actors
-                });
-                console.log(this.state);
+        callAPI('video.php', {action: 'loadVideo', movieid: this.props.movie_id}, result => {
+            this.setState({
+                sources: {
+                    type: 'video',
+                    sources: [
+                        {
+                            src: getBackendDomain() + result.movie_url,
+                            type: 'video/mp4',
+                            size: 1080
+                        }
+                    ],
+                    poster: result.thumbnail
+                },
+                movie_id: result.movie_id,
+                movie_name: result.movie_name,
+                likes: result.likes,
+                quality: result.quality,
+                length: result.length,
+                tags: result.tags,
+                suggesttag: result.suggesttag,
+                actors: result.actors
             });
+            console.log(this.state);
+        });
     }
 
 
@@ -264,21 +252,15 @@ class Player extends React.Component {
      * click handler for the like btn
      */
     likebtn() {
-        const updateRequest = new FormData();
-        updateRequest.append('action', 'addLike');
-        updateRequest.append('movieid', this.props.movie_id);
-
-        fetch('/api/video.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json()
-                .then((result) => {
-                    if (result.result === 'success') {
-                        // likes +1 --> avoid reload of all data
-                        this.setState({likes: this.state.likes + 1});
-                    } else {
-                        console.error('an error occured while liking');
-                        console.error(result);
-                    }
-                }));
+        callAPI('video.php', {action: 'addLike', movieid: this.props.movie_id}, result => {
+            if (result.result === 'success') {
+                // likes +1 --> avoid reload of all data
+                this.setState({likes: this.state.likes + 1});
+            } else {
+                console.error('an error occured while liking');
+                console.error(result);
+            }
+        });
     }
 
     /**
@@ -293,21 +275,15 @@ class Player extends React.Component {
      * delete the current video and return to last page
      */
     deleteVideo() {
-        const updateRequest = new FormData();
-        updateRequest.append('action', 'deleteVideo');
-        updateRequest.append('movieid', this.props.movie_id);
-
-        fetch('/api/video.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json()
-                .then((result) => {
-                    if (result.result === 'success') {
-                        // return to last element if successful
-                        GlobalInfos.getViewBinding().returnToLastElement();
-                    } else {
-                        console.error('an error occured while liking');
-                        console.error(result);
-                    }
-                }));
+        callAPI('video.php', {action: 'deleteVideo', movieid: this.props.movie_id}, result => {
+            if (result.result === 'success') {
+                // return to last element if successful
+                GlobalInfos.getViewBinding().returnToLastElement();
+            } else {
+                console.error('an error occured while liking');
+                console.error(result);
+            }
+        });
     }
 
     /**
@@ -318,17 +294,9 @@ class Player extends React.Component {
     }
 
     refetchActors() {
-        const req = new FormData();
-        req.append('action', 'getActorsOfVideo');
-        req.append('videoid', this.props.movie_id);
-
-        console.log('refrething actors');
-
-        fetch('/api/actor.php', {method: 'POST', body: req})
-            .then((response) => response.json()
-                .then((result) => {
-                    this.setState({actors: result});
-                }));
+        callAPI('actor.php', {action: 'getActorsOfVideo', videoid: this.props.movie_id}, result => {
+            this.setState({actors: result});
+        });
     }
 }
 

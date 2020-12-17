@@ -6,7 +6,7 @@ import '@testing-library/jest-dom/extend-expect';
 
 import {configure} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import GlobalInfos from './GlobalInfos';
+import GlobalInfos from './utils/GlobalInfos';
 
 configure({adapter: new Adapter()});
 
@@ -45,3 +45,21 @@ global.prepareViewBinding = (func) => {
         }
     };
 }
+
+global.callAPIMock = (resonse) => {
+    const helpers = require("./utils/Api");
+    helpers.callAPI = jest.fn().mockImplementation((_, __, func1) => {func1(resonse)});
+}
+
+// code to run before each test
+global.beforeEach(() => {
+    // empty fetch response implementation for each test
+    global.fetch = prepareFetchApi({});
+    // todo with callAPIMock
+})
+
+global.afterEach(() => {
+    // clear all mocks after each test
+    jest.resetAllMocks();
+})
+

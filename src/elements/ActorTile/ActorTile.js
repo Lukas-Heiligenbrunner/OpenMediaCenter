@@ -2,7 +2,7 @@ import style from './ActorTile.module.css';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faUser} from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
-import GlobalInfos from '../../GlobalInfos';
+import GlobalInfos from '../../utils/GlobalInfos';
 import ActorPage from '../../pages/ActorPage/ActorPage';
 
 class ActorTile extends React.Component {
