@@ -108,11 +108,12 @@ describe('<Player/>', function () {
         const wrapper = instance();
 
         const func = jest.fn();
-        prepareViewBinding(func);
+
+        wrapper.setProps({history: {goBack: func}});
 
         expect(func).toHaveBeenCalledTimes(0);
         wrapper.find('.closebutton').simulate('click');
-        // addtagpopup should be showing now
+        // backstack should be popped once
         expect(func).toHaveBeenCalledTimes(1);
     });
 

@@ -7,7 +7,7 @@ import {TagPreview} from '../../elements/Preview/Preview';
 import NewTagPopup from '../../elements/Popups/NewTagPopup/NewTagPopup';
 import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
-import {Link, Redirect, Route, Switch, withRouter} from 'react-router-dom';
+import {Link, Route, Switch} from 'react-router-dom';
 import {callAPI} from '../../utils/Api';
 
 /**

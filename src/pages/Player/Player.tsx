@@ -15,13 +15,31 @@ import ActorTile from '../../elements/ActorTile/ActorTile';
 import {withRouter} from 'react-router-dom';
 import GlobalInfos from '../../utils/GlobalInfos';
 import {callAPI, getBackendDomain} from '../../utils/Api';
+import {RouteComponentProps} from "react-router";
 
+interface myprops extends RouteComponentProps<{ id: string }> {
+
+}
+
+interface mystate {
+    sources: any,
+    movie_id: any,
+    movie_name: string,
+    likes: number,
+    quality: number,
+    length: number,
+    tags: any,
+    suggesttag: any,
+    popupvisible: boolean,
+    actorpopupvisible: boolean,
+    actors: any
+}
 
 /**
  * Player page loads when a video is selected to play and handles the video view
  * and actions such as tag adding and liking
  */
-export class Player extends React.Component{
+export class Player extends React.Component<myprops, mystate> {
     options = {
         controls: [
             'play-large', // The large play button in the center
@@ -39,26 +57,27 @@ export class Player extends React.Component{
         ]
     };
 
-    constructor(props, context) {
+    constructor(props: myprops, context: any) {
         super(props, context);
 
         this.state = {
             sources: null,
             movie_id: null,
-            movie_name: null,
-            likes: null,
-            quality: null,
-            length: null,
+            movie_name: '',
+            likes: 0,
+            quality: 0,
+            length: 0,
             tags: [],
             suggesttag: [],
             popupvisible: false,
-            actorpopupvisible: false
+            actorpopupvisible: false,
+            actors: null
         };
 
         this.quickAddTag = this.quickAddTag.bind(this);
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         // initial fetch of current movie data
         this.fetchMovieData();
     }
@@ -68,14 +87,14 @@ export class Player extends React.Component{
      * @param tagId id of tag to add
      * @param tagName name of tag to add
      */
-    quickAddTag(tagId, tagName) {
-        callAPI('tags.php', {action: 'addTag', id: tagId, movieid: this.props.movie_id}, (result) => {
+    quickAddTag(tagId: number, tagName: string): void {
+        callAPI('tags.php', {action: 'addTag', id: tagId, movieid: this.props.match.params.id}, (result: any) => {
             if (result.result !== 'success') {
                 console.error('error occured while writing to db -- todo error handling');
                 console.error(result.result);
             } else {
                 // check if tag has already been added
-                const tagIndex = this.state.tags.map(function (e) {
+                const tagIndex = this.state.tags.map(function (e: any) {
                     return e.tag_name;
                 }).indexOf(tagName);
 
@@ -83,7 +102,7 @@ export class Player extends React.Component{
                 if (tagIndex === -1) {
                     // update tags if successful
                     let array = [...this.state.suggesttag]; // make a separate copy of the array (because of setState)
-                    const quickaddindex = this.state.suggesttag.map(function (e) {
+                    const quickaddindex = this.state.suggesttag.map(function (e: any) {
                         return e.tag_id;
                     }).indexOf(tagId);
 
@@ -109,7 +128,7 @@ export class Player extends React.Component{
      * handle the popovers generated according to state changes
      * @returns {JSX.Element}
      */
-    handlePopOvers() {
+    handlePopOvers(): JSX.Element {
         return (
             <>
                 {this.state.popupvisible ?
@@ -132,7 +151,7 @@ export class Player extends React.Component{
     /**
      * generate sidebar with all items
      */
-    assembleSideBar() {
+    assembleSideBar(): JSX.Element {
         return (
             <SideBar>
                 <SideBarTitle>Infos:</SideBarTitle>
@@ -144,12 +163,12 @@ export class Player extends React.Component{
                     <SideBarItem><b>{Math.round(this.state.length / 60)}</b> Minutes of length!</SideBarItem> : null}
                 <Line/>
                 <SideBarTitle>Tags:</SideBarTitle>
-                {this.state.tags.map((m) => (
+                {this.state.tags.map((m: any) => (
                     <Tag key={m.tag_name}>{m.tag_name}</Tag>
                 ))}
                 <Line/>
                 <SideBarTitle>Tag Quickadd:</SideBarTitle>
-                {this.state.suggesttag.map((m) => (
+                {this.state.suggesttag.map((m: any) => (
                     <Tag
                         key={m.tag_name}
                         onclick={() => {
@@ -162,7 +181,7 @@ export class Player extends React.Component{
         );
     }
 
-    render() {
+    render(): JSX.Element {
         return (
             <div id='videocontainer'>
                 <PageTitle
@@ -193,7 +212,7 @@ export class Player extends React.Component{
                     {/* rendering of actor tiles */}
                     <div className={style.actorcontainer}>
                         {this.state.actors ?
-                            this.state.actors.map((actr) => (
+                            this.state.actors.map((actr: any) => (
                                 <ActorTile actor={actr}/>
                             )) : <></>
                         }
@@ -221,8 +240,8 @@ export class Player extends React.Component{
     /**
      * fetch all the required infos of a video from backend
      */
-    fetchMovieData() {
-        callAPI('video.php', {action: 'loadVideo', movieid: this.props.match.params.id}, result => {
+    fetchMovieData(): void {
+        callAPI('video.php', {action: 'loadVideo', movieid: this.props.match.params.id}, (result: any) => {
             this.setState({
                 sources: {
                     type: 'video',
@@ -252,8 +271,8 @@ export class Player extends React.Component{
     /**
      * click handler for the like btn
      */
-    likebtn() {
-        callAPI('video.php', {action: 'addLike', movieid: this.props.movie_id}, result => {
+    likebtn(): void {
+        callAPI('video.php', {action: 'addLike', movieid: this.props.match.params.id}, (result: any) => {
             if (result.result === 'success') {
                 // likes +1 --> avoid reload of all data
                 this.setState({likes: this.state.likes + 1});
@@ -268,15 +287,15 @@ export class Player extends React.Component{
      * closebtn click handler
      * calls callback to viewbinding to show previous page agains
      */
-    closebtn() {
+    closebtn(): void {
         this.props.history.goBack();
     }
 
     /**
      * delete the current video and return to last page
      */
-    deleteVideo() {
-        callAPI('video.php', {action: 'deleteVideo', movieid: this.props.movie_id}, result => {
+    deleteVideo(): void {
+        callAPI('video.php', {action: 'deleteVideo', movieid: this.props.match.params.id}, (result: any) => {
             if (result.result === 'success') {
                 // return to last element if successful
                 GlobalInfos.getViewBinding().returnToLastElement();
@@ -290,12 +309,12 @@ export class Player extends React.Component{
     /**
      * show the actor add popup
      */
-    addActor() {
+    addActor(): void {
         this.setState({actorpopupvisible: true});
     }
 
-    refetchActors() {
-        callAPI('actor.php', {action: 'getActorsOfVideo', videoid: this.props.movie_id}, result => {
+    refetchActors(): void {
+        callAPI('actor.php', {action: 'getActorsOfVideo', videoid: this.props.match.params.id}, result => {
             this.setState({actors: result});
         });
     }

@@ -38,9 +38,9 @@ function getAPIDomain(): string {
  * interface how an api request should look like
  */
 interface ApiBaseRequest {
-    action: string,
+    action: string | number,
 
-    [_: string]: string
+    [_: string]: string | number
 }
 
 /**
@@ -51,7 +51,7 @@ function buildFormData(args: ApiBaseRequest): FormData {
     const req = new FormData();
 
     for (const i in args) {
-        req.append(i, args[i]);
+        req.append(i, (args[i].toString()));
     }
     return req;
 }
