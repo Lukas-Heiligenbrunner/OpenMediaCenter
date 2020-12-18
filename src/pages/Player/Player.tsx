@@ -16,23 +16,26 @@ import {withRouter} from 'react-router-dom';
 import GlobalInfos from '../../utils/GlobalInfos';
 import {callAPI, getBackendDomain} from '../../utils/Api';
 import {RouteComponentProps} from "react-router";
+import {GeneralSuccess} from "../../api/GeneralTypes";
+import {ActorType, loadVideoType, TagType} from "../../api/VideoTypes";
+import PlyrJS from "plyr";
 
 interface myprops extends RouteComponentProps<{ id: string }> {
 
 }
 
 interface mystate {
-    sources: any,
-    movie_id: any,
+    sources?: PlyrJS.SourceInfo,
+    movie_id: number,
     movie_name: string,
     likes: number,
     quality: number,
     length: number,
-    tags: any,
-    suggesttag: any,
+    tags: TagType[],
+    suggesttag: TagType[],
     popupvisible: boolean,
     actorpopupvisible: boolean,
-    actors: any
+    actors: ActorType[]
 }
 
 /**
@@ -40,7 +43,7 @@ interface mystate {
  * and actions such as tag adding and liking
  */
 export class Player extends React.Component<myprops, mystate> {
-    options = {
+    options: PlyrJS.Options = {
         controls: [
             'play-large', // The large play button in the center
             'play', // Play/pause playback
@@ -61,8 +64,7 @@ export class Player extends React.Component<myprops, mystate> {
         super(props, context);
 
         this.state = {
-            sources: null,
-            movie_id: null,
+            movie_id: -1,
             movie_name: '',
             likes: 0,
             quality: 0,
@@ -71,7 +73,7 @@ export class Player extends React.Component<myprops, mystate> {
             suggesttag: [],
             popupvisible: false,
             actorpopupvisible: false,
-            actors: null
+            actors: []
         };
 
         this.quickAddTag = this.quickAddTag.bind(this);
@@ -88,13 +90,17 @@ export class Player extends React.Component<myprops, mystate> {
      * @param tagName name of tag to add
      */
     quickAddTag(tagId: number, tagName: string): void {
-        callAPI('tags.php', {action: 'addTag', id: tagId, movieid: this.props.match.params.id}, (result: any) => {
+        callAPI('tags.php', {
+            action: 'addTag',
+            id: tagId,
+            movieid: this.props.match.params.id
+        }, (result: GeneralSuccess) => {
             if (result.result !== 'success') {
                 console.error('error occured while writing to db -- todo error handling');
                 console.error(result.result);
             } else {
                 // check if tag has already been added
-                const tagIndex = this.state.tags.map(function (e: any) {
+                const tagIndex = this.state.tags.map(function (e: TagType) {
                     return e.tag_name;
                 }).indexOf(tagName);
 
@@ -102,7 +108,7 @@ export class Player extends React.Component<myprops, mystate> {
                 if (tagIndex === -1) {
                     // update tags if successful
                     let array = [...this.state.suggesttag]; // make a separate copy of the array (because of setState)
-                    const quickaddindex = this.state.suggesttag.map(function (e: any) {
+                    const quickaddindex = this.state.suggesttag.map(function (e: TagType) {
                         return e.tag_id;
                     }).indexOf(tagId);
 
@@ -111,12 +117,12 @@ export class Player extends React.Component<myprops, mystate> {
                         array.splice(quickaddindex, 1);
 
                         this.setState({
-                            tags: [...this.state.tags, {tag_name: tagName}],
+                            tags: [...this.state.tags, {tag_name: tagName, tag_id: tagId}],
                             suggesttag: array
                         });
                     } else {
                         this.setState({
-                            tags: [...this.state.tags, {tag_name: tagName}]
+                            tags: [...this.state.tags, {tag_name: tagName, tag_id: tagId}]
                         });
                     }
                 }
@@ -132,7 +138,9 @@ export class Player extends React.Component<myprops, mystate> {
         return (
             <>
                 {this.state.popupvisible ?
-                    <AddTagPopup onHide={() => {this.setState({popupvisible: false});}}
+                    <AddTagPopup onHide={() => {
+                        this.setState({popupvisible: false});
+                    }}
                                  submit={this.quickAddTag}
                                  movie_id={this.state.movie_id}/> :
                     null
@@ -163,12 +171,12 @@ export class Player extends React.Component<myprops, mystate> {
                     <SideBarItem><b>{Math.round(this.state.length / 60)}</b> Minutes of length!</SideBarItem> : null}
                 <Line/>
                 <SideBarTitle>Tags:</SideBarTitle>
-                {this.state.tags.map((m: any) => (
+                {this.state.tags.map((m: TagType) => (
                     <Tag key={m.tag_name}>{m.tag_name}</Tag>
                 ))}
                 <Line/>
                 <SideBarTitle>Tag Quickadd:</SideBarTitle>
-                {this.state.suggesttag.map((m: any) => (
+                {this.state.suggesttag.map((m: TagType) => (
                     <Tag
                         key={m.tag_name}
                         onclick={() => {
@@ -212,7 +220,7 @@ export class Player extends React.Component<myprops, mystate> {
                     {/* rendering of actor tiles */}
                     <div className={style.actorcontainer}>
                         {this.state.actors ?
-                            this.state.actors.map((actr: any) => (
+                            this.state.actors.map((actr: ActorType) => (
                                 <ActorTile actor={actr}/>
                             )) : <></>
                         }
@@ -241,7 +249,7 @@ export class Player extends React.Component<myprops, mystate> {
      * fetch all the required infos of a video from backend
      */
     fetchMovieData(): void {
-        callAPI('video.php', {action: 'loadVideo', movieid: this.props.match.params.id}, (result: any) => {
+        callAPI('video.php', {action: 'loadVideo', movieid: this.props.match.params.id}, (result: loadVideoType) => {
             this.setState({
                 sources: {
                     type: 'video',
@@ -272,7 +280,7 @@ export class Player extends React.Component<myprops, mystate> {
      * click handler for the like btn
      */
     likebtn(): void {
-        callAPI('video.php', {action: 'addLike', movieid: this.props.match.params.id}, (result: any) => {
+        callAPI('video.php', {action: 'addLike', movieid: this.props.match.params.id}, (result: GeneralSuccess) => {
             if (result.result === 'success') {
                 // likes +1 --> avoid reload of all data
                 this.setState({likes: this.state.likes + 1});
@@ -295,7 +303,7 @@ export class Player extends React.Component<myprops, mystate> {
      * delete the current video and return to last page
      */
     deleteVideo(): void {
-        callAPI('video.php', {action: 'deleteVideo', movieid: this.props.match.params.id}, (result: any) => {
+        callAPI('video.php', {action: 'deleteVideo', movieid: this.props.match.params.id}, (result: GeneralSuccess) => {
             if (result.result === 'success') {
                 // return to last element if successful
                 GlobalInfos.getViewBinding().returnToLastElement();
