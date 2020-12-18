@@ -1,16 +1,22 @@
 import {shallow} from 'enzyme';
 import React from 'react';
-import Player from './Player';
+import {Player} from './Player';
 import {callAPI} from '../../utils/Api';
 
 describe('<Player/>', function () {
+
+    // help simulating id passed by url
+    function instance(){
+        return shallow(<Player match={{params: {id: 10}}}/>)
+    }
+
     it('renders without crashing ', function () {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
         wrapper.unmount();
     });
 
     it('plyr insertion', function () {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
 
         wrapper.setState({
             sources: [
@@ -26,7 +32,7 @@ describe('<Player/>', function () {
     });
 
     function simulateLikeButtonClick() {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
 
         // initial fetch for getting movie data
         expect(global.fetch).toHaveBeenCalledTimes(1);
@@ -70,7 +76,7 @@ describe('<Player/>', function () {
     });
 
     it('show tag popup', function () {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
         expect(wrapper.find('AddTagPopup')).toHaveLength(0);
         // todo dynamic button find without index
         wrapper.find('.videoactions').find('button').at(1).simulate('click');
@@ -79,7 +85,7 @@ describe('<Player/>', function () {
     });
 
     it('test delete button', done => {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
 
         const func = jest.fn();
         prepareViewBinding(func);
@@ -99,7 +105,7 @@ describe('<Player/>', function () {
     });
 
     it('hide click ', function () {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
 
         const func = jest.fn();
         prepareViewBinding(func);
@@ -111,7 +117,7 @@ describe('<Player/>', function () {
     });
 
     it('inserts Tags correctly', function () {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
 
         expect(wrapper.find('Tag')).toHaveLength(0);
 
@@ -165,7 +171,7 @@ describe('<Player/>', function () {
     });
 
     it('showspopups correctly', function () {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
 
         wrapper.setState({popupvisible: true}, () => {
             // is the AddTagpopu rendered?
@@ -180,7 +186,7 @@ describe('<Player/>', function () {
 
 
     it('quickadd tag correctly', function () {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
         global.callAPIMock({result: 'success'});
 
         wrapper.setState({suggesttag: [{tag_name: 'test', tag_id: 1}]}, () => {
@@ -198,7 +204,7 @@ describe('<Player/>', function () {
     });
 
     it('test adding of already existing tag', function () {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
         global.callAPIMock({result: 'success'});
 
         wrapper.setState({suggesttag: [{tag_name: 'test', tag_id: 1}], tags: [{tag_name: 'test', tag_id: 1}]}, () => {
@@ -217,7 +223,7 @@ describe('<Player/>', function () {
     });
 
     function generatetag() {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
 
         expect(wrapper.find('Tag')).toHaveLength(0);
 
@@ -233,7 +239,7 @@ describe('<Player/>', function () {
     }
 
     it('test addactor popup showing', function () {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
 
         expect(wrapper.find('AddActorPopup')).toHaveLength(0);
 
@@ -244,7 +250,7 @@ describe('<Player/>', function () {
     });
 
     it('test hiding of addactor popup', function () {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
         wrapper.instance().addActor();
 
         expect(wrapper.find('AddActorPopup')).toHaveLength(1);

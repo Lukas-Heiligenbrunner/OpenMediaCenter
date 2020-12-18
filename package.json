@@ -39,10 +39,17 @@
       "buildResources": "assets"
     },
     "linux": {
-      "target": ["rpm","deb","snap","AppImage"]
+      "target": [
+        "rpm",
+        "deb",
+        "snap",
+        "AppImage"
+      ]
     },
     "win": {
-      "target": ["nsis"]
+      "target": [
+        "nsis"
+      ]
     }
   },
   "jest": {

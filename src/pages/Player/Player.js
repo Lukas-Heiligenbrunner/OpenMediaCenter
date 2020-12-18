@@ -21,7 +21,7 @@ import {callAPI, getBackendDomain} from '../../utils/Api';
  * Player page loads when a video is selected to play and handles the video view
  * and actions such as tag adding and liking
  */
-class Player extends React.Component {
+export class Player extends React.Component{
     options = {
         controls: [
             'play-large', // The large play button in the center
@@ -222,7 +222,7 @@ class Player extends React.Component {
      * fetch all the required infos of a video from backend
      */
     fetchMovieData() {
-        callAPI('video.php', {action: 'loadVideo', movieid: this.props.movie_id}, result => {
+        callAPI('video.php', {action: 'loadVideo', movieid: this.props.match.params.id}, result => {
             this.setState({
                 sources: {
                     type: 'video',
@@ -302,3 +302,4 @@ class Player extends React.Component {
 }
 
 export default withRouter(Player);
+
