@@ -18,12 +18,12 @@ include:
 variables:
   SAST_DISABLE_DIND: "true"
 
-prepare:
+Node_dependencies:
   stage: prepare
   script:
     - npm install --progress=false
 
-build:
+Minimize:
   stage: build
   script:
     - npm run build
@@ -33,10 +33,10 @@ build:
       - build/
   needs: ["prepare"]
 
-test:
+Frontend_Tests:
   stage: test
   script:
-    - CI=true npm run test
+    - npm run test
   artifacts:
     reports:
       junit:
@@ -47,17 +47,7 @@ code_quality:
   tags:
     - dind
 
-coverage:
-  stage: test
-  script:
-    - CI=true npm run coverage
-  artifacts:
-    reports:
-      cobertura:
-        - ./coverage/cobertura-coverage.xml
-  needs: ["prepare"]
-
-package_debian:
+Debian_Server:
   stage: packaging
   image: debian
   script:
@@ -77,7 +67,7 @@ package_debian:
       - deb/OpenMediaCenter-*.deb
   needs: ["build"]
 
-electron:
+Electron_Client:
   stage: packaging
   image: electronuserland/builder:wine
   script:
@@ -91,7 +81,7 @@ electron:
       - dist/*.exe
   needs: ["build"]
 
-deploy_test1:
+Test_Server:
   stage: deploy
   image: luki42/alpineopenssh:latest
   needs:

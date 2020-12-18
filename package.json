@@ -23,9 +23,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --reporters=jest-junit --reporters=default",
-    "coverage": "react-scripts test --coverage --watchAll=false",
-    "eject": "react-scripts eject",
+    "test": "CI=true react-scripts test --reporters=jest-junit --verbose --silent --coverage --reporters=default --colors",
     "buildlinux": "node build.js --linux",
     "buildwin": "node build.js --win",
     "electron-dev": "electron ."
