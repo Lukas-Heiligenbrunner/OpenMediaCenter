@@ -31,7 +31,7 @@ Minimize:
     expire_in: 7 days
     paths:
       - build/
-  needs: ["prepare"]
+  needs: ["Node_dependencies"]
 
 Frontend_Tests:
   stage: test
@@ -41,7 +41,7 @@ Frontend_Tests:
     reports:
       junit:
         - ./junit.xml
-  needs: ["prepare"]
+  needs: ["Node_dependencies"]
 
 code_quality:
   tags:
@@ -65,7 +65,7 @@ Debian_Server:
   artifacts:
     paths:
       - deb/OpenMediaCenter-*.deb
-  needs: ["build"]
+  needs: ["Minimize"]
 
 Electron_Client:
   stage: packaging
@@ -79,14 +79,14 @@ Electron_Client:
       - dist/*.rpm
       - dist/*.deb
       - dist/*.exe
-  needs: ["build"]
+  needs: ["Minimize"]
 
 Test_Server:
   stage: deploy
   image: luki42/alpineopenssh:latest
   needs:
-    - test
-    - package_debian
+    - Frontend_Tests
+    - Debian_Server
   only:
     - master
   script:
