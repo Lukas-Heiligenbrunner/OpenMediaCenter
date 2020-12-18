@@ -3,6 +3,7 @@ import React from 'react';
 import ActorTile from '../../ActorTile/ActorTile';
 import style from './AddActorPopup.module.css';
 import {NewActorPopupContent} from '../NewActorPopup/NewActorPopup';
+import {callAPI} from '../../../utils/Api';
 
 /**
  * Popup for Adding a new Actor to a Video
@@ -69,33 +70,21 @@ class AddActorPopup extends React.Component {
      */
     tileClickHandler(actorid) {
         // fetch the available actors
-        const req = new FormData();
-        req.append('action', 'addActorToVideo');
-        req.append('actorid', actorid);
-        req.append('videoid', this.props.movie_id);
-
-        fetch('/api/actor.php', {method: 'POST', body: req})
-            .then((response) => response.json()
-                .then((result) => {
-                    if (result.result === 'success') {
-                        // return back to player page
-                        this.props.onHide();
-                    } else {
-                        console.error('an error occured while fetching actors');
-                        console.error(result);
-                    }
-                }));
+        callAPI('actor.php', {action: 'addActorToVideo', actorid: actorid, videoid: this.props.movie_id}, result => {
+            if (result.result === 'success') {
+                // return back to player page
+                this.props.onHide();
+            } else {
+                console.error('an error occured while fetching actors');
+                console.error(result);
+            }
+        });
     }
 
     loadActors() {
-        const req = new FormData();
-        req.append('action', 'getAllActors');
-
-        fetch('/api/actor.php', {method: 'POST', body: req})
-            .then((response) => response.json()
-                .then((result) => {
-                    this.setState({actors: result});
-                }));
+        callAPI('actor.php', {action: 'getAllActors'}, result => {
+            this.setState({actors: result});
+        });
     }
 }
 

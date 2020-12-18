@@ -1,6 +1,7 @@
 import React from 'react';
 import Tag from '../../Tag/Tag';
 import PopupBase from '../PopupBase';
+import {callAPI} from '../../../utils/Api';
 
 /**
  * component creates overlay to add a new tag to a video
@@ -13,16 +14,11 @@ class AddTagPopup extends React.Component {
     }
 
     componentDidMount() {
-        const updateRequest = new FormData();
-        updateRequest.append('action', 'getAllTags');
-
-        fetch('/api/tags.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json())
-            .then((result) => {
-                this.setState({
-                    items: result
-                });
+        callAPI('tags.php', {action: 'getAllTags'}, (result) => {
+            this.setState({
+                items: result
             });
+        });
     }
 
     render() {
@@ -44,23 +40,15 @@ class AddTagPopup extends React.Component {
      * @param tagname tag name to add
      */
     addTag(tagid, tagname) {
-        console.log(this.props);
-        const updateRequest = new FormData();
-        updateRequest.append('action', 'addTag');
-        updateRequest.append('id', tagid);
-        updateRequest.append('movieid', this.props.movie_id);
-
-        fetch('/api/tags.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json()
-                .then((result) => {
-                    if (result.result !== 'success') {
-                        console.log('error occured while writing to db -- todo error handling');
-                        console.log(result.result);
-                    } else {
-                        this.props.submit(tagid, tagname);
-                    }
-                    this.props.onHide();
-                }));
+        callAPI('tags.php', {action: 'addTag', id: tagid, movieid: this.props.movie_id}, result => {
+            if (result.result !== 'success') {
+                console.log('error occured while writing to db -- todo error handling');
+                console.log(result.result);
+            } else {
+                this.props.submit(tagid, tagname);
+            }
+            this.props.onHide();
+        });
     }
 }
 

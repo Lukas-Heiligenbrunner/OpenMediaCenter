@@ -1,6 +1,7 @@
 import React from 'react';
 import PopupBase from '../PopupBase';
 import style from './NewActorPopup.module.css';
+import {callAPI} from '../../../utils/Api';
 
 /**
  * creates modal overlay to define a new Tag
@@ -41,19 +42,13 @@ export class NewActorPopupContent extends React.Component {
         // check if user typed in name
         if (this.value === '' || this.value === undefined) return;
 
-        const req = new FormData();
-        req.append('action', 'createActor');
-        req.append('actorname', this.value);
-
-        fetch('/api/actor.php', {method: 'POST', body: req})
-            .then((response) => response.json())
-            .then((result) => {
-                if (result.result !== 'success') {
-                    console.log('error occured while writing to db -- todo error handling');
-                    console.log(result.result);
-                }
-                this.props.onHide();
-            });
+        callAPI('actor.php', {action: 'createActor', actorname: this.value}, (result) => {
+            if (result.result !== 'success') {
+                console.log('error occured while writing to db -- todo error handling');
+                console.log(result.result);
+            }
+            this.props.onHide();
+        });
     }
 }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import HomePage from './pages/HomePage/HomePage';
 import RandomPage from './pages/RandomPage/RandomPage';
-import GlobalInfos from './GlobalInfos';
+import GlobalInfos from './utils/GlobalInfos';
 
 // include bootstraps css
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -9,6 +9,8 @@ import style from './App.module.css';
 
 import SettingsPage from './pages/SettingsPage/SettingsPage';
 import CategoryPage from './pages/CategoryPage/CategoryPage';
+import {callAPI} from './utils/Api';
+import {NoBackendConnectionPopup} from './elements/Popups/NoBackendConnectionPopup/NoBackendConnectionPopup';
 
 import {BrowserRouter as Router, NavLink, Route, Switch} from 'react-router-dom';
 import Player from './pages/Player/Player';
@@ -25,7 +27,8 @@ class App extends React.Component {
             page: '/',
             generalSettingsLoaded: false,
             passwordsupport: null,
-            mediacentername: 'OpenMediaCenter'
+            mediacentername: 'OpenMediaCenter',
+            onapierror: false
         };
 
         // bind this to the method for being able to call methods such as this.setstate
@@ -36,24 +39,27 @@ class App extends React.Component {
         // GlobalInfos.setViewBinding(this.constructViewBinding());
     }
 
+    initialAPICall(){
+        // this is the first api call so if it fails we know there is no connection to backend
+        callAPI('settings.php', {action: 'loadInitialData'}, (result) =>{
+            // set theme
+            GlobalInfos.enableDarkTheme(result.DarkMode);
+
+            this.setState({
+                generalSettingsLoaded: true,
+                passwordsupport: result.passwordEnabled,
+                mediacentername: result.mediacenter_name,
+                onapierror: false
+            });
+            // set tab title to received mediacenter name
+            document.title = result.mediacenter_name;
+        }, error =>  {
+            this.setState({onapierror: true});
+        });
+    }
+
     componentDidMount() {
-        const updateRequest = new FormData();
-        updateRequest.append('action', 'loadInitialData');
-
-        fetch('/api/settings.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json()
-                .then((result) => {
-                    // set theme
-                    GlobalInfos.enableDarkTheme(result.DarkMode);
-
-                    this.setState({
-                        generalSettingsLoaded: true,
-                        passwordsupport: result.passwordEnabled,
-                        mediacentername: result.mediacenter_name
-                    });
-                    // set tab title to received mediacenter name
-                    document.title = result.mediacenter_name;
-                }));
+        this.initialAPICall();
     }
 
     // /**
@@ -120,6 +126,7 @@ class App extends React.Component {
                     {/*<Redirect to={this.state.page}/>*/}
                     {this.routing()}
                 </div>
+                {this.state.onapierror ? this.ApiError() : null}
             </Router>
         );
     }
@@ -165,6 +172,11 @@ class App extends React.Component {
     //         page: 'lastpage'
     //     });
     // }
+
+    ApiError() {
+        // on api error show popup and retry and show again if failing..
+        return (<NoBackendConnectionPopup onHide={() => this.initialAPICall()}/>);
+    }
 }
 
 export default App;

@@ -2,8 +2,9 @@ import React from 'react';
 import style from './Preview.module.css';
 import Player from '../../pages/Player/Player';
 import {Spinner} from 'react-bootstrap';
-import GlobalInfos from '../../GlobalInfos';
 import {Link} from 'react-router-dom';
+import GlobalInfos from '../../utils/GlobalInfos';
+import {callAPIPlain} from '../../utils/Api';
 
 /**
  * Component for single preview tile
@@ -20,22 +21,12 @@ class Preview extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({
-            previewpicture: null,
-            name: this.props.name
+        callAPIPlain('video.php', {action: 'readThumbnail', movieid: this.props.movie_id}, (result) => {
+            this.setState({
+                previewpicture: result,
+                name: this.props.name
+            });
         });
-
-        const updateRequest = new FormData();
-        updateRequest.append('action', 'readThumbnail');
-        updateRequest.append('movieid', this.props.movie_id);
-
-        fetch('/api/video.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.text()
-                .then((result) => {
-                    this.setState({
-                        previewpicture: result
-                    });
-                }));
     }
 
     render() {

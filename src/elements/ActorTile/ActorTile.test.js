@@ -18,4 +18,17 @@ describe('<ActorTile/>', function () {
 
         expect(func).toBeCalledTimes(1);
     });
+
+    it('simulate click with custom handler', function () {
+        const func = jest.fn((_) => {});
+        const wrapper = shallow(<ActorTile actor={{thumbnail: "-1", name: "testname", id: 3}} onClick={() => func()}/>);
+
+        const func1 = jest.fn();
+        prepareViewBinding(func1);
+
+        wrapper.simulate('click');
+
+        expect(func1).toBeCalledTimes(0);
+        expect(func).toBeCalledTimes(1);
+    });
 });

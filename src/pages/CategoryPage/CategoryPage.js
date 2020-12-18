@@ -8,6 +8,7 @@ import NewTagPopup from '../../elements/Popups/NewTagPopup/NewTagPopup';
 import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 import {Link, Redirect, Route, Switch, withRouter} from 'react-router-dom';
+import {callAPI} from '../../utils/Api';
 
 /**
  * Component for Category Page
@@ -99,24 +100,11 @@ class CategoryPage extends React.Component {
      * @param tag tagname
      */
     fetchVideoData(tag) {
-        console.log(tag);
-        const updateRequest = new FormData();
-        updateRequest.append('action', 'getMovies');
-        updateRequest.append('tag', tag);
-
-        console.log('fetching data');
-
-        // fetch all videos available
-        fetch('/api/video.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json()
-                .then((result) => {
-                    this.videodata = result;
-                    this.setState({selected: null}); // needed to trigger the state reload correctly
-                    this.setState({selected: tag});
-                }))
-            .catch(() => {
-                console.log('no connection to backend');
-            });
+        callAPI('video.php', {action: 'getMovies', tag: tag}, result => {
+            this.videodata = result;
+            this.setState({selected: null}); // needed to trigger the state reload correctly
+            this.setState({selected: tag});
+        });
     }
 
     /**
@@ -158,18 +146,9 @@ class TagView extends React.Component {
      * load all available tags from db.
      */
     loadTags() {
-        const updateRequest = new FormData();
-        updateRequest.append('action', 'getAllTags');
-
-        // fetch all videos available
-        fetch('/api/tags.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json()
-                .then((result) => {
-                    this.setState({loadedtags: result});
-                }))
-            .catch(() => {
-                console.log('no connection to backend');
-            });
+        callAPI('tags.php', {action: 'getAllTags'}, result => {
+            this.setState({loadedtags: result});
+        });
     }
 }
 

@@ -5,6 +5,7 @@ import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 
 import style from './HomePage.module.css';
 import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
+import {callAPI} from '../../utils/Api';
 
 /**
  * The home page component showing on the initial pageload
@@ -43,54 +44,33 @@ class HomePage extends React.Component {
      * @param tag tag to fetch videos
      */
     fetchVideoData(tag) {
-        const updateRequest = new FormData();
-        updateRequest.append('action', 'getMovies');
-        updateRequest.append('tag', tag);
-
-        console.log('fetching data from' + tag);
-
-        // fetch all videos available
-        fetch('/api/video.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json()
-                .then((result) => {
-                    this.setState({
-                        data: []
-                    });
-                    this.setState({
-                        data: result,
-                        selectionnr: result.length,
-                        tag: tag + ' Videos'
-                    });
-                }))
-            .catch(() => {
-                console.log('no connection to backend');
+        callAPI('video.php', {action: 'getMovies', tag: tag}, (result) => {
+            this.setState({
+                data: []
             });
+            this.setState({
+                data: result,
+                selectionnr: result.length,
+                tag: tag + ' Videos'
+            });
+        });
     }
 
     /**
      * fetch the necessary data for left info box
      */
     fetchStartData() {
-        const updateRequest = new FormData();
-        updateRequest.append('action', 'getStartData');
-
-        // fetch all videos available
-        fetch('/api/video.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json()
-                .then((result) => {
-                    this.setState({
-                        sideinfo: {
-                            videonr: result['total'],
-                            fullhdvideonr: result['fullhd'],
-                            hdvideonr: result['hd'],
-                            sdvideonr: result['sd'],
-                            tagnr: result['tags']
-                        }
-                    });
-                }))
-            .catch(() => {
-                console.log('no connection to backend');
+        callAPI('video.php', {action: 'getStartData'}, (result) => {
+            this.setState({
+                sideinfo: {
+                    videonr: result['total'],
+                    fullhdvideonr: result['fullhd'],
+                    hdvideonr: result['hd'],
+                    sdvideonr: result['sd'],
+                    tagnr: result['tags']
+                }
             });
+        });
     }
 
     /**
@@ -101,26 +81,16 @@ class HomePage extends React.Component {
     searchVideos(keyword) {
         console.log('search called');
 
-        const updateRequest = new FormData();
-        updateRequest.append('action', 'getSearchKeyWord');
-        updateRequest.append('keyword', keyword);
-
-        // fetch all videos available
-        fetch('/api/video.php', {method: 'POST', body: updateRequest})
-            .then((response) => response.json()
-                .then((result) => {
-                    this.setState({
-                        data: []
-                    });
-                    this.setState({
-                        data: result,
-                        selectionnr: result.length,
-                        tag: 'Search result: ' + keyword
-                    });
-                }))
-            .catch(() => {
-                console.log('no connection to backend');
+        callAPI('video.php', {action: 'getSearchKeyWord', keyword: keyword}, (result) => {
+            this.setState({
+                data: []
             });
+            this.setState({
+                data: result,
+                selectionnr: result.length,
+                tag: 'Search result: ' + keyword
+            });
+        });
     }
 
     render() {
