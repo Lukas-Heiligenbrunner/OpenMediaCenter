@@ -1,6 +1,5 @@
 import React from 'react';
 import style from './Preview.module.css';
-import Player from '../../pages/Player/Player';
 import {Spinner} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import GlobalInfos from '../../utils/GlobalInfos';
@@ -50,16 +49,6 @@ class Preview extends React.Component {
             </Link>
 
         );
-    }
-
-    /**
-     * handle the click event of a tile
-     */
-    itemClick() {
-        console.log('item clicked!' + this.state.name);
-
-        GlobalInfos.getViewBinding().changeRootElement(
-            <Player movie_id={this.props.movie_id}/>);
     }
 }
 

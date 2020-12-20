@@ -11,6 +11,14 @@ export interface loadVideoType {
     actors: ActorType[]
 }
 
+export interface VideoUnloadedType {
+    movie_id: number;
+    movie_name: string
+}
+
+/**
+ * type accepted by Tag component
+ */
 export interface TagType {
     tag_name: string
     tag_id: number

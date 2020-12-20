@@ -30,6 +30,7 @@
     margin: 10px 5px 5px;
     padding: 5px;
     text-align: center;
+    color: black;
 }
 
 .SettingSidebarElement:hover {

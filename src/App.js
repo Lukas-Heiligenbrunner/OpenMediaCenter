@@ -24,19 +24,11 @@ class App extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            page: '/',
             generalSettingsLoaded: false,
             passwordsupport: null,
             mediacentername: 'OpenMediaCenter',
             onapierror: false
         };
-
-        // bind this to the method for being able to call methods such as this.setstate
-        // this.changeRootElement = this.changeRootElement.bind(this);
-        // this.returnToLastElement = this.returnToLastElement.bind(this);
-
-        // // set the main navigation viewbinding to the singleton
-        // GlobalInfos.setViewBinding(this.constructViewBinding());
     }
 
     initialAPICall(){
@@ -62,49 +54,6 @@ class App extends React.Component {
         this.initialAPICall();
     }
 
-    // /**
-    //  * create a viewbinding to call APP functions from child elements
-    //  * @returns a set of callback functions
-    //  */
-    // constructViewBinding() {
-    //     return {
-    //         changeRootElement: this.changeRootElement,
-    //         returnToLastElement: this.returnToLastElement
-    //     };
-    // }
-
-    // /**
-    //  * load the selected component into the main view
-    //  * @returns {JSX.Element} body element of selected page
-    //  */
-    // MainBody() {
-    //     let page;
-    //     if (this.state.page === 'default') {
-    //         page = <HomePage/>;
-    //         this.mypage = page;
-    //     } else if (this.state.page === 'random') {
-    //         page = <RandomPage/>;
-    //         this.mypage = page;
-    //     } else if (this.state.page === 'settings') {
-    //         page = <SettingsPage/>;
-    //         this.mypage = page;
-    //     } else if (this.state.page === 'categories') {
-    //         page = <CategoryPage/>;
-    //         this.mypage = page;
-    //     } else if (this.state.page === 'video') {
-    //         // show videoelement if neccessary
-    //         page = this.newElement;
-    //
-    //         console.log(page);
-    //     } else if (this.state.page === 'lastpage') {
-    //         // return back to last page
-    //         page = this.mypage;
-    //     } else {
-    //         page = <div>unimplemented yet!</div>;
-    //     }
-    //     return (page);
-    // }
-
 
     render() {
         const themeStyle = GlobalInfos.getThemeStyle();
@@ -123,7 +72,6 @@ class App extends React.Component {
                         <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/categories'} activeStyle={{ opacity: '0.85' }}>Categories</NavLink>
                         <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/settings'} activeStyle={{ opacity: '0.85' }}>Settings</NavLink>
                     </div>
-                    {/*<Redirect to={this.state.page}/>*/}
                     {this.routing()}
                 </div>
                 {this.state.onapierror ? this.ApiError() : null}
@@ -152,26 +100,6 @@ class App extends React.Component {
             </Switch>
         );
     }
-
-    // /**
-    //  * render a new root element into the main body
-    //  */
-    // changeRootElement(element) {
-    //     this.newElement = element;
-    //
-    //     this.setState({
-    //         page: 'video'
-    //     });
-    // }
-    //
-    // /**
-    //  * return from page to the previous page before a change
-    //  */
-    // returnToLastElement() {
-    //     this.setState({
-    //         page: 'lastpage'
-    //     });
-    // }
 
     ApiError() {
         // on api error show popup and retry and show again if failing..

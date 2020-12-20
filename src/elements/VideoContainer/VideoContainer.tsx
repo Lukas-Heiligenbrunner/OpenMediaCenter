@@ -1,23 +1,31 @@
 import React from 'react';
 import Preview from '../Preview/Preview';
 import style from './VideoContainer.module.css';
+import {VideoUnloadedType} from "../../api/VideoTypes";
+
+interface props {
+    data: VideoUnloadedType[]
+}
+
+interface state {
+    loadeditems: VideoUnloadedType[];
+    selectionnr: number;
+}
 
 /**
  * A videocontainer storing lots of Preview elements
  * includes scroll handling and loading of preview infos
  */
-class VideoContainer extends React.Component {
+class VideoContainer extends React.Component<props, state> {
     // stores current index of loaded elements
-    loadindex = 0;
+    loadindex: number = 0;
 
-    constructor(props, context) {
+    constructor(props: props, context: any) {
         super(props, context);
-
-        this.data = props.data;
 
         this.state = {
             loadeditems: [],
-            selectionnr: null
+            selectionnr: 0
         };
     }
 
@@ -54,13 +62,13 @@ class VideoContainer extends React.Component {
      * load previews to the container
      * @param nr number of previews to load
      */
-    loadPreviewBlock(nr) {
+    loadPreviewBlock(nr: number) {
         console.log('loadpreviewblock called ...');
         let ret = [];
         for (let i = 0; i < nr; i++) {
             // only add if not end
-            if (this.data.length > this.loadindex + i) {
-                ret.push(this.data[this.loadindex + i]);
+            if (this.props.data.length > this.loadindex + i) {
+                ret.push(this.props.data[this.loadindex + i]);
             }
         }
 

@@ -13,7 +13,6 @@ import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import AddActorPopup from '../../elements/Popups/AddActorPopup/AddActorPopup';
 import ActorTile from '../../elements/ActorTile/ActorTile';
 import {withRouter} from 'react-router-dom';
-import GlobalInfos from '../../utils/GlobalInfos';
 import {callAPI, getBackendDomain} from '../../utils/Api';
 import {RouteComponentProps} from "react-router";
 import {GeneralSuccess} from "../../api/GeneralTypes";
@@ -172,18 +171,17 @@ export class Player extends React.Component<myprops, mystate> {
                 <Line/>
                 <SideBarTitle>Tags:</SideBarTitle>
                 {this.state.tags.map((m: TagType) => (
-                    <Tag key={m.tag_name}>{m.tag_name}</Tag>
+                    <Tag tagInfo={m}/>
                 ))}
                 <Line/>
                 <SideBarTitle>Tag Quickadd:</SideBarTitle>
                 {this.state.suggesttag.map((m: TagType) => (
                     <Tag
+                        tagInfo={m}
                         key={m.tag_name}
                         onclick={() => {
                             this.quickAddTag(m.tag_id, m.tag_name);
-                        }}>
-                        {m.tag_name}
-                    </Tag>
+                        }}/>
                 ))}
             </SideBar>
         );
@@ -306,7 +304,7 @@ export class Player extends React.Component<myprops, mystate> {
         callAPI('video.php', {action: 'deleteVideo', movieid: this.props.match.params.id}, (result: GeneralSuccess) => {
             if (result.result === 'success') {
                 // return to last element if successful
-                GlobalInfos.getViewBinding().returnToLastElement();
+                this.props.history.goBack();
             } else {
                 console.error('an error occured while liking');
                 console.error(result);

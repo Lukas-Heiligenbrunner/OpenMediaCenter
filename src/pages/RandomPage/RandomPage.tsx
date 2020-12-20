@@ -5,12 +5,18 @@ import Tag from '../../elements/Tag/Tag';
 import PageTitle from '../../elements/PageTitle/PageTitle';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 import {callAPI} from '../../utils/Api';
+import {TagType, VideoUnloadedType} from "../../api/VideoTypes";
+
+interface state {
+    videos: VideoUnloadedType[]
+    tags: TagType[]
+}
 
 /**
  * Randompage shuffles random viedeopreviews and provides a shuffle btn
  */
-class RandomPage extends React.Component {
-    constructor(props, context) {
+class RandomPage extends React.Component<{}, state> {
+    constructor(props: {}, context: any) {
         super(props, context);
 
         this.state = {
@@ -19,11 +25,11 @@ class RandomPage extends React.Component {
         };
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         this.loadShuffledvideos(4);
     }
 
-    render() {
+    render(): JSX.Element {
         return (
             <div>
                 <PageTitle title='Random Videos'
@@ -32,7 +38,7 @@ class RandomPage extends React.Component {
                 <SideBar>
                     <SideBarTitle>Visible Tags:</SideBarTitle>
                     {this.state.tags.map((m) => (
-                        <Tag key={m.tag_name}>{m.tag_name}</Tag>
+                        <Tag key={m.tag_id} tagInfo={m}/>
                     ))}
                 </SideBar>
 
@@ -53,7 +59,7 @@ class RandomPage extends React.Component {
     /**
      * click handler for shuffle btn
      */
-    shuffleclick() {
+    shuffleclick(): void {
         this.loadShuffledvideos(4);
     }
 
@@ -61,7 +67,7 @@ class RandomPage extends React.Component {
      * load random videos from backend
      * @param nr number of videos to load
      */
-    loadShuffledvideos(nr) {
+    loadShuffledvideos(nr: number): void {
         callAPI('video.php', {action: 'getRandomMovies', number: nr}, result => {
             console.log(result);
 
