@@ -4,6 +4,8 @@ import Player from '../../pages/Player/Player';
 import {Spinner} from 'react-bootstrap';
 import GlobalInfos from '../../utils/GlobalInfos';
 import {callAPIPlain} from '../../utils/Api';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faEllipsisV} from '@fortawesome/free-solid-svg-icons';
 
 /**
  * Component for single preview tile
@@ -15,7 +17,8 @@ class Preview extends React.Component {
 
         this.state = {
             previewpicture: null,
-            name: null
+            name: null,
+            optionsvisible: false
         };
     }
 
@@ -31,10 +34,15 @@ class Preview extends React.Component {
     render() {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
-            <div className={style.videopreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview}
-                 onClick={() => this.itemClick()}>
+            <div className={style.videopreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview}>
+                <div className={style.quickactions} onClick={() => this.setState({optionsvisible: true})}>
+                    <FontAwesomeIcon style={{
+                        verticalAlign: 'middle',
+                        fontSize: '25px'
+                    }} icon={faEllipsisV} size='1x'/>
+                </div>
                 <div className={style.previewtitle + ' ' + themeStyle.lighttextcolor}>{this.state.name}</div>
-                <div className={style.previewpic}>
+                <div className={style.previewpic} onClick={() => this.itemClick()}>
                     {this.state.previewpicture !== null ?
                         <img className={style.previewimage}
                              src={this.state.previewpicture}
@@ -45,8 +53,16 @@ class Preview extends React.Component {
                 <div className={style.previewbottom}>
 
                 </div>
+                {this.popupvisible()}
             </div>
         );
+    }
+
+    popupvisible() {
+        if (this.state.optionsvisible)
+            return (<div>heeyyho</div>);
+        else
+            return null;
     }
 
     /**
