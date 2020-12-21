@@ -34,7 +34,7 @@ describe('<AddTagPopup/>', function () {
     });
 
     it('test addtag', done => {
-        const wrapper = shallow(<AddTagPopup/>);
+        const wrapper = shallow(<AddTagPopup movie_id={1}/>);
 
         global.fetch = prepareFetchApi({result: 'success'});
 
@@ -57,7 +57,7 @@ describe('<AddTagPopup/>', function () {
     });
 
     it('test failing addTag', done => {
-        const wrapper = shallow(<AddTagPopup/>);
+        const wrapper = shallow(<AddTagPopup movie_id={1}/>);
 
         global.fetch = prepareFetchApi({result: 'fail'});
 

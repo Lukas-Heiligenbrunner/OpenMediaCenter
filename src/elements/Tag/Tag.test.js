@@ -6,33 +6,20 @@ import {shallow} from 'enzyme';
 
 describe('<Tag/>', function () {
     it('renders without crashing ', function () {
-        const wrapper = shallow(<Tag>test</Tag>);
+        const wrapper = shallow(<Tag tagInfo={{tag_name: 'testname', tag_id: 1}}/>);
         wrapper.unmount();
     });
 
     it('renders childs correctly', function () {
-        const wrapper = shallow(<Tag>test</Tag>);
+        const wrapper = shallow(<Tag tagInfo={{tag_name: 'test', tag_id: 1}}/>);
         expect(wrapper.children().text()).toBe('test');
-    });
-
-    it('click event triggered and setvideo callback called', function () {
-        global.fetch = prepareFetchApi({});
-        const func = jest.fn();
-        prepareViewBinding(func);
-
-        const wrapper = shallow(<Tag>test</Tag>);
-
-        expect(func).toBeCalledTimes(0);
-
-        wrapper.simulate('click');
-
-        expect(func).toBeCalledTimes(1);
     });
 
     it('test custom onclick function', function () {
         const func = jest.fn();
 
         const wrapper = shallow(<Tag
+            tagInfo={{tag_name: 'test', tag_id: 1}}
             onclick={() => {func();}}>test</Tag>);
 
         expect(func).toBeCalledTimes(0);

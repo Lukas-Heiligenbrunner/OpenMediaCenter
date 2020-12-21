@@ -3,8 +3,6 @@ import React from 'react';
 import {shallow} from 'enzyme';
 import '@testing-library/jest-dom';
 import NewTagPopup from './NewTagPopup';
-import {NoBackendConnectionPopup} from '../NoBackendConnectionPopup/NoBackendConnectionPopup';
-import {getBackendDomain} from '../../../utils/Api';
 
 describe('<NewTagPopup/>', function () {
     it('renders without crashing ', function () {
@@ -23,6 +21,8 @@ describe('<NewTagPopup/>', function () {
                 func();
             }
         });
+
+        wrapper.instance().value = 'testvalue';
 
         wrapper.find('button').simulate('click');
         expect(global.fetch).toHaveBeenCalledTimes(1);

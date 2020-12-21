@@ -87,8 +87,8 @@ describe('<Player/>', function () {
     it('test delete button', done => {
         const wrapper = instance();
 
-        const func = jest.fn();
-        prepareViewBinding(func);
+
+        wrapper.setProps({history: {goBack: jest.fn()}});
 
         global.fetch = prepareFetchApi({result: 'success'});
 
@@ -97,7 +97,7 @@ describe('<Player/>', function () {
         process.nextTick(() => {
             // refetch is called so fetch called 3 times
             expect(global.fetch).toHaveBeenCalledTimes(1);
-            expect(func).toHaveBeenCalledTimes(1);
+            expect(wrapper.instance().props.history.goBack).toHaveBeenCalledTimes(1);
 
             global.fetch.mockClear();
             done();
@@ -193,7 +193,7 @@ describe('<Player/>', function () {
         wrapper.setState({suggesttag: [{tag_name: 'test', tag_id: 1}]}, () => {
             // mock funtion should have not been called
             expect(callAPI).toBeCalledTimes(0);
-            wrapper.find('Tag').findWhere(p => p.text() === 'test').parent().dive().simulate('click');
+            wrapper.find('Tag').findWhere(p => p.props().tagInfo.tag_name === 'test').dive().simulate('click');
             // mock function should have been called once
             expect(callAPI).toBeCalledTimes(1);
 
@@ -211,7 +211,7 @@ describe('<Player/>', function () {
         wrapper.setState({suggesttag: [{tag_name: 'test', tag_id: 1}], tags: [{tag_name: 'test', tag_id: 1}]}, () => {
             // mock funtion should have not been called
             expect(callAPI).toBeCalledTimes(0);
-            wrapper.find('Tag').findWhere(p => p.text() === 'test').last().parent().dive().simulate('click');
+            wrapper.find('Tag').findWhere(p => p.props().tagInfo.tag_name === 'test').last().dive().simulate('click');
             // mock function should have been called once
             expect(callAPI).toBeCalledTimes(1);
 
