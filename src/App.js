@@ -14,13 +14,13 @@ import {NoBackendConnectionPopup} from './elements/Popups/NoBackendConnectionPop
 
 import {BrowserRouter as Router, NavLink, Route, Switch} from 'react-router-dom';
 import Player from './pages/Player/Player';
+import ActorOverviewPage from './pages/ActorOverviewPage/ActorOverviewPage';
+import ActorPage from './pages/ActorPage/ActorPage';
 
 /**
  * The main App handles the main tabs and which content to show
  */
 class App extends React.Component {
-    newElement = null;
-
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -31,9 +31,9 @@ class App extends React.Component {
         };
     }
 
-    initialAPICall(){
+    initialAPICall() {
         // this is the first api call so if it fails we know there is no connection to backend
-        callAPI('settings.php', {action: 'loadInitialData'}, (result) =>{
+        callAPI('settings.php', {action: 'loadInitialData'}, (result) => {
             // set theme
             GlobalInfos.enableDarkTheme(result.DarkMode);
 
@@ -45,7 +45,7 @@ class App extends React.Component {
             });
             // set tab title to received mediacenter name
             document.title = result.mediacenter_name;
-        }, error =>  {
+        }, error => {
             this.setState({onapierror: true});
         });
     }
@@ -66,11 +66,12 @@ class App extends React.Component {
                     <div className={[style.navcontainer, themeStyle.backgroundcolor, themeStyle.textcolor, themeStyle.hrcolor].join(' ')}>
                         <div className={style.navbrand}>{this.state.mediacentername}</div>
 
-                        <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/'} activeStyle={{ opacity: '0.85' }}>Home</NavLink>
-                        <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/random'} activeStyle={{ opacity: '0.85' }}>Random Video</NavLink>
+                        <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/'} activeStyle={{opacity: '0.85'}}>Home</NavLink>
+                        <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/random'} activeStyle={{opacity: '0.85'}}>Random
+                            Video</NavLink>
 
-                        <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/categories'} activeStyle={{ opacity: '0.85' }}>Categories</NavLink>
-                        <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/settings'} activeStyle={{ opacity: '0.85' }}>Settings</NavLink>
+                        <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/categories'} activeStyle={{opacity: '0.85'}}>Categories</NavLink>
+                        <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/settings'} activeStyle={{opacity: '0.85'}}>Settings</NavLink>
                     </div>
                     {this.routing()}
                 </div>
@@ -91,10 +92,16 @@ class App extends React.Component {
                 <Route path="/settings">
                     <SettingsPage/>
                 </Route>
-                <Route path="/player/:id">
+                <Route exact path="/player/:id">
                     <Player/>
                 </Route>
-                <Route exact path="/">
+                <Route exact path="/actors">
+                    <ActorOverviewPage/>
+                </Route>
+                <Route path="/actors/:id">
+                    <ActorPage/>
+                </Route>
+                <Route path="/">
                     <HomePage/>
                 </Route>
             </Switch>

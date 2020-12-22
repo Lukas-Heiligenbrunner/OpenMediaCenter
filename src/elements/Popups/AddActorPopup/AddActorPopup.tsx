@@ -4,17 +4,28 @@ import ActorTile from '../../ActorTile/ActorTile';
 import style from './AddActorPopup.module.css';
 import {NewActorPopupContent} from '../NewActorPopup/NewActorPopup';
 import {callAPI} from '../../../utils/Api';
+import {ActorType} from "../../../api/VideoTypes";
+
+interface props{
+    onHide: ()=>void;
+    movie_id: number;
+}
+
+interface state{
+    contentDefault: boolean;
+    actors: ActorType[];
+}
 
 /**
  * Popup for Adding a new Actor to a Video
  */
-class AddActorPopup extends React.Component {
-    constructor(props) {
+class AddActorPopup extends React.Component<props, state> {
+    constructor(props: props) {
         super(props);
 
         this.state = {
             contentDefault: true,
-            actors: undefined
+            actors: []
         };
 
         this.tileClickHandler = this.tileClickHandler.bind(this);
@@ -68,9 +79,9 @@ class AddActorPopup extends React.Component {
     /**
      * event handling for ActorTile Click
      */
-    tileClickHandler(actorid) {
+    tileClickHandler(actor: ActorType) {
         // fetch the available actors
-        callAPI('actor.php', {action: 'addActorToVideo', actorid: actorid, videoid: this.props.movie_id}, result => {
+        callAPI('actor.php', {action: 'addActorToVideo', actorid: actor.actor_id, videoid: this.props.movie_id}, result => {
             if (result.result === 'success') {
                 // return back to player page
                 this.props.onHide();

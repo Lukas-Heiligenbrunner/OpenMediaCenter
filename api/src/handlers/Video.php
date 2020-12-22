@@ -147,8 +147,8 @@ class Video extends RequestBase {
             }
 
             // query the actors corresponding to video
-            $query = "SELECT actor_id, name, thumbnail FROM actors_videos
-                        JOIN actors a on actors_videos.actor_id = a.id
+            $query = "SELECT a.actor_id, name, thumbnail FROM actors_videos
+                        JOIN actors a on actors_videos.actor_id = a.actor_id
                         WHERE actors_videos.video_id=$video_id";
             $result = $this->conn->query($query);
             $arr['actors'] = mysqli_fetch_all($result, MYSQLI_ASSOC);

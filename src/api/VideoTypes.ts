@@ -25,5 +25,7 @@ export interface TagType {
 }
 
 export interface ActorType {
-    // todo implement if necessary
+    thumbnail: string;
+    name: string;
+    actor_id: number;
 }

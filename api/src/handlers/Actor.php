@@ -50,8 +50,8 @@ class Actor extends RequestBase {
             // query the actors corresponding to video
             $video_id = $_POST["videoid"];
 
-            $query = "SELECT actor_id, name, thumbnail FROM actors_videos
-                        JOIN actors a on actors_videos.actor_id = a.id
+            $query = "SELECT a.actor_id, name, thumbnail FROM actors_videos
+                        JOIN actors a on actors_videos.actor_id = a.actor_id
                         WHERE actors_videos.video_id=$video_id";
             $result = $this->conn->query($query);
             $this->commitMessage(json_encode(mysqli_fetch_all($result, MYSQLI_ASSOC)));
@@ -65,7 +65,9 @@ class Actor extends RequestBase {
                         WHERE actors_videos.actor_id=$actorid";
             $result = $this->conn->query($query);
 
-            $reply = array("videos" => mysqli_fetch_all($result, MYSQLI_ASSOC));
+            $actorinfo = $this->conn->query("SELECT name, thumbnail, actor_id FROM actors WHERE actor_id=$actorid");
+
+            $reply = array("videos" => mysqli_fetch_all($result, MYSQLI_ASSOC), "info" => mysqli_fetch_assoc($actorinfo));
 
             $this->commitMessage(json_encode($reply));
         });
