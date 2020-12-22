@@ -1,27 +1,25 @@
-image: node:14
+image: node:latest
 
 stages:
-  - prepare
   - build
   - test
   - packaging
   - deploy
 
+# Cache modules in between jobs
 cache:
-  key: "$CI_COMMIT_REF_SLUG" # use per branch caching
+  key: ${CI_COMMIT_REF_SLUG}
   paths:
-    - node_modules/
+    - .npm/
+
+before_script:
+  - npm ci --cache .npm --prefer-offline
 
 include:
   - template: Code-Quality.gitlab-ci.yml
 
 variables:
   SAST_DISABLE_DIND: "true"
-
-Node_dependencies:
-  stage: prepare
-  script:
-    - npm install --progress=false
 
 Minimize:
   stage: build
@@ -31,7 +29,6 @@ Minimize:
     expire_in: 7 days
     paths:
       - build/
-  needs: ["Node_dependencies"]
 
 Frontend_Tests:
   stage: test
@@ -41,7 +38,6 @@ Frontend_Tests:
     reports:
       junit:
         - ./junit.xml
-  needs: ["Node_dependencies"]
 
 code_quality:
   tags:
