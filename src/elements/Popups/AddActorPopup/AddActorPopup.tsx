@@ -5,6 +5,7 @@ import style from './AddActorPopup.module.css';
 import {NewActorPopupContent} from '../NewActorPopup/NewActorPopup';
 import {callAPI} from '../../../utils/Api';
 import {ActorType} from "../../../api/VideoTypes";
+import {GeneralSuccess} from "../../../api/GeneralTypes";
 
 interface props {
     onHide: () => void;
@@ -83,7 +84,7 @@ class AddActorPopup extends React.Component<props, state> {
      */
     tileClickHandler(actor: ActorType):void {
         // fetch the available actors
-        callAPI('actor.php', {
+        callAPI<GeneralSuccess>('actor.php', {
             action: 'addActorToVideo',
             actorid: actor.actor_id,
             videoid: this.props.movie_id
@@ -99,7 +100,7 @@ class AddActorPopup extends React.Component<props, state> {
     }
 
     loadActors(): void {
-        callAPI('actor.php', {action: 'getAllActors'}, result => {
+        callAPI<ActorType[]>('actor.php', {action: 'getAllActors'}, result => {
             this.setState({actors: result});
         });
     }

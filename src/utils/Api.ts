@@ -63,7 +63,7 @@ function buildFormData(args: ApiBaseRequest): FormData {
  * @param callback the callback with json reply from backend
  * @param errorcallback a optional callback if an error occured
  */
-export function callAPI(apinode: string, fd: ApiBaseRequest, callback: (_: any) => void, errorcallback: (_: any) => void = (_: any): void => {}): void {
+export function callAPI<T>(apinode: string, fd: ApiBaseRequest, callback: (_: T) => void, errorcallback: (_: string) => void = (_: string): void => {}): void {
     fetch(getAPIDomain() + apinode, {method: 'POST', body: buildFormData(fd)})
         .then((response) => response.json()
             .then((result) => {

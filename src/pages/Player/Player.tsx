@@ -320,7 +320,7 @@ export class Player extends React.Component<myprops, mystate> {
     }
 
     refetchActors(): void {
-        callAPI('actor.php', {action: 'getActorsOfVideo', videoid: this.props.match.params.id}, result => {
+        callAPI<ActorType[]>('actor.php', {action: 'getActorsOfVideo', videoid: this.props.match.params.id}, result => {
             this.setState({actors: result});
         });
     }

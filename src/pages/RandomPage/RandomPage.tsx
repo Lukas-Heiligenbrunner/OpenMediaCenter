@@ -8,8 +8,13 @@ import {callAPI} from '../../utils/Api';
 import {TagType, VideoUnloadedType} from "../../api/VideoTypes";
 
 interface state {
-    videos: VideoUnloadedType[]
-    tags: TagType[]
+    videos: VideoUnloadedType[];
+    tags: TagType[];
+}
+
+interface GetRandomMoviesType {
+    rows: VideoUnloadedType[];
+    tags: TagType[];
 }
 
 /**
@@ -68,7 +73,7 @@ class RandomPage extends React.Component<{}, state> {
      * @param nr number of videos to load
      */
     loadShuffledvideos(nr: number): void {
-        callAPI('video.php', {action: 'getRandomMovies', number: nr}, result => {
+        callAPI<GetRandomMoviesType>('video.php', {action: 'getRandomMovies', number: nr}, result => {
             console.log(result);
 
             this.setState({videos: []}); // needed to trigger rerender of main videoview

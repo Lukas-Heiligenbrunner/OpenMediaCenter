@@ -127,7 +127,7 @@ class CategoryView extends React.Component<CategoryViewProps, CategoryViewState>
      * @param id tagid
      */
     fetchVideoData(id: number): void {
-        callAPI('video.php', {action: 'getMovies', tag: id}, result => {
+        callAPI<VideoUnloadedType[]>('video.php', {action: 'getMovies', tag: id}, result => {
             this.videodata = result;
             this.setState({loaded: true});
         });
@@ -176,7 +176,7 @@ class TagView extends React.Component<{}, TagViewState> {
      * load all available tags from db.
      */
     loadTags(): void {
-        callAPI('tags.php', {action: 'getAllTags'}, result => {
+        callAPI<TagType[]>('tags.php', {action: 'getAllTags'}, result => {
             this.setState({loadedtags: result});
         });
     }
