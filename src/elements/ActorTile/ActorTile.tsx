@@ -17,7 +17,7 @@ class ActorTile extends React.Component<props> {
         this.state = {};
     }
 
-    render() {
+    render(): JSX.Element {
         if (this.props.onClick) {
             return this.renderActorTile(this.props.onClick);
         } else {
@@ -34,7 +34,7 @@ class ActorTile extends React.Component<props> {
     renderActorTile(customclickhandler: (actor: ActorType) => void): JSX.Element {
         console.log(this.props.actor)
         return (
-            <div className={style.actortile} onClick={() => customclickhandler(this.props.actor)}>
+            <div className={style.actortile} onClick={():void => customclickhandler(this.props.actor)}>
                 <div className={style.actortile_thumbnail}>
                     {this.props.actor.thumbnail === null ? <FontAwesomeIcon style={{
                         lineHeight: '130px'

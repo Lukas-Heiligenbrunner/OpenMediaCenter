@@ -16,8 +16,8 @@ interface state {
  * Randompage shuffles random viedeopreviews and provides a shuffle btn
  */
 class RandomPage extends React.Component<{}, state> {
-    constructor(props: {}, context: any) {
-        super(props, context);
+    constructor(props: {}) {
+        super(props);
 
         this.state = {
             videos: [],
@@ -46,7 +46,7 @@ class RandomPage extends React.Component<{}, state> {
                     <VideoContainer
                         data={this.state.videos}>
                         <div className={style.Shufflebutton}>
-                            <button onClick={() => this.shuffleclick()} className={style.btnshuffle}>Shuffle</button>
+                            <button onClick={(): void => this.shuffleclick()} className={style.btnshuffle}>Shuffle</button>
                         </div>
                     </VideoContainer>
                     :

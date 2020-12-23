@@ -12,7 +12,7 @@ class ActorOverviewPage extends React.Component<props> {
 
     }
 
-    render() {
+    render(): JSX.Element {
         return (
             <>
 

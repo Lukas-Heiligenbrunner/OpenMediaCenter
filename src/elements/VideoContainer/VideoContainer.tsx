@@ -20,8 +20,8 @@ class VideoContainer extends React.Component<props, state> {
     // stores current index of loaded elements
     loadindex: number = 0;
 
-    constructor(props: props, context: any) {
-        super(props, context);
+    constructor(props: props) {
+        super(props);
 
         this.state = {
             loadeditems: [],
@@ -29,13 +29,13 @@ class VideoContainer extends React.Component<props, state> {
         };
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         document.addEventListener('scroll', this.trackScrolling);
 
         this.loadPreviewBlock(16);
     }
 
-    render() {
+    render(): JSX.Element {
         return (
             <div className={style.maincontent}>
                 {this.state.loadeditems.map(elem => (
@@ -52,7 +52,7 @@ class VideoContainer extends React.Component<props, state> {
         );
     }
 
-    componentWillUnmount() {
+    componentWillUnmount(): void {
         this.setState({});
         // unbind scroll listener when unmounting component
         document.removeEventListener('scroll', this.trackScrolling);
@@ -62,7 +62,7 @@ class VideoContainer extends React.Component<props, state> {
      * load previews to the container
      * @param nr number of previews to load
      */
-    loadPreviewBlock(nr: number) {
+    loadPreviewBlock(nr: number): void {
         console.log('loadpreviewblock called ...');
         let ret = [];
         for (let i = 0; i < nr; i++) {
@@ -86,7 +86,7 @@ class VideoContainer extends React.Component<props, state> {
     /**
      * scroll event handler -> load new previews if on bottom
      */
-    trackScrolling = () => {
+    trackScrolling = (): void => {
         // comparison if current scroll position is on bottom --> 200 is bottom offset to trigger load
         if (window.innerHeight + document.documentElement.scrollTop + 200 >= document.documentElement.offsetHeight) {
             this.loadPreviewBlock(8);

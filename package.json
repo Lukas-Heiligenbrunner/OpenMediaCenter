@@ -65,7 +65,19 @@
   "proxy": "http://192.168.0.209",
   "homepage": "./",
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ],
+    "overrides": [
+      {
+        "files": ["**/*.ts?(x)"],
+        "rules": {
+          "@typescript-eslint/no-explicit-any": "error",
+          "@typescript-eslint/explicit-function-return-type": "error"
+        }
+      }
+    ]
   },
   "browserslist": {
     "production": [
@@ -85,11 +97,15 @@
     "@testing-library/user-event": "^12.6.0",
     "@types/react-router-dom": "^5.1.6",
     "@types/react-router": "5.1.8",
+    "@types/jest": "^26.0.19",
+    "@types/node": "^12.19.9",
+    "@types/react": "^16.14.2",
+    "@types/react-dom": "^16.9.10",
     "electron": "^11.1.0",
     "electron-builder": "^22.1.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.5",
     "jest-junit": "^12.0.0",
-    "react-scripts": "^3.4.4"
+    "react-scripts": "4.0.1"
   }
 }

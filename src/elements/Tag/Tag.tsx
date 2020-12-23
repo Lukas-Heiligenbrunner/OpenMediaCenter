@@ -27,7 +27,7 @@ class Tag extends React.Component<props> {
 
     renderButton(): JSX.Element {
         return (
-            <button className={styles.tagbtn} onClick={() => this.TagClick()}
+            <button className={styles.tagbtn} onClick={():void => this.TagClick()}
                     data-testid='Test-Tag'>{this.props.tagInfo.tag_name}</button>
         );
     }

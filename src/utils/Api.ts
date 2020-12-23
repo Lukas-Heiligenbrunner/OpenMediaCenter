@@ -23,7 +23,7 @@ export function getBackendDomain(): string {
  * set a custom backend domain
  * @param domain a url in format [http://x.x.x.x/somanode]
  */
-export function setCustomBackendDomain(domain: string) {
+export function setCustomBackendDomain(domain: string): void {
     customBackendURL = domain;
 }
 
@@ -63,7 +63,7 @@ function buildFormData(args: ApiBaseRequest): FormData {
  * @param callback the callback with json reply from backend
  * @param errorcallback a optional callback if an error occured
  */
-export function callAPI(apinode: string, fd: ApiBaseRequest, callback: (_: any) => void, errorcallback: (_: any) => void = (_: object) => {}): void {
+export function callAPI(apinode: string, fd: ApiBaseRequest, callback: (_: any) => void, errorcallback: (_: any) => void = (_: any): void => {}): void {
     fetch(getAPIDomain() + apinode, {method: 'POST', body: buildFormData(fd)})
         .then((response) => response.json()
             .then((result) => {
@@ -77,7 +77,7 @@ export function callAPI(apinode: string, fd: ApiBaseRequest, callback: (_: any) 
  * @param fd the object to send to backend
  * @param callback the callback with PLAIN text reply from backend
  */
-export function callAPIPlain(apinode: string, fd: ApiBaseRequest, callback: (_: any) => void): void {
+export function callAPIPlain(apinode: string, fd: ApiBaseRequest, callback: (_: string) => void): void {
     fetch(getAPIDomain() + apinode, {method: 'POST', body: buildFormData(fd)})
         .then((response) => response.text()
             .then((result) => {

@@ -59,8 +59,8 @@ export class Player extends React.Component<myprops, mystate> {
         ]
     };
 
-    constructor(props: myprops, context: any) {
-        super(props, context);
+    constructor(props: myprops) {
+        super(props);
 
         this.state = {
             movie_id: -1,
@@ -137,7 +137,7 @@ export class Player extends React.Component<myprops, mystate> {
         return (
             <>
                 {this.state.popupvisible ?
-                    <AddTagPopup onHide={() => {
+                    <AddTagPopup onHide={(): void => {
                         this.setState({popupvisible: false});
                     }}
                                  submit={this.quickAddTag}
@@ -146,7 +146,7 @@ export class Player extends React.Component<myprops, mystate> {
                 }
                 {
                     this.state.actorpopupvisible ?
-                        <AddActorPopup onHide={() => {
+                        <AddActorPopup onHide={(): void => {
                             this.refetchActors();
                             this.setState({actorpopupvisible: false});
                         }} movie_id={this.state.movie_id}/> : null
@@ -179,7 +179,7 @@ export class Player extends React.Component<myprops, mystate> {
                     <Tag
                         tagInfo={m}
                         key={m.tag_name}
-                        onclick={() => {
+                        onclick={(): void => {
                             this.quickAddTag(m.tag_id, m.tag_name);
                         }}/>
                 ))}
@@ -204,13 +204,13 @@ export class Player extends React.Component<myprops, mystate> {
                             options={this.options}/> :
                         <div>not loaded yet</div>}
                     <div className={style.videoactions}>
-                        <button className={style.button} style={{backgroundColor: 'green'}} onClick={() => this.likebtn()}>
+                        <button className={style.button} style={{backgroundColor: 'green'}} onClick={(): void => this.likebtn()}>
                             Like this Video!
                         </button>
-                        <button className={style.button} style={{backgroundColor: '#3574fe'}} onClick={() => this.setState({popupvisible: true})}>
+                        <button className={style.button} style={{backgroundColor: '#3574fe'}} onClick={(): void => this.setState({popupvisible: true})}>
                             Give this Video a Tag
                         </button>
-                        <button className={style.button} style={{backgroundColor: 'red'}} onClick={() => {
+                        <button className={style.button} style={{backgroundColor: 'red'}} onClick={(): void => {
                             this.deleteVideo();
                         }}>Delete Video
                         </button>
@@ -222,7 +222,7 @@ export class Player extends React.Component<myprops, mystate> {
                                 <ActorTile actor={actr}/>
                             )) : <></>
                         }
-                        <div className={style.actorAddTile} onClick={() => {
+                        <div className={style.actorAddTile} onClick={(): void => {
                             this.addActor();
                         }}>
                             <div className={style.actorAddTile_thumbnail}>
@@ -234,7 +234,7 @@ export class Player extends React.Component<myprops, mystate> {
                         </div>
                     </div>
                 </div>
-                <button className={style.closebutton} onClick={() => this.closebtn()}>Close</button>
+                <button className={style.closebutton} onClick={(): void => this.closebtn()}>Close</button>
                 {
                     // handle the popovers switched on and off according to state changes
                     this.handlePopOvers()

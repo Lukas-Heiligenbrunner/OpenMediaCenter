@@ -40,12 +40,12 @@ describe('<AddActorPopup/>', function () {
 
     it('simulate actortile click', function () {
         const func = jest.fn();
-        const wrapper = shallow(<AddActorPopup onHide={() => {func()}}/>);
+        const wrapper = shallow(<AddActorPopup onHide={() => {func()}} movie_id={1}/>);
 
         global.callAPIMock({result: 'success'});
 
-        wrapper.setState({actors: [{id: 1, actorname: 'test'}]}, () => {
-            wrapper.find('ActorTile').props().onClick();
+        wrapper.setState({actors: [{actor_id: 1, actorname: 'test'}]}, () => {
+            wrapper.find('ActorTile').dive().simulate('click')
 
             expect(callAPI).toHaveBeenCalledTimes(1);
 
@@ -59,8 +59,8 @@ describe('<AddActorPopup/>', function () {
 
         global.callAPIMock({result: 'nosuccess'});
 
-        wrapper.setState({actors: [{id: 1, actorname: 'test'}]}, () => {
-            wrapper.find('ActorTile').props().onClick();
+        wrapper.setState({actors: [{actor_id: 1, actorname: 'test'}]}, () => {
+            wrapper.find('ActorTile').dive().simulate('click')
 
             expect(callAPI).toHaveBeenCalledTimes(1);
 

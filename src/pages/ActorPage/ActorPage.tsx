@@ -18,7 +18,8 @@ interface state {
 /**
  * empty default props with id in url
  */
-interface props extends RouteComponentProps<{ id: string }> {}
+interface props extends RouteComponentProps<{ id: string }> {
+}
 
 /**
  * result of actor fetch
@@ -38,7 +39,7 @@ class ActorPage extends React.Component<props, state> {
         this.state = {data: [], actor: {actor_id: 0, name: '', thumbnail: ''}};
     }
 
-    render() {
+    render(): JSX.Element {
         return (
             <>
                 <PageTitle title={this.state.actor.name} subtitle={this.state.data ? this.state.data.length + ' videos' : null}/>
@@ -56,14 +57,14 @@ class ActorPage extends React.Component<props, state> {
         );
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         this.getActorInfo();
     }
 
     /**
      * request more actor info from backend
      */
-    getActorInfo() {
+    getActorInfo(): void {
         callAPI('actor.php', {
             action: 'getActorInfo',
             actorid: this.props.match.params.id
