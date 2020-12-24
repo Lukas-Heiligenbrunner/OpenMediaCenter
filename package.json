@@ -25,7 +25,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "CI=true react-scripts test --reporters=jest-junit --verbose --silent --coverage --reporters=default --colors",
+    "test": "CI=true react-scripts test --reporters=jest-junit --verbose --silent --coverage --reporters=default",
     "buildlinux": "node build.js --linux",
     "buildwin": "node build.js --win",
     "electron-dev": "electron ."

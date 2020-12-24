@@ -8,8 +8,9 @@ stages:
   - deploy
 
 cache:
-  key: "$CI_COMMIT_REF_SLUG" # use per branch caching
+  key: ${CI_COMMIT_REF_SLUG}
   paths:
+    - .npm/
     - node_modules/
 
 include:
@@ -21,7 +22,7 @@ variables:
 Node_dependencies:
   stage: prepare
   script:
-    - npm install --progress=false
+    - npm ci --cache .npm --prefer-offline
 
 Minimize:
   stage: build
