@@ -14,10 +14,11 @@ import AddActorPopup from '../../elements/Popups/AddActorPopup/AddActorPopup';
 import ActorTile from '../../elements/ActorTile/ActorTile';
 import {withRouter} from 'react-router-dom';
 import {callAPI, getBackendDomain} from '../../utils/Api';
-import {RouteComponentProps} from "react-router";
-import {GeneralSuccess} from "../../api/GeneralTypes";
-import {ActorType, loadVideoType, TagType} from "../../api/VideoTypes";
-import PlyrJS from "plyr";
+import {RouteComponentProps} from 'react-router';
+import {GeneralSuccess} from '../../api/GeneralTypes';
+import {ActorType, loadVideoType, TagType} from '../../api/VideoTypes';
+import PlyrJS from 'plyr';
+import {Button} from '../../elements/GPElements/Button';
 
 interface myprops extends RouteComponentProps<{ id: string }> {
 
@@ -204,16 +205,9 @@ export class Player extends React.Component<myprops, mystate> {
                             options={this.options}/> :
                         <div>not loaded yet</div>}
                     <div className={style.videoactions}>
-                        <button className={style.button} style={{backgroundColor: 'green'}} onClick={(): void => this.likebtn()}>
-                            Like this Video!
-                        </button>
-                        <button className={style.button} style={{backgroundColor: '#3574fe'}} onClick={(): void => this.setState({popupvisible: true})}>
-                            Give this Video a Tag
-                        </button>
-                        <button className={style.button} style={{backgroundColor: 'red'}} onClick={(): void => {
-                            this.deleteVideo();
-                        }}>Delete Video
-                        </button>
+                        <Button onClick={(): void => this.likebtn()} title='Like this Video!' color={{backgroundColor: 'green'}}/>
+                        <Button onClick={(): void => this.setState({popupvisible: true})} title='Give this Video a Tag' color={{backgroundColor: '#3574fe'}}/>
+                        <Button title='Delete Video' onClick={(): void => {this.deleteVideo()}} color={{backgroundColor: 'red'}}/>
                     </div>
                     {/* rendering of actor tiles */}
                     <div className={style.actorcontainer}>

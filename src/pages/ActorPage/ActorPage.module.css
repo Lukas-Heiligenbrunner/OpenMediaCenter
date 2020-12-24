@@ -1,4 +1,9 @@
 .pic {
-    text-align: center;
     margin-bottom: 25px;
+    text-align: center;
+}
+
+.overviewbutton{
+    float: right;
+    margin-top: 25px;
 }

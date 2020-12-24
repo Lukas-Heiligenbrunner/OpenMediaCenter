@@ -123,7 +123,10 @@ class HomePage extends React.Component {
                     <SideBarTitle>Default Tags:</SideBarTitle>
                     <Tag tagInfo={{tag_name: 'All', tag_id: -1}} onclick={() => this.fetchVideoData('All')}/>
                     <Tag tagInfo={{tag_name: 'FullHd', tag_id: -1}} onclick={() => this.fetchVideoData('FullHd')}/>
-                    <Tag tagInfo={{tag_name: 'LowQuality', tag_id: -1}} onclick={() => this.fetchVideoData('LowQuality')}/>
+                    <Tag tagInfo={{
+                        tag_name: 'LowQuality',
+                        tag_id: -1
+                    }} onclick={() => this.fetchVideoData('LowQuality')}/>
                     <Tag tagInfo={{tag_name: 'HD', tag_id: -1}} onclick={() => this.fetchVideoData('HD')}/>
                 </SideBar>
                 {this.state.data.length !== 0 ?

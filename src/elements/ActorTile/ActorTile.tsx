@@ -2,8 +2,8 @@ import style from './ActorTile.module.css';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faUser} from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
-import {Link} from "react-router-dom";
-import {ActorType} from "../../api/VideoTypes";
+import {Link} from 'react-router-dom';
+import {ActorType} from '../../api/VideoTypes';
 
 interface props {
     actor: ActorType;
@@ -22,7 +22,7 @@ class ActorTile extends React.Component<props> {
             return this.renderActorTile(this.props.onClick);
         } else {
             return (
-                <Link to={{pathname: "/actors/" + this.props.actor.actor_id}}>
+                <Link to={{pathname: '/actors/' + this.props.actor.actor_id}}>
                     {this.renderActorTile(() => {
                     })}
                 </Link>
@@ -32,9 +32,9 @@ class ActorTile extends React.Component<props> {
     }
 
     renderActorTile(customclickhandler: (actor: ActorType) => void): JSX.Element {
-        console.log(this.props.actor)
+        console.log(this.props.actor);
         return (
-            <div className={style.actortile} onClick={():void => customclickhandler(this.props.actor)}>
+            <div className={style.actortile} onClick={(): void => customclickhandler(this.props.actor)}>
                 <div className={style.actortile_thumbnail}>
                     {this.props.actor.thumbnail === null ? <FontAwesomeIcon style={{
                         lineHeight: '130px'

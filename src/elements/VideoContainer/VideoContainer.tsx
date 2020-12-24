@@ -1,7 +1,7 @@
 import React from 'react';
 import Preview from '../Preview/Preview';
 import style from './VideoContainer.module.css';
-import {VideoUnloadedType} from "../../api/VideoTypes";
+import {VideoUnloadedType} from '../../api/VideoTypes';
 
 interface props {
     data: VideoUnloadedType[]

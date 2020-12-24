@@ -31,7 +31,7 @@ class Preview extends React.Component {
     render() {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
-            <Link to={"/player/"+this.props.movie_id}>
+            <Link to={'/player/' + this.props.movie_id}>
                 <div className={style.videopreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview}>
                     <div className={style.previewtitle + ' ' + themeStyle.lighttextcolor}>{this.state.name}</div>
                     <div className={style.previewpic}>

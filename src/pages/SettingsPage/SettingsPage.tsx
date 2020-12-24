@@ -3,7 +3,7 @@ import MovieSettings from './MovieSettings';
 import GeneralSettings from './GeneralSettings';
 import style from './SettingsPage.module.css';
 import GlobalInfos from '../../utils/GlobalInfos';
-import {NavLink, Redirect, Route, Switch} from "react-router-dom";
+import {NavLink, Redirect, Route, Switch} from 'react-router-dom';
 
 /**
  * The Settingspage handles all kinds of settings for the mediacenter

@@ -6,8 +6,8 @@ import {callAPI} from '../../utils/Api';
 describe('<Player/>', function () {
 
     // help simulating id passed by url
-    function instance(){
-        return shallow(<Player match={{params: {id: 10}}}/>)
+    function instance() {
+        return shallow(<Player match={{params: {id: 10}}}/>);
     }
 
     it('renders without crashing ', function () {

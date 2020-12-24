@@ -22,7 +22,7 @@ describe('<NewActorPopupContent/>', () => {
         global.callAPIMock({});
 
         const func = jest.fn();
-        const wrapper = shallow(<NewActorPopupContent onHide={() => {func()}}/>);
+        const wrapper = shallow(<NewActorPopupContent onHide={() => {func();}}/>);
 
         // manually set typed in actorname
         wrapper.instance().value = 'testactorname';

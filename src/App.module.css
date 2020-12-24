@@ -18,8 +18,8 @@
 .navitem:hover {
     color: white;
     opacity: 1;
-    transition: opacity .5s;
     text-decoration: none;
+    transition: opacity .5s;
 }
 
 .navitem::after {

@@ -6,9 +6,10 @@ import {faUser} from '@fortawesome/free-solid-svg-icons';
 import style from './ActorPage.module.css';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 import {callAPI} from '../../utils/Api';
-import {ActorType, VideoUnloadedType} from "../../api/VideoTypes";
-import {withRouter} from "react-router-dom";
-import {RouteComponentProps} from "react-router";
+import {ActorType, VideoUnloadedType} from '../../api/VideoTypes';
+import {Link, withRouter} from 'react-router-dom';
+import {RouteComponentProps} from 'react-router';
+import {Button} from '../../elements/GPElements/Button';
 
 interface state {
     data: VideoUnloadedType[],
@@ -42,7 +43,13 @@ class ActorPage extends React.Component<props, state> {
     render(): JSX.Element {
         return (
             <>
-                <PageTitle title={this.state.actor.name} subtitle={this.state.data ? this.state.data.length + ' videos' : null}/>
+                <PageTitle title={this.state.actor.name} subtitle={this.state.data ? this.state.data.length + ' videos' : null}>
+                    <span className={style.overviewbutton}>
+                        <Link to='/actors'>
+                            <Button onClick={(): void => {}} title='Go to Actor overview'/>
+                        </Link>
+                    </span>
+                </PageTitle>
                 <SideBar>
                     <div className={style.pic}>
                         <FontAwesomeIcon style={{color: 'white'}} icon={faUser} size='10x'/>

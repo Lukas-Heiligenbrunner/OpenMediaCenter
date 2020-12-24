@@ -5,7 +5,7 @@ import Tag from '../../elements/Tag/Tag';
 import PageTitle from '../../elements/PageTitle/PageTitle';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 import {callAPI} from '../../utils/Api';
-import {TagType, VideoUnloadedType} from "../../api/VideoTypes";
+import {TagType, VideoUnloadedType} from '../../api/VideoTypes';
 
 interface state {
     videos: VideoUnloadedType[];

@@ -4,8 +4,8 @@ import ActorTile from '../../ActorTile/ActorTile';
 import style from './AddActorPopup.module.css';
 import {NewActorPopupContent} from '../NewActorPopup/NewActorPopup';
 import {callAPI} from '../../../utils/Api';
-import {ActorType} from "../../../api/VideoTypes";
-import {GeneralSuccess} from "../../../api/GeneralTypes";
+import {ActorType} from '../../../api/VideoTypes';
+import {GeneralSuccess} from '../../../api/GeneralTypes';
 
 interface props {
     onHide: () => void;
@@ -82,7 +82,7 @@ class AddActorPopup extends React.Component<props, state> {
     /**
      * event handling for ActorTile Click
      */
-    tileClickHandler(actor: ActorType):void {
+    tileClickHandler(actor: ActorType): void {
         // fetch the available actors
         callAPI<GeneralSuccess>('actor.php', {
             action: 'addActorToVideo',

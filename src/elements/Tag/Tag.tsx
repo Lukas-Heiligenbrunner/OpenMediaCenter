@@ -2,7 +2,7 @@ import React from 'react';
 
 import styles from './Tag.module.css';
 import {Link} from 'react-router-dom';
-import {TagType} from "../../api/VideoTypes";
+import {TagType} from '../../api/VideoTypes';
 
 interface props {
     onclick?: (_: string) => void
@@ -18,7 +18,7 @@ class Tag extends React.Component<props> {
             return this.renderButton();
         } else {
             return (
-                <Link to={'/categories/'+this.props.tagInfo.tag_id}>
+                <Link to={'/categories/' + this.props.tagInfo.tag_id}>
                     {this.renderButton()}
                 </Link>
             );
@@ -27,7 +27,7 @@ class Tag extends React.Component<props> {
 
     renderButton(): JSX.Element {
         return (
-            <button className={styles.tagbtn} onClick={():void => this.TagClick()}
+            <button className={styles.tagbtn} onClick={(): void => this.TagClick()}
                     data-testid='Test-Tag'>{this.props.tagInfo.tag_name}</button>
         );
     }

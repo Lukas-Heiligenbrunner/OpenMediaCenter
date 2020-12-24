@@ -9,9 +9,9 @@ import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 import {Link, Route, Switch, withRouter} from 'react-router-dom';
 import {callAPI} from '../../utils/Api';
-import {DefaultTags} from "../../api/GeneralTypes";
-import {TagType, VideoUnloadedType} from "../../api/VideoTypes";
-import {RouteComponentProps} from "react-router";
+import {DefaultTags} from '../../api/GeneralTypes';
+import {TagType, VideoUnloadedType} from '../../api/VideoTypes';
+import {RouteComponentProps} from 'react-router';
 
 
 interface CategoryPageState {
@@ -28,7 +28,7 @@ class CategoryPage extends React.Component<{}, CategoryPageState> {
 
         this.state = {
             popupvisible: false
-        }
+        };
     }
 
     /**
@@ -90,6 +90,8 @@ interface CategoryViewState {
 }
 
 class CategoryView extends React.Component<CategoryViewProps, CategoryViewState> {
+    private videodata: VideoUnloadedType[] = [];
+
     constructor(props: CategoryViewProps) {
         super(props);
 
@@ -99,8 +101,6 @@ class CategoryView extends React.Component<CategoryViewProps, CategoryViewState>
 
         this.fetchVideoData(parseInt(this.props.match.params.id));
     }
-
-    private videodata: VideoUnloadedType[] = [];
 
     render(): JSX.Element {
         return (
@@ -115,7 +115,7 @@ class CategoryView extends React.Component<CategoryViewProps, CategoryViewState>
 
                 <button data-testid='backbtn' className='btn btn-success'
                         onClick={(): void => {
-                            this.props.history.push('/categories')
+                            this.props.history.push('/categories');
                         }}>Back to Categories
                 </button>
             </>
@@ -135,7 +135,7 @@ class CategoryView extends React.Component<CategoryViewProps, CategoryViewState>
 
 }
 
-const CategoryViewWR = withRouter(CategoryView)
+const CategoryViewWR = withRouter(CategoryView);
 
 interface TagViewState {
     loadedtags: TagType[];
