@@ -33,7 +33,7 @@ interface videofetchresult {
 /**
  * info page about a specific actor and a list of all its videos
  */
-class ActorPage extends React.Component<props, state> {
+export class ActorPage extends React.Component<props, state> {
     constructor(props: props) {
         super(props);
 

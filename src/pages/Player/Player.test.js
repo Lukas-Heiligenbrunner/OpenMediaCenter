@@ -36,7 +36,7 @@ describe('<Player/>', function () {
 
         // initial fetch for getting movie data
         expect(global.fetch).toHaveBeenCalledTimes(1);
-        wrapper.find('.videoactions').find('button').first().simulate('click');
+        wrapper.find('.videoactions').find('Button').first().simulate('click');
         // fetch for liking
         expect(global.fetch).toHaveBeenCalledTimes(2);
 
@@ -79,7 +79,7 @@ describe('<Player/>', function () {
         const wrapper = instance();
         expect(wrapper.find('AddTagPopup')).toHaveLength(0);
         // todo dynamic button find without index
-        wrapper.find('.videoactions').find('button').at(1).simulate('click');
+        wrapper.find('.videoactions').find('Button').at(1).simulate('click');
         // addtagpopup should be showing now
         expect(wrapper.find('AddTagPopup')).toHaveLength(1);
     });
@@ -92,7 +92,7 @@ describe('<Player/>', function () {
 
         global.fetch = prepareFetchApi({result: 'success'});
 
-        wrapper.find('.videoactions').find('button').at(2).simulate('click');
+        wrapper.find('.videoactions').find('Button').at(2).simulate('click');
 
         process.nextTick(() => {
             // refetch is called so fetch called 3 times
