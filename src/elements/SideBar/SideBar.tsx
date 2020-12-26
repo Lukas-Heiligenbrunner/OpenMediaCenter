@@ -2,13 +2,20 @@ import React from 'react';
 import style from './SideBar.module.css';
 import GlobalInfos from '../../utils/GlobalInfos';
 
+interface SideBarProps {
+    hiddenFrame?: boolean;
+    width?: string;
+}
+
 /**
  * component for sidebar-info
  */
-class SideBar extends React.Component {
-    render() {
+class SideBar extends React.Component<SideBarProps> {
+    render(): JSX.Element {
         const themeStyle = GlobalInfos.getThemeStyle();
-        return (<div className={style.sideinfo + ' ' + themeStyle.secbackground}>
+        const classnn = style.sideinfogeometry + ' ' + (this.props.hiddenFrame === undefined ? style.sideinfo + ' ' + themeStyle.secbackground : '');
+
+        return (<div className={classnn} style={{width: this.props.width}}>
             {this.props.children}
         </div>);
     }
@@ -18,7 +25,7 @@ class SideBar extends React.Component {
  * The title of the sidebar
  */
 export class SideBarTitle extends React.Component {
-    render() {
+    render(): JSX.Element {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
             <div className={style.sidebartitle + ' ' + themeStyle.subtextcolor}>{this.props.children}</div>
@@ -30,7 +37,7 @@ export class SideBarTitle extends React.Component {
  * An item of the sidebar
  */
 export class SideBarItem extends React.Component {
-    render() {
+    render(): JSX.Element {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
             <div

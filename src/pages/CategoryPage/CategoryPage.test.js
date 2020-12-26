@@ -8,22 +8,6 @@ describe('<CategoryPage/>', function () {
         wrapper.unmount();
     });
 
-    // it('test tag fetch call', done => {
-    //     global.fetch = global.prepareFetchApi(['first', 'second']);
-    //
-    //     const wrapper = shallow(<CategoryPage/>);
-    //
-    //     expect(global.fetch).toHaveBeenCalledTimes(1);
-    //
-    //     process.nextTick(() => {
-    //         //callback to close window should have called
-    //         expect(wrapper.state().loadedtags.length).toBe(2);
-    //
-    //         global.fetch.mockClear();
-    //         done();
-    //     });
-    // });
-
     it('test new tag popup', function () {
         const wrapper = shallow(<CategoryPage/>);
 
@@ -33,63 +17,20 @@ describe('<CategoryPage/>', function () {
         expect(wrapper.find('NewTagPopup')).toHaveLength(1);
     });
 
-    // it('test setpage callback', done => {
-    //     global.fetch = global.prepareFetchApi([{}, {}]);
-    //
-    //     const wrapper = shallow(<CategoryPage/>);
-    //
-    //     wrapper.setState({
-    //         loadedtags: [
-    //             {
-    //                 tag_name: 'testname',
-    //                 tag_id: 42
-    //             }
-    //         ]
-    //     });
-    //
-    //     wrapper.find('TagPreview').dive().find('div').first().simulate('click');
-    //
-    //     process.nextTick(() => {
-    //         // expect callback to have loaded correct tag
-    //         expect(wrapper.state().selected).toBe('testname');
-    //
-    //         global.fetch.mockClear();
-    //         done();
-    //     });
-    // });
-    //
-    // it('test back to category view callback', function () {
-    //     const wrapper = shallow(<CategoryPage/>);
-    //
-    //     wrapper.setState({
-    //         selected: 'test'
-    //     });
-    //     expect(wrapper.state().selected).not.toBeNull();
-    //     wrapper.find('[data-testid="backbtn"]').simulate('click');
-    //     expect(wrapper.state().selected).toBeNull();
-    // });
-    //
-    // it('load categorypage with predefined tag', function () {
-    //     const func = jest.fn();
-    //     CategoryPage.prototype.fetchVideoData = func;
-    //
-    //     shallow(<CategoryPage category='fullhd'/>);
-    //
-    //     expect(func).toBeCalledTimes(1);
-    // });
-    //
-    // it('test sidebar tag clicks', function () {
-    //     const func = jest.fn();
-    //
-    //     const wrapper = shallow(<CategoryPage category='fullhd'/>);
-    //     wrapper.instance().loadTag = func;
-    //
-    //     expect(func).toBeCalledTimes(0);
-    //     wrapper.find('SideBar').find('Tag').forEach(e => {
-    //         e.dive().simulate('click');
-    //     });
-    //
-    //     expect(func).toBeCalledTimes(4);
-    //
-    // });
+    it('test add popup', function () {
+        const wrapper = shallow(<CategoryPage/>);
+
+        expect(wrapper.find('NewTagPopup')).toHaveLength(0);
+        wrapper.setState({popupvisible: true});
+        expect(wrapper.find('NewTagPopup')).toHaveLength(1);
+    });
+
+    it('test hiding of popup', function () {
+        const wrapper = shallow(<CategoryPage/>);
+        wrapper.setState({popupvisible: true});
+
+        wrapper.find('NewTagPopup').props().onHide();
+
+        expect(wrapper.find('NewTagPopup')).toHaveLength(0);
+    });
 });

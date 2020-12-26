@@ -17,23 +17,37 @@ import Player from './pages/Player/Player';
 import ActorOverviewPage from './pages/ActorOverviewPage/ActorOverviewPage';
 import ActorPage from './pages/ActorPage/ActorPage';
 
+interface state {
+    generalSettingsLoaded: boolean;
+    passwordsupport: boolean;
+    mediacentername: string;
+    onapierror: boolean;
+}
+
+interface initialApiCallData {
+    DarkMode: boolean;
+    passwordEnabled: boolean;
+    mediacenter_name: string;
+
+}
+
 /**
  * The main App handles the main tabs and which content to show
  */
-class App extends React.Component {
-    constructor(props, context) {
-        super(props, context);
+class App extends React.Component<{}, state> {
+    constructor(props: {}) {
+        super(props);
         this.state = {
             generalSettingsLoaded: false,
-            passwordsupport: null,
+            passwordsupport: false,
             mediacentername: 'OpenMediaCenter',
             onapierror: false
         };
     }
 
-    initialAPICall() {
+    initialAPICall(): void {
         // this is the first api call so if it fails we know there is no connection to backend
-        callAPI('settings.php', {action: 'loadInitialData'}, (result) => {
+        callAPI('settings.php', {action: 'loadInitialData'}, (result: initialApiCallData) => {
             // set theme
             GlobalInfos.enableDarkTheme(result.DarkMode);
 
@@ -50,12 +64,12 @@ class App extends React.Component {
         });
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         this.initialAPICall();
     }
 
 
-    render() {
+    render(): JSX.Element {
         const themeStyle = GlobalInfos.getThemeStyle();
         // add the main theme to the page body
         document.body.className = themeStyle.backgroundcolor;
@@ -65,7 +79,6 @@ class App extends React.Component {
                 <div className={style.app}>
                     <div className={[style.navcontainer, themeStyle.backgroundcolor, themeStyle.textcolor, themeStyle.hrcolor].join(' ')}>
                         <div className={style.navbrand}>{this.state.mediacentername}</div>
-
                         <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/'} activeStyle={{opacity: '0.85'}}>Home</NavLink>
                         <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/random'} activeStyle={{opacity: '0.85'}}>Random
                             Video</NavLink>
@@ -80,7 +93,7 @@ class App extends React.Component {
         );
     }
 
-    routing() {
+    routing(): JSX.Element {
         return (
             <Switch>
                 <Route path="/random">
@@ -108,9 +121,9 @@ class App extends React.Component {
         );
     }
 
-    ApiError() {
+    ApiError(): JSX.Element {
         // on api error show popup and retry and show again if failing..
-        return (<NoBackendConnectionPopup onHide={() => this.initialAPICall()}/>);
+        return (<NoBackendConnectionPopup onHide={(): void => this.initialAPICall()}/>);
     }
 }
 

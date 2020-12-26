@@ -1,6 +1,6 @@
 import {shallow} from 'enzyme';
 import React from 'react';
-import HomePage from './HomePage';
+import {HomePage} from './HomePage';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 
 describe('<HomePage/>', function () {
@@ -54,23 +54,15 @@ describe('<HomePage/>', function () {
         });
     });
 
-    it('test form submit', done => {
-        global.fetch = global.prepareFetchApi([{}, {}]);
-
+    it('test form submit', () => {
+        const func = jest.fn();
         const wrapper = shallow(<HomePage/>);
+        wrapper.setProps({history: {push: () => func()}})
 
         const fakeEvent = {preventDefault: () => console.log('preventDefault')};
         wrapper.find('.searchform').simulate('submit', fakeEvent);
 
-        expect(wrapper.state().selectionnr).toBe(0);
-
-        process.nextTick(() => {
-            // state to be set correctly with response
-            expect(wrapper.state().selectionnr).toBe(2);
-
-            global.fetch.mockClear();
-            done();
-        });
+        expect(func).toHaveBeenCalledTimes(1);
     });
 
     it('test no backend connection behaviour', done => {
