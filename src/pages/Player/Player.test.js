@@ -260,4 +260,36 @@ describe('<Player/>', function () {
 
         expect(wrapper.find('AddActorPopup')).toHaveLength(0);
     });
+
+    it('test addtagpopup hiding', function () {
+        const wrapper = instance();
+
+        wrapper.setState({popupvisible: true});
+        expect(wrapper.find('AddTagPopup')).toHaveLength(1);
+
+        wrapper.find('AddTagPopup').props().onHide();
+
+        expect(wrapper.find('AddTagPopup')).toHaveLength(0);
+    });
+
+    it('test insertion of actor tiles', function () {
+        const wrapper = instance();
+        wrapper.setState({
+            actors: [{
+                thumbnail: '',
+                name: 'testname',
+                actor_id: 42
+            }]
+        });
+
+        expect(wrapper.find('ActorTile')).toHaveLength(1);
+    });
+
+    it('test Addactor button', function () {
+        const wrapper = instance();
+        expect(wrapper.state().actorpopupvisible).toBe(false);
+        wrapper.find('.actorAddTile').simulate('click');
+
+        expect(wrapper.state().actorpopupvisible).toBe(true);
+    });
 });

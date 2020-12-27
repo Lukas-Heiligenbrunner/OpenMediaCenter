@@ -20,9 +20,7 @@ import {ActorType, loadVideoType, TagType} from '../../api/VideoTypes';
 import PlyrJS from 'plyr';
 import {Button} from '../../elements/GPElements/Button';
 
-interface myprops extends RouteComponentProps<{ id: string }> {
-
-}
+interface myprops extends RouteComponentProps<{ id: string }> {}
 
 interface mystate {
     sources?: PlyrJS.SourceInfo,
@@ -82,6 +80,87 @@ export class Player extends React.Component<myprops, mystate> {
     componentDidMount(): void {
         // initial fetch of current movie data
         this.fetchMovieData();
+    }
+
+    render(): JSX.Element {
+        return (
+            <div id='videocontainer'>
+                <PageTitle
+                    title='Watch'
+                    subtitle={this.state.movie_name}/>
+
+                {this.assembleSideBar()}
+
+                <div className={style.videowrapper}>
+                    {/* video component is added here */}
+                    {this.state.sources ? <Plyr
+                            style={plyrstyle}
+                            source={this.state.sources}
+                            options={this.options}/> :
+                        <div>not loaded yet</div>}
+                    <div className={style.videoactions}>
+                        <Button onClick={(): void => this.likebtn()} title='Like this Video!' color={{backgroundColor: 'green'}}/>
+                        <Button onClick={(): void => this.setState({popupvisible: true})} title='Give this Video a Tag' color={{backgroundColor: '#3574fe'}}/>
+                        <Button title='Delete Video' onClick={(): void => {this.deleteVideo();}} color={{backgroundColor: 'red'}}/>
+                    </div>
+                    {/* rendering of actor tiles */}
+                    <div className={style.actorcontainer}>
+                        {this.state.actors ?
+                            this.state.actors.map((actr: ActorType) => (
+                                <ActorTile actor={actr}/>
+                            )) : <></>
+                        }
+                        <div className={style.actorAddTile} onClick={(): void => {
+                            this.addActor();
+                        }}>
+                            <div className={style.actorAddTile_thumbnail}>
+                                <FontAwesomeIcon style={{
+                                    lineHeight: '130px'
+                                }} icon={faPlusCircle} size='5x'/>
+                            </div>
+                            <div className={style.actorAddTile_name}>Add Actor</div>
+                        </div>
+                    </div>
+                </div>
+                <button className={style.closebutton} onClick={(): void => this.closebtn()}>Close</button>
+                {
+                    // handle the popovers switched on and off according to state changes
+                    this.handlePopOvers()
+                }
+            </div>
+        );
+    }
+
+    /**
+     * generate sidebar with all items
+     */
+    assembleSideBar(): JSX.Element {
+        return (
+            <SideBar>
+                <SideBarTitle>Infos:</SideBarTitle>
+                <Line/>
+                <SideBarItem><b>{this.state.likes}</b> Likes!</SideBarItem>
+                {this.state.quality !== 0 ?
+                    <SideBarItem><b>{this.state.quality}p</b> Quality!</SideBarItem> : null}
+                {this.state.length !== 0 ?
+                    <SideBarItem><b>{Math.round(this.state.length / 60)}</b> Minutes of length!</SideBarItem> : null}
+                <Line/>
+                <SideBarTitle>Tags:</SideBarTitle>
+                {this.state.tags.map((m: TagType) => (
+                    <Tag tagInfo={m}/>
+                ))}
+                <Line/>
+                <SideBarTitle>Tag Quickadd:</SideBarTitle>
+                {this.state.suggesttag.map((m: TagType) => (
+                    <Tag
+                        tagInfo={m}
+                        key={m.tag_name}
+                        onclick={(): void => {
+                            this.quickAddTag(m.tag_id, m.tag_name);
+                        }}/>
+                ))}
+            </SideBar>
+        );
     }
 
     /**
@@ -157,87 +236,6 @@ export class Player extends React.Component<myprops, mystate> {
     }
 
     /**
-     * generate sidebar with all items
-     */
-    assembleSideBar(): JSX.Element {
-        return (
-            <SideBar>
-                <SideBarTitle>Infos:</SideBarTitle>
-                <Line/>
-                <SideBarItem><b>{this.state.likes}</b> Likes!</SideBarItem>
-                {this.state.quality !== 0 ?
-                    <SideBarItem><b>{this.state.quality}p</b> Quality!</SideBarItem> : null}
-                {this.state.length !== 0 ?
-                    <SideBarItem><b>{Math.round(this.state.length / 60)}</b> Minutes of length!</SideBarItem> : null}
-                <Line/>
-                <SideBarTitle>Tags:</SideBarTitle>
-                {this.state.tags.map((m: TagType) => (
-                    <Tag tagInfo={m}/>
-                ))}
-                <Line/>
-                <SideBarTitle>Tag Quickadd:</SideBarTitle>
-                {this.state.suggesttag.map((m: TagType) => (
-                    <Tag
-                        tagInfo={m}
-                        key={m.tag_name}
-                        onclick={(): void => {
-                            this.quickAddTag(m.tag_id, m.tag_name);
-                        }}/>
-                ))}
-            </SideBar>
-        );
-    }
-
-    render(): JSX.Element {
-        return (
-            <div id='videocontainer'>
-                <PageTitle
-                    title='Watch'
-                    subtitle={this.state.movie_name}/>
-
-                {this.assembleSideBar()}
-
-                <div className={style.videowrapper}>
-                    {/* video component is added here */}
-                    {this.state.sources ? <Plyr
-                            style={plyrstyle}
-                            source={this.state.sources}
-                            options={this.options}/> :
-                        <div>not loaded yet</div>}
-                    <div className={style.videoactions}>
-                        <Button onClick={(): void => this.likebtn()} title='Like this Video!' color={{backgroundColor: 'green'}}/>
-                        <Button onClick={(): void => this.setState({popupvisible: true})} title='Give this Video a Tag' color={{backgroundColor: '#3574fe'}}/>
-                        <Button title='Delete Video' onClick={(): void => {this.deleteVideo();}} color={{backgroundColor: 'red'}}/>
-                    </div>
-                    {/* rendering of actor tiles */}
-                    <div className={style.actorcontainer}>
-                        {this.state.actors ?
-                            this.state.actors.map((actr: ActorType) => (
-                                <ActorTile actor={actr}/>
-                            )) : <></>
-                        }
-                        <div className={style.actorAddTile} onClick={(): void => {
-                            this.addActor();
-                        }}>
-                            <div className={style.actorAddTile_thumbnail}>
-                                <FontAwesomeIcon style={{
-                                    lineHeight: '130px'
-                                }} icon={faPlusCircle} size='5x'/>
-                            </div>
-                            <div className={style.actorAddTile_name}>Add Actor</div>
-                        </div>
-                    </div>
-                </div>
-                <button className={style.closebutton} onClick={(): void => this.closebtn()}>Close</button>
-                {
-                    // handle the popovers switched on and off according to state changes
-                    this.handlePopOvers()
-                }
-            </div>
-        );
-    }
-
-    /**
      * fetch all the required infos of a video from backend
      */
     fetchMovieData(): void {
@@ -263,7 +261,6 @@ export class Player extends React.Component<myprops, mystate> {
                 suggesttag: result.suggesttag,
                 actors: result.actors
             });
-            console.log(this.state);
         });
     }
 
@@ -313,6 +310,9 @@ export class Player extends React.Component<myprops, mystate> {
         this.setState({actorpopupvisible: true});
     }
 
+    /**
+     * fetch the available video actors again
+     */
     refetchActors(): void {
         callAPI<ActorType[]>('actor.php', {action: 'getActorsOfVideo', videoid: this.props.match.params.id}, result => {
             this.setState({actors: result});

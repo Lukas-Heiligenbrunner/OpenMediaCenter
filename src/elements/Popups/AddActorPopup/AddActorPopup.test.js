@@ -68,4 +68,10 @@ describe('<AddActorPopup/>', function () {
             expect(func).toHaveBeenCalledTimes(0);
         });
     });
+
+    it('test no actor on loading', function () {
+        const wrapper = shallow(<AddActorPopup/>);
+
+        expect(wrapper.find('PopupBase').find('ActorTile')).toHaveLength(0);
+    });
 });

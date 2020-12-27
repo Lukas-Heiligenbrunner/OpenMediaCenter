@@ -2,6 +2,7 @@ import {shallow} from 'enzyme';
 import React from 'react';
 import {HomePage} from './HomePage';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
+import {SearchHandling} from './SearchHandling';
 
 describe('<HomePage/>', function () {
     it('renders without crashing ', function () {
@@ -113,5 +114,26 @@ describe('<HomePage/>', function () {
         }
 
         testBtn(tags.first());
+    });
+});
+
+describe('<SearchHandling/>', () => {
+    it('renders without crashing', function () {
+        const wrapper = shallow(<SearchHandling match={{params: {name: 'testname'}}}/>);
+        wrapper.unmount();
+    });
+
+    it('renders videos correctly into container', function () {
+        const wrapper = shallow(<SearchHandling match={{params: {name: 'testname'}}}/>);
+
+        wrapper.setState({
+            data: [{
+                movie_id: 42,
+                movie_name: 'testname'
+            }]
+        });
+
+        // expect video container to be visible
+        expect(wrapper.find('VideoContainer')).toHaveLength(1);
     });
 });

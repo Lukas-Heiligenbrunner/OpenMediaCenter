@@ -33,4 +33,15 @@ describe('<CategoryPage/>', function () {
 
         expect(wrapper.find('NewTagPopup')).toHaveLength(0);
     });
+
+    it('test setting of subtitle', function () {
+        const wrapper = shallow(<CategoryPage/>);
+
+        expect(wrapper.find('PageTitle').props().subtitle).not.toBe('testtitle');
+
+        wrapper.instance().setSubTitle('testtitle');
+
+        // test if prop of title is set correctly
+        expect(wrapper.find('PageTitle').props().subtitle).toBe('testtitle');
+    });
 });

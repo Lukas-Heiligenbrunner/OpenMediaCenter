@@ -70,7 +70,7 @@ class AddActorPopup extends React.Component<props, state> {
      * @returns {JSX.Element}
      */
     getContent(): JSX.Element {
-        if (this.state.actors) {
+        if (this.state.actors.length !== 0) {
             return (<div>
                 {this.state.actors.map((el) => (<ActorTile actor={el} onClick={this.tileClickHandler}/>))}
             </div>);

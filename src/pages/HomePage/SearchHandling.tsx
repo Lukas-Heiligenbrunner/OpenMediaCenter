@@ -17,7 +17,7 @@ interface state {
     data: VideoUnloadedType[];
 }
 
-class SearchHandling extends React.Component<props, state> {
+export class SearchHandling extends React.Component<props, state> {
     constructor(props: props) {
         super(props);
 
@@ -40,6 +40,9 @@ class SearchHandling extends React.Component<props, state> {
         );
     }
 
+    /**
+     * get videocontainer if data loaded
+     */
     getVideoData(): JSX.Element {
         if (this.state.data.length !== 0) {
             return (
