@@ -57,7 +57,7 @@ describe('<HomePage/>', function () {
     it('test form submit', () => {
         const func = jest.fn();
         const wrapper = shallow(<HomePage/>);
-        wrapper.setProps({history: {push: () => func()}})
+        wrapper.setProps({history: {push: () => func()}});
 
         const fakeEvent = {preventDefault: () => console.log('preventDefault')};
         wrapper.find('.searchform').simulate('submit', fakeEvent);

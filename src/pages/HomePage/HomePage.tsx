@@ -11,7 +11,7 @@ import {VideoUnloadedType} from '../../api/VideoTypes';
 import {RouteComponentProps} from 'react-router';
 import SearchHandling from './SearchHandling';
 
-interface props extends RouteComponentProps{}
+interface props extends RouteComponentProps {}
 
 interface state {
     sideinfo: {

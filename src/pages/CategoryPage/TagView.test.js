@@ -1,6 +1,6 @@
-import {shallow} from "enzyme";
-import React from "react";
-import TagView from "./TagView";
+import {shallow} from 'enzyme';
+import React from 'react';
+import TagView from './TagView';
 
 describe('<TagView/>', function () {
     it('renders without crashing ', function () {

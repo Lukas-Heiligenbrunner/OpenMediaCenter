@@ -2,7 +2,7 @@ import React from 'react';
 import SideBar, {SideBarTitle} from '../../elements/SideBar/SideBar';
 import Tag from '../../elements/Tag/Tag';
 import NewTagPopup from '../../elements/Popups/NewTagPopup/NewTagPopup';
-import {Line} from '../../elements/PageTitle/PageTitle';
+import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
 import {Route, Switch} from 'react-router-dom';
 import {DefaultTags} from '../../api/GeneralTypes';
 import {CategoryViewWR} from './CategoryView';
@@ -10,7 +10,8 @@ import TagView from './TagView';
 
 
 interface CategoryPageState {
-    popupvisible: boolean
+    popupvisible: boolean;
+    subtitle: string;
 }
 
 /**
@@ -22,17 +23,20 @@ class CategoryPage extends React.Component<{}, CategoryPageState> {
         super(props);
 
         this.state = {
-            popupvisible: false
+            popupvisible: false,
+            subtitle: ''
         };
+
+        this.setSubTitle = this.setSubTitle.bind(this);
     }
 
-    /**
-     * render the Title and SideBar component for the Category page
-     * @returns {JSX.Element} corresponding jsx element for Title and Sidebar
-     */
-    renderSideBarATitle(): JSX.Element {
+    render(): JSX.Element {
         return (
             <>
+                <PageTitle
+                    title='Categories'
+                    subtitle={this.state.subtitle}/>
+
                 <SideBar>
                     <SideBarTitle>Default Tags:</SideBarTitle>
                     <Tag tagInfo={DefaultTags.all}/>
@@ -45,20 +49,13 @@ class CategoryPage extends React.Component<{}, CategoryPageState> {
                         this.setState({popupvisible: true});
                     }}>Add a new Tag!
                     </button>
-                </SideBar></>
-        );
-    }
-
-    render(): JSX.Element {
-        return (
-            <>
-                {this.renderSideBarATitle()}
+                </SideBar>
                 <Switch>
                     <Route path='/categories/:id'>
-                        <CategoryViewWR/>
+                        <CategoryViewWR setSubTitle={this.setSubTitle}/>
                     </Route>
                     <Route path='/categories'>
-                        <TagView/>
+                        <TagView setSubTitle={this.setSubTitle}/>
                     </Route>
                 </Switch>
 
@@ -72,6 +69,14 @@ class CategoryPage extends React.Component<{}, CategoryPageState> {
                 }
             </>
         );
+    }
+
+    /**
+     * set the subtitle of this page
+     * @param subtitle string as subtitle
+     */
+    setSubTitle(subtitle: string): void {
+        this.setState({subtitle: subtitle});
     }
 }
 

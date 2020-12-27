@@ -207,7 +207,7 @@ export class Player extends React.Component<myprops, mystate> {
                     <div className={style.videoactions}>
                         <Button onClick={(): void => this.likebtn()} title='Like this Video!' color={{backgroundColor: 'green'}}/>
                         <Button onClick={(): void => this.setState({popupvisible: true})} title='Give this Video a Tag' color={{backgroundColor: '#3574fe'}}/>
-                        <Button title='Delete Video' onClick={(): void => {this.deleteVideo()}} color={{backgroundColor: 'red'}}/>
+                        <Button title='Delete Video' onClick={(): void => {this.deleteVideo();}} color={{backgroundColor: 'red'}}/>
                     </div>
                     {/* rendering of actor tiles */}
                     <div className={style.actorcontainer}>

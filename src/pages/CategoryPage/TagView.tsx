@@ -1,6 +1,5 @@
 import {TagType} from '../../api/VideoTypes';
 import React from 'react';
-import PageTitle from '../../elements/PageTitle/PageTitle';
 import videocontainerstyle from '../../elements/VideoContainer/VideoContainer.module.css';
 import {Link} from 'react-router-dom';
 import {TagPreview} from '../../elements/Preview/Preview';
@@ -10,8 +9,12 @@ interface TagViewState {
     loadedtags: TagType[];
 }
 
-class TagView extends React.Component<{}, TagViewState> {
-    constructor(props: {}) {
+interface props {
+    setSubTitle: (title: string) => void
+}
+
+class TagView extends React.Component<props, TagViewState> {
+    constructor(props: props) {
         super(props);
 
         this.state = {loadedtags: []};
@@ -24,9 +27,6 @@ class TagView extends React.Component<{}, TagViewState> {
     render(): JSX.Element {
         return (
             <>
-                <PageTitle
-                    title='Categories'
-                    subtitle={this.state.loadedtags.length !== 0 ? this.state.loadedtags.length + ' different Tags' : null}/>
                 <div className={videocontainerstyle.maincontent}>
                     {this.state.loadedtags ?
                         this.state.loadedtags.map((m) => (
@@ -47,6 +47,7 @@ class TagView extends React.Component<{}, TagViewState> {
     loadTags(): void {
         callAPI<TagType[]>('tags.php', {action: 'getAllTags'}, result => {
             this.setState({loadedtags: result});
+            this.props.setSubTitle(result.length + ' different Tags');
         });
     }
 }

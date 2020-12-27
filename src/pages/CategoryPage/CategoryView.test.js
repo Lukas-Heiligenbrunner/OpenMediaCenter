@@ -1,6 +1,6 @@
-import {shallow} from "enzyme";
-import React from "react";
-import {CategoryView} from "./CategoryView";
+import {shallow} from 'enzyme';
+import React from 'react';
+import {CategoryView} from './CategoryView';
 
 describe('<CategoryView/>', function () {
     function instance() {

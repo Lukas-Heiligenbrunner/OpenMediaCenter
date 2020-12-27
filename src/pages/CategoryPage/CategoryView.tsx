@@ -1,13 +1,12 @@
 import {RouteComponentProps} from 'react-router';
 import React from 'react';
 import {VideoUnloadedType} from '../../api/VideoTypes';
-import PageTitle from '../../elements/PageTitle/PageTitle';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 import {callAPI} from '../../utils/Api';
 import {withRouter} from 'react-router-dom';
 
 interface CategoryViewProps extends RouteComponentProps<{ id: string }> {
-
+    setSubTitle: (title: string) => void
 }
 
 interface CategoryViewState {
@@ -26,17 +25,23 @@ export class CategoryView extends React.Component<CategoryViewProps, CategoryVie
         this.state = {
             loaded: false
         };
+    }
 
+    componentDidMount(): void {
         this.fetchVideoData(parseInt(this.props.match.params.id));
+    }
+
+    componentDidUpdate(prevProps: Readonly<CategoryViewProps>, prevState: Readonly<CategoryViewState>): void {
+        // trigger video refresh if id changed
+        if (prevProps.match.params.id !== this.props.match.params.id) {
+            this.setState({loaded: false});
+            this.fetchVideoData(parseInt(this.props.match.params.id));
+        }
     }
 
     render(): JSX.Element {
         return (
             <>
-                <PageTitle
-                    title='Categories'
-                    subtitle={this.state.loaded ? this.videodata.length + ' Videos' : null}/>
-
                 {this.state.loaded ?
                     <VideoContainer
                         data={this.videodata}/> : null}
@@ -58,6 +63,7 @@ export class CategoryView extends React.Component<CategoryViewProps, CategoryVie
         callAPI<VideoUnloadedType[]>('video.php', {action: 'getMovies', tag: id}, result => {
             this.videodata = result;
             this.setState({loaded: true});
+            this.props.setSubTitle(this.videodata.length + ' Videos');
         });
     }
 

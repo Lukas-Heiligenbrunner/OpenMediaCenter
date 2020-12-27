@@ -4,7 +4,7 @@ import style from './NewActorPopup.module.css';
 import {callAPI} from '../../../utils/Api';
 import {GeneralSuccess} from '../../../api/GeneralTypes';
 
-interface NewActorPopupProps{
+interface NewActorPopupProps {
     onHide: () => void;
 }
 
@@ -28,10 +28,10 @@ export class NewActorPopupContent extends React.Component<NewActorPopupProps> {
         return (
             <>
                 <div>
-                    <input type='text' placeholder='Actor Name' onChange={(v):void => {
+                    <input type='text' placeholder='Actor Name' onChange={(v): void => {
                         this.value = v.target.value;
                     }}/></div>
-                <button className={style.savebtn} onClick={():void => this.storeselection()}>Save</button>
+                <button className={style.savebtn} onClick={(): void => this.storeselection()}>Save</button>
             </>
         );
     }
