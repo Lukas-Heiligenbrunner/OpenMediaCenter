@@ -34,7 +34,7 @@ class Video extends RequestBase {
                     $query = "SELECT movie_id,movie_name FROM videos 
                             INNER JOIN video_tags vt on videos.movie_id = vt.video_id
                             INNER JOIN tags t on vt.tag_id = t.tag_id
-                            WHERE t.tag_name = '$tag'
+                            WHERE t.tag_id = '$tag'
                             ORDER BY likes DESC, create_date, movie_name";
                 }
             }
@@ -63,13 +63,13 @@ class Video extends RequestBase {
             $idstring = implode(" OR ", $ids);
 
             $return->tags = array();
-            $query = "SELECT t.tag_name FROM video_tags 
+            $query = "SELECT t.tag_name,t.tag_id FROM video_tags 
                         INNER JOIN tags t on video_tags.tag_id = t.tag_id
                         WHERE $idstring
-                        GROUP BY t.tag_name";
+                        GROUP BY t.tag_id";
             $result = $this->conn->query($query);
             while ($r = mysqli_fetch_assoc($result)) {
-                array_push($return->tags, $r);
+                array_push($return->tags, array('tag_name' => $r['tag_name'], 'tag_id' => $r['tag_id']));
             }
 
             $this->commitMessage(json_encode($return));
@@ -123,10 +123,10 @@ class Video extends RequestBase {
 
             // load tags of this video
             $arr['tags'] = array();
-            $query = "SELECT t.tag_name FROM video_tags 
+            $query = "SELECT t.tag_name, t.tag_id FROM video_tags 
                         INNER JOIN tags t on video_tags.tag_id = t.tag_id
                         WHERE video_tags.video_id=$video_id
-                        GROUP BY t.tag_name";
+                        GROUP BY t.tag_id";
             $result = $this->conn->query($query);
             while ($r = mysqli_fetch_assoc($result)) {
                 array_push($arr['tags'], $r);
@@ -147,8 +147,8 @@ class Video extends RequestBase {
             }
 
             // query the actors corresponding to video
-            $query = "SELECT actor_id, name, thumbnail FROM actors_videos
-                        JOIN actors a on actors_videos.actor_id = a.id
+            $query = "SELECT a.actor_id, name, thumbnail FROM actors_videos
+                        JOIN actors a on actors_videos.actor_id = a.actor_id
                         WHERE actors_videos.video_id=$video_id";
             $result = $this->conn->query($query);
             $arr['actors'] = mysqli_fetch_all($result, MYSQLI_ASSOC);

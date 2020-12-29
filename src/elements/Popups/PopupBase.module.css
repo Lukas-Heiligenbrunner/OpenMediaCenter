@@ -1,9 +1,9 @@
 .popup {
     border: 3px #3574fe solid;
     border-radius: 18px;
-    min-height: 80%;
     height: fit-content;
     left: 20%;
+    min-height: 80%;
     opacity: 0.95;
     position: absolute;
     top: 10%;
@@ -11,7 +11,7 @@
     z-index: 2;
 }
 
-.header{
+.header {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -20,20 +20,20 @@
 
 .title {
     cursor: move;
+    float: left;
     font-size: x-large;
     margin-left: 15px;
     margin-top: 10px;
     opacity: 1;
-    float: left;
     width: 60%;
 }
 
 .banner {
-    width: 40%;
-    float: left;
     display: flex;
     flex-direction: row;
+    float: left;
     justify-content: flex-end;
+    width: 40%;
 }
 
 .content {

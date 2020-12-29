@@ -2,6 +2,14 @@
  * The coloring elements for light theme
  */
 
+.navitem {
+    color: black;
+}
+
+.navitem:hover {
+    color: black;
+}
+
 .navitem::after {
     background: black;
 }

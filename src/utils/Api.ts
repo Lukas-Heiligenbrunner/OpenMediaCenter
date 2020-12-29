@@ -23,7 +23,7 @@ export function getBackendDomain(): string {
  * set a custom backend domain
  * @param domain a url in format [http://x.x.x.x/somanode]
  */
-export function setCustomBackendDomain(domain: string) {
+export function setCustomBackendDomain(domain: string): void {
     customBackendURL = domain;
 }
 
@@ -38,9 +38,9 @@ function getAPIDomain(): string {
  * interface how an api request should look like
  */
 interface ApiBaseRequest {
-    action: string,
+    action: string | number,
 
-    [_: string]: string
+    [_: string]: string | number
 }
 
 /**
@@ -51,7 +51,7 @@ function buildFormData(args: ApiBaseRequest): FormData {
     const req = new FormData();
 
     for (const i in args) {
-        req.append(i, args[i]);
+        req.append(i, (args[i].toString()));
     }
     return req;
 }
@@ -63,8 +63,7 @@ function buildFormData(args: ApiBaseRequest): FormData {
  * @param callback the callback with json reply from backend
  * @param errorcallback a optional callback if an error occured
  */
-export function callAPI(apinode: string, fd: ApiBaseRequest, callback: (_: object) => void, errorcallback: (_: object) => void = (_: object) => {
-}): void {
+export function callAPI<T>(apinode: string, fd: ApiBaseRequest, callback: (_: T) => void, errorcallback: (_: string) => void = (_: string): void => {}): void {
     fetch(getAPIDomain() + apinode, {method: 'POST', body: buildFormData(fd)})
         .then((response) => response.json()
             .then((result) => {
@@ -78,7 +77,7 @@ export function callAPI(apinode: string, fd: ApiBaseRequest, callback: (_: objec
  * @param fd the object to send to backend
  * @param callback the callback with PLAIN text reply from backend
  */
-export function callAPIPlain(apinode: string, fd: ApiBaseRequest, callback: (_: any) => void): void {
+export function callAPIPlain(apinode: string, fd: ApiBaseRequest, callback: (_: string) => void): void {
     fetch(getAPIDomain() + apinode, {method: 'POST', body: buildFormData(fd)})
         .then((response) => response.text()
             .then((result) => {
