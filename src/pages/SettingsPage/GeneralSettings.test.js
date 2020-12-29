@@ -29,6 +29,13 @@ describe('<GeneralSettings/>', function () {
 
     it('test savesettings', done => {
         const wrapper = shallow(<GeneralSettings/>);
+        wrapper.setState({
+            passwordsupport: true,
+            videopath: '',
+            tvshowpath: '',
+            mediacentername: '',
+            tmdbsupport: true
+        });
 
         global.fetch = global.prepareFetchApi({success: true});
 
@@ -47,6 +54,13 @@ describe('<GeneralSettings/>', function () {
 
     it('test failing savesettings', done => {
         const wrapper = shallow(<GeneralSettings/>);
+        wrapper.setState({
+            passwordsupport: true,
+            videopath: '',
+            tvshowpath: '',
+            mediacentername: '',
+            tmdbsupport: true
+        });
 
         global.fetch = global.prepareFetchApi({success: false});
 

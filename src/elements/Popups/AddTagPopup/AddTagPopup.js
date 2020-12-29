@@ -15,6 +15,7 @@ class AddTagPopup extends React.Component {
 
     componentDidMount() {
         callAPI('tags.php', {action: 'getAllTags'}, (result) => {
+            console.log(result);
             this.setState({
                 items: result
             });
@@ -26,9 +27,10 @@ class AddTagPopup extends React.Component {
             <PopupBase title='Add a Tag to this Video:' onHide={this.props.onHide}>
                 {this.state.items ?
                     this.state.items.map((i) => (
-                        <Tag onclick={() => {
-                            this.addTag(i.tag_id, i.tag_name);
-                        }}>{i.tag_name}</Tag>
+                        <Tag tagInfo={i}
+                             onclick={() => {
+                                 this.addTag(i.tag_id, i.tag_name);
+                             }}/>
                     )) : null}
             </PopupBase>
         );

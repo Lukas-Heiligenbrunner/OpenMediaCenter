@@ -2,11 +2,16 @@ import React from 'react';
 import style from './PageTitle.module.css';
 import GlobalInfos from '../../utils/GlobalInfos';
 
+interface props {
+    title: string;
+    subtitle: string | null;
+}
+
 /**
  * Component for generating PageTitle with bottom Line
  */
-class PageTitle extends React.Component {
-    render() {
+class PageTitle extends React.Component<props> {
+    render(): JSX.Element {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
             <div className={style.pageheader + ' ' + themeStyle.backgroundcolor}>
@@ -26,7 +31,7 @@ class PageTitle extends React.Component {
  * use this for horizontal lines to use the current active theming
  */
 export class Line extends React.Component {
-    render() {
+    render(): JSX.Element {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
             <>

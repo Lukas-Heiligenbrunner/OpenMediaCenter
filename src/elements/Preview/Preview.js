@@ -1,7 +1,7 @@
 import React from 'react';
 import style from './Preview.module.css';
-import Player from '../../pages/Player/Player';
 import {Spinner} from 'react-bootstrap';
+import {Link} from 'react-router-dom';
 import GlobalInfos from '../../utils/GlobalInfos';
 import {callAPIPlain} from '../../utils/Api';
 
@@ -31,32 +31,24 @@ class Preview extends React.Component {
     render() {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
-            <div className={style.videopreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview}
-                 onClick={() => this.itemClick()}>
-                <div className={style.previewtitle + ' ' + themeStyle.lighttextcolor}>{this.state.name}</div>
-                <div className={style.previewpic}>
-                    {this.state.previewpicture !== null ?
-                        <img className={style.previewimage}
-                             src={this.state.previewpicture}
-                             alt='Pic loading.'/> :
-                        <span className={style.loadAnimation}><Spinner animation='border'/></span>}
+            <Link to={'/player/' + this.props.movie_id}>
+                <div className={style.videopreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview}>
+                    <div className={style.previewtitle + ' ' + themeStyle.lighttextcolor}>{this.state.name}</div>
+                    <div className={style.previewpic}>
+                        {this.state.previewpicture !== null ?
+                            <img className={style.previewimage}
+                                 src={this.state.previewpicture}
+                                 alt='Pic loading.'/> :
+                            <span className={style.loadAnimation}><Spinner animation='border'/></span>}
 
-                </div>
-                <div className={style.previewbottom}>
+                    </div>
+                    <div className={style.previewbottom}>
 
+                    </div>
                 </div>
-            </div>
+            </Link>
+
         );
-    }
-
-    /**
-     * handle the click event of a tile
-     */
-    itemClick() {
-        console.log('item clicked!' + this.state.name);
-
-        GlobalInfos.getViewBinding().changeRootElement(
-            <Player movie_id={this.props.movie_id}/>);
     }
 }
 
@@ -68,20 +60,12 @@ export class TagPreview extends React.Component {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
             <div
-                className={style.videopreview + ' ' + style.tagpreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview}
-                onClick={() => this.itemClick()}>
+                className={style.videopreview + ' ' + style.tagpreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview}>
                 <div className={style.tagpreviewtitle + ' ' + themeStyle.lighttextcolor}>
                     {this.props.name}
                 </div>
             </div>
         );
-    }
-
-    /**
-     * handle the click event of a Tag tile
-     */
-    itemClick() {
-        this.props.categorybinding(this.props.name);
     }
 }
 

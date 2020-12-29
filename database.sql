@@ -1,6 +1,6 @@
 create table if not exists actors
 (
-    id        int auto_increment
+    actor_id  int auto_increment
         primary key,
     name      varchar(50) null,
     thumbnail mediumblob  null
@@ -43,7 +43,7 @@ create table if not exists actors_videos
     actor_id int null,
     video_id int null,
     constraint actors_videos_actors_id_fk
-        foreign key (actor_id) references actors (id),
+        foreign key (actor_id) references actors (actor_id),
     constraint actors_videos_videos_movie_id_fk
         foreign key (video_id) references videos (movie_id)
 );

@@ -4,37 +4,51 @@ import ActorTile from '../../ActorTile/ActorTile';
 import style from './AddActorPopup.module.css';
 import {NewActorPopupContent} from '../NewActorPopup/NewActorPopup';
 import {callAPI} from '../../../utils/Api';
+import {ActorType} from '../../../api/VideoTypes';
+import {GeneralSuccess} from '../../../api/GeneralTypes';
+
+interface props {
+    onHide: () => void;
+    movie_id: number;
+}
+
+interface state {
+    contentDefault: boolean;
+    actors: ActorType[];
+}
 
 /**
  * Popup for Adding a new Actor to a Video
  */
-class AddActorPopup extends React.Component {
-    constructor(props) {
+class AddActorPopup extends React.Component<props, state> {
+    constructor(props: props) {
         super(props);
 
         this.state = {
             contentDefault: true,
-            actors: undefined
+            actors: []
         };
 
         this.tileClickHandler = this.tileClickHandler.bind(this);
     }
 
-    render() {
+    render(): JSX.Element {
         return (
             <>
                 {/* todo render actor tiles here and add search field*/}
                 <PopupBase title='Add new Actor to Video' onHide={this.props.onHide} banner={
                     <button
                         className={style.newactorbutton}
-                        onClick={() => {this.setState({contentDefault: false});}}>Create new Actor</button>}>
+                        onClick={(): void => {
+                            this.setState({contentDefault: false});
+                        }}>Create new Actor</button>}>
                     {this.resolvePage()}
                 </PopupBase>
             </>
         );
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         // fetch the available actors
         this.loadActors();
     }
@@ -43,9 +57,9 @@ class AddActorPopup extends React.Component {
      * selector for current showing popup page
      * @returns {JSX.Element}
      */
-    resolvePage() {
+    resolvePage(): JSX.Element {
         if (this.state.contentDefault) return (this.getContent());
-        else return (<NewActorPopupContent onHide={() => {
+        else return (<NewActorPopupContent onHide={(): void => {
             this.loadActors();
             this.setState({contentDefault: true});
         }}/>);
@@ -55,8 +69,8 @@ class AddActorPopup extends React.Component {
      * returns content for the newActor popup
      * @returns {JSX.Element}
      */
-    getContent() {
-        if (this.state.actors) {
+    getContent(): JSX.Element {
+        if (this.state.actors.length !== 0) {
             return (<div>
                 {this.state.actors.map((el) => (<ActorTile actor={el} onClick={this.tileClickHandler}/>))}
             </div>);
@@ -68,9 +82,13 @@ class AddActorPopup extends React.Component {
     /**
      * event handling for ActorTile Click
      */
-    tileClickHandler(actorid) {
+    tileClickHandler(actor: ActorType): void {
         // fetch the available actors
-        callAPI('actor.php', {action: 'addActorToVideo', actorid: actorid, videoid: this.props.movie_id}, result => {
+        callAPI<GeneralSuccess>('actor.php', {
+            action: 'addActorToVideo',
+            actorid: actor.actor_id,
+            videoid: this.props.movie_id
+        }, result => {
             if (result.result === 'success') {
                 // return back to player page
                 this.props.onHide();
@@ -81,8 +99,8 @@ class AddActorPopup extends React.Component {
         });
     }
 
-    loadActors() {
-        callAPI('actor.php', {action: 'getAllActors'}, result => {
+    loadActors(): void {
+        callAPI<ActorType[]>('actor.php', {action: 'getAllActors'}, result => {
             this.setState({actors: result});
         });
     }
