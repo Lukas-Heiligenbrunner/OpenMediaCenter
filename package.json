@@ -63,7 +63,7 @@
     ]
   },
   "proxy": "http://192.168.0.209",
-  "homepage": "./",
+  "homepage": "/",
   "eslintConfig": {
     "extends": [
       "react-app",
