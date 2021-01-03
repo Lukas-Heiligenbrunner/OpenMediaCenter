@@ -7,5 +7,13 @@
     margin-top: 12px;
     padding: 6px;
     width: 140px;
-    width: 140px;
+}
+
+.searchinput{
+    width: 120px;
+    float: left;
+}
+
+.searchbar {
+    margin-bottom: 13px;
 }

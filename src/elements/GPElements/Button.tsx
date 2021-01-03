@@ -2,7 +2,7 @@ import React from 'react';
 import style from './Button.module.css';
 
 interface ButtonProps {
-    title: string;
+    title: string | JSX.Element;
     onClick?: () => void;
     color?: React.CSSProperties;
 }

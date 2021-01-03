@@ -6,6 +6,9 @@ import {NewActorPopupContent} from '../NewActorPopup/NewActorPopup';
 import {callAPI} from '../../../utils/Api';
 import {ActorType} from '../../../api/VideoTypes';
 import {GeneralSuccess} from '../../../api/GeneralTypes';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faFilter, faTimes} from '@fortawesome/free-solid-svg-icons';
+import {Button} from '../../GPElements/Button';
 
 interface props {
     onHide: () => void;
@@ -15,6 +18,8 @@ interface props {
 interface state {
     contentDefault: boolean;
     actors: ActorType[];
+    filter: string;
+    filtervisible: boolean;
 }
 
 /**
@@ -26,10 +31,13 @@ class AddActorPopup extends React.Component<props, state> {
 
         this.state = {
             contentDefault: true,
-            actors: []
+            actors: [],
+            filter: '',
+            filtervisible: false
         };
 
         this.tileClickHandler = this.tileClickHandler.bind(this);
+        this.filterSearch = this.filterSearch.bind(this);
     }
 
     render(): JSX.Element {
@@ -71,12 +79,46 @@ class AddActorPopup extends React.Component<props, state> {
      */
     getContent(): JSX.Element {
         if (this.state.actors.length !== 0) {
-            return (<div>
-                {this.state.actors.map((el) => (<ActorTile actor={el} onClick={this.tileClickHandler}/>))}
-            </div>);
+            return (
+                <>
+                    <div className={style.searchbar}>
+                        {
+                            this.state.filtervisible ?
+                                <>
+                                    <input className={'form-control mr-sm-2 ' + style.searchinput}
+                                           type='text' placeholder='Filter' value={this.state.filter}
+                                           onChange={(e): void => {
+                                               this.setState({filter: e.target.value});
+                                           }}/>
+                                    <Button title={<FontAwesomeIcon style={{
+                                        verticalAlign: 'middle',
+                                        lineHeight: '130px'
+                                    }} icon={faTimes} size='1x'/>} color={{backgroundColor: 'red'}} onClick={(): void => {
+                                        this.setState({filter: '', filtervisible: false});
+                                    }}/>
+                                </> :
+                                <Button title={<span>Filter <FontAwesomeIcon style={{
+                                    verticalAlign: 'middle',
+                                    lineHeight: '130px'
+                                }} icon={faFilter} size='1x'/></span>} color={{backgroundColor: 'cornflowerblue', color: 'white'}} onClick={(): void => {
+                                    this.setState({filtervisible: true});
+                                }}/>
+                        }
+                    </div>
+                    {this.state.actors.filter(this.filterSearch).map((el) => (<ActorTile actor={el} onClick={this.tileClickHandler}/>))}
+                </>
+            );
         } else {
             return (<div>somekind of loading</div>);
         }
+    }
+
+    /**
+     * filter the actor array for search matches
+     * @param actor
+     */
+    private filterSearch(actor: ActorType): boolean {
+        return actor.name.toLowerCase().includes(this.state.filter.toLowerCase());
     }
 
     /**
@@ -93,12 +135,14 @@ class AddActorPopup extends React.Component<props, state> {
                 // return back to player page
                 this.props.onHide();
             } else {
-                console.error('an error occured while fetching actors');
-                console.error(result);
+                console.error('an error occured while fetching actors: ' + result);
             }
         });
     }
 
+    /**
+     * load the actors from backend and set state
+     */
     loadActors(): void {
         callAPI<ActorType[]>('actor.php', {action: 'getAllActors'}, result => {
             this.setState({actors: result});
