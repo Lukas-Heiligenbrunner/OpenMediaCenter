@@ -12,6 +12,7 @@ import TagView from './TagView';
 interface CategoryPageState {
     popupvisible: boolean;
     subtitle: string;
+    title: string;
 }
 
 /**
@@ -24,7 +25,8 @@ class CategoryPage extends React.Component<{}, CategoryPageState> {
 
         this.state = {
             popupvisible: false,
-            subtitle: ''
+            subtitle: '',
+            title: 'Categories'
         };
 
         this.setSubTitle = this.setSubTitle.bind(this);
@@ -75,8 +77,8 @@ class CategoryPage extends React.Component<{}, CategoryPageState> {
      * set the subtitle of this page
      * @param subtitle string as subtitle
      */
-    setSubTitle(subtitle: string): void {
-        this.setState({subtitle: subtitle});
+    setSubTitle(subtitle: string, title: string): void {
+        this.setState({subtitle: subtitle, title: title});
     }
 }
 

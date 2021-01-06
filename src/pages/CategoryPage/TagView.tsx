@@ -10,7 +10,7 @@ interface TagViewState {
 }
 
 interface props {
-    setSubTitle: (title: string) => void
+    setSubTitle: (subtitle: string, title: string) => void
 }
 
 class TagView extends React.Component<props, TagViewState> {
@@ -47,7 +47,7 @@ class TagView extends React.Component<props, TagViewState> {
     loadTags(): void {
         callAPI<TagType[]>('tags.php', {action: 'getAllTags'}, result => {
             this.setState({loadedtags: result});
-            this.props.setSubTitle(result.length + ' different Tags');
+            this.props.setSubTitle(result.length + ' different Tags', '');
         });
     }
 }

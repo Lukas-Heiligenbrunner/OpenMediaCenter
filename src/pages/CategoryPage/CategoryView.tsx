@@ -6,7 +6,7 @@ import {callAPI} from '../../utils/Api';
 import {withRouter} from 'react-router-dom';
 
 interface CategoryViewProps extends RouteComponentProps<{ id: string }> {
-    setSubTitle: (title: string) => void
+    setSubTitle: (subtitle: string, title: string) => void
 }
 
 interface CategoryViewState {
@@ -60,10 +60,11 @@ export class CategoryView extends React.Component<CategoryViewProps, CategoryVie
      * @param id tagid
      */
     fetchVideoData(id: number): void {
+        // todo heyho need the cateogry name here somehow...
         callAPI<VideoUnloadedType[]>('video.php', {action: 'getMovies', tag: id}, result => {
             this.videodata = result;
             this.setState({loaded: true});
-            this.props.setSubTitle(this.videodata.length + ' Videos');
+            this.props.setSubTitle(this.videodata.length + ' Videos', '');
         });
     }
 
