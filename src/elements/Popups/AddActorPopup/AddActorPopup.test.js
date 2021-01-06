@@ -31,7 +31,7 @@ describe('<AddActorPopup/>', function () {
     });
 
     it('test api call and insertion of actor tiles', function () {
-        global.callAPIMock([{id: 1, actorname: 'test'}, {id: 2, actorname: 'test2'}]);
+        global.callAPIMock([{id: 1, name: 'test'}, {id: 2, name: 'test2'}]);
 
         const wrapper = shallow(<AddActorPopup/>);
 
@@ -44,7 +44,7 @@ describe('<AddActorPopup/>', function () {
 
         global.callAPIMock({result: 'success'});
 
-        wrapper.setState({actors: [{actor_id: 1, actorname: 'test'}]}, () => {
+        wrapper.setState({actors: [{actor_id: 1, name: 'test'}]}, () => {
             wrapper.find('ActorTile').dive().simulate('click');
 
             expect(callAPI).toHaveBeenCalledTimes(1);
@@ -59,7 +59,7 @@ describe('<AddActorPopup/>', function () {
 
         global.callAPIMock({result: 'nosuccess'});
 
-        wrapper.setState({actors: [{actor_id: 1, actorname: 'test'}]}, () => {
+        wrapper.setState({actors: [{actor_id: 1, name: 'test'}]}, () => {
             wrapper.find('ActorTile').dive().simulate('click');
 
             expect(callAPI).toHaveBeenCalledTimes(1);
