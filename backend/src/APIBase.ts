@@ -5,7 +5,7 @@ export interface RequestData {
 }
 
 interface handlerarray {
-    [index: string]: (data: any) => any;
+    [index: string]: (data: any) => any; // eslint-disable-line
 }
 
 export abstract class APIBase {
@@ -30,7 +30,7 @@ export abstract class APIBase {
                 res.status(400).send('invalid action key');
             }
         }
-    };
+    }
 
     addHandler<Request extends RequestData, Response>(action: string, handler: (data: Request) => Response): void {
         console.log('addhandler called');
