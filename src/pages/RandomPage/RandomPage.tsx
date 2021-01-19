@@ -5,15 +5,16 @@ import Tag from '../../elements/Tag/Tag';
 import PageTitle from '../../elements/PageTitle/PageTitle';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 import {callAPI} from '../../utils/Api';
-import {TagType, VideoUnloadedType} from '../../api/VideoTypes';
+import {TagType} from '../../types/VideoTypes';
+import {VideoTypes} from '../../types/ApiTypes';
 
 interface state {
-    videos: VideoUnloadedType[];
+    videos: VideoTypes.VideoUnloadedType[];
     tags: TagType[];
 }
 
 interface GetRandomMoviesType {
-    rows: VideoUnloadedType[];
+    rows: VideoTypes.VideoUnloadedType[];
     tags: TagType[];
 }
 

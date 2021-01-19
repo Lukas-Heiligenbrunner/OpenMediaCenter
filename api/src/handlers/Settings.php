@@ -98,9 +98,9 @@ class Settings extends RequestBase {
                     WHERE 1";
 
             if ($this->conn->query($query) === true) {
-                $this->commitMessage('{"success": true}');
+                $this->commitMessage('{"result": "success"}');
             } else {
-                $this->commitMessage('{"success": true}');
+                $this->commitMessage('{"result": "success"}');
             }
         });
     }
@@ -127,9 +127,9 @@ class Settings extends RequestBase {
                 $cmd = 'php extractvideopreviews.php';
                 exec(sprintf("%s > %s 2>&1 & echo $! >> %s", $cmd, '/dev/zero', '/tmp/openmediacenterpid'));
 
-                $this->commitMessage('{"success": true}');
+                $this->commitMessage('{"result": "success"}');
             } else {
-                $this->commitMessage('{"success": false}');
+                $this->commitMessage('{"result": "success"}');
             }
         });
 

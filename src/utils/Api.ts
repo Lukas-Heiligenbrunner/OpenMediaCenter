@@ -40,7 +40,7 @@ function getAPIDomain(): string {
 interface ApiBaseRequest {
     action: string | number,
 
-    [_: string]: string | number
+    [_: string]: string | number | boolean
 }
 
 /**

@@ -3,7 +3,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faUser} from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 import {Link} from 'react-router-dom';
-import {ActorType} from '../../api/VideoTypes';
+import {ActorType} from '../../types/VideoTypes';
 
 interface props {
     actor: ActorType;

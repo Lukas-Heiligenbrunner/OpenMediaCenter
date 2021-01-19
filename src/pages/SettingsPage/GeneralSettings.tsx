@@ -7,37 +7,59 @@ import {faArchive, faBalanceScaleLeft, faRulerVertical} from '@fortawesome/free-
 import {faAddressCard} from '@fortawesome/free-regular-svg-icons';
 import {version} from '../../../package.json';
 import {callAPI, setCustomBackendDomain} from '../../utils/Api';
+import {SettingsTypes} from '../../types/ApiTypes';
+import {GeneralSuccess} from '../../types/GeneralTypes';
+
+interface state {
+    passwordsupport: boolean,
+    tmdbsupport: boolean,
+    customapi: boolean,
+
+    videopath: string,
+    tvshowpath: string,
+    mediacentername: string,
+    password: string,
+    apipath: string,
+
+    videonr: number,
+    dbsize: number,
+    difftagnr: number,
+    tagsadded: number
+}
+
+interface props {}
 
 /**
  * Component for Generalsettings tag on Settingspage
  * handles general settings of mediacenter which concerns to all pages
  */
-class GeneralSettings extends React.Component {
-    constructor(props) {
+class GeneralSettings extends React.Component<props, state> {
+    constructor(props: props) {
         super(props);
 
         this.state = {
             passwordsupport: false,
-            tmdbsupport: null,
+            tmdbsupport: false,
             customapi: false,
 
             videopath: '',
             tvshowpath: '',
             mediacentername: '',
             password: '',
+            apipath: '',
 
-            videonr: null,
-            dbsize: null,
-            difftagnr: null,
-            tagsadded: null
+            videonr: 0,
+            dbsize: 0,
+            difftagnr: 0,
+            tagsadded: 0
         };
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         this.loadSettings();
     }
 
-    render() {
+    render(): JSX.Element {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
             <>
@@ -60,7 +82,7 @@ class GeneralSettings extends React.Component {
                                     icon={faBalanceScaleLeft}/>
                 </div>
                 <div className={style.GeneralForm + ' ' + themeStyle.subtextcolor}>
-                    <Form data-testid='mainformsettings' onSubmit={(e) => {
+                    <Form data-testid='mainformsettings' onSubmit={(e): void => {
                         e.preventDefault();
                         this.saveSettings();
                     }}>
@@ -68,14 +90,14 @@ class GeneralSettings extends React.Component {
                             <Form.Group as={Col} data-testid='videpathform'>
                                 <Form.Label>Video Path</Form.Label>
                                 <Form.Control type='text' placeholder='/var/www/html/video' value={this.state.videopath}
-                                              onChange={(ee) => this.setState({videopath: ee.target.value})}/>
+                                              onChange={(ee): void => this.setState({videopath: ee.target.value})}/>
                             </Form.Group>
 
                             <Form.Group as={Col} data-testid='tvshowpath'>
                                 <Form.Label>TV Show Path</Form.Label>
                                 <Form.Control type='text' placeholder='/var/www/html/tvshow'
                                               value={this.state.tvshowpath}
-                                              onChange={(e) => this.setState({tvshowpath: e.target.value})}/>
+                                              onChange={(e): void => this.setState({tvshowpath: e.target.value})}/>
                             </Form.Group>
                         </Form.Row>
 
@@ -84,7 +106,7 @@ class GeneralSettings extends React.Component {
                             id='custom-switch-api'
                             label='Use custom API url'
                             checked={this.state.customapi}
-                            onChange={() => {
+                            onChange={(): void => {
                                 if (this.state.customapi) {
                                     setCustomBackendDomain('');
                                 }
@@ -97,7 +119,7 @@ class GeneralSettings extends React.Component {
                                 <Form.Label>API Backend url</Form.Label>
                                 <Form.Control type='text' placeholder='https://127.0.0.1'
                                               value={this.state.apipath}
-                                              onChange={(e) => {
+                                              onChange={(e): void => {
                                                   this.setState({apipath: e.target.value});
                                                   setCustomBackendDomain(e.target.value);
                                               }}/>
@@ -110,7 +132,7 @@ class GeneralSettings extends React.Component {
                             data-testid='passwordswitch'
                             label='Enable Password support'
                             checked={this.state.passwordsupport}
-                            onChange={() => {
+                            onChange={(): void => {
                                 this.setState({passwordsupport: !this.state.passwordsupport});
                             }}
                         />
@@ -119,7 +141,7 @@ class GeneralSettings extends React.Component {
                             <Form.Group data-testid='passwordfield'>
                                 <Form.Label>Password</Form.Label>
                                 <Form.Control type='password' placeholder='**********' value={this.state.password}
-                                              onChange={(e) => this.setState({password: e.target.value})}/>
+                                              onChange={(e): void => this.setState({password: e.target.value})}/>
                             </Form.Group> : null
                         }
 
@@ -129,7 +151,7 @@ class GeneralSettings extends React.Component {
                             data-testid='tmdb-switch'
                             label='Enable TMDB video grabbing support'
                             checked={this.state.tmdbsupport}
-                            onChange={() => {
+                            onChange={(): void => {
                                 this.setState({tmdbsupport: !this.state.tmdbsupport});
                             }}
                         />
@@ -140,7 +162,7 @@ class GeneralSettings extends React.Component {
                             data-testid='darktheme-switch'
                             label='Enable Dark-Theme'
                             checked={GlobalInfos.isDarkTheme()}
-                            onChange={() => {
+                            onChange={(): void => {
                                 GlobalInfos.enableDarkTheme(!GlobalInfos.isDarkTheme());
                                 this.forceUpdate();
                                 // todo initiate rerender
@@ -150,7 +172,7 @@ class GeneralSettings extends React.Component {
                         <Form.Group className={style.mediacenternameform} data-testid='nameform'>
                             <Form.Label>The name of the Mediacenter</Form.Label>
                             <Form.Control type='text' placeholder='Mediacentername' value={this.state.mediacentername}
-                                          onChange={(e) => this.setState({mediacentername: e.target.value})}/>
+                                          onChange={(e): void => this.setState({mediacentername: e.target.value})}/>
                         </Form.Group>
 
                         <Button variant='primary' type='submit'>
@@ -168,8 +190,8 @@ class GeneralSettings extends React.Component {
     /**
      * inital load of already specified settings from backend
      */
-    loadSettings() {
-        callAPI('settings.php', {action: 'loadGeneralSettings'}, (result) => {
+    loadSettings(): void {
+        callAPI('settings.php', {action: 'loadGeneralSettings'}, (result: SettingsTypes.loadGeneralSettingsType) => {
             this.setState({
                 videopath: result.video_path,
                 tvshowpath: result.episode_path,
@@ -189,7 +211,7 @@ class GeneralSettings extends React.Component {
     /**
      * save the selected and typed settings to the backend
      */
-    saveSettings() {
+    saveSettings(): void {
         callAPI('settings.php', {
             action: 'saveGeneralSettings',
             password: this.state.passwordsupport ? this.state.password : '-1',
@@ -198,8 +220,8 @@ class GeneralSettings extends React.Component {
             mediacentername: this.state.mediacentername,
             tmdbsupport: this.state.tmdbsupport,
             darkmodeenabled: GlobalInfos.isDarkTheme().toString()
-        }, (result) => {
-            if (result.success) {
+        }, (result: GeneralSuccess) => {
+            if (result.result) {
                 console.log('successfully saved settings');
                 // todo 2020-07-10: popup success
             } else {

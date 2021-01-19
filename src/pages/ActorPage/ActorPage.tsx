@@ -6,13 +6,14 @@ import {faUser} from '@fortawesome/free-solid-svg-icons';
 import style from './ActorPage.module.css';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 import {callAPI} from '../../utils/Api';
-import {ActorType, VideoUnloadedType} from '../../api/VideoTypes';
+import {ActorType} from '../../types/VideoTypes';
 import {Link, withRouter} from 'react-router-dom';
 import {RouteComponentProps} from 'react-router';
 import {Button} from '../../elements/GPElements/Button';
+import {ActorTypes, VideoTypes} from '../../types/ApiTypes';
 
 interface state {
-    data: VideoUnloadedType[],
+    data: VideoTypes.VideoUnloadedType[],
     actor: ActorType
 }
 
@@ -22,13 +23,6 @@ interface state {
 interface props extends RouteComponentProps<{ id: string }> {
 }
 
-/**
- * result of actor fetch
- */
-interface videofetchresult {
-    videos: VideoUnloadedType[];
-    info: ActorType;
-}
 
 /**
  * info page about a specific actor and a list of all its videos
@@ -75,7 +69,7 @@ export class ActorPage extends React.Component<props, state> {
         callAPI('actor.php', {
             action: 'getActorInfo',
             actorid: this.props.match.params.id
-        }, (result: videofetchresult) => {
+        }, (result: ActorTypes.videofetchresult) => {
             this.setState({
                 data: result.videos ? result.videos : [],
                 actor: result.info

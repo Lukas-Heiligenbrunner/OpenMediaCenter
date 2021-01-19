@@ -1,4 +1,4 @@
-import {TagType} from '../../api/VideoTypes';
+import {TagType} from '../../types/VideoTypes';
 import React from 'react';
 import videocontainerstyle from '../../elements/VideoContainer/VideoContainer.module.css';
 import {Link} from 'react-router-dom';

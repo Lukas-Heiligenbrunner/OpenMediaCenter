@@ -2,7 +2,7 @@ import React from 'react';
 
 import styles from './Tag.module.css';
 import {Link} from 'react-router-dom';
-import {TagType} from '../../api/VideoTypes';
+import {TagType} from '../../types/VideoTypes';
 
 interface props {
     onclick?: (_: string) => void

@@ -7,9 +7,9 @@ import style from './HomePage.module.css';
 import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
 import {callAPI} from '../../utils/Api';
 import {Route, Switch, withRouter} from 'react-router-dom';
-import {VideoUnloadedType} from '../../api/VideoTypes';
 import {RouteComponentProps} from 'react-router';
 import SearchHandling from './SearchHandling';
+import {VideoTypes} from '../../types/ApiTypes';
 
 interface props extends RouteComponentProps {}
 
@@ -22,16 +22,8 @@ interface state {
         tagnr: number
     },
     subtitle: string,
-    data: VideoUnloadedType[],
+    data: VideoTypes.VideoUnloadedType[],
     selectionnr: number
-}
-
-interface startDataData {
-    total: number;
-    fullhd: number;
-    hd: number;
-    sd: number;
-    tags: number;
 }
 
 /**
@@ -71,7 +63,7 @@ export class HomePage extends React.Component<props, state> {
      * @param tag tag to fetch videos
      */
     fetchVideoData(tag: string): void {
-        callAPI('video.php', {action: 'getMovies', tag: tag}, (result: VideoUnloadedType[]) => {
+        callAPI('video.php', {action: 'getMovies', tag: tag}, (result: VideoTypes.VideoUnloadedType[]) => {
             this.setState({
                 data: []
             });
@@ -87,7 +79,7 @@ export class HomePage extends React.Component<props, state> {
      * fetch the necessary data for left info box
      */
     fetchStartData(): void {
-        callAPI('video.php', {action: 'getStartData'}, (result: startDataData) => {
+        callAPI('video.php', {action: 'getStartData'}, (result: VideoTypes.startDataType) => {
             this.setState({
                 sideinfo: {
                     videonr: result['total'],
