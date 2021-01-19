@@ -68,20 +68,6 @@ Debian_Server:
       - deb/OpenMediaCenter-*.deb
   needs: ["Minimize"]
 
-Electron_Client:
-  stage: packaging
-  image: electronuserland/builder:wine
-  script:
-    - npm run buildlinux
-    - npm run buildwin
-  artifacts:
-    expire_in: 2 days
-    paths:
-      - dist/*.rpm
-      - dist/*.deb
-      - dist/*.exe
-  needs: ["Minimize"]
-
 Test_Server:
   stage: deploy
   image: luki42/alpineopenssh:latest

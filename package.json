@@ -25,32 +25,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "CI=true react-scripts test --reporters=jest-junit --verbose --silent --coverage --reporters=default",
-    "buildlinux": "node build.js --linux",
-    "buildwin": "node build.js --win",
-    "electron-dev": "electron ."
-  },
-  "build": {
-    "appId": "com.heili.openmediacenter",
-    "files": [
-      "build/**/*"
-    ],
-    "directories": {
-      "buildResources": "assets"
-    },
-    "linux": {
-      "target": [
-        "rpm",
-        "deb",
-        "snap",
-        "AppImage"
-      ]
-    },
-    "win": {
-      "target": [
-        "nsis"
-      ]
-    }
+    "test": "CI=true react-scripts test --reporters=jest-junit --verbose --silent --coverage --reporters=default"
   },
   "jest": {
     "collectCoverageFrom": [
@@ -103,8 +78,6 @@
     "@types/node": "^12.19.9",
     "@types/react": "^16.14.2",
     "@types/react-dom": "^16.9.10",
-    "electron": "^11.1.0",
-    "electron-builder": "^22.1.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.5",
     "jest-junit": "^12.0.0",
