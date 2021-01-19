@@ -26,7 +26,7 @@ interface state {
 }
 
 /**
- * The main App handles the main tabs and which content to show
+ * The main App handles the main tabs and which content to showw
  */
 class App extends React.Component<{}, state> {
     constructor(props: {}) {
