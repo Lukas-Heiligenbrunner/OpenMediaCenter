@@ -69,7 +69,7 @@ class GeneralSettings extends React.Component<props, state> {
                                     subtext='Videos in Gravity'
                                     icon={faArchive}/>
                     <InfoHeaderItem backColor='yellow'
-                                    text={this.state.dbsize !== undefined ? this.state.dbsize + ' MB' : undefined}
+                                    text={this.state.dbsize !== undefined ? this.state.dbsize + ' MB' : ''}
                                     subtext='Database size'
                                     icon={faRulerVertical}/>
                     <InfoHeaderItem backColor='green'

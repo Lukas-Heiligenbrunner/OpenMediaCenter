@@ -26,6 +26,9 @@ interface state {
  * Popup for Adding a new Actor to a Video
  */
 class AddActorPopup extends React.Component<props, state> {
+    // filterfield anchor, needed to focus after filter btn click
+    private filterfield: HTMLInputElement | null | undefined;
+
     constructor(props: props) {
         super(props);
 
@@ -89,7 +92,8 @@ class AddActorPopup extends React.Component<props, state> {
                                            type='text' placeholder='Filter' value={this.state.filter}
                                            onChange={(e): void => {
                                                this.setState({filter: e.target.value});
-                                           }}/>
+                                           }}
+                                    ref={(input): void => {this.filterfield = input;}}/>
                                     <Button title={<FontAwesomeIcon style={{
                                         verticalAlign: 'middle',
                                         lineHeight: '130px'
@@ -101,7 +105,10 @@ class AddActorPopup extends React.Component<props, state> {
                                     verticalAlign: 'middle',
                                     lineHeight: '130px'
                                 }} icon={faFilter} size='1x'/></span>} color={{backgroundColor: 'cornflowerblue', color: 'white'}} onClick={(): void => {
-                                    this.setState({filtervisible: true});
+                                    this.setState({filtervisible: true}, () => {
+                                        // focus filterfield after state update
+                                        this.filterfield?.focus();
+                                    });
                                 }}/>
                         }
                     </div>
