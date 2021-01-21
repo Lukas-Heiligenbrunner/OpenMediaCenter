@@ -2,24 +2,25 @@ import React from 'react';
 import PopupBase from '../PopupBase';
 import style from './NewTagPopup.module.css';
 import {callAPI} from '../../../utils/Api';
+import {GeneralSuccess} from '../../../types/GeneralTypes';
+
+interface props {
+    onHide: () => void
+}
 
 /**
  * creates modal overlay to define a new Tag
  */
-class NewTagPopup extends React.Component {
-    constructor(props, context) {
-        super(props, context);
+class NewTagPopup extends React.Component<props> {
+    private value: string = '';
 
-        this.props = props;
-    }
-
-    render() {
+    render(): JSX.Element {
         return (
             <PopupBase title='Add new Tag' onHide={this.props.onHide} height='200px' width='400px'>
-                <div><input type='text' placeholder='Tagname' onChange={(v) => {
+                <div><input type='text' placeholder='Tagname' onChange={(v): void => {
                     this.value = v.target.value;
                 }}/></div>
-                <button className={style.savebtn} onClick={() => this.storeselection()}>Save</button>
+                <button className={style.savebtn} onClick={(): void => this.storeselection()}>Save</button>
             </PopupBase>
         );
     }
@@ -27,8 +28,8 @@ class NewTagPopup extends React.Component {
     /**
      * store the filled in form to the backend
      */
-    storeselection() {
-        callAPI('tags.php', {action: 'createTag', tagname: this.value}, result => {
+    storeselection(): void {
+        callAPI('tags.php', {action: 'createTag', tagname: this.value}, (result: GeneralSuccess) => {
             if (result.result !== 'success') {
                 console.log('error occured while writing to db -- todo error handling');
                 console.log(result.result);

@@ -60,11 +60,10 @@ class CategoryPage extends React.Component<{}, CategoryPageState> {
                 </Switch>
 
                 {this.state.popupvisible ?
-                    <NewTagPopup show={this.state.popupvisible}
-                                 onHide={(): void => {
-                                     this.setState({popupvisible: false});
-                                     // this.loadTags();
-                                 }}/> :
+                    <NewTagPopup onHide={(): void => {
+                        this.setState({popupvisible: false});
+                        // this.loadTags();
+                    }}/> :
                     null
                 }
             </>
