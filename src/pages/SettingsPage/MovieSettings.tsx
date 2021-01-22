@@ -1,13 +1,24 @@
 import React from 'react';
 import style from './MovieSettings.module.css';
 import {callAPI} from '../../utils/Api';
+import {GeneralSuccess} from '../../types/GeneralTypes';
+import {SettingsTypes} from '../../types/ApiTypes';
+
+interface state {
+    text: string[]
+    startbtnDisabled: boolean
+}
+
+interface props {}
 
 /**
  * Component for MovieSettings on Settingspage
  * handles settings concerning to movies in general
  */
-class MovieSettings extends React.Component {
-    constructor(props) {
+class MovieSettings extends React.Component<props, state> {
+    myinterval: number = -1;
+
+    constructor(props: props) {
         super(props);
 
         this.state = {
@@ -16,23 +27,24 @@ class MovieSettings extends React.Component {
         };
     }
 
-    componentDidMount() {
-        this.myinterval = setInterval(this.updateStatus, 1000);
+    componentDidMount(): void {
+        this.myinterval = window.setInterval(this.updateStatus, 1000);
     }
 
-    componentWillUnmount() {
-        clearInterval(this.myinterval);
+    componentWillUnmount(): void {
+        if (this.myinterval !== -1)
+            clearInterval(this.myinterval);
     }
 
-    render() {
+    render(): JSX.Element {
         return (
             <>
                 <button disabled={this.state.startbtnDisabled}
                         className='btn btn-success'
-                        onClick={() => {this.startReindex();}}>Reindex Movie
+                        onClick={(): void => {this.startReindex();}}>Reindex Movie
                 </button>
                 <button className='btn btn-warning'
-                        onClick={() => {this.cleanupGravity();}}>Cleanup Gravity
+                        onClick={(): void => {this.cleanupGravity();}}>Cleanup Gravity
                 </button>
                 <div className={style.indextextarea}>{this.state.text.map(m => (
                     <div className='textarea-element'>{m}</div>
@@ -44,7 +56,7 @@ class MovieSettings extends React.Component {
     /**
      * starts the reindex process of the videos in the specified folder
      */
-    startReindex() {
+    startReindex(): void {
         // clear output text before start
         this.setState({text: []});
 
@@ -52,9 +64,9 @@ class MovieSettings extends React.Component {
 
         console.log('starting');
 
-        callAPI('settings.php', {action: 'startReindex'}, (result) => {
+        callAPI('settings.php', {action: 'startReindex'}, (result: GeneralSuccess): void => {
             console.log(result);
-            if (result.success) {
+            if (result.result === 'success') {
                 console.log('started successfully');
             } else {
                 console.log('error, reindex already running');
@@ -62,17 +74,17 @@ class MovieSettings extends React.Component {
             }
         });
 
-        if (this.myinterval) {
+        if (this.myinterval !== -1) {
             clearInterval(this.myinterval);
         }
-        this.myinterval = setInterval(this.updateStatus, 1000);
+        this.myinterval = window.setInterval(this.updateStatus, 1000);
     }
 
     /**
      * This interval function reloads the current status of reindexing from backend
      */
-    updateStatus = () => {
-        callAPI('settings.php', {action: 'getStatusMessage'}, (result) => {
+    updateStatus = (): void => {
+        callAPI('settings.php', {action: 'getStatusMessage'}, (result: SettingsTypes.getStatusMessageType) => {
             if (result.contentAvailable === true) {
                 console.log(result);
                 // todo 2020-07-4: scroll to bottom of div here
@@ -93,7 +105,7 @@ class MovieSettings extends React.Component {
     /**
      * send request to cleanup db gravity
      */
-    cleanupGravity() {
+    cleanupGravity(): void {
         callAPI('settings.php', {action: 'cleanupGravity'}, (result) => {
             this.setState({
                 text: ['successfully cleaned up gravity!']

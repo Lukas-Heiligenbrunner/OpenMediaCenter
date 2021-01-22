@@ -4,7 +4,7 @@ import Tag from '../../elements/Tag/Tag';
 import NewTagPopup from '../../elements/Popups/NewTagPopup/NewTagPopup';
 import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
 import {Route, Switch} from 'react-router-dom';
-import {DefaultTags} from '../../api/GeneralTypes';
+import {DefaultTags} from '../../types/GeneralTypes';
 import {CategoryViewWR} from './CategoryView';
 import TagView from './TagView';
 
@@ -60,11 +60,10 @@ class CategoryPage extends React.Component<{}, CategoryPageState> {
                 </Switch>
 
                 {this.state.popupvisible ?
-                    <NewTagPopup show={this.state.popupvisible}
-                                 onHide={(): void => {
-                                     this.setState({popupvisible: false});
-                                     // this.loadTags();
-                                 }}/> :
+                    <NewTagPopup onHide={(): void => {
+                        this.setState({popupvisible: false});
+                        // this.loadTags();
+                    }}/> :
                     null
                 }
             </>

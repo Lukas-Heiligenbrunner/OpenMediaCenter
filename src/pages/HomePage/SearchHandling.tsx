@@ -2,10 +2,10 @@ import {RouteComponentProps} from 'react-router';
 import React from 'react';
 import {withRouter} from 'react-router-dom';
 import {callAPI} from '../../utils/Api';
-import {VideoUnloadedType} from '../../api/VideoTypes';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 import PageTitle from '../../elements/PageTitle/PageTitle';
 import SideBar from '../../elements/SideBar/SideBar';
+import {VideoTypes} from '../../types/ApiTypes';
 
 interface params {
     name: string;
@@ -14,7 +14,7 @@ interface params {
 interface props extends RouteComponentProps<params> {}
 
 interface state {
-    data: VideoUnloadedType[];
+    data: VideoTypes.VideoUnloadedType[];
 }
 
 export class SearchHandling extends React.Component<props, state> {
@@ -59,7 +59,7 @@ export class SearchHandling extends React.Component<props, state> {
      * @param keyword The keyword to search for
      */
     searchVideos(keyword: string): void {
-        callAPI('video.php', {action: 'getSearchKeyWord', keyword: keyword}, (result: VideoUnloadedType[]) => {
+        callAPI('video.php', {action: 'getSearchKeyWord', keyword: keyword}, (result: VideoTypes.VideoUnloadedType[]) => {
             this.setState({
                 data: result
             });

@@ -2,7 +2,7 @@ import React from 'react';
 import PopupBase from '../PopupBase';
 import style from './NewActorPopup.module.css';
 import {callAPI} from '../../../utils/Api';
-import {GeneralSuccess} from '../../../api/GeneralTypes';
+import {GeneralSuccess} from '../../../types/GeneralTypes';
 
 interface NewActorPopupProps {
     onHide: () => void;

@@ -1,9 +1,9 @@
 import {RouteComponentProps} from 'react-router';
 import React from 'react';
-import {VideoUnloadedType} from '../../api/VideoTypes';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 import {callAPI} from '../../utils/Api';
 import {withRouter} from 'react-router-dom';
+import {VideoTypes} from '../../types/ApiTypes';
 
 interface CategoryViewProps extends RouteComponentProps<{ id: string }> {
     setSubTitle: (title: string) => void
@@ -17,7 +17,7 @@ interface CategoryViewState {
  * plain class (for unit testing only)
  */
 export class CategoryView extends React.Component<CategoryViewProps, CategoryViewState> {
-    private videodata: VideoUnloadedType[] = [];
+    private videodata: VideoTypes.VideoUnloadedType[] = [];
 
     constructor(props: CategoryViewProps) {
         super(props);
@@ -60,7 +60,7 @@ export class CategoryView extends React.Component<CategoryViewProps, CategoryVie
      * @param id tagid
      */
     fetchVideoData(id: number): void {
-        callAPI<VideoUnloadedType[]>('video.php', {action: 'getMovies', tag: id}, result => {
+        callAPI<VideoTypes.VideoUnloadedType[]>('video.php', {action: 'getMovies', tag: id}, result => {
             this.videodata = result;
             this.setState({loaded: true});
             this.props.setSubTitle(this.videodata.length + ' Videos');
