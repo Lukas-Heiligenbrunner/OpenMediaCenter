@@ -1,6 +1,6 @@
 import React from 'react';
 import {callAPI} from '../../utils/Api';
-import {ActorType} from '../../api/VideoTypes';
+import {ActorType} from '../../types/VideoTypes';
 import ActorTile from '../../elements/ActorTile/ActorTile';
 import PageTitle from '../../elements/PageTitle/PageTitle';
 import SideBar from '../../elements/SideBar/SideBar';

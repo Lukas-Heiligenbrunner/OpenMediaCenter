@@ -15,10 +15,11 @@ import ActorTile from '../../elements/ActorTile/ActorTile';
 import {withRouter} from 'react-router-dom';
 import {callAPI, getBackendDomain} from '../../utils/Api';
 import {RouteComponentProps} from 'react-router';
-import {GeneralSuccess} from '../../api/GeneralTypes';
-import {ActorType, loadVideoType, TagType} from '../../api/VideoTypes';
+import {GeneralSuccess} from '../../types/GeneralTypes';
+import {ActorType, TagType} from '../../types/VideoTypes';
 import PlyrJS from 'plyr';
 import {Button} from '../../elements/GPElements/Button';
+import {VideoTypes} from '../../types/ApiTypes';
 
 interface myprops extends RouteComponentProps<{ id: string }> {}
 
@@ -239,7 +240,7 @@ export class Player extends React.Component<myprops, mystate> {
      * fetch all the required infos of a video from backend
      */
     fetchMovieData(): void {
-        callAPI('video.php', {action: 'loadVideo', movieid: this.props.match.params.id}, (result: loadVideoType) => {
+        callAPI('video.php', {action: 'loadVideo', movieid: this.props.match.params.id}, (result: VideoTypes.loadVideoType) => {
             this.setState({
                 sources: {
                     type: 'video',

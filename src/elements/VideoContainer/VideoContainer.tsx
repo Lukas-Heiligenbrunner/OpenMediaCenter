@@ -1,14 +1,14 @@
 import React from 'react';
 import Preview from '../Preview/Preview';
 import style from './VideoContainer.module.css';
-import {VideoUnloadedType} from '../../api/VideoTypes';
+import {VideoTypes} from '../../types/ApiTypes';
 
 interface props {
-    data: VideoUnloadedType[]
+    data: VideoTypes.VideoUnloadedType[]
 }
 
 interface state {
-    loadeditems: VideoUnloadedType[];
+    loadeditems: VideoTypes.VideoUnloadedType[];
     selectionnr: number;
 }
 

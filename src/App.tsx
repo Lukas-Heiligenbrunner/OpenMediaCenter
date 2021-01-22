@@ -16,19 +16,13 @@ import {BrowserRouter as Router, NavLink, Route, Switch} from 'react-router-dom'
 import Player from './pages/Player/Player';
 import ActorOverviewPage from './pages/ActorOverviewPage/ActorOverviewPage';
 import ActorPage from './pages/ActorPage/ActorPage';
+import {SettingsTypes} from './types/ApiTypes';
 
 interface state {
     generalSettingsLoaded: boolean;
     passwordsupport: boolean;
     mediacentername: string;
     onapierror: boolean;
-}
-
-interface initialApiCallData {
-    DarkMode: boolean;
-    passwordEnabled: boolean;
-    mediacenter_name: string;
-
 }
 
 /**
@@ -47,7 +41,7 @@ class App extends React.Component<{}, state> {
 
     initialAPICall(): void {
         // this is the first api call so if it fails we know there is no connection to backend
-        callAPI('settings.php', {action: 'loadInitialData'}, (result: initialApiCallData) => {
+        callAPI('settings.php', {action: 'loadInitialData'}, (result: SettingsTypes.initialApiCallData) => {
             // set theme
             GlobalInfos.enableDarkTheme(result.DarkMode);
 

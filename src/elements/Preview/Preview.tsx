@@ -5,35 +5,42 @@ import {Link} from 'react-router-dom';
 import GlobalInfos from '../../utils/GlobalInfos';
 import {callAPIPlain} from '../../utils/Api';
 
+interface PreviewProps{
+    name: string;
+    movie_id: number;
+}
+
+interface PreviewState {
+    previewpicture: string | null;
+}
+
 /**
  * Component for single preview tile
  * floating side by side
  */
-class Preview extends React.Component {
-    constructor(props, context) {
-        super(props, context);
+class Preview extends React.Component<PreviewProps, PreviewState> {
+    constructor(props: PreviewProps) {
+        super(props);
 
         this.state = {
-            previewpicture: null,
-            name: null
+            previewpicture: null
         };
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         callAPIPlain('video.php', {action: 'readThumbnail', movieid: this.props.movie_id}, (result) => {
             this.setState({
-                previewpicture: result,
-                name: this.props.name
+                previewpicture: result
             });
         });
     }
 
-    render() {
+    render(): JSX.Element {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
             <Link to={'/player/' + this.props.movie_id}>
                 <div className={style.videopreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview}>
-                    <div className={style.previewtitle + ' ' + themeStyle.lighttextcolor}>{this.state.name}</div>
+                    <div className={style.previewtitle + ' ' + themeStyle.lighttextcolor}>{this.props.name}</div>
                     <div className={style.previewpic}>
                         {this.state.previewpicture !== null ?
                             <img className={style.previewimage}
@@ -55,8 +62,8 @@ class Preview extends React.Component {
 /**
  * Component for a Tag-name tile (used in category page)
  */
-export class TagPreview extends React.Component {
-    render() {
+export class TagPreview extends React.Component<{name: string}> {
+    render(): JSX.Element {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
             <div
