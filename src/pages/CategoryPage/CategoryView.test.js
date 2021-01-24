@@ -4,7 +4,7 @@ import {CategoryView} from './CategoryView';
 
 describe('<CategoryView/>', function () {
     function instance() {
-        return shallow(<CategoryView match={{params: {id: 10}}}/>);
+        return shallow(<CategoryView match={{params: {id: 10}}} history={{push: jest.fn()}}/>);
     }
 
     it('renders without crashing ', function () {
@@ -20,5 +20,15 @@ describe('<CategoryView/>', function () {
         expect(func).toHaveBeenCalledTimes(0);
         wrapper.find('button').simulate('click');
         expect(func).toHaveBeenCalledTimes(1);
+    });
+
+    it('test delete of tag', function () {
+        const wrapper = instance();
+        callAPIMock({result: 'success'});
+
+        // simulate button click
+        wrapper.find('Button').props().onClick();
+
+        expect(wrapper.instance().props.history.push).toHaveBeenCalledTimes(1);
     });
 });

@@ -14,4 +14,30 @@ describe('<TagView/>', function () {
 
         expect(wrapper.find('TagPreview')).toHaveLength(1);
     });
+
+    it('test new tag popup', function () {
+        const wrapper = shallow(<TagView/>);
+
+        expect(wrapper.find('NewTagPopup')).toHaveLength(0);
+        wrapper.find('[data-testid="btnaddtag"]').simulate('click');
+        // newtagpopup should be showing now
+        expect(wrapper.find('NewTagPopup')).toHaveLength(1);
+    });
+
+    it('test add popup', function () {
+        const wrapper = shallow(<TagView/>);
+
+        expect(wrapper.find('NewTagPopup')).toHaveLength(0);
+        wrapper.setState({popupvisible: true});
+        expect(wrapper.find('NewTagPopup')).toHaveLength(1);
+    });
+
+    it('test hiding of popup', function () {
+        const wrapper = shallow(<TagView/>);
+        wrapper.setState({popupvisible: true});
+
+        wrapper.find('NewTagPopup').props().onHide();
+
+        expect(wrapper.find('NewTagPopup')).toHaveLength(0);
+    });
 });
