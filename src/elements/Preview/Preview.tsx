@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom';
 import GlobalInfos from '../../utils/GlobalInfos';
 import {callAPIPlain} from '../../utils/Api';
 
-interface PreviewProps{
+interface PreviewProps {
     name: string;
     movie_id: number;
 }
@@ -62,7 +62,7 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
 /**
  * Component for a Tag-name tile (used in category page)
  */
-export class TagPreview extends React.Component<{name: string}> {
+export class TagPreview extends React.Component<{ name: string }> {
     render(): JSX.Element {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (

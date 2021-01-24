@@ -1,6 +1,6 @@
 import {ActorType, TagType} from './VideoTypes';
 
-export namespace VideoTypes{
+export namespace VideoTypes {
     export interface loadVideoType {
         movie_url: string
         thumbnail: string
@@ -14,7 +14,7 @@ export namespace VideoTypes{
         actors: ActorType[]
     }
 
-    export interface startDataType{
+    export interface startDataType {
         total: number;
         fullhd: number;
         hd: number;
@@ -28,14 +28,14 @@ export namespace VideoTypes{
     }
 }
 
-export namespace SettingsTypes{
+export namespace SettingsTypes {
     export interface initialApiCallData {
         DarkMode: boolean;
         passwordEnabled: boolean;
         mediacenter_name: string;
     }
 
-    export interface loadGeneralSettingsType{
+    export interface loadGeneralSettingsType {
         video_path: string,
         episode_path: string,
         mediacenter_name: string,
@@ -49,13 +49,13 @@ export namespace SettingsTypes{
         tagsadded: number
     }
 
-    export interface getStatusMessageType{
+    export interface getStatusMessageType {
         contentAvailable: boolean;
         message: string;
     }
 }
 
-export namespace ActorTypes{
+export namespace ActorTypes {
     /**
      * result of actor fetch
      */

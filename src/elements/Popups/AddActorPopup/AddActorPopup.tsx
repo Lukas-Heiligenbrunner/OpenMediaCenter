@@ -93,7 +93,7 @@ class AddActorPopup extends React.Component<props, state> {
                                            onChange={(e): void => {
                                                this.setState({filter: e.target.value});
                                            }}
-                                    ref={(input): void => {this.filterfield = input;}}/>
+                                           ref={(input): void => {this.filterfield = input;}}/>
                                     <Button title={<FontAwesomeIcon style={{
                                         verticalAlign: 'middle',
                                         lineHeight: '130px'
@@ -118,14 +118,6 @@ class AddActorPopup extends React.Component<props, state> {
         } else {
             return (<div>somekind of loading</div>);
         }
-    }
-
-    /**
-     * filter the actor array for search matches
-     * @param actor
-     */
-    private filterSearch(actor: ActorType): boolean {
-        return actor.name.toLowerCase().includes(this.state.filter.toLowerCase());
     }
 
     /**
@@ -154,6 +146,14 @@ class AddActorPopup extends React.Component<props, state> {
         callAPI<ActorType[]>('actor.php', {action: 'getAllActors'}, result => {
             this.setState({actors: result});
         });
+    }
+
+    /**
+     * filter the actor array for search matches
+     * @param actor
+     */
+    private filterSearch(actor: ActorType): boolean {
+        return actor.name.toLowerCase().includes(this.state.filter.toLowerCase());
     }
 }
 
