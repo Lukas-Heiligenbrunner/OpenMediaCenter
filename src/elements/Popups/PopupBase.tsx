@@ -8,7 +8,8 @@ interface props {
     height?: string;
     banner?: JSX.Element;
     title: string;
-    onHide: () => void
+    onHide: () => void;
+    ParentSubmit?: () => void;
 }
 
 /**
@@ -86,6 +87,9 @@ class PopupBase extends React.Component<props> {
         // hide if escape is pressed
         if (event.key === 'Escape') {
             this.props.onHide();
+        } else if (event.key === 'Enter') {
+            // call a parentsubmit if defined
+            if (this.props.ParentSubmit) this.props.ParentSubmit();
         }
     }
 

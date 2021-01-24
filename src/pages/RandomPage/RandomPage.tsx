@@ -29,10 +29,18 @@ class RandomPage extends React.Component<{}, state> {
             videos: [],
             tags: []
         };
+
+        this.keypress = this.keypress.bind(this);
     }
 
     componentDidMount(): void {
+        document.addEventListener('keyup', this.keypress);
+
         this.loadShuffledvideos(4);
+    }
+
+    componentWillUnmount(): void {
+        document.removeEventListener('keyup', this.keypress);
     }
 
     render(): JSX.Element {
@@ -83,6 +91,17 @@ class RandomPage extends React.Component<{}, state> {
                 tags: result.tags
             });
         });
+    }
+
+    /**
+     * key event handling
+     * @param event keyevent
+     */
+    private keypress(event: KeyboardEvent): void {
+        // bind s to shuffle
+        if (event.key === 's') {
+            this.loadShuffledvideos(4);
+        }
     }
 }
 
