@@ -8,8 +8,9 @@ stages:
   - deploy
 
 cache:
-  key: "$CI_COMMIT_REF_SLUG" # use per branch caching
+  key: ${CI_COMMIT_REF_SLUG}
   paths:
+    - .npm/
     - node_modules/
 
 include:
@@ -21,7 +22,7 @@ variables:
 Node_dependencies:
   stage: prepare
   script:
-    - npm install --progress=false
+    - npm ci --cache .npm --prefer-offline
 
 Minimize:
   stage: build
@@ -65,20 +66,6 @@ Debian_Server:
   artifacts:
     paths:
       - deb/OpenMediaCenter-*.deb
-  needs: ["Minimize"]
-
-Electron_Client:
-  stage: packaging
-  image: electronuserland/builder:wine
-  script:
-    - npm run buildlinux
-    - npm run buildwin
-  artifacts:
-    expire_in: 2 days
-    paths:
-      - dist/*.rpm
-      - dist/*.deb
-      - dist/*.exe
   needs: ["Minimize"]
 
 Test_Server:

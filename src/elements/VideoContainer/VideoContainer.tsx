@@ -1,33 +1,41 @@
 import React from 'react';
 import Preview from '../Preview/Preview';
 import style from './VideoContainer.module.css';
+import {VideoTypes} from '../../types/ApiTypes';
+
+interface props {
+    data: VideoTypes.VideoUnloadedType[]
+}
+
+interface state {
+    loadeditems: VideoTypes.VideoUnloadedType[];
+    selectionnr: number;
+}
 
 /**
  * A videocontainer storing lots of Preview elements
  * includes scroll handling and loading of preview infos
  */
-class VideoContainer extends React.Component {
+class VideoContainer extends React.Component<props, state> {
     // stores current index of loaded elements
-    loadindex = 0;
+    loadindex: number = 0;
 
-    constructor(props, context) {
-        super(props, context);
-
-        this.data = props.data;
+    constructor(props: props) {
+        super(props);
 
         this.state = {
             loadeditems: [],
-            selectionnr: null
+            selectionnr: 0
         };
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         document.addEventListener('scroll', this.trackScrolling);
 
         this.loadPreviewBlock(16);
     }
 
-    render() {
+    render(): JSX.Element {
         return (
             <div className={style.maincontent}>
                 {this.state.loadeditems.map(elem => (
@@ -44,7 +52,7 @@ class VideoContainer extends React.Component {
         );
     }
 
-    componentWillUnmount() {
+    componentWillUnmount(): void {
         this.setState({});
         // unbind scroll listener when unmounting component
         document.removeEventListener('scroll', this.trackScrolling);
@@ -54,13 +62,13 @@ class VideoContainer extends React.Component {
      * load previews to the container
      * @param nr number of previews to load
      */
-    loadPreviewBlock(nr) {
+    loadPreviewBlock(nr: number): void {
         console.log('loadpreviewblock called ...');
         let ret = [];
         for (let i = 0; i < nr; i++) {
             // only add if not end
-            if (this.data.length > this.loadindex + i) {
-                ret.push(this.data[this.loadindex + i]);
+            if (this.props.data.length > this.loadindex + i) {
+                ret.push(this.props.data[this.loadindex + i]);
             }
         }
 
@@ -78,7 +86,7 @@ class VideoContainer extends React.Component {
     /**
      * scroll event handler -> load new previews if on bottom
      */
-    trackScrolling = () => {
+    trackScrolling = (): void => {
         // comparison if current scroll position is on bottom --> 200 is bottom offset to trigger load
         if (window.innerHeight + document.documentElement.scrollTop + 200 >= document.documentElement.offsetHeight) {
             this.loadPreviewBlock(8);

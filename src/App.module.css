@@ -16,6 +16,7 @@
 
 .navitem:hover {
     opacity: 1;
+    text-decoration: none;
     transition: opacity .5s;
 }
 

@@ -1,13 +1,24 @@
 import GlobalInfos from '../../utils/GlobalInfos';
 import style from './PopupBase.module.css';
 import {Line} from '../PageTitle/PageTitle';
-import React from 'react';
+import React, {RefObject} from 'react';
+
+interface props {
+    width?: string;
+    height?: string;
+    banner?: JSX.Element;
+    title: string;
+    onHide: () => void
+}
 
 /**
  * wrapper class for generic types of popups
  */
-class PopupBase extends React.Component {
-    constructor(props) {
+class PopupBase extends React.Component<props> {
+    private wrapperRef: RefObject<HTMLDivElement>;
+    private framedimensions: { minHeight: string | undefined; width: string | undefined; height: string | undefined };
+
+    constructor(props: props) {
         super(props);
 
         this.state = {items: []};
@@ -25,7 +36,7 @@ class PopupBase extends React.Component {
         };
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         document.addEventListener('mousedown', this.handleClickOutside);
         document.addEventListener('keyup', this.keypress);
 
@@ -35,13 +46,13 @@ class PopupBase extends React.Component {
         }
     }
 
-    componentWillUnmount() {
+    componentWillUnmount(): void {
         // remove the appended listeners
         document.removeEventListener('mousedown', this.handleClickOutside);
         document.removeEventListener('keyup', this.keypress);
     }
 
-    render() {
+    render(): JSX.Element {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
             <div style={this.framedimensions} className={[style.popup, themeStyle.thirdbackground].join(' ')} ref={this.wrapperRef}>
@@ -61,8 +72,8 @@ class PopupBase extends React.Component {
     /**
      * Alert if clicked on outside of element
      */
-    handleClickOutside(event) {
-        if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
+    handleClickOutside(event: MouseEvent): void {
+        if (this.wrapperRef && this.wrapperRef.current && !this.wrapperRef.current.contains(event.target as Node)) {
             this.props.onHide();
         }
     }
@@ -71,7 +82,7 @@ class PopupBase extends React.Component {
      * key event handling
      * @param event keyevent
      */
-    keypress(event) {
+    keypress(event: KeyboardEvent): void {
         // hide if escape is pressed
         if (event.key === 'Escape') {
             this.props.onHide();
@@ -81,16 +92,17 @@ class PopupBase extends React.Component {
     /**
      * make the element drag and droppable
      */
-    dragElement() {
+    dragElement(): void {
         let xOld = 0, yOld = 0;
 
         const elmnt = this.wrapperRef.current;
-        if(elmnt === null) return;
+        if (elmnt === null) return;
+        if (elmnt.firstChild === null) return;
 
-        elmnt.firstChild.onmousedown = dragMouseDown;
+        (elmnt.firstChild as HTMLDivElement).onmousedown = dragMouseDown;
 
 
-        function dragMouseDown(e) {
+        function dragMouseDown(e: MouseEvent): void {
             e.preventDefault();
             // get the mouse cursor position at startup:
             xOld = e.clientX;
@@ -100,7 +112,7 @@ class PopupBase extends React.Component {
             document.onmousemove = elementDrag;
         }
 
-        function elementDrag(e) {
+        function elementDrag(e: MouseEvent): void {
             e.preventDefault();
             // calculate the new cursor position:
             const dx = xOld - e.clientX;
@@ -108,11 +120,12 @@ class PopupBase extends React.Component {
             xOld = e.clientX;
             yOld = e.clientY;
             // set the element's new position:
+            if (elmnt === null) return;
             elmnt.style.top = (elmnt.offsetTop - dy) + 'px';
             elmnt.style.left = (elmnt.offsetLeft - dx) + 'px';
         }
 
-        function closeDragElement() {
+        function closeDragElement(): void {
             // stop moving when mouse button is released:
             document.onmouseup = null;
             document.onmousemove = null;

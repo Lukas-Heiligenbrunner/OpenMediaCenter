@@ -2,33 +2,47 @@ import React from 'react';
 import Tag from '../../Tag/Tag';
 import PopupBase from '../PopupBase';
 import {callAPI} from '../../../utils/Api';
+import {TagType} from '../../../types/VideoTypes';
+import {GeneralSuccess} from '../../../types/GeneralTypes';
+
+interface props {
+    onHide: () => void;
+    submit: (tagId: number, tagName: string) => void;
+    movie_id: number;
+}
+
+interface state {
+    items: TagType[];
+}
 
 /**
  * component creates overlay to add a new tag to a video
  */
-class AddTagPopup extends React.Component {
-    constructor(props, context) {
-        super(props, context);
+class AddTagPopup extends React.Component<props, state> {
+    constructor(props: props) {
+        super(props);
 
         this.state = {items: []};
     }
 
-    componentDidMount() {
-        callAPI('tags.php', {action: 'getAllTags'}, (result) => {
+    componentDidMount(): void {
+        callAPI('tags.php', {action: 'getAllTags'}, (result: TagType[]) => {
+            console.log(result);
             this.setState({
                 items: result
             });
         });
     }
 
-    render() {
+    render(): JSX.Element {
         return (
             <PopupBase title='Add a Tag to this Video:' onHide={this.props.onHide}>
                 {this.state.items ?
                     this.state.items.map((i) => (
-                        <Tag onclick={() => {
-                            this.addTag(i.tag_id, i.tag_name);
-                        }}>{i.tag_name}</Tag>
+                        <Tag tagInfo={i}
+                             onclick={(): void => {
+                                 this.addTag(i.tag_id, i.tag_name);
+                             }}/>
                     )) : null}
             </PopupBase>
         );
@@ -39,8 +53,8 @@ class AddTagPopup extends React.Component {
      * @param tagid tag id to add
      * @param tagname tag name to add
      */
-    addTag(tagid, tagname) {
-        callAPI('tags.php', {action: 'addTag', id: tagid, movieid: this.props.movie_id}, result => {
+    addTag(tagid: number, tagname: string): void {
+        callAPI('tags.php', {action: 'addTag', id: tagid, movieid: this.props.movie_id}, (result: GeneralSuccess) => {
             if (result.result !== 'success') {
                 console.log('error occured while writing to db -- todo error handling');
                 console.log(result.result);

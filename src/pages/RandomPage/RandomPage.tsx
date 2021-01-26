@@ -5,13 +5,25 @@ import Tag from '../../elements/Tag/Tag';
 import PageTitle from '../../elements/PageTitle/PageTitle';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 import {callAPI} from '../../utils/Api';
+import {TagType} from '../../types/VideoTypes';
+import {VideoTypes} from '../../types/ApiTypes';
+
+interface state {
+    videos: VideoTypes.VideoUnloadedType[];
+    tags: TagType[];
+}
+
+interface GetRandomMoviesType {
+    rows: VideoTypes.VideoUnloadedType[];
+    tags: TagType[];
+}
 
 /**
  * Randompage shuffles random viedeopreviews and provides a shuffle btn
  */
-class RandomPage extends React.Component {
-    constructor(props, context) {
-        super(props, context);
+class RandomPage extends React.Component<{}, state> {
+    constructor(props: {}) {
+        super(props);
 
         this.state = {
             videos: [],
@@ -19,11 +31,11 @@ class RandomPage extends React.Component {
         };
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         this.loadShuffledvideos(4);
     }
 
-    render() {
+    render(): JSX.Element {
         return (
             <div>
                 <PageTitle title='Random Videos'
@@ -32,7 +44,7 @@ class RandomPage extends React.Component {
                 <SideBar>
                     <SideBarTitle>Visible Tags:</SideBarTitle>
                     {this.state.tags.map((m) => (
-                        <Tag key={m.tag_name}>{m.tag_name}</Tag>
+                        <Tag key={m.tag_id} tagInfo={m}/>
                     ))}
                 </SideBar>
 
@@ -40,7 +52,7 @@ class RandomPage extends React.Component {
                     <VideoContainer
                         data={this.state.videos}>
                         <div className={style.Shufflebutton}>
-                            <button onClick={() => this.shuffleclick()} className={style.btnshuffle}>Shuffle</button>
+                            <button onClick={(): void => this.shuffleclick()} className={style.btnshuffle}>Shuffle</button>
                         </div>
                     </VideoContainer>
                     :
@@ -53,7 +65,7 @@ class RandomPage extends React.Component {
     /**
      * click handler for shuffle btn
      */
-    shuffleclick() {
+    shuffleclick(): void {
         this.loadShuffledvideos(4);
     }
 
@@ -61,8 +73,8 @@ class RandomPage extends React.Component {
      * load random videos from backend
      * @param nr number of videos to load
      */
-    loadShuffledvideos(nr) {
-        callAPI('video.php', {action: 'getRandomMovies', number: nr}, result => {
+    loadShuffledvideos(nr: number): void {
+        callAPI<GetRandomMoviesType>('video.php', {action: 'getRandomMovies', number: nr}, result => {
             console.log(result);
 
             this.setState({videos: []}); // needed to trigger rerender of main videoview

@@ -1,16 +1,22 @@
 import {shallow} from 'enzyme';
 import React from 'react';
-import Player from './Player';
+import {Player} from './Player';
 import {callAPI} from '../../utils/Api';
 
 describe('<Player/>', function () {
+
+    // help simulating id passed by url
+    function instance() {
+        return shallow(<Player match={{params: {id: 10}}}/>);
+    }
+
     it('renders without crashing ', function () {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
         wrapper.unmount();
     });
 
     it('plyr insertion', function () {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
 
         wrapper.setState({
             sources: [
@@ -26,11 +32,11 @@ describe('<Player/>', function () {
     });
 
     function simulateLikeButtonClick() {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
 
         // initial fetch for getting movie data
         expect(global.fetch).toHaveBeenCalledTimes(1);
-        wrapper.find('.videoactions').find('button').first().simulate('click');
+        wrapper.find('.videoactions').find('Button').first().simulate('click');
         // fetch for liking
         expect(global.fetch).toHaveBeenCalledTimes(2);
 
@@ -70,28 +76,28 @@ describe('<Player/>', function () {
     });
 
     it('show tag popup', function () {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
         expect(wrapper.find('AddTagPopup')).toHaveLength(0);
         // todo dynamic button find without index
-        wrapper.find('.videoactions').find('button').at(1).simulate('click');
+        wrapper.find('.videoactions').find('Button').at(1).simulate('click');
         // addtagpopup should be showing now
         expect(wrapper.find('AddTagPopup')).toHaveLength(1);
     });
 
     it('test delete button', done => {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
 
-        const func = jest.fn();
-        prepareViewBinding(func);
+
+        wrapper.setProps({history: {goBack: jest.fn()}});
 
         global.fetch = prepareFetchApi({result: 'success'});
 
-        wrapper.find('.videoactions').find('button').at(2).simulate('click');
+        wrapper.find('.videoactions').find('Button').at(2).simulate('click');
 
         process.nextTick(() => {
             // refetch is called so fetch called 3 times
             expect(global.fetch).toHaveBeenCalledTimes(1);
-            expect(func).toHaveBeenCalledTimes(1);
+            expect(wrapper.instance().props.history.goBack).toHaveBeenCalledTimes(1);
 
             global.fetch.mockClear();
             done();
@@ -99,19 +105,20 @@ describe('<Player/>', function () {
     });
 
     it('hide click ', function () {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
 
         const func = jest.fn();
-        prepareViewBinding(func);
+
+        wrapper.setProps({history: {goBack: func}});
 
         expect(func).toHaveBeenCalledTimes(0);
         wrapper.find('.closebutton').simulate('click');
-        // addtagpopup should be showing now
+        // backstack should be popped once
         expect(func).toHaveBeenCalledTimes(1);
     });
 
     it('inserts Tags correctly', function () {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
 
         expect(wrapper.find('Tag')).toHaveLength(0);
 
@@ -165,7 +172,7 @@ describe('<Player/>', function () {
     });
 
     it('showspopups correctly', function () {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
 
         wrapper.setState({popupvisible: true}, () => {
             // is the AddTagpopu rendered?
@@ -180,13 +187,13 @@ describe('<Player/>', function () {
 
 
     it('quickadd tag correctly', function () {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
         global.callAPIMock({result: 'success'});
 
         wrapper.setState({suggesttag: [{tag_name: 'test', tag_id: 1}]}, () => {
             // mock funtion should have not been called
             expect(callAPI).toBeCalledTimes(0);
-            wrapper.find('Tag').findWhere(p => p.text() === 'test').parent().dive().simulate('click');
+            wrapper.find('Tag').findWhere(p => p.props().tagInfo.tag_name === 'test').dive().simulate('click');
             // mock function should have been called once
             expect(callAPI).toBeCalledTimes(1);
 
@@ -198,13 +205,13 @@ describe('<Player/>', function () {
     });
 
     it('test adding of already existing tag', function () {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
         global.callAPIMock({result: 'success'});
 
         wrapper.setState({suggesttag: [{tag_name: 'test', tag_id: 1}], tags: [{tag_name: 'test', tag_id: 1}]}, () => {
             // mock funtion should have not been called
             expect(callAPI).toBeCalledTimes(0);
-            wrapper.find('Tag').findWhere(p => p.text() === 'test').last().parent().dive().simulate('click');
+            wrapper.find('Tag').findWhere(p => p.props().tagInfo.tag_name === 'test').last().dive().simulate('click');
             // mock function should have been called once
             expect(callAPI).toBeCalledTimes(1);
 
@@ -217,7 +224,7 @@ describe('<Player/>', function () {
     });
 
     function generatetag() {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
 
         expect(wrapper.find('Tag')).toHaveLength(0);
 
@@ -233,7 +240,7 @@ describe('<Player/>', function () {
     }
 
     it('test addactor popup showing', function () {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
 
         expect(wrapper.find('AddActorPopup')).toHaveLength(0);
 
@@ -244,7 +251,7 @@ describe('<Player/>', function () {
     });
 
     it('test hiding of addactor popup', function () {
-        const wrapper = shallow(<Player/>);
+        const wrapper = instance();
         wrapper.instance().addActor();
 
         expect(wrapper.find('AddActorPopup')).toHaveLength(1);
@@ -252,5 +259,37 @@ describe('<Player/>', function () {
         wrapper.find('AddActorPopup').props().onHide();
 
         expect(wrapper.find('AddActorPopup')).toHaveLength(0);
+    });
+
+    it('test addtagpopup hiding', function () {
+        const wrapper = instance();
+
+        wrapper.setState({popupvisible: true});
+        expect(wrapper.find('AddTagPopup')).toHaveLength(1);
+
+        wrapper.find('AddTagPopup').props().onHide();
+
+        expect(wrapper.find('AddTagPopup')).toHaveLength(0);
+    });
+
+    it('test insertion of actor tiles', function () {
+        const wrapper = instance();
+        wrapper.setState({
+            actors: [{
+                thumbnail: '',
+                name: 'testname',
+                actor_id: 42
+            }]
+        });
+
+        expect(wrapper.find('ActorTile')).toHaveLength(1);
+    });
+
+    it('test Addactor button', function () {
+        const wrapper = instance();
+        expect(wrapper.state().actorpopupvisible).toBe(false);
+        wrapper.find('.actorAddTile').simulate('click');
+
+        expect(wrapper.state().actorpopupvisible).toBe(true);
     });
 });

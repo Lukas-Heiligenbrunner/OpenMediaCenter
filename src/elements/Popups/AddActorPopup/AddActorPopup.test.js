@@ -31,7 +31,7 @@ describe('<AddActorPopup/>', function () {
     });
 
     it('test api call and insertion of actor tiles', function () {
-        global.callAPIMock([{id: 1, actorname: 'test'}, {id: 2, actorname: 'test2'}]);
+        global.callAPIMock([{id: 1, name: 'test'}, {id: 2, name: 'test2'}]);
 
         const wrapper = shallow(<AddActorPopup/>);
 
@@ -40,12 +40,12 @@ describe('<AddActorPopup/>', function () {
 
     it('simulate actortile click', function () {
         const func = jest.fn();
-        const wrapper = shallow(<AddActorPopup onHide={() => {func()}}/>);
+        const wrapper = shallow(<AddActorPopup onHide={() => {func();}} movie_id={1}/>);
 
         global.callAPIMock({result: 'success'});
 
-        wrapper.setState({actors: [{id: 1, actorname: 'test'}]}, () => {
-            wrapper.find('ActorTile').props().onClick();
+        wrapper.setState({actors: [{actor_id: 1, name: 'test'}]}, () => {
+            wrapper.find('ActorTile').dive().simulate('click');
 
             expect(callAPI).toHaveBeenCalledTimes(1);
 
@@ -55,17 +55,23 @@ describe('<AddActorPopup/>', function () {
 
     it('test failing actortile click', function () {
         const func = jest.fn();
-        const wrapper = shallow(<AddActorPopup onHide={() => {func()}}/>);
+        const wrapper = shallow(<AddActorPopup onHide={() => {func();}}/>);
 
         global.callAPIMock({result: 'nosuccess'});
 
-        wrapper.setState({actors: [{id: 1, actorname: 'test'}]}, () => {
-            wrapper.find('ActorTile').props().onClick();
+        wrapper.setState({actors: [{actor_id: 1, name: 'test'}]}, () => {
+            wrapper.find('ActorTile').dive().simulate('click');
 
             expect(callAPI).toHaveBeenCalledTimes(1);
 
             // hide funtion should not have been called on error!
             expect(func).toHaveBeenCalledTimes(0);
         });
+    });
+
+    it('test no actor on loading', function () {
+        const wrapper = shallow(<AddActorPopup/>);
+
+        expect(wrapper.find('PopupBase').find('ActorTile')).toHaveLength(0);
     });
 });

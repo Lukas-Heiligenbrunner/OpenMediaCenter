@@ -5,21 +5,8 @@ import Preview, {TagPreview} from './Preview';
 
 describe('<Preview/>', function () {
     it('renders without crashing ', function () {
-        const wrapper = shallow(<Preview/>);
+        const wrapper = shallow(<Preview movie_id={1}/>);
         wrapper.unmount();
-    });
-
-
-    it('click event triggered', () => {
-        const func = jest.fn();
-
-        const wrapper = shallow(<Preview/>);
-        prepareViewBinding(func);
-
-        wrapper.find('.videopreview').simulate('click');
-
-        //callback to open player should have called
-        expect(func).toHaveBeenCalledTimes(1);
     });
 
     it('picture rendered correctly', done => {
@@ -30,7 +17,7 @@ describe('<Preview/>', function () {
         });
         global.fetch = jest.fn().mockImplementation(() => mockFetchPromise);
 
-        const wrapper = shallow(<Preview name='test'/>);
+        const wrapper = shallow(<Preview name='test' movie_id={1}/>);
 
         // now called 1 times
         expect(global.fetch).toHaveBeenCalledTimes(1);
@@ -48,7 +35,7 @@ describe('<Preview/>', function () {
     });
 
     it('spinner loads correctly', function () {
-        const wrapper = shallow(<Preview/>);
+        const wrapper = shallow(<Preview movie_id={1}/>);
 
         // expect load animation to be visible
         expect(wrapper.find('.loadAnimation')).toHaveLength(1);
@@ -65,25 +52,6 @@ describe('<TagPreview/>', function () {
     it('renders title', () => {
         const wrapper = shallow(<TagPreview name='test'/>);
         expect(wrapper.find('.tagpreviewtitle').text()).toBe('test');
-    });
-
-
-    it('click event triggered', function () {
-        const func = jest.fn();
-
-        const wrapper = shallow(<TagPreview/>);
-        wrapper.setProps({
-            categorybinding: () => {
-                func();
-            }
-        });
-
-        // first call of fetch is getting of available tags
-        expect(func).toHaveBeenCalledTimes(0);
-        wrapper.find('.videopreview').simulate('click');
-
-        // now called 1 times
-        expect(func).toHaveBeenCalledTimes(1);
     });
 });
 
