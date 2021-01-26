@@ -112,8 +112,6 @@ export class CategoryView extends React.Component<CategoryViewProps, CategoryVie
             } else if (result.result === 'not empty tag') {
                 // show submisison tag to ask if really delete
                 this.setState({submitForceDelete: true});
-            } else {
-                console.log(result.result);
             }
         });
     }

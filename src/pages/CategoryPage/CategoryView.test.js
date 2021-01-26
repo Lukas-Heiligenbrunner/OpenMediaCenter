@@ -31,4 +31,44 @@ describe('<CategoryView/>', function () {
 
         expect(wrapper.instance().props.history.push).toHaveBeenCalledTimes(1);
     });
+
+    it('test delete of non empty tag', function () {
+        const wrapper = instance();
+        callAPIMock({result: 'not empty tag'});
+
+        // simulate button click
+        wrapper.find('Button').props().onClick();
+
+        // expect SubmitPopup showing
+        expect(wrapper.find('SubmitPopup')).toHaveLength(1);
+
+        // mock deleteTag function
+        wrapper.instance().deleteTag = jest.fn((v) => {});
+
+        // simulate submit
+        wrapper.find('SubmitPopup').props().submit();
+
+        // expect deleteTag function to have been called with force parameter
+        expect(wrapper.instance().deleteTag).toHaveBeenCalledWith(true);
+    });
+
+    it('test cancel of ', function () {
+        const wrapper = instance();
+        callAPIMock({result: 'not empty tag'});
+
+        // simulate button click
+        wrapper.find('Button').props().onClick();
+
+        // expect SubmitPopup showing
+        expect(wrapper.find('SubmitPopup')).toHaveLength(1);
+
+        // mock deleteTag function
+        wrapper.instance().deleteTag = jest.fn((v) => {});
+
+        // simulate submit
+        wrapper.find('SubmitPopup').props().onHide();
+
+        // expect deleteTag function to have been called with force parameter
+        expect(wrapper.instance().deleteTag).toHaveBeenCalledTimes(0);
+    });
 });
