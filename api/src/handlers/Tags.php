@@ -9,6 +9,7 @@ class Tags extends RequestBase {
     function initHandlers() {
         $this->addToDB();
         $this->getFromDB();
+        $this->delete();
     }
 
     private function addToDB() {
@@ -63,6 +64,38 @@ class Tags extends RequestBase {
                 array_push($rows, $r);
             }
             $this->commitMessage(json_encode($rows));
+        });
+    }
+
+    private function delete() {
+        /**
+         * delete a Tag with specified id
+         */
+        $this->addActionHandler("deleteTag", function () {
+            $tag_id = $_POST['tagId'];
+            $force = $_POST['force'];
+
+            // delete key constraints first
+            if ($force === "true") {
+                $query = "DELETE FROM video_tags WHERE tag_id=$tag_id";
+
+                if ($this->conn->query($query) !== TRUE) {
+                    $this->commitMessage('{"result":"' . $this->conn->error . '"}');
+                }
+            }
+
+            $query = "DELETE FROM tags WHERE tag_id=$tag_id";
+
+            if ($this->conn->query($query) === TRUE) {
+                $this->commitMessage('{"result":"success"}');
+            } else {
+                // check if error is a constraint error
+                if (preg_match('/^.*a foreign key constraint fails.*$/i', $this->conn->error)) {
+                    $this->commitMessage('{"result":"not empty tag"}');
+                } else {
+                    $this->commitMessage('{"result":"' . $this->conn->eror . '"}');
+                }
+            }
         });
     }
 }
