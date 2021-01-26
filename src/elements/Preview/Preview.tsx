@@ -4,6 +4,9 @@ import {Spinner} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import GlobalInfos from '../../utils/GlobalInfos';
 import {callAPIPlain} from '../../utils/Api';
+import {faEllipsisV} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import QuickActionPop from '../QuickActionPop/QuickActionPop';
 
 interface PreviewProps {
     name: string;
@@ -12,6 +15,7 @@ interface PreviewProps {
 
 interface PreviewState {
     previewpicture: string | null;
+    optionsvisible: boolean;
 }
 
 /**
@@ -23,7 +27,8 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
         super(props);
 
         this.state = {
-            previewpicture: null
+            previewpicture: null,
+            optionsvisible: false
         };
     }
 
@@ -38,9 +43,16 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
     render(): JSX.Element {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
-            <Link to={'/player/' + this.props.movie_id}>
-                <div className={style.videopreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview}>
-                    <div className={style.previewtitle + ' ' + themeStyle.lighttextcolor}>{this.props.name}</div>
+            <div className={style.videopreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview}>
+                <div className={style.quickactions} onClick={(): void => this.setState({optionsvisible: true})}>
+                    <FontAwesomeIcon style={{
+                        verticalAlign: 'middle',
+                        fontSize: '25px'
+                    }} icon={faEllipsisV} size='1x'/>
+                </div>
+                {this.popupvisible()}
+                <div className={style.previewtitle + ' ' + themeStyle.lighttextcolor}>{this.props.name}</div>
+                <Link to={'/player/' + this.props.movie_id}>
                     <div className={style.previewpic}>
                         {this.state.previewpicture !== null ?
                             <img className={style.previewimage}
@@ -49,13 +61,20 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
                             <span className={style.loadAnimation}><Spinner animation='border'/></span>}
 
                     </div>
-                    <div className={style.previewbottom}>
+                </Link>
+                <div className={style.previewbottom}>
 
-                    </div>
                 </div>
-            </Link>
-
+            </div>
         );
+    }
+
+
+    popupvisible(): JSX.Element {
+        if (this.state.optionsvisible)
+            return (<QuickActionPop>heeyyho</QuickActionPop>);
+        else
+            return <></>;
     }
 }
 
