@@ -2,6 +2,7 @@ import GlobalInfos from '../../utils/GlobalInfos';
 import style from './PopupBase.module.css';
 import {Line} from '../PageTitle/PageTitle';
 import React, {RefObject} from 'react';
+import {addKeyHandler, removeKeyHandler} from '../../utils/ShortkeyHandler';
 
 interface props {
     width?: string;
@@ -39,7 +40,7 @@ class PopupBase extends React.Component<props> {
 
     componentDidMount(): void {
         document.addEventListener('mousedown', this.handleClickOutside);
-        document.addEventListener('keyup', this.keypress);
+        addKeyHandler(this.keypress);
 
         // add element drag drop events
         if (this.wrapperRef != null) {
@@ -50,7 +51,7 @@ class PopupBase extends React.Component<props> {
     componentWillUnmount(): void {
         // remove the appended listeners
         document.removeEventListener('mousedown', this.handleClickOutside);
-        document.removeEventListener('keyup', this.keypress);
+        removeKeyHandler(this.keypress);
     }
 
     render(): JSX.Element {

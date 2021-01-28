@@ -9,6 +9,7 @@ import {GeneralSuccess} from '../../../types/GeneralTypes';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faFilter, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {Button} from '../../GPElements/Button';
+import {addKeyHandler, removeKeyHandler} from '../../../utils/ShortkeyHandler';
 
 interface props {
     onHide: () => void;
@@ -46,11 +47,11 @@ class AddActorPopup extends React.Component<props, state> {
     }
 
     componentWillUnmount(): void {
-        document.removeEventListener('keyup', this.keypress);
+        removeKeyHandler(this.keypress);
     }
 
     componentDidMount(): void {
-        document.addEventListener('keyup', this.keypress);
+        addKeyHandler(this.keypress);
 
         // fetch the available actors
         this.loadActors();

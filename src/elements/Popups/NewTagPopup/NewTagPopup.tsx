@@ -16,7 +16,7 @@ class NewTagPopup extends React.Component<props> {
 
     render(): JSX.Element {
         return (
-            <PopupBase title='Add new Tag' onHide={this.props.onHide} height='200px' width='400px'>
+            <PopupBase title='Add new Tag' onHide={this.props.onHide} height='200px' width='400px' ParentSubmit={(): void => this.storeselection()}>
                 <div><input type='text' placeholder='Tagname' onChange={(v): void => {
                     this.value = v.target.value;
                 }}/></div>

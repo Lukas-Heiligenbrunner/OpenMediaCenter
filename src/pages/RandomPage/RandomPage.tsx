@@ -7,6 +7,7 @@ import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 import {callAPI} from '../../utils/Api';
 import {TagType} from '../../types/VideoTypes';
 import {VideoTypes} from '../../types/ApiTypes';
+import {addKeyHandler, removeKeyHandler} from '../../utils/ShortkeyHandler';
 
 interface state {
     videos: VideoTypes.VideoUnloadedType[];
@@ -34,13 +35,13 @@ class RandomPage extends React.Component<{}, state> {
     }
 
     componentDidMount(): void {
-        document.addEventListener('keyup', this.keypress);
+        addKeyHandler(this.keypress);
 
         this.loadShuffledvideos(4);
     }
 
     componentWillUnmount(): void {
-        document.removeEventListener('keyup', this.keypress);
+        removeKeyHandler(this.keypress);
     }
 
     render(): JSX.Element {
