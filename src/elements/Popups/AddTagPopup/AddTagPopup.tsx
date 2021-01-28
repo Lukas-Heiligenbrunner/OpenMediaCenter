@@ -26,7 +26,6 @@ class AddTagPopup extends React.Component<props, state> {
 
     componentDidMount(): void {
         callAPI('tags.php', {action: 'getAllTags'}, (result: TagType[]) => {
-            console.log(result);
             this.setState({
                 items: result
             });

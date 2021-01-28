@@ -74,4 +74,16 @@ describe('<AddActorPopup/>', function () {
 
         expect(wrapper.find('PopupBase').find('ActorTile')).toHaveLength(0);
     });
+
+    it('test Enter submit if only one element left', function () {
+        const wrapper = shallow(<AddActorPopup/>);
+
+        callAPIMock({});
+
+        wrapper.setState({actors: [{name: 'test', actor_id: 1}]});
+
+        wrapper.find('PopupBase').props().ParentSubmit();
+
+        expect(callAPI).toHaveBeenCalledTimes(1);
+    });
 });
