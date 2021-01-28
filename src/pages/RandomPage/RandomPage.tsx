@@ -7,6 +7,7 @@ import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 import {callAPI} from '../../utils/Api';
 import {TagType} from '../../types/VideoTypes';
 import {VideoTypes} from '../../types/ApiTypes';
+import {addKeyHandler, removeKeyHandler} from '../../utils/ShortkeyHandler';
 
 interface state {
     videos: VideoTypes.VideoUnloadedType[];
@@ -29,10 +30,18 @@ class RandomPage extends React.Component<{}, state> {
             videos: [],
             tags: []
         };
+
+        this.keypress = this.keypress.bind(this);
     }
 
     componentDidMount(): void {
+        addKeyHandler(this.keypress);
+
         this.loadShuffledvideos(4);
+    }
+
+    componentWillUnmount(): void {
+        removeKeyHandler(this.keypress);
     }
 
     render(): JSX.Element {
@@ -75,14 +84,23 @@ class RandomPage extends React.Component<{}, state> {
      */
     loadShuffledvideos(nr: number): void {
         callAPI<GetRandomMoviesType>('video.php', {action: 'getRandomMovies', number: nr}, result => {
-            console.log(result);
-
             this.setState({videos: []}); // needed to trigger rerender of main videoview
             this.setState({
                 videos: result.rows,
                 tags: result.tags
             });
         });
+    }
+
+    /**
+     * key event handling
+     * @param event keyevent
+     */
+    private keypress(event: KeyboardEvent): void {
+        // bind s to shuffle
+        if (event.key === 's') {
+            this.loadShuffledvideos(4);
+        }
     }
 }
 
