@@ -1,7 +1,7 @@
 import {RouteComponentProps} from 'react-router';
 import React from 'react';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
-import {callAPI} from '../../utils/Api';
+import {APINode, callAPI} from '../../utils/Api';
 import {withRouter} from 'react-router-dom';
 import {VideoTypes} from '../../types/ApiTypes';
 import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
@@ -91,7 +91,7 @@ export class CategoryView extends React.Component<CategoryViewProps, CategoryVie
      * @param id tagid
      */
     private fetchVideoData(id: number): void {
-        callAPI<VideoTypes.VideoUnloadedType[]>('video.php', {action: 'getMovies', tag: id}, result => {
+        callAPI<VideoTypes.VideoUnloadedType[]>(APINode.Video, {action: 'getMovies', tag: id}, result => {
             this.videodata = result;
             this.setState({loaded: true});
         });
@@ -101,7 +101,7 @@ export class CategoryView extends React.Component<CategoryViewProps, CategoryVie
      * delete the current tag
      */
     private deleteTag(force: boolean): void {
-        callAPI<GeneralSuccess>('tags.php', {
+        callAPI<GeneralSuccess>(APINode.Tags, {
             action: 'deleteTag',
             tagId: parseInt(this.props.match.params.id),
             force: force

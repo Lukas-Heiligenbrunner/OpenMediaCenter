@@ -3,7 +3,7 @@ import React from 'react';
 import ActorTile from '../../ActorTile/ActorTile';
 import style from './AddActorPopup.module.css';
 import {NewActorPopupContent} from '../NewActorPopup/NewActorPopup';
-import {callAPI} from '../../../utils/Api';
+import {APINode, callAPI} from '../../../utils/Api';
 import {ActorType} from '../../../types/VideoTypes';
 import {GeneralSuccess} from '../../../types/GeneralTypes';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -128,21 +128,11 @@ class AddActorPopup extends React.Component<props, state> {
     }
 
     /**
-     * enable filterfield and focus into searchbar
-     */
-    private enableFilterField(): void {
-        this.setState({filtervisible: true}, () => {
-            // focus filterfield after state update
-            this.filterfield?.focus();
-        });
-    }
-
-    /**
      * event handling for ActorTile Click
      */
     tileClickHandler(actor: ActorType): void {
         // fetch the available actors
-        callAPI<GeneralSuccess>('actor.php', {
+        callAPI<GeneralSuccess>(APINode.Actor, {
             action: 'addActorToVideo',
             actorid: actor.actor_id,
             videoid: this.props.movie_id
@@ -160,8 +150,18 @@ class AddActorPopup extends React.Component<props, state> {
      * load the actors from backend and set state
      */
     loadActors(): void {
-        callAPI<ActorType[]>('actor.php', {action: 'getAllActors'}, result => {
+        callAPI<ActorType[]>(APINode.Actor, {action: 'getAllActors'}, result => {
             this.setState({actors: result});
+        });
+    }
+
+    /**
+     * enable filterfield and focus into searchbar
+     */
+    private enableFilterField(): void {
+        this.setState({filtervisible: true}, () => {
+            // focus filterfield after state update
+            this.filterfield?.focus();
         });
     }
 

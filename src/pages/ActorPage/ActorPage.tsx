@@ -5,7 +5,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faUser} from '@fortawesome/free-solid-svg-icons';
 import style from './ActorPage.module.css';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
-import {callAPI} from '../../utils/Api';
+import {APINode, callAPI} from '../../utils/Api';
 import {ActorType} from '../../types/VideoTypes';
 import {Link, withRouter} from 'react-router-dom';
 import {RouteComponentProps} from 'react-router';
@@ -66,7 +66,7 @@ export class ActorPage extends React.Component<props, state> {
      * request more actor info from backend
      */
     getActorInfo(): void {
-        callAPI('actor.php', {
+        callAPI(APINode.Actor, {
             action: 'getActorInfo',
             actorid: this.props.match.params.id
         }, (result: ActorTypes.videofetchresult) => {

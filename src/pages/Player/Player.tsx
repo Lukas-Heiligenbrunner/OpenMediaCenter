@@ -13,7 +13,7 @@ import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import AddActorPopup from '../../elements/Popups/AddActorPopup/AddActorPopup';
 import ActorTile from '../../elements/ActorTile/ActorTile';
 import {withRouter} from 'react-router-dom';
-import {callAPI, getBackendDomain} from '../../utils/Api';
+import {APINode, callAPI, getBackendDomain} from '../../utils/Api';
 import {RouteComponentProps} from 'react-router';
 import {GeneralSuccess} from '../../types/GeneralTypes';
 import {ActorType, TagType} from '../../types/VideoTypes';
@@ -170,7 +170,7 @@ export class Player extends React.Component<myprops, mystate> {
      * @param tagName name of tag to add
      */
     quickAddTag(tagId: number, tagName: string): void {
-        callAPI('tags.php', {
+        callAPI(APINode.Tags, {
             action: 'addTag',
             id: tagId,
             movieid: this.props.match.params.id
@@ -240,7 +240,7 @@ export class Player extends React.Component<myprops, mystate> {
      * fetch all the required infos of a video from backend
      */
     fetchMovieData(): void {
-        callAPI('video.php', {action: 'loadVideo', movieid: this.props.match.params.id}, (result: VideoTypes.loadVideoType) => {
+        callAPI(APINode.Video, {action: 'loadVideo', movieid: this.props.match.params.id}, (result: VideoTypes.loadVideoType) => {
             this.setState({
                 sources: {
                     type: 'video',
@@ -270,7 +270,7 @@ export class Player extends React.Component<myprops, mystate> {
      * click handler for the like btn
      */
     likebtn(): void {
-        callAPI('video.php', {action: 'addLike', movieid: this.props.match.params.id}, (result: GeneralSuccess) => {
+        callAPI(APINode.Video, {action: 'addLike', movieid: this.props.match.params.id}, (result: GeneralSuccess) => {
             if (result.result === 'success') {
                 // likes +1 --> avoid reload of all data
                 this.setState({likes: this.state.likes + 1});
@@ -293,7 +293,7 @@ export class Player extends React.Component<myprops, mystate> {
      * delete the current video and return to last page
      */
     deleteVideo(): void {
-        callAPI('video.php', {action: 'deleteVideo', movieid: this.props.match.params.id}, (result: GeneralSuccess) => {
+        callAPI(APINode.Video, {action: 'deleteVideo', movieid: this.props.match.params.id}, (result: GeneralSuccess) => {
             if (result.result === 'success') {
                 // return to last element if successful
                 this.props.history.goBack();
@@ -315,7 +315,7 @@ export class Player extends React.Component<myprops, mystate> {
      * fetch the available video actors again
      */
     refetchActors(): void {
-        callAPI<ActorType[]>('actor.php', {action: 'getActorsOfVideo', videoid: this.props.match.params.id}, result => {
+        callAPI<ActorType[]>(APINode.Actor, {action: 'getActorsOfVideo', videoid: this.props.match.params.id}, result => {
             this.setState({actors: result});
         });
     }

@@ -5,7 +5,7 @@ import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 
 import style from './HomePage.module.css';
 import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
-import {callAPI} from '../../utils/Api';
+import {APINode, callAPI} from '../../utils/Api';
 import {Route, Switch, withRouter} from 'react-router-dom';
 import {RouteComponentProps} from 'react-router';
 import SearchHandling from './SearchHandling';
@@ -63,7 +63,7 @@ export class HomePage extends React.Component<props, state> {
      * @param tag tag to fetch videos
      */
     fetchVideoData(tag: string): void {
-        callAPI('video.php', {action: 'getMovies', tag: tag}, (result: VideoTypes.VideoUnloadedType[]) => {
+        callAPI(APINode.Video, {action: 'getMovies', tag: tag}, (result: VideoTypes.VideoUnloadedType[]) => {
             this.setState({
                 data: []
             });
@@ -79,7 +79,7 @@ export class HomePage extends React.Component<props, state> {
      * fetch the necessary data for left info box
      */
     fetchStartData(): void {
-        callAPI('video.php', {action: 'getStartData'}, (result: VideoTypes.startDataType) => {
+        callAPI(APINode.Video, {action: 'getStartData'}, (result: VideoTypes.startDataType) => {
             this.setState({
                 sideinfo: {
                     videonr: result['total'],

@@ -1,6 +1,6 @@
 import React from 'react';
 import style from './MovieSettings.module.css';
-import {callAPI} from '../../utils/Api';
+import {APINode, callAPI} from '../../utils/Api';
 import {GeneralSuccess} from '../../types/GeneralTypes';
 import {SettingsTypes} from '../../types/ApiTypes';
 
@@ -64,7 +64,7 @@ class MovieSettings extends React.Component<props, state> {
 
         console.log('starting');
 
-        callAPI('settings.php', {action: 'startReindex'}, (result: GeneralSuccess): void => {
+        callAPI(APINode.Settings, {action: 'startReindex'}, (result: GeneralSuccess): void => {
             console.log(result);
             if (result.result === 'success') {
                 console.log('started successfully');
@@ -84,7 +84,7 @@ class MovieSettings extends React.Component<props, state> {
      * This interval function reloads the current status of reindexing from backend
      */
     updateStatus = (): void => {
-        callAPI('settings.php', {action: 'getStatusMessage'}, (result: SettingsTypes.getStatusMessageType) => {
+        callAPI(APINode.Settings, {action: 'getStatusMessage'}, (result: SettingsTypes.getStatusMessageType) => {
             if (result.contentAvailable === true) {
                 console.log(result);
                 // todo 2020-07-4: scroll to bottom of div here
@@ -106,7 +106,7 @@ class MovieSettings extends React.Component<props, state> {
      * send request to cleanup db gravity
      */
     cleanupGravity(): void {
-        callAPI('settings.php', {action: 'cleanupGravity'}, (result) => {
+        callAPI(APINode.Settings, {action: 'cleanupGravity'}, (result) => {
             this.setState({
                 text: ['successfully cleaned up gravity!']
             });

@@ -12,4 +12,4 @@ export const addKeyHandler = (handler: (event: KeyboardEvent) => void): void => 
  */
 export const removeKeyHandler = (handler: (event: KeyboardEvent) => void): void => {
     document.removeEventListener('keyup', handler);
-}
+};
