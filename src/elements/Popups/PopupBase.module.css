@@ -12,6 +12,7 @@
 }
 
 .header {
+    cursor: move;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -19,7 +20,6 @@
 }
 
 .title {
-    cursor: move;
     float: left;
     font-size: x-large;
     margin-left: 15px;
