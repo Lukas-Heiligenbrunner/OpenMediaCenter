@@ -1,7 +1,7 @@
 import React from 'react';
 import Tag from '../../Tag/Tag';
 import PopupBase from '../PopupBase';
-import {callAPI} from '../../../utils/Api';
+import {APINode, callAPI} from '../../../utils/Api';
 import {TagType} from '../../../types/VideoTypes';
 
 interface props {
@@ -25,7 +25,7 @@ class AddTagPopup extends React.Component<props, state> {
     }
 
     componentDidMount(): void {
-        callAPI('tags.php', {action: 'getAllTags'}, (result: TagType[]) => {
+        callAPI(APINode.Tags, {action: 'getAllTags'}, (result: TagType[]) => {
             this.setState({
                 items: result
             });

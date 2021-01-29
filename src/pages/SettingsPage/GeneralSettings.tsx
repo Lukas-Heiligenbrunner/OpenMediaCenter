@@ -6,7 +6,7 @@ import InfoHeaderItem from '../../elements/InfoHeaderItem/InfoHeaderItem';
 import {faArchive, faBalanceScaleLeft, faRulerVertical} from '@fortawesome/free-solid-svg-icons';
 import {faAddressCard} from '@fortawesome/free-regular-svg-icons';
 import {version} from '../../../package.json';
-import {callAPI, setCustomBackendDomain} from '../../utils/Api';
+import {APINode, callAPI, setCustomBackendDomain} from '../../utils/Api';
 import {SettingsTypes} from '../../types/ApiTypes';
 import {GeneralSuccess} from '../../types/GeneralTypes';
 
@@ -191,7 +191,7 @@ class GeneralSettings extends React.Component<props, state> {
      * inital load of already specified settings from backend
      */
     loadSettings(): void {
-        callAPI('settings.php', {action: 'loadGeneralSettings'}, (result: SettingsTypes.loadGeneralSettingsType) => {
+        callAPI(APINode.Settings, {action: 'loadGeneralSettings'}, (result: SettingsTypes.loadGeneralSettingsType) => {
             this.setState({
                 videopath: result.video_path,
                 tvshowpath: result.episode_path,
@@ -212,7 +212,7 @@ class GeneralSettings extends React.Component<props, state> {
      * save the selected and typed settings to the backend
      */
     saveSettings(): void {
-        callAPI('settings.php', {
+        callAPI(APINode.Settings, {
             action: 'saveGeneralSettings',
             password: this.state.passwordsupport ? this.state.password : '-1',
             videopath: this.state.videopath,

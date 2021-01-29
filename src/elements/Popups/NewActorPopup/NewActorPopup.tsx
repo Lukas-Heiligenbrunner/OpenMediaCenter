@@ -1,7 +1,7 @@
 import React from 'react';
 import PopupBase from '../PopupBase';
 import style from './NewActorPopup.module.css';
-import {callAPI} from '../../../utils/Api';
+import {APINode, callAPI} from '../../../utils/Api';
 import {GeneralSuccess} from '../../../types/GeneralTypes';
 
 interface NewActorPopupProps {
@@ -43,7 +43,7 @@ export class NewActorPopupContent extends React.Component<NewActorPopupProps> {
         // check if user typed in name
         if (this.value === '' || this.value === undefined) return;
 
-        callAPI('actor.php', {action: 'createActor', actorname: this.value}, (result: GeneralSuccess) => {
+        callAPI(APINode.Actor, {action: 'createActor', actorname: this.value}, (result: GeneralSuccess) => {
             if (result.result !== 'success') {
                 console.log('error occured while writing to db -- todo error handling');
                 console.log(result.result);

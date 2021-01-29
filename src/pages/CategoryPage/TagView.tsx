@@ -3,7 +3,7 @@ import React from 'react';
 import videocontainerstyle from '../../elements/VideoContainer/VideoContainer.module.css';
 import {Link} from 'react-router-dom';
 import {TagPreview} from '../../elements/Preview/Preview';
-import {callAPI} from '../../utils/Api';
+import {APINode, callAPI} from '../../utils/Api';
 import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
 import SideBar, {SideBarTitle} from '../../elements/SideBar/SideBar';
 import Tag from '../../elements/Tag/Tag';
@@ -69,7 +69,7 @@ class TagView extends React.Component<props, TagViewState> {
      * load all available tags from db.
      */
     loadTags(): void {
-        callAPI<TagType[]>('tags.php', {action: 'getAllTags'}, result => {
+        callAPI<TagType[]>(APINode.Tags, {action: 'getAllTags'}, result => {
             this.setState({loadedtags: result});
         });
     }

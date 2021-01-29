@@ -63,7 +63,7 @@ function buildFormData(args: ApiBaseRequest): FormData {
  * @param callback the callback with json reply from backend
  * @param errorcallback a optional callback if an error occured
  */
-export function callAPI<T>(apinode: string, fd: ApiBaseRequest, callback: (_: T) => void, errorcallback: (_: string) => void = (_: string): void => {}): void {
+export function callAPI<T>(apinode: APINode, fd: ApiBaseRequest, callback: (_: T) => void, errorcallback: (_: string) => void = (_: string): void => {}): void {
     fetch(getAPIDomain() + apinode, {method: 'POST', body: buildFormData(fd)})
         .then((response) => response.json()
             .then((result) => {
@@ -77,11 +77,21 @@ export function callAPI<T>(apinode: string, fd: ApiBaseRequest, callback: (_: T)
  * @param fd the object to send to backend
  * @param callback the callback with PLAIN text reply from backend
  */
-export function callAPIPlain(apinode: string, fd: ApiBaseRequest, callback: (_: string) => void): void {
+export function callAPIPlain(apinode: APINode, fd: ApiBaseRequest, callback: (_: string) => void): void {
     fetch(getAPIDomain() + apinode, {method: 'POST', body: buildFormData(fd)})
         .then((response) => response.text()
             .then((result) => {
                 callback(result);
             }));
 
+}
+
+/**
+ * API nodes definitions
+ */
+export enum APINode {
+    Settings= 'settings.php',
+    Tags = 'tags.php',
+    Actor = 'actor.php',
+    Video = 'video.php'
 }
