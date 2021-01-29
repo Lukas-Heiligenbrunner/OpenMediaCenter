@@ -9,7 +9,8 @@ describe('<PopupBase/>', function () {
     });
 
     let events;
-    function mockKeyPress(){
+
+    function mockKeyPress() {
         events = [];
         document.addEventListener = jest.fn((event, cb) => {
             events[event] = cb;

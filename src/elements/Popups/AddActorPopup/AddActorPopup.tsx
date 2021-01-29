@@ -128,16 +128,6 @@ class AddActorPopup extends React.Component<props, state> {
     }
 
     /**
-     * enable filterfield and focus into searchbar
-     */
-    private enableFilterField(): void {
-        this.setState({filtervisible: true}, () => {
-            // focus filterfield after state update
-            this.filterfield?.focus();
-        });
-    }
-
-    /**
      * event handling for ActorTile Click
      */
     tileClickHandler(actor: ActorType): void {
@@ -162,6 +152,16 @@ class AddActorPopup extends React.Component<props, state> {
     loadActors(): void {
         callAPI<ActorType[]>(APINode.Actor, {action: 'getAllActors'}, result => {
             this.setState({actors: result});
+        });
+    }
+
+    /**
+     * enable filterfield and focus into searchbar
+     */
+    private enableFilterField(): void {
+        this.setState({filtervisible: true}, () => {
+            // focus filterfield after state update
+            this.filterfield?.focus();
         });
     }
 

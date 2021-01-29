@@ -90,7 +90,7 @@ export function callAPIPlain(apinode: APINode, fd: ApiBaseRequest, callback: (_:
  * API nodes definitions
  */
 export enum APINode {
-    Settings= 'settings.php',
+    Settings = 'settings.php',
     Tags = 'tags.php',
     Actor = 'actor.php',
     Video = 'video.php'

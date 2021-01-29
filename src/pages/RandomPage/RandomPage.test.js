@@ -2,7 +2,6 @@ import {shallow} from 'enzyme';
 import React from 'react';
 import RandomPage from './RandomPage';
 import {callAPI} from '../../utils/Api';
-import PopupBase from '../../elements/Popups/PopupBase';
 
 describe('<RandomPage/>', function () {
     it('renders without crashing ', function () {
