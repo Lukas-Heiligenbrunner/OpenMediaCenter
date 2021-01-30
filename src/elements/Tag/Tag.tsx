@@ -1,18 +1,33 @@
-import React from 'react';
+import React, {SyntheticEvent} from 'react';
 
 import styles from './Tag.module.css';
 import {Link} from 'react-router-dom';
 import {TagType} from '../../types/VideoTypes';
 
 interface props {
-    onclick?: (_: string) => void
-    tagInfo: TagType
+    onclick?: (_: string) => void;
+    tagInfo: TagType;
+    onContextMenu?: (pos: {x: number, y: number}) => void
+}
+
+interface state {
+    contextVisible: boolean
 }
 
 /**
  * A Component representing a single Category tag
  */
-class Tag extends React.Component<props> {
+class Tag extends React.Component<props, state> {
+    constructor(props: Readonly<props> | props) {
+        super(props);
+
+        this.state = {
+            contextVisible: false
+        };
+
+        this.contextmenu = this.contextmenu.bind(this);
+    }
+
     render(): JSX.Element {
         if (this.props.onclick) {
             return this.renderButton();
@@ -27,7 +42,9 @@ class Tag extends React.Component<props> {
 
     renderButton(): JSX.Element {
         return (
-            <button className={styles.tagbtn} onClick={(): void => this.TagClick()}
+            <button className={styles.tagbtn}
+                    onClick={(): void => this.TagClick()}
+                    onContextMenu={this.contextmenu}
                     data-testid='Test-Tag'>{this.props.tagInfo.tag_name}</button>
         );
     }
@@ -41,6 +58,20 @@ class Tag extends React.Component<props> {
             this.props.onclick(this.props.tagInfo.tag_name); // todo check if param is neccessary
             return;
         }
+    }
+
+    /**
+     * handle a custom contextmenu for this item
+     * @param e
+     * @private
+     */
+    private contextmenu(e: SyntheticEvent): void {
+        if (!this.props.onContextMenu) return;
+
+        const event = e as unknown as PointerEvent;
+        event.preventDefault();
+        this.props.onContextMenu({x: event.clientX, y: event.clientY});
+        // this.setState({contextVisible: true});
     }
 }
 

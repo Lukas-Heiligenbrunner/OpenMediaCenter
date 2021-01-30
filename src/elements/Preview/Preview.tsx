@@ -72,7 +72,7 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
 
     popupvisible(): JSX.Element {
         if (this.state.optionsvisible)
-            return (<QuickActionPop>heeyyho</QuickActionPop>);
+            return (<QuickActionPop position={{x: 50, y: 50}} onHide={(): void => this.setState({optionsvisible: false})}>heeyyho</QuickActionPop>);
         else
             return <></>;
     }

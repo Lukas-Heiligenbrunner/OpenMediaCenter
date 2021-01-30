@@ -70,7 +70,7 @@ class PopupBase extends React.Component<props> {
     }
 
     /**
-     * Alert if clicked on outside of element
+     * handle click on outside of element
      */
     handleClickOutside(event: MouseEvent): void {
         if (this.wrapperRef && this.wrapperRef.current && !this.wrapperRef.current.contains(event.target as Node)) {

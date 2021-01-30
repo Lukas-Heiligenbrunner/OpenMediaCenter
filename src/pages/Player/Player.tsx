@@ -12,7 +12,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import AddActorPopup from '../../elements/Popups/AddActorPopup/AddActorPopup';
 import ActorTile from '../../elements/ActorTile/ActorTile';
-import {withRouter} from 'react-router-dom';
+import {Link, withRouter} from 'react-router-dom';
 import {callAPI, getBackendDomain} from '../../utils/Api';
 import {RouteComponentProps} from 'react-router';
 import {GeneralSuccess} from '../../types/GeneralTypes';
@@ -20,6 +20,7 @@ import {ActorType, TagType} from '../../types/VideoTypes';
 import PlyrJS from 'plyr';
 import {Button} from '../../elements/GPElements/Button';
 import {VideoTypes} from '../../types/ApiTypes';
+import QuickActionPop from '../../elements/QuickActionPop/QuickActionPop';
 
 interface myprops extends RouteComponentProps<{ id: string }> {}
 
@@ -34,7 +35,8 @@ interface mystate {
     suggesttag: TagType[],
     popupvisible: boolean,
     actorpopupvisible: boolean,
-    actors: ActorType[]
+    actors: ActorType[],
+    tagContextMenu: boolean
 }
 
 /**
@@ -42,7 +44,7 @@ interface mystate {
  * and actions such as tag adding and liking
  */
 export class Player extends React.Component<myprops, mystate> {
-    options: PlyrJS.Options = {
+    private options: PlyrJS.Options = {
         controls: [
             'play-large', // The large play button in the center
             'play', // Play/pause playback
@@ -59,10 +61,13 @@ export class Player extends React.Component<myprops, mystate> {
         ]
     };
 
+    private contextpos = {x: 0, y: 0};
+
     constructor(props: myprops) {
         super(props);
 
         this.state = {
+            tagContextMenu: false,
             movie_id: -1,
             movie_name: '',
             likes: 0,
@@ -148,7 +153,10 @@ export class Player extends React.Component<myprops, mystate> {
                 <Line/>
                 <SideBarTitle>Tags:</SideBarTitle>
                 {this.state.tags.map((m: TagType) => (
-                    <Tag tagInfo={m}/>
+                    <Tag tagInfo={m} onContextMenu={(pos): void => {
+                        this.setState({tagContextMenu: true});
+                        this.contextpos = pos;
+                    }}/>
                 ))}
                 <Line/>
                 <SideBarTitle>Tag Quickadd:</SideBarTitle>
@@ -232,6 +240,8 @@ export class Player extends React.Component<myprops, mystate> {
                             this.setState({actorpopupvisible: false});
                         }} movie_id={this.state.movie_id}/> : null
                 }
+
+                {this.renderContextMenu()}
             </>
         );
     }
@@ -318,6 +328,23 @@ export class Player extends React.Component<myprops, mystate> {
         callAPI<ActorType[]>('actor.php', {action: 'getActorsOfVideo', videoid: this.props.match.params.id}, result => {
             this.setState({actors: result});
         });
+    }
+
+    /**
+     * render the Tag context menu
+     */
+    private renderContextMenu(): JSX.Element {
+        if (this.state.tagContextMenu) {
+            return (
+                <QuickActionPop onHide={(): void => this.setState({tagContextMenu: false})}
+                                position={this.contextpos}>
+                    <Button title='Delete'
+                            color={{backgroundColor: 'red'}}
+                            onClick={(): void => {}}/>
+                </QuickActionPop>);
+        } else {
+            return <></>;
+        }
     }
 }
 
