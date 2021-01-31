@@ -9,6 +9,7 @@ class Tags extends RequestBase {
     function initHandlers() {
         $this->addToDB();
         $this->getFromDB();
+        $this->delete();
     }
 
     private function addToDB() {
@@ -63,6 +64,21 @@ class Tags extends RequestBase {
                 array_push($rows, $r);
             }
             $this->commitMessage(json_encode($rows));
+        });
+    }
+
+    private function delete() {
+        /**
+         * delete a Tag from a video
+         */
+        $this->addActionHandler("deleteVideoTag", function () {
+            $movieid = $_POST['video_id'];
+            $tagid = $_POST['tag_id'];
+
+            // skip tag add if already assigned
+            $query = "DELETE FROM video_tags WHERE tag_id=$tagid AND video_id=$movieid";
+
+            $this->commitMessage($this->conn->query($query) ? '{"result":"success"}' : '{"result":"' . $this->conn->error . '"}');
         });
     }
 }

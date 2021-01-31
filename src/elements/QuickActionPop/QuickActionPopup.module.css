@@ -1,7 +1,17 @@
 .quickaction {
     background-color: white;
-    width: 90px;
     height: 120px;
-    z-index: 2;
     position: absolute;
+    width: 90px;
+    z-index: 2;
+}
+
+.ContextItem {
+    height: 40px;
+    padding-top: 10px;
+    text-align: center;
+}
+
+.ContextItem:hover {
+    background-color: lightgray;
 }

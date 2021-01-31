@@ -4,23 +4,24 @@ import style from './Player.module.css';
 import plyrstyle from 'plyr-react/dist/plyr.css';
 
 import {Plyr} from 'plyr-react';
+import PlyrJS from 'plyr';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
+import {withRouter} from 'react-router-dom';
+import {RouteComponentProps} from 'react-router';
+
 import SideBar, {SideBarItem, SideBarTitle} from '../../elements/SideBar/SideBar';
 import Tag from '../../elements/Tag/Tag';
 import AddTagPopup from '../../elements/Popups/AddTagPopup/AddTagPopup';
 import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import AddActorPopup from '../../elements/Popups/AddActorPopup/AddActorPopup';
 import ActorTile from '../../elements/ActorTile/ActorTile';
-import {Link, withRouter} from 'react-router-dom';
 import {callAPI, getBackendDomain} from '../../utils/Api';
-import {RouteComponentProps} from 'react-router';
 import {GeneralSuccess} from '../../types/GeneralTypes';
 import {ActorType, TagType} from '../../types/VideoTypes';
-import PlyrJS from 'plyr';
 import {Button} from '../../elements/GPElements/Button';
 import {VideoTypes} from '../../types/ApiTypes';
-import QuickActionPop from '../../elements/QuickActionPop/QuickActionPop';
+import QuickActionPop, {ContextItem} from '../../elements/QuickActionPop/QuickActionPop';
 
 interface myprops extends RouteComponentProps<{ id: string }> {}
 
@@ -61,7 +62,7 @@ export class Player extends React.Component<myprops, mystate> {
         ]
     };
 
-    private contextpos = {x: 0, y: 0};
+    private contextpos = {x: 0, y: 0, tagid: -1};
 
     constructor(props: myprops) {
         super(props);
@@ -81,6 +82,7 @@ export class Player extends React.Component<myprops, mystate> {
         };
 
         this.quickAddTag = this.quickAddTag.bind(this);
+        this.deleteTag = this.deleteTag.bind(this);
     }
 
     componentDidMount(): void {
@@ -155,7 +157,7 @@ export class Player extends React.Component<myprops, mystate> {
                 {this.state.tags.map((m: TagType) => (
                     <Tag tagInfo={m} onContextMenu={(pos): void => {
                         this.setState({tagContextMenu: true});
-                        this.contextpos = pos;
+                        this.contextpos = {...pos, tagid: m.tag_id};
                     }}/>
                 ))}
                 <Line/>
@@ -338,13 +340,38 @@ export class Player extends React.Component<myprops, mystate> {
             return (
                 <QuickActionPop onHide={(): void => this.setState({tagContextMenu: false})}
                                 position={this.contextpos}>
-                    <Button title='Delete'
-                            color={{backgroundColor: 'red'}}
-                            onClick={(): void => {}}/>
+                    <ContextItem title='Delete' onClick={(): void => this.deleteTag(this.contextpos.tagid)}/>
                 </QuickActionPop>);
         } else {
             return <></>;
         }
+    }
+
+    /**
+     * delete a tag from the current video
+     */
+    private deleteTag(tag_id: number): void {
+        callAPI<GeneralSuccess>('tags.php',
+            {action: 'deleteVideoTag', video_id: this.props.match.params.id, tag_id: tag_id},
+            (res) => {
+                if (res.result !== 'success') {
+                    console.log("deletion errored!");
+
+                    this.setState({tagContextMenu: false});
+                }else{
+                    // check if tag has already been added
+                    const tagIndex = this.state.tags.map(function (e: TagType) {
+                        return e.tag_id;
+                    }).indexOf(tag_id);
+
+
+                    // delete tag from array
+                    const newTagArray = this.state.tags;
+                    newTagArray.splice(tagIndex, 1);
+
+                    this.setState({tags: newTagArray, tagContextMenu: false});
+                }
+            });
     }
 }
 

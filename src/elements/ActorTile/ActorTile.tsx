@@ -31,8 +31,11 @@ class ActorTile extends React.Component<props> {
 
     }
 
-    renderActorTile(customclickhandler: (actor: ActorType) => void): JSX.Element {
-        console.log(this.props.actor);
+    /**
+     * render the Actor Tile with its pic
+     * @param customclickhandler a custom click handler to be called onclick instead of Link
+     */
+    private renderActorTile(customclickhandler: (actor: ActorType) => void): JSX.Element {
         return (
             <div className={style.actortile} onClick={(): void => customclickhandler(this.props.actor)}>
                 <div className={style.actortile_thumbnail}>

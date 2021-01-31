@@ -47,4 +47,13 @@ class QuickActionPop extends React.Component<props> {
     }
 }
 
+interface Itemprops {
+    title: string;
+    onClick: () => void
+}
+
+export const ContextItem = (props: Itemprops): JSX.Element => (
+    <div onClick={props.onClick} className={style.ContextItem}>{props.title}</div>
+);
+
 export default QuickActionPop;
