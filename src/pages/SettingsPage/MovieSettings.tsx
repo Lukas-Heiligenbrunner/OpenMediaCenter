@@ -47,7 +47,7 @@ class MovieSettings extends React.Component<props, state> {
                         onClick={(): void => {this.cleanupGravity();}}>Cleanup Gravity
                 </button>
                 <div className={style.indextextarea}>{this.state.text.map(m => (
-                    <div className='textarea-element'>{m}</div>
+                    <div key={m} className='textarea-element'>{m}</div>
                 ))}</div>
             </>
         );
@@ -85,8 +85,11 @@ class MovieSettings extends React.Component<props, state> {
      */
     updateStatus = (): void => {
         callAPI(APINode.Settings, {action: 'getStatusMessage'}, (result: SettingsTypes.getStatusMessageType) => {
-            if (result.contentAvailable === true) {
+            if (result.contentAvailable) {
+                // ignore if message is empty
                 console.log(result);
+                if(result.message === '') return;
+
                 // todo 2020-07-4: scroll to bottom of div here
                 this.setState({
                     // insert a string for each line
