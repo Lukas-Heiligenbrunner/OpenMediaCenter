@@ -31,7 +31,6 @@ func Query(SQL string) *sql.Rows {
 		panic(err.Error())
 	}
 	// be careful deferring Queries if you are using transactions
-	defer query.Close()
 
 	return query
 }

@@ -41,6 +41,7 @@ func handleAPICall(action string, requestBody string) []byte {
 
 func ServerInit() {
 	http.Handle("/video", http.HandlerFunc(handlefunc))
+	http.Handle("/tag", http.HandlerFunc(handlefunc))
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
@@ -55,9 +56,7 @@ func handlefunc(rw http.ResponseWriter, req *http.Request) {
 	buf.ReadFrom(req.Body)
 	body := buf.String()
 
-	//decoder := json.NewDecoder(body)
 	var t action_struct
-	//err := decoder.Decode(&t)
 	err := json.Unmarshal([]byte(body), &t)
 	if err != nil {
 		panic(err)
