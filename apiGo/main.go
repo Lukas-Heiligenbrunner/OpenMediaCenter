@@ -13,6 +13,7 @@ func main() {
 	defer database.Close()
 
 	api.AddVideoHandlers()
+	api.AddSettingsHandlers()
 
 	api.ServerInit()
 }

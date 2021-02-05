@@ -30,9 +30,12 @@ func Query(SQL string) *sql.Rows {
 	if err != nil {
 		panic(err.Error())
 	}
-	// be careful deferring Queries if you are using transactions
 
 	return query
+}
+
+func QueryRow(SQL string) *sql.Row {
+	return db.QueryRow(SQL)
 }
 
 func Close() {

@@ -26,10 +26,12 @@ func handleAPICall(action string, requestBody string) []byte {
 		if handlers[i].action == action {
 			// call the handler and return
 
-			// decode the arguments to the corresponding arguments object
-			err := json.Unmarshal([]byte(requestBody), &handlers[i].arguments)
-			if err != nil {
-				fmt.Println("failed to decode arguments")
+			if &handlers[i].arguments != nil {
+				// decode the arguments to the corresponding arguments object
+				err := json.Unmarshal([]byte(requestBody), &handlers[i].arguments)
+				if err != nil {
+					fmt.Println("failed to decode arguments")
+				}
 			}
 
 			return handlers[i].handler()
@@ -39,9 +41,12 @@ func handleAPICall(action string, requestBody string) []byte {
 	return nil
 }
 
+const APIPREFIX = "/api"
+
 func ServerInit() {
-	http.Handle("/video", http.HandlerFunc(handlefunc))
-	http.Handle("/tag", http.HandlerFunc(handlefunc))
+	http.Handle(APIPREFIX+"/video", http.HandlerFunc(handlefunc))
+	http.Handle(APIPREFIX+"/tag", http.HandlerFunc(handlefunc))
+	http.Handle(APIPREFIX+"/settings", http.HandlerFunc(handlefunc))
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

@@ -47,12 +47,12 @@ class App extends React.Component<{}, state> {
 
             this.setState({
                 generalSettingsLoaded: true,
-                passwordsupport: result.passwordEnabled,
-                mediacentername: result.mediacenter_name,
+                passwordsupport: result.Password,
+                mediacentername: result.Mediacenter_name,
                 onapierror: false
             });
             // set tab title to received mediacenter name
-            document.title = result.mediacenter_name;
+            document.title = result.Mediacenter_name;
         }, error => {
             this.setState({onapierror: true});
         });

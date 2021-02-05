@@ -23,16 +23,16 @@ export namespace VideoTypes {
     }
 
     export interface VideoUnloadedType {
-        movie_id: number;
-        movie_name: string
+        Movie_id: number;
+        Movie_name: string
     }
 }
 
 export namespace SettingsTypes {
     export interface initialApiCallData {
         DarkMode: boolean;
-        passwordEnabled: boolean;
-        mediacenter_name: string;
+        Password: boolean;
+        Mediacenter_name: string;
     }
 
     export interface loadGeneralSettingsType {

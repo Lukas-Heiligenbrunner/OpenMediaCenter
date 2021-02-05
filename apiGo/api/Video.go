@@ -46,4 +46,22 @@ func AddVideoHandlers() {
 		str, _ := json.Marshal(result)
 		return str
 	})
+
+	type ReadThumbnailRequest struct {
+		Movieid int
+	}
+
+	var rtn ReadThumbnailRequest
+	AddHandler("readThumbnail", &rtn, func() []byte {
+		query := fmt.Sprintf("SELECT thumbnail FROM videos WHERE movie_id='%d'", rtn.Movieid)
+
+		var pic []byte
+		err := database.QueryRow(query).Scan(&pic)
+		if err != nil {
+			fmt.Printf("the thumbnail of movie id %d couldn't be found", rtn.Movieid)
+			return nil
+		}
+
+		return pic
+	})
 }
