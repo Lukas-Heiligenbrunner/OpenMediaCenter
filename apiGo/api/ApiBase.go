@@ -30,14 +30,14 @@ func handleAPICall(action string, requestBody string) []byte {
 				// decode the arguments to the corresponding arguments object
 				err := json.Unmarshal([]byte(requestBody), &handlers[i].arguments)
 				if err != nil {
-					fmt.Println("failed to decode arguments")
+					fmt.Printf("failed to decode arguments of action %s\n", action)
 				}
 			}
 
 			return handlers[i].handler()
 		}
 	}
-	fmt.Println("no handler found!")
+	fmt.Println("no handler found for Action: " + action)
 	return nil
 }
 
@@ -66,7 +66,6 @@ func handlefunc(rw http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("api call to action: " + t.Action)
 
 	rw.Write(handleAPICall(t.Action, body))
 }

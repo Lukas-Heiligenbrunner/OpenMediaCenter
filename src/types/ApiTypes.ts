@@ -2,29 +2,30 @@ import {ActorType, TagType} from './VideoTypes';
 
 export namespace VideoTypes {
     export interface loadVideoType {
-        movie_url: string
-        thumbnail: string
-        movie_id: number
-        movie_name: string
-        likes: number
-        quality: number
-        length: number
-        tags: TagType[]
-        suggesttag: TagType[]
-        actors: ActorType[]
+        MovieUrl: string
+        Poster: string
+        MovieId: number
+        MovieName: string
+        Likes: number
+        Quality: number
+        Length: number
+        Tags: TagType[]
+        SuggestedTag: TagType[]
+        Actors: ActorType[]
     }
 
     export interface startDataType {
-        total: number;
-        fullhd: number;
-        hd: number;
-        sd: number;
-        tags: number;
+        VideoNr: number;
+        FullHdNr: number;
+        HDNr: number;
+        SDNr: number;
+        DifferentTags: number;
+        Tagged: number;
     }
 
     export interface VideoUnloadedType {
-        Movie_id: number;
-        Movie_name: string
+        MovieId: number;
+        MovieName: string
     }
 }
 

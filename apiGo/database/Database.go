@@ -22,16 +22,16 @@ func InitDB() {
 	}
 }
 
-func Query(SQL string) *sql.Rows {
+func Query(query string) *sql.Rows {
 	// perform a db.Query insert
-	query, err := db.Query(SQL)
+	res, err := db.Query(query)
 
 	// if there is an error inserting, handle it
 	if err != nil {
 		panic(err.Error())
 	}
 
-	return query
+	return res
 }
 
 func QueryRow(SQL string) *sql.Row {

@@ -6,12 +6,12 @@ import {shallow} from 'enzyme';
 
 describe('<Tag/>', function () {
     it('renders without crashing ', function () {
-        const wrapper = shallow(<Tag tagInfo={{tag_name: 'testname', tag_id: 1}}/>);
+        const wrapper = shallow(<Tag tagInfo={{TagName: 'testname', TagId: 1}}/>);
         wrapper.unmount();
     });
 
     it('renders childs correctly', function () {
-        const wrapper = shallow(<Tag tagInfo={{tag_name: 'test', tag_id: 1}}/>);
+        const wrapper = shallow(<Tag tagInfo={{TagName: 'test', TagId: 1}}/>);
         expect(wrapper.children().text()).toBe('test');
     });
 
@@ -19,7 +19,7 @@ describe('<Tag/>', function () {
         const func = jest.fn();
 
         const wrapper = shallow(<Tag
-            tagInfo={{tag_name: 'test', tag_id: 1}}
+            tagInfo={{TagName: 'test', TagId: 1}}
             onclick={() => {func();}}>test</Tag>);
 
         expect(func).toBeCalledTimes(0);

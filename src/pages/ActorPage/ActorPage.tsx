@@ -31,13 +31,13 @@ export class ActorPage extends React.Component<props, state> {
     constructor(props: props) {
         super(props);
 
-        this.state = {data: [], actor: {actor_id: 0, name: '', thumbnail: ''}};
+        this.state = {data: [], actor: {ActorId: 0, Name: '', Thumbnail: ''}};
     }
 
     render(): JSX.Element {
         return (
             <>
-                <PageTitle title={this.state.actor.name} subtitle={this.state.data ? this.state.data.length + ' videos' : null}>
+                <PageTitle title={this.state.actor.Name} subtitle={this.state.data ? this.state.data.length + ' videos' : null}>
                     <span className={style.overviewbutton}>
                         <Link to='/actors'>
                             <Button onClick={(): void => {}} title='Go to Actor overview'/>

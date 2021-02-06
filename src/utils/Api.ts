@@ -44,19 +44,6 @@ interface ApiBaseRequest {
 }
 
 /**
- * helper function to build a formdata for requesting post data correctly
- * @param args api request object
- */
-function buildFormData(args: ApiBaseRequest): FormData {
-    const req = new FormData();
-
-    for (const i in args) {
-        req.append(i, (args[i].toString()));
-    }
-    return req;
-}
-
-/**
  * A backend api call
  * @param apinode which api backend handler to call
  * @param fd the object to send to backend
@@ -78,7 +65,6 @@ export function callAPI<T>(apinode: APINode, fd: ApiBaseRequest, callback: (_: T
  * @param callback the callback with PLAIN text reply from backend
  */
 export function callAPIPlain(apinode: APINode, fd: ApiBaseRequest, callback: (_: string) => void): void {
-    console.log(fd)
     fetch(getAPIDomain() + apinode, {method: 'POST', body: JSON.stringify(fd)})
         .then((response) => response.text()
             .then((result) => {
