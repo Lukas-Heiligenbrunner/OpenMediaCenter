@@ -24,7 +24,9 @@ class ActorOverviewPage extends React.Component<props, state> {
             actors: [],
             NActorPopupVisible: false
         };
+    }
 
+    componentDidMount(): void {
         this.fetchAvailableActors();
     }
 
@@ -36,7 +38,7 @@ class ActorOverviewPage extends React.Component<props, state> {
                     <Button title='Add Actor' onClick={(): void => this.setState({NActorPopupVisible: true})}/>
                 </SideBar>
                 <div className={style.container}>
-                    {this.state.actors.map((el) => (<ActorTile actor={el}/>))}
+                    {this.state.actors.map((el) => (<ActorTile key={el.actor_id} actor={el}/>))}
                 </div>
                 {this.state.NActorPopupVisible ?
                     <NewActorPopup onHide={(): void => {
