@@ -35,7 +35,7 @@ Minimize:
   needs: ["Node_dependencies"]
 
 BuildBackend:
-  image: golang:latest
+  image: golang:1.16rc1-alpine
   stage: build
   script:
     - cd apiGo
