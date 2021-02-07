@@ -14,6 +14,7 @@ func main() {
 
 	api.AddVideoHandlers()
 	api.AddSettingsHandlers()
+	api.AddTagHandlers()
 
 	api.ServerInit()
 }

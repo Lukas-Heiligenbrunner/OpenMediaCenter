@@ -29,7 +29,7 @@ class NewTagPopup extends React.Component<props> {
      * store the filled in form to the backend
      */
     storeselection(): void {
-        callAPI(APINode.Tags, {action: 'createTag', tagname: this.value}, (result: GeneralSuccess) => {
+        callAPI(APINode.Tags, {action: 'createTag', TagName: this.value}, (result: GeneralSuccess) => {
             if (result.result !== 'success') {
                 console.log('error occured while writing to db -- todo error handling');
                 console.log(result.result);

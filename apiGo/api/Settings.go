@@ -2,21 +2,13 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"openmediacenter/apiGo/database"
 )
 
 func AddSettingsHandlers() {
-	AddHandler("loadInitialData", nil, func() []byte {
+	AddHandler("loadInitialData", SettingsNode, nil, func() []byte {
 		query := "SELECT DarkMode, password, mediacenter_name from settings"
-
-		//$result = $this->conn->query($query);
-		//
-		//$r = mysqli_fetch_assoc($result);
-		//
-		//$r['passwordEnabled'] = $r['password'] != "-1";
-		//unset($r['password']);
-		//$r['DarkMode'] = (bool)($r['DarkMode'] != '0');
-		//$this->commitMessage(json_encode($r));
 
 		type InitialDataType struct {
 			DarkMode         int
@@ -28,7 +20,7 @@ func AddSettingsHandlers() {
 
 		err := database.QueryRow(query).Scan(&result.DarkMode, &result.Pasword, &result.Mediacenter_name)
 		if err != nil {
-			panic(err.Error()) // proper error handling instead of panic in your app
+			fmt.Println("error while parsing db data: " + err.Error())
 		}
 
 		type InitialDataTypeResponse struct {

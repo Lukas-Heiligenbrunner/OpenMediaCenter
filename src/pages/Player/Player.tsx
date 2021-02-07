@@ -271,7 +271,7 @@ export class Player extends React.Component<myprops, mystate> {
      * click handler for the like btn
      */
     likebtn(): void {
-        callAPI(APINode.Video, {action: 'addLike', movieid: this.props.match.params.id}, (result: GeneralSuccess) => {
+        callAPI(APINode.Video, {action: 'addLike', MovieId: parseInt(this.props.match.params.id)}, (result: GeneralSuccess) => {
             if (result.result === 'success') {
                 // likes +1 --> avoid reload of all data
                 this.setState({likes: this.state.likes + 1});

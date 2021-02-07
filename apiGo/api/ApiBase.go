@@ -8,22 +8,45 @@ import (
 	"net/http"
 )
 
+const APIPREFIX = "/api"
+
+const (
+	VideoNode    = iota
+	TagNode      = iota
+	SettingsNode = iota
+	ActorNode    = iota
+)
+
+type actionStruct struct {
+	Action string
+}
+
 type Handler struct {
 	action    string
 	handler   func() []byte
 	arguments interface{}
+	apiNode   int
 }
 
 var handlers []Handler
 
-func AddHandler(action string, n interface{}, h func() []byte) {
+func AddHandler(action string, apiNode int, n interface{}, h func() []byte) {
 	// append new handler to the handlers
-	handlers = append(handlers, Handler{action, h, n})
+	handlers = append(handlers, Handler{action, h, n, apiNode})
 }
 
-func handleAPICall(action string, requestBody string) []byte {
+func ServerInit() {
+	http.Handle(APIPREFIX+"/video", http.HandlerFunc(videoHandler))
+	http.Handle(APIPREFIX+"/tags", http.HandlerFunc(tagHandler))
+	http.Handle(APIPREFIX+"/settings", http.HandlerFunc(settingsHandler))
+	http.Handle(APIPREFIX+"/actor", http.HandlerFunc(actorHandler))
+
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+
+func handleAPICall(action string, requestBody string, apiNode int) []byte {
 	for i := range handlers {
-		if handlers[i].action == action {
+		if handlers[i].action == action && handlers[i].apiNode == apiNode {
 			// call the handler and return
 
 			if &handlers[i].arguments != nil {
@@ -37,21 +60,27 @@ func handleAPICall(action string, requestBody string) []byte {
 			return handlers[i].handler()
 		}
 	}
-	fmt.Println("no handler found for Action: " + action)
+	fmt.Printf("no handler found for Action: %d/%s\n", apiNode, action)
 	return nil
 }
 
-const APIPREFIX = "/api"
-
-func ServerInit() {
-	http.Handle(APIPREFIX+"/video", http.HandlerFunc(handlefunc))
-	http.Handle(APIPREFIX+"/tag", http.HandlerFunc(handlefunc))
-	http.Handle(APIPREFIX+"/settings", http.HandlerFunc(handlefunc))
-
-	log.Fatal(http.ListenAndServe(":8080", nil))
+func actorHandler(rw http.ResponseWriter, req *http.Request) {
+	handlefunc(rw, req, ActorNode)
 }
 
-func handlefunc(rw http.ResponseWriter, req *http.Request) {
+func videoHandler(rw http.ResponseWriter, req *http.Request) {
+	handlefunc(rw, req, VideoNode)
+}
+
+func tagHandler(rw http.ResponseWriter, req *http.Request) {
+	handlefunc(rw, req, TagNode)
+}
+
+func settingsHandler(rw http.ResponseWriter, req *http.Request) {
+	handlefunc(rw, req, SettingsNode)
+}
+
+func handlefunc(rw http.ResponseWriter, req *http.Request, node int) {
 	// only allow post requests
 	if req.Method != "POST" {
 		return
@@ -61,15 +90,11 @@ func handlefunc(rw http.ResponseWriter, req *http.Request) {
 	buf.ReadFrom(req.Body)
 	body := buf.String()
 
-	var t action_struct
+	var t actionStruct
 	err := json.Unmarshal([]byte(body), &t)
 	if err != nil {
 		panic(err)
 	}
 
-	rw.Write(handleAPICall(t.Action, body))
-}
-
-type action_struct struct {
-	Action string
+	rw.Write(handleAPICall(t.Action, body, node))
 }

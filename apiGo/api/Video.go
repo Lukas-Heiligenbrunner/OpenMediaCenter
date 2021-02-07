@@ -1,25 +1,26 @@
 package api
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/url"
 	"openmediacenter/apiGo/api/types"
 	"openmediacenter/apiGo/database"
 	"strconv"
+	"strings"
 )
 
 func AddVideoHandlers() {
 	getVideoHandlers()
 	loadVideosHandlers()
+	addToVideoHandlers()
 }
 
 func getVideoHandlers() {
 	var mrq struct {
 		Tag int
 	}
-	AddHandler("getMovies", &mrq, func() []byte {
+	AddHandler("getMovies", VideoNode, &mrq, func() []byte {
 		var query string
 		// 1 is the id of the ALL tag
 		if mrq.Tag != 1 {
@@ -41,7 +42,7 @@ func getVideoHandlers() {
 	var rtn struct {
 		Movieid int
 	}
-	AddHandler("readThumbnail", &rtn, func() []byte {
+	AddHandler("readThumbnail", VideoNode, &rtn, func() []byte {
 		var pic []byte
 
 		query := fmt.Sprintf("SELECT thumbnail FROM videos WHERE movie_id='%d'", rtn.Movieid)
@@ -58,7 +59,7 @@ func getVideoHandlers() {
 	var grm struct {
 		Number int
 	}
-	AddHandler("getRandomMovies", &grm, func() []byte {
+	AddHandler("getRandomMovies", VideoNode, &grm, func() []byte {
 		var result struct {
 			Tags   []types.Tag
 			Videos []types.VideoUnloadedType
@@ -102,7 +103,7 @@ func getVideoHandlers() {
 	var gsk struct {
 		KeyWord string
 	}
-	AddHandler("getSearchKeyWord", &gsk, func() []byte {
+	AddHandler("getSearchKeyWord", VideoNode, &gsk, func() []byte {
 		query := fmt.Sprintf(`SELECT movie_id,movie_name FROM videos 
 					WHERE movie_name LIKE '%%%s%%'
 					ORDER BY likes DESC, create_date DESC, movie_name`, gsk.KeyWord)
@@ -119,7 +120,7 @@ func loadVideosHandlers() {
 	var lv struct {
 		MovieId int
 	}
-	AddHandler("loadVideo", &lv, func() []byte {
+	AddHandler("loadVideo", VideoNode, &lv, func() []byte {
 		query := fmt.Sprintf(`SELECT movie_name,movie_id,movie_url,thumbnail,poster,likes,quality,length 
 										FROM videos WHERE movie_id=%d`, lv.MovieId)
 
@@ -135,7 +136,8 @@ func loadVideosHandlers() {
 		}
 
 		// we ned to urlencode the movieurl
-		res.MovieUrl = url.QueryEscape(res.MovieUrl)
+		res.MovieUrl = url.PathEscape(res.MovieUrl)
+		res.MovieUrl = strings.ReplaceAll(res.MovieUrl, "%2F", "/")
 		// we need to stringify the pic byte array
 		res.Poster = string(poster)
 
@@ -173,7 +175,7 @@ func loadVideosHandlers() {
 		return str
 	})
 
-	AddHandler("getStartData", nil, func() []byte {
+	AddHandler("getStartData", VideoNode, nil, func() []byte {
 		var result types.StartData
 		// query settings and infotile values
 		query := `
@@ -213,54 +215,20 @@ func loadVideosHandlers() {
 	})
 }
 
-func readVideosFromResultset(rows *sql.Rows) []types.VideoUnloadedType {
-	var result []types.VideoUnloadedType
-	for rows.Next() {
-		var vid types.VideoUnloadedType
-		err := rows.Scan(&vid.MovieId, &vid.MovieName)
-		if err != nil {
-			panic(err.Error()) // proper error handling instead of panic in your app
-		}
-		result = append(result, vid)
+func addToVideoHandlers() {
+	var al struct {
+		MovieId int
 	}
-	rows.Close()
+	AddHandler("addLike", VideoNode, &al, func() []byte {
+		query := fmt.Sprintf("update videos set likes = likes + 1 where movie_id = %d", al.MovieId)
+		return database.SuccessQuery(query)
+	})
 
-	return result
-}
-
-func readTagsFromResultset(rows *sql.Rows) []types.Tag {
-	// initialize with empty array!
-	result := []types.Tag{}
-	for rows.Next() {
-		var tag types.Tag
-		err := rows.Scan(&tag.TagId, &tag.TagName)
-		if err != nil {
-			panic(err.Error()) // proper error handling instead of panic in your app
-		}
-		result = append(result, tag)
+	var dv struct {
+		MovieId int
 	}
-	rows.Close()
-
-	return result
-}
-
-func readActorsFromResultset(rows *sql.Rows) []types.Actor {
-	var result []types.Actor
-	for rows.Next() {
-		var actor types.Actor
-		var thumbnail []byte
-
-		err := rows.Scan(&actor.ActorId, &actor.Name, &thumbnail)
-		fmt.Println(len(thumbnail))
-		if len(thumbnail) != 0 {
-			actor.Thumbnail = string(thumbnail)
-		}
-		if err != nil {
-			panic(err.Error()) // proper error handling instead of panic in your app
-		}
-		result = append(result, actor)
-	}
-	rows.Close()
-
-	return result
+	AddHandler("deleteVideo", VideoNode, &dv, func() []byte {
+		query := fmt.Sprintf("DELETE FROM videos WHERE movie_id=%d", al.MovieId)
+		return database.SuccessQuery(query)
+	})
 }

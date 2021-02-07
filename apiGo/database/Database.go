@@ -22,9 +22,9 @@ func InitDB() {
 	}
 }
 
-func Query(query string) *sql.Rows {
+func Query(query string, args ...interface{}) *sql.Rows {
 	// perform a db.Query insert
-	res, err := db.Query(query)
+	res, err := db.Query(query, args...)
 
 	// if there is an error inserting, handle it
 	if err != nil {
@@ -34,8 +34,22 @@ func Query(query string) *sql.Rows {
 	return res
 }
 
-func QueryRow(SQL string) *sql.Row {
-	return db.QueryRow(SQL)
+func QueryRow(SQL string, args ...interface{}) *sql.Row {
+	return db.QueryRow(SQL, args...)
+}
+
+func Edit(query string, args ...interface{}) error {
+	_, err := db.Exec(query, args...)
+	return err
+}
+
+func SuccessQuery(query string, args ...interface{}) []byte {
+	err := Edit(query, args...)
+	if err == nil {
+		return []byte(`{"result":"success"}`)
+	} else {
+		return []byte(fmt.Sprintf(`{"result":"%s"}`, err.Error()))
+	}
 }
 
 func Close() {
