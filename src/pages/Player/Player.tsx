@@ -172,8 +172,8 @@ export class Player extends React.Component<myprops, mystate> {
     quickAddTag(tagId: number, tagName: string): void {
         callAPI(APINode.Tags, {
             action: 'addTag',
-            id: tagId,
-            movieid: this.props.match.params.id
+            TagId: tagId,
+            MovieId: parseInt(this.props.match.params.id)
         }, (result: GeneralSuccess) => {
             if (result.result !== 'success') {
                 console.error('error occured while writing to db -- todo error handling');

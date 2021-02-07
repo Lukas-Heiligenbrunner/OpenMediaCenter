@@ -8,7 +8,7 @@ import (
 )
 
 func readVideosFromResultset(rows *sql.Rows) []types.VideoUnloadedType {
-	var result []types.VideoUnloadedType
+	result := []types.VideoUnloadedType{}
 	for rows.Next() {
 		var vid types.VideoUnloadedType
 		err := rows.Scan(&vid.MovieId, &vid.MovieName)

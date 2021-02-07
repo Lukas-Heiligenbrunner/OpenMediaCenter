@@ -44,7 +44,10 @@ func Edit(query string, args ...interface{}) error {
 }
 
 func SuccessQuery(query string, args ...interface{}) []byte {
-	err := Edit(query, args...)
+	return ManualSuccessResponse(Edit(query, args...))
+}
+
+func ManualSuccessResponse(err error) []byte {
 	if err == nil {
 		return []byte(`{"result":"success"}`)
 	} else {
