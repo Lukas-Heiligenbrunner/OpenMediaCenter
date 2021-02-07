@@ -39,8 +39,8 @@ BuildBackend:
   stage: build
   script:
     - cd apiGo
-    - go build
-    - env GOOS=windows GOARCH=amd64 go build
+    - go build -v
+    - env GOOS=windows GOARCH=amd64 go build -v
   artifacts:
     paths:
       - "./apiGo/apiG*"
