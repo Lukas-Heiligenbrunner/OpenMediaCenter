@@ -134,8 +134,8 @@ class AddActorPopup extends React.Component<props, state> {
         // fetch the available actors
         callAPI<GeneralSuccess>(APINode.Actor, {
             action: 'addActorToVideo',
-            actorid: actor.ActorId,
-            videoid: this.props.movie_id
+            ActorId: actor.ActorId,
+            MovieId: this.props.movie_id
         }, result => {
             if (result.result === 'success') {
                 // return back to player page

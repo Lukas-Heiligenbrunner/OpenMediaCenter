@@ -37,3 +37,18 @@ type StartData struct {
 	DifferentTags int
 	Tagged        int
 }
+
+type SettingsType struct {
+	VideoPath       string
+	EpisodePath     string
+	MediacenterName string
+	Password        string
+	PasswordEnabled bool
+	TMDBGrabbing    bool
+	DarkMode        bool
+
+	VideoNr       int
+	DBSize        float32
+	DifferentTags int
+	TagsAdded     int
+}

@@ -8,12 +8,20 @@ import (
 
 var db *sql.DB
 
+const (
+	DBUser     = "root"
+	DBPassword = "1qayxsw2"
+	DBHost     = "192.168.0.30"
+	DBPort     = 3306
+	DBName     = "hub"
+)
+
 func InitDB() {
 	// Open up our database connection.
 	// I've set up a database on my local machine using phpmyadmin.
 	// The database is called testDb
 	var err error
-	db, err = sql.Open("mysql", "root:1qayxsw2@tcp(192.168.0.30:3306)/hub")
+	db, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", DBUser, DBPassword, DBHost, DBPort, DBName))
 
 	// if there is an error opening the connection, handle it
 	if err != nil {
@@ -57,4 +65,8 @@ func ManualSuccessResponse(err error) []byte {
 
 func Close() {
 	db.Close()
+}
+
+func GetDBName() string {
+	return DBName
 }

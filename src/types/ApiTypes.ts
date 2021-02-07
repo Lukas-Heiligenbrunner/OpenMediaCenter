@@ -37,17 +37,18 @@ export namespace SettingsTypes {
     }
 
     export interface loadGeneralSettingsType {
-        video_path: string,
-        episode_path: string,
-        mediacenter_name: string,
-        password: string,
-        passwordEnabled: boolean,
-        TMDB_grabbing: boolean,
+        VideoPath: string,
+        EpisodePath: string,
+        MediacenterName: string,
+        Password: string,
+        PasswordEnabled: boolean,
+        TMDBGrabbing: boolean,
+        DarkMode: boolean,
 
-        videonr: number,
-        dbsize: number,
-        difftagnr: number,
-        tagsadded: number
+        VideoNr: number,
+        DBSize: number,
+        DifferentTags: number,
+        TagsAdded: number
     }
 
     export interface getStatusMessageType {
@@ -61,7 +62,7 @@ export namespace ActorTypes {
      * result of actor fetch
      */
     export interface videofetchresult {
-        videos: VideoTypes.VideoUnloadedType[];
-        info: ActorType;
+        Videos: VideoTypes.VideoUnloadedType[];
+        Info: ActorType;
     }
 }

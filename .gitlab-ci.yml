@@ -34,6 +34,16 @@ Minimize:
       - build/
   needs: ["Node_dependencies"]
 
+BuildBackend:
+  image: golang:latest
+  stage: build
+  script:
+    - cd apiGo
+    - go build
+  artifacts:
+    paths:
+      - "./apiGo/apiGo"
+
 Frontend_Tests:
   stage: test
   script:

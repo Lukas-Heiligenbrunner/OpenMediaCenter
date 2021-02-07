@@ -7,6 +7,7 @@ import (
 	"openmediacenter/apiGo/api/types"
 )
 
+// MovieId - MovieName : pay attention to the order!
 func readVideosFromResultset(rows *sql.Rows) []types.VideoUnloadedType {
 	result := []types.VideoUnloadedType{}
 	for rows.Next() {
@@ -39,6 +40,7 @@ func readTagsFromResultset(rows *sql.Rows) []types.Tag {
 	return result
 }
 
+// ActorId - ActorName - Thumbnail : pay attention to the order!
 func readActorsFromResultset(rows *sql.Rows) []types.Actor {
 	var result []types.Actor
 	for rows.Next() {
@@ -46,7 +48,6 @@ func readActorsFromResultset(rows *sql.Rows) []types.Actor {
 		var thumbnail []byte
 
 		err := rows.Scan(&actor.ActorId, &actor.Name, &thumbnail)
-		fmt.Println(len(thumbnail))
 		if len(thumbnail) != 0 {
 			actor.Thumbnail = string(thumbnail)
 		}

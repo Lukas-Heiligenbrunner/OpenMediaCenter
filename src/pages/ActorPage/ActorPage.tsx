@@ -68,11 +68,11 @@ export class ActorPage extends React.Component<props, state> {
     getActorInfo(): void {
         callAPI(APINode.Actor, {
             action: 'getActorInfo',
-            actorid: this.props.match.params.id
+            ActorId: parseInt(this.props.match.params.id)
         }, (result: ActorTypes.videofetchresult) => {
             this.setState({
-                data: result.videos ? result.videos : [],
-                actor: result.info
+                data: result.Videos ? result.Videos : [],
+                actor: result.Info
             });
         });
     }

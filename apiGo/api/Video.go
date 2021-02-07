@@ -7,7 +7,6 @@ import (
 	"openmediacenter/apiGo/api/types"
 	"openmediacenter/apiGo/database"
 	"strconv"
-	"strings"
 )
 
 func AddVideoHandlers() {
@@ -121,14 +120,14 @@ func loadVideosHandlers() {
 		MovieId int
 	}
 	AddHandler("loadVideo", VideoNode, &lv, func() []byte {
-		query := fmt.Sprintf(`SELECT movie_name,movie_id,movie_url,thumbnail,poster,likes,quality,length 
+		query := fmt.Sprintf(`SELECT movie_name,movie_id,thumbnail,poster,likes,quality,length 
 										FROM videos WHERE movie_id=%d`, lv.MovieId)
 
 		var res types.FullVideoType
 		var poster []byte
 		var thumbnail []byte
 
-		err := database.QueryRow(query).Scan(&res.MovieName, &res.MovieId, &res.MovieUrl, &thumbnail, &poster, &res.Likes, &res.Quality, &res.Length)
+		err := database.QueryRow(query).Scan(&res.MovieName, &res.MovieId, &thumbnail, &poster, &res.Likes, &res.Quality, &res.Length)
 		if err != nil {
 			fmt.Printf("error getting full data list of videoid - %d", lv.MovieId)
 			fmt.Println(err.Error())
@@ -136,8 +135,9 @@ func loadVideosHandlers() {
 		}
 
 		// we ned to urlencode the movieurl
-		res.MovieUrl = url.PathEscape(res.MovieUrl)
-		res.MovieUrl = strings.ReplaceAll(res.MovieUrl, "%2F", "/")
+		res.MovieUrl = url.PathEscape(res.MovieName)
+		// attention the extension is hardcoded here!!
+		res.MovieUrl = GetSettings().VideoPath + res.MovieUrl + ".mp4"
 		// we need to stringify the pic byte array
 		res.Poster = string(poster)
 
