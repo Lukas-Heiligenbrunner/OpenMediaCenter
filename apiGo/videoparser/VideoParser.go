@@ -1,5 +1,12 @@
 package videoparser
 
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
+)
+
 var messageBuffer []string
 var contentAvailable = false
 
@@ -12,7 +19,25 @@ func StartReindex() bool {
 	messageBuffer = []string{}
 	contentAvailable = true
 
-	// todo start reindexing
+	fmt.Println("starting reindex..")
+
+	var files []string
+	err := filepath.Walk("/home/lukas/Downloads/", func(path string, info os.FileInfo, err error) error {
+		if !info.IsDir() && strings.HasSuffix(info.Name(), ".mp4") {
+			files = append(files, path)
+		}
+		return nil
+	})
+
+	fmt.Println(files)
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	// start reindex process
+	ReIndexVideos(files)
+
+	fmt.Println("finished")
 	return true
 }
 

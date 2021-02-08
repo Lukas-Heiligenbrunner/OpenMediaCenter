@@ -49,7 +49,7 @@ func handleAPICall(action string, requestBody string, apiNode int) []byte {
 		if handlers[i].action == action && handlers[i].apiNode == apiNode {
 			// call the handler and return
 
-			if &handlers[i].arguments != nil {
+			if handlers[i].arguments != nil {
 				// decode the arguments to the corresponding arguments object
 				err := json.Unmarshal([]byte(requestBody), &handlers[i].arguments)
 				if err != nil {

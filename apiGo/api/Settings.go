@@ -77,7 +77,7 @@ func saveSettingsToDB() {
 func reIndexHandling() {
 	AddHandler("startReindex", SettingsNode, nil, func() []byte {
 		videoparser.StartReindex()
-		return nil
+		return database.ManualSuccessResponse(nil)
 	})
 
 	AddHandler("cleanupGravity", SettingsNode, nil, func() []byte {
