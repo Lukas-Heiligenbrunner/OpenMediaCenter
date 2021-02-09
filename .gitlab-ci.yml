@@ -55,6 +55,17 @@ Frontend_Tests:
         - ./junit.xml
   needs: ["Node_dependencies"]
 
+Backend_Tests:
+  stage: test
+  script:
+    - cd apiGo
+    - go get -u github.com/jstemmer/go-junit-report
+    - go test -v ./... 2>&1 | go-junit-report -set-exit-code > report.xml
+  artifacts:
+    when: always
+    reports:
+      junit: ./apiGo/report.xml
+
 code_quality:
   tags:
     - dind
@@ -77,13 +88,14 @@ Debian_Server:
   artifacts:
     paths:
       - deb/OpenMediaCenter-*.deb
-  needs: ["Minimize"]
+  needs: ["Minimize", "BuildBackend"]
 
 Test_Server:
   stage: deploy
   image: luki42/alpineopenssh:latest
   needs:
     - Frontend_Tests
+    - Backend_Tests
     - Debian_Server
   only:
     - master
