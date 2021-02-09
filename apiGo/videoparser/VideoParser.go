@@ -22,6 +22,7 @@ func StartReindex() bool {
 	fmt.Println("starting reindex..")
 
 	var files []string
+	// todo get path from db
 	err := filepath.Walk("/home/lukas/Downloads/", func(path string, info os.FileInfo, err error) error {
 		if !info.IsDir() && strings.HasSuffix(info.Name(), ".mp4") {
 			files = append(files, path)
