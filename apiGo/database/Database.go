@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"openmediacenter/apiGo/api/types"
 )
 
 var db *sql.DB
@@ -69,4 +70,48 @@ func Close() {
 
 func GetDBName() string {
 	return DBName
+}
+
+func GetSettings() types.SettingsType {
+	var result types.SettingsType
+
+	// query settings and infotile values
+	query := fmt.Sprintf(`
+                SELECT (
+                           SELECT COUNT(*)
+                           FROM videos
+                       ) AS videonr,
+                       (
+                           SELECT ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS Size
+                           FROM information_schema.TABLES
+                           WHERE TABLE_SCHEMA = '%s'
+                           GROUP BY table_schema
+                       ) AS dbsize,
+                       (
+                           SELECT COUNT(*)
+                           FROM tags
+                       ) AS difftagnr,
+                       (
+                           SELECT COUNT(*)
+                           FROM video_tags
+                       ) AS tagsadded,
+                       video_path, episode_path, password, mediacenter_name, TMDB_grabbing, DarkMode
+                FROM settings
+                LIMIT 1`, DBName)
+
+	var DarkMode int
+	var TMDBGrabbing int
+
+	err := QueryRow(query).Scan(&result.VideoNr, &result.DBSize, &result.DifferentTags, &result.TagsAdded,
+		&result.VideoPath, &result.EpisodePath, &result.Password, &result.MediacenterName, &TMDBGrabbing, &DarkMode)
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	result.TMDBGrabbing = TMDBGrabbing != 0
+	result.PasswordEnabled = result.Password != "-1"
+	result.DarkMode = DarkMode != 0
+
+	return result
 }

@@ -137,7 +137,7 @@ func loadVideosHandlers() {
 		// we ned to urlencode the movieurl
 		res.MovieUrl = url.PathEscape(res.MovieName)
 		// attention the extension is hardcoded here!!
-		res.MovieUrl = GetSettings().VideoPath + res.MovieUrl + ".mp4"
+		res.MovieUrl = database.GetSettings().VideoPath + res.MovieUrl + ".mp4"
 		// we need to stringify the pic byte array
 		res.Poster = string(poster)
 
