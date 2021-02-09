@@ -32,7 +32,7 @@ Minimize_Frontend:
     expire_in: 7 days
     paths:
       - build/
-  needs: ["Node_dependencies"]
+  needs: ["Node_Dependencies"]
 
 Build_Backend:
   image: golang:latest
@@ -54,7 +54,7 @@ Frontend_Tests:
     reports:
       junit:
         - ./junit.xml
-  needs: ["Node_dependencies"]
+  needs: ["Node_Dependencies"]
 
 Backend_Tests:
   image: golang:latest
@@ -91,7 +91,7 @@ Debian_Server:
   artifacts:
     paths:
       - deb/OpenMediaCenter-*.deb
-  needs: ["Minimize", "BuildBackend"]
+  needs: ["Minimize_Frontend", "Build_Backend"]
 
 Test_Server:
   stage: deploy
