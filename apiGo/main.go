@@ -17,5 +17,5 @@ func main() {
 	api.AddTagHandlers()
 	api.AddActorsHandlers()
 
-	api.ServerInit()
+	api.ServerInit(8081)
 }

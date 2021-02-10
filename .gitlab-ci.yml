@@ -83,7 +83,6 @@ Debian_Server:
     - mkdir -p "./OpenMediaCenter/tmp/"
     - mkdir -p "./OpenMediaCenter/usr/bin/"
     - cp -r ../build/* ./OpenMediaCenter/var/www/openmediacenter/
-    - cp -r ../api ./OpenMediaCenter/var/www/openmediacenter/
     - cp ../apiGo/openmediacenter ./OpenMediaCenter/usr/bin/
     - cp ../database.sql ./OpenMediaCenter/tmp/openmediacenter.sql
     - 'echo "Version: ${vers}" >> ./OpenMediaCenter/DEBIAN/control'

@@ -35,13 +35,13 @@ func AddHandler(action string, apiNode int, n interface{}, h func() []byte) {
 	handlers = append(handlers, Handler{action, h, n, apiNode})
 }
 
-func ServerInit() {
+func ServerInit(port uint16) {
 	http.Handle(APIPREFIX+"/video", http.HandlerFunc(videoHandler))
 	http.Handle(APIPREFIX+"/tags", http.HandlerFunc(tagHandler))
 	http.Handle(APIPREFIX+"/settings", http.HandlerFunc(settingsHandler))
 	http.Handle(APIPREFIX+"/actor", http.HandlerFunc(actorHandler))
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
 }
 
 func handleAPICall(action string, requestBody string, apiNode int) []byte {

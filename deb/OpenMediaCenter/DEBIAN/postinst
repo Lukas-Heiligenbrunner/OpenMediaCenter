@@ -2,20 +2,6 @@
 # enable nginx site
 ln -sf /etc/nginx/sites-available/OpenMediaCenter.conf /etc/nginx/sites-enabled/OpenMediaCenter.conf
 
-# link general socket to current one
-phpsymlink="/var/run/php/php-fpm.sock";
-
-# create a gneral symlink to the php socket if not already existing
-if [ -L ${phpsymlink} ] ; then
-   if [ -e ${phpsymlink} ] ; then
-      echo "general php symlink already exists."
-   else
-      ln -sf /var/run/php/php*.*-fpm.sock /var/run/php/php-fpm.sock
-   fi
-else
-   ln -sf /var/run/php/php*.*-fpm.sock /var/run/php/php-fpm.sock
-fi
-
 # setup database
 mysql -uroot -pPASS -e "CREATE DATABASE IF NOT EXISTS mediacenter;"
 mysql -uroot -pPASS -e "CREATE USER IF NOT EXISTS 'mediacenteruser'@'localhost' IDENTIFIED BY 'mediapassword';"
@@ -31,6 +17,5 @@ chown -R www-data:www-data /var/www/openmediacenter
 # restart services
 systemctl restart nginx
 
-# trigger a movie reindex
-php /var/www/openmediacenter/api/extractvideopreviews.php
-rm /tmp/output.log
+systemctl enable OpenMediaCenter.service
+systemctl start OpenMediaCenter.service
