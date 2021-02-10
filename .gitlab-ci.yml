@@ -39,11 +39,11 @@ Build_Backend:
   stage: build
   script:
     - cd apiGo
-    - go build -v
-    - env GOOS=windows GOARCH=amd64 go build -v
+    - go build -v -o openmediacenter
+    - env GOOS=windows GOARCH=amd64 go build -v -o openmediacenter.exe
   artifacts:
     paths:
-      - "./apiGo/apiG*"
+      - "./apiGo/openmediacenter*"
   needs: []
 
 Frontend_Tests:
@@ -81,8 +81,10 @@ Debian_Server:
     - cd deb
     - mkdir -p "./OpenMediaCenter/var/www/openmediacenter/videos/"
     - mkdir -p "./OpenMediaCenter/tmp/"
+    - mkdir -p "./OpenMediaCenter/usr/bin/"
     - cp -r ../build/* ./OpenMediaCenter/var/www/openmediacenter/
     - cp -r ../api ./OpenMediaCenter/var/www/openmediacenter/
+    - cp ../apiGo/openmediacenter ./OpenMediaCenter/usr/bin/
     - cp ../database.sql ./OpenMediaCenter/tmp/openmediacenter.sql
     - 'echo "Version: ${vers}" >> ./OpenMediaCenter/DEBIAN/control'
     - chmod -R 0775 *

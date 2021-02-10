@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"openmediacenter/apiGo/api/types"
 	"openmediacenter/apiGo/database"
+	"openmediacenter/apiGo/videoparser/tmdb"
 	"os/exec"
 	"regexp"
 	"strconv"
@@ -52,7 +53,13 @@ func addVideo(videoName string, fileName string, year int) {
 
 	// if TMDB grabbing is enabled serach in api for video...
 	if mSettings.TMDBGrabbing {
-		// todo grab data from tmdb
+		tmdbData := tmdb.SearchVideo(videoName, year)
+		if tmdbData != nil {
+			// reassign parsed pic as poster
+			poster = ppic
+			// and tmdb pic as thumbnail
+			ppic = &tmdbData.Thumbnail
+		}
 	}
 
 	query := `INSERT INTO videos(movie_name,poster,thumbnail,quality,length) VALUES (?,?,?,?,?)`
@@ -64,6 +71,11 @@ func addVideo(videoName string, fileName string, year int) {
 	if mSettings.TMDBGrabbing {
 		// todo add tmdb tags
 	}
+
+	// todo is this neccessary
+	msgs := <-messageBuffer
+	msgs = append(msgs, fmt.Sprintf("added successfully - %s", videoName))
+	messageBuffer <- msgs
 }
 
 func matchYear(fileName string) (int, string) {

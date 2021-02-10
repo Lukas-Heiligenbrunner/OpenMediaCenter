@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-var messageBuffer []string
+var messageBuffer chan []string
 var contentAvailable = false
 
 type StatusMessage struct {
@@ -17,7 +17,7 @@ type StatusMessage struct {
 }
 
 func StartReindex() bool {
-	messageBuffer = []string{}
+	messageBuffer = make(chan []string)
 	contentAvailable = true
 
 	fmt.Println("starting reindex..")
@@ -47,7 +47,7 @@ func StartReindex() bool {
 		fmt.Println(err.Error())
 	}
 	// start reindex process
-	ReIndexVideos(files, mSettings)
+	go ReIndexVideos(files, mSettings)
 
 	fmt.Println("finished")
 	return true
@@ -55,12 +55,12 @@ func StartReindex() bool {
 
 func GetStatusMessage() StatusMessage {
 	msg := StatusMessage{
-		Messages:         messageBuffer,
+		Messages:         <-messageBuffer,
 		ContentAvailable: contentAvailable,
 	}
 
 	// reset message buffer
-	messageBuffer = []string{}
+	messageBuffer = make(chan []string)
 
 	return msg
 }
