@@ -10,11 +10,11 @@ import (
 var db *sql.DB
 
 const (
-	DBUser     = "root"
-	DBPassword = "1qayxsw2"
-	DBHost     = "192.168.0.30"
+	DBUser     = "mediacenteruser"
+	DBPassword = "mediapassword"
+	DBHost     = "127.0.0.1"
 	DBPort     = 3306
-	DBName     = "hub"
+	DBName     = "mediacenter"
 )
 
 func InitDB() {
