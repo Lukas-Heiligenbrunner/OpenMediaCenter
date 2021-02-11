@@ -23,6 +23,8 @@ func StartReindex() bool {
 	fmt.Println("starting reindex..")
 
 	mSettings := database.GetSettings()
+	// add the path prefix to videopath
+	mSettings.VideoPath = "/var/www/openmediacenter" + mSettings.VideoPath
 
 	// check if path even exists
 	if _, err := os.Stat(mSettings.VideoPath); os.IsNotExist(err) {
