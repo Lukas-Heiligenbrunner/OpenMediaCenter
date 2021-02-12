@@ -48,11 +48,19 @@ func addVideo(videoName string, fileName string, year int) {
 	}
 
 	vidAtr := getVideoAttributes(fileName)
+	if vidAtr == nil {
+		vidAtr = &VideoAttributes{
+			Duration: 0,
+			FileSize: 0,
+			Width:    0,
+		}
+	}
 
 	var poster *string
 
 	// if TMDB grabbing is enabled serach in api for video...
 	if mSettings.TMDBGrabbing {
+		fmt.Println("parsing tmdb pic")
 		tmdbData := tmdb.SearchVideo(videoName, year)
 		if tmdbData != nil {
 			// reassign parsed pic as poster
@@ -130,7 +138,7 @@ type VideoAttributes struct {
 func getVideoAttributes(fileName string) *VideoAttributes {
 	app := "mediainfo"
 
-	arg0 := fmt.Sprintf(`%s%s`, mSettings.VideoPath, fileName)
+	arg0 := fileName
 	arg1 := "--Output=JSON"
 
 	cmd := exec.Command(app, arg1, "-f", arg0)
@@ -161,6 +169,8 @@ func getVideoAttributes(fileName string) *VideoAttributes {
 		FileSize: uint(filesize),
 		Width:    uint(width),
 	}
+
+	fmt.Println("heyho theree")
 
 	return &ret
 }

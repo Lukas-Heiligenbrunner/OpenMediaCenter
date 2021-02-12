@@ -24,7 +24,8 @@ func StartReindex() bool {
 
 	mSettings := database.GetSettings()
 	// add the path prefix to videopath
-	mSettings.VideoPath = "/var/www/openmediacenter" + mSettings.VideoPath
+	//mSettings.VideoPath = "/var/www/openmediacenter" + mSettings.VideoPath
+	mSettings.VideoPath = "/home/lukas/go/src" + mSettings.VideoPath
 
 	// check if path even exists
 	if _, err := os.Stat(mSettings.VideoPath); os.IsNotExist(err) {
@@ -40,6 +41,9 @@ func StartReindex() bool {
 		}
 
 		if !info.IsDir() && strings.HasSuffix(info.Name(), ".mp4") {
+			// todo regex to match only filename
+			//r, _ := regexp.Compile(`\..*$`)
+			//fileName := r.ReplaceAllString(fileNameOrig, "")
 			files = append(files, path)
 		}
 		return nil

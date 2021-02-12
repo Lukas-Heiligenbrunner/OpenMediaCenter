@@ -41,6 +41,7 @@ func ServerInit(port uint16) {
 	http.Handle(APIPREFIX+"/settings", http.HandlerFunc(settingsHandler))
 	http.Handle(APIPREFIX+"/actor", http.HandlerFunc(actorHandler))
 
+	fmt.Printf("OpenMediacenter server up and running on port %d\n", port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
 }
 

@@ -8,26 +8,26 @@ import (
 )
 
 var db *sql.DB
+var DBName string
 
-const (
-	DBUser     = "mediacenteruser"
-	DBPassword = "mediapassword"
-	DBHost     = "127.0.0.1"
-	DBPort     = 3306
-	DBName     = "mediacenter"
-)
+type DatabaseConfig struct {
+	DBHost     string
+	DBPort     int
+	DBUser     string
+	DBPassword string
+	DBName     string
+}
 
-func InitDB() {
+func InitDB(dbconf *DatabaseConfig) {
+	DBName = dbconf.DBName
+
 	// Open up our database connection.
-	// I've set up a database on my local machine using phpmyadmin.
-	// The database is called testDb
 	var err error
-	db, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", DBUser, DBPassword, DBHost, DBPort, DBName))
+	db, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", dbconf.DBUser, dbconf.DBPassword, dbconf.DBHost, dbconf.DBPort, dbconf.DBName))
 
 	// if there is an error opening the connection, handle it
 	if err != nil {
-		fmt.Println("failed to connect...")
-		panic(err.Error())
+		fmt.Printf("Error while connecting to database! - %s\n", err.Error())
 	}
 }
 
@@ -37,7 +37,7 @@ func Query(query string, args ...interface{}) *sql.Rows {
 
 	// if there is an error inserting, handle it
 	if err != nil {
-		panic(err.Error())
+		fmt.Printf("Error while requesting data! - %s\n", err.Error())
 	}
 
 	return res
@@ -66,10 +66,6 @@ func ManualSuccessResponse(err error) []byte {
 
 func Close() {
 	db.Close()
-}
-
-func GetDBName() string {
-	return DBName
 }
 
 func GetSettings() types.SettingsType {
