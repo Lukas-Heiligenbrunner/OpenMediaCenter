@@ -52,8 +52,8 @@ export namespace SettingsTypes {
     }
 
     export interface getStatusMessageType {
-        contentAvailable: boolean;
-        message: string;
+        ContentAvailable: boolean;
+        Messages: string[];
     }
 }
 

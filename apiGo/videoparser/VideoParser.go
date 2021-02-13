@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-var messageBuffer chan []string
+var messageBuffer []string
 var contentAvailable = false
 
 type StatusMessage struct {
@@ -17,7 +17,7 @@ type StatusMessage struct {
 }
 
 func StartReindex() bool {
-	messageBuffer = make(chan []string)
+	messageBuffer = []string{}
 	contentAvailable = true
 
 	fmt.Println("starting reindex..")
@@ -41,10 +41,7 @@ func StartReindex() bool {
 		}
 
 		if !info.IsDir() && strings.HasSuffix(info.Name(), ".mp4") {
-			// todo regex to match only filename
-			//r, _ := regexp.Compile(`\..*$`)
-			//fileName := r.ReplaceAllString(fileNameOrig, "")
-			files = append(files, path)
+			files = append(files, info.Name())
 		}
 		return nil
 	})
@@ -53,22 +50,20 @@ func StartReindex() bool {
 		fmt.Println(err.Error())
 	}
 	// start reindex process
+	AppendMessageBuffer("Starting Reindexing!")
 	go ReIndexVideos(files, mSettings)
-
-	fmt.Println("finished")
 	return true
 }
 
-func GetStatusMessage() StatusMessage {
+func GetStatusMessage() *StatusMessage {
 	msg := StatusMessage{
-		Messages:         <-messageBuffer,
+		Messages:         messageBuffer,
 		ContentAvailable: contentAvailable,
 	}
 
-	// reset message buffer
-	messageBuffer = make(chan []string)
+	messageBuffer = []string{}
 
-	return msg
+	return &msg
 }
 
 func StartCleanup() {

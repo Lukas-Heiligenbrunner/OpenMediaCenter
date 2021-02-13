@@ -13,13 +13,34 @@ import (
 )
 
 var mSettings types.SettingsType
+var mExtDepsAvailable *ExtDependencySupport
+
+type ExtDependencySupport struct {
+	FFMpeg    bool
+	MediaInfo bool
+}
+
+type VideoAttributes struct {
+	Duration float32
+	FileSize uint
+	Width    uint
+}
 
 func ReIndexVideos(path []string, sett types.SettingsType) {
 	mSettings = sett
+	// check if the extern dependencies are available
+	mExtDepsAvailable = checkExtDependencySupport()
+	fmt.Printf("FFMPEG support: %t\n", mExtDepsAvailable.FFMpeg)
+	fmt.Printf("MediaInfo support: %t\n", mExtDepsAvailable.MediaInfo)
 
 	for _, s := range path {
 		processVideo(s)
 	}
+
+	AppendMessageBuffer("reindex finished successfully!")
+
+	contentAvailable = false
+	fmt.Println("Reindexing finished!")
 }
 
 func processVideo(fileNameOrig string) {
@@ -42,13 +63,27 @@ func processVideo(fileNameOrig string) {
 
 // add a video to the database
 func addVideo(videoName string, fileName string, year int) {
-	ppic, perr := parseFFmpegPic(fileName)
-	if perr != nil {
-		fmt.Printf("FFmpeg error occured: %s", perr.Error())
+	var ppic *string
+	var err error
+
+	if mExtDepsAvailable.FFMpeg {
+		ppic, err = parseFFmpegPic(fileName)
+		if err != nil {
+			fmt.Printf("FFmpeg error occured: %s", err.Error())
+		}
 	}
 
-	vidAtr := getVideoAttributes(fileName)
-	if vidAtr == nil {
+	var vidAtr *VideoAttributes
+	if mExtDepsAvailable.MediaInfo {
+		vidAtr = getVideoAttributes(fileName)
+		if vidAtr == nil {
+			vidAtr = &VideoAttributes{
+				Duration: 0,
+				FileSize: 0,
+				Width:    0,
+			}
+		}
+	} else {
 		vidAtr = &VideoAttributes{
 			Duration: 0,
 			FileSize: 0,
@@ -71,7 +106,7 @@ func addVideo(videoName string, fileName string, year int) {
 	}
 
 	query := `INSERT INTO videos(movie_name,poster,thumbnail,quality,length) VALUES (?,?,?,?,?)`
-	err := database.Edit(query, videoName, poster, ppic, vidAtr.Width, vidAtr.Duration)
+	err = database.Edit(query, videoName, poster, ppic, vidAtr.Width, vidAtr.Duration)
 	if err != nil {
 		fmt.Printf("Failed to insert video into db: %s\n", err.Error())
 	}
@@ -80,10 +115,7 @@ func addVideo(videoName string, fileName string, year int) {
 		// todo add tmdb tags
 	}
 
-	// todo is this neccessary
-	msgs := <-messageBuffer
-	msgs = append(msgs, fmt.Sprintf("added successfully - %s", videoName))
-	messageBuffer <- msgs
+	AppendMessageBuffer(fmt.Sprintf("%s - added!", videoName))
 }
 
 func matchYear(fileName string) (int, string) {
@@ -129,16 +161,10 @@ func parseFFmpegPic(fileName string) (*string, error) {
 	return &backpic64, nil
 }
 
-type VideoAttributes struct {
-	Duration float32
-	FileSize uint
-	Width    uint
-}
-
 func getVideoAttributes(fileName string) *VideoAttributes {
 	app := "mediainfo"
 
-	arg0 := fileName
+	arg0 := fmt.Sprintf(`%s%s`, mSettings.VideoPath, fileName)
 	arg1 := "--Output=JSON"
 
 	cmd := exec.Command(app, arg1, "-f", arg0)
@@ -170,7 +196,25 @@ func getVideoAttributes(fileName string) *VideoAttributes {
 		Width:    uint(width),
 	}
 
-	fmt.Println("heyho theree")
-
 	return &ret
+}
+
+func AppendMessageBuffer(message string) {
+	messageBuffer = append(messageBuffer, message)
+}
+
+// ext dependency support check
+func checkExtDependencySupport() *ExtDependencySupport {
+	var extDepsAvailable ExtDependencySupport
+
+	extDepsAvailable.FFMpeg = commandExists("ffmpeg")
+	extDepsAvailable.MediaInfo = commandExists("mediainfo")
+
+	return &extDepsAvailable
+}
+
+// check if a specific system command is available
+func commandExists(cmd string) bool {
+	_, err := exec.LookPath(cmd)
+	return err == nil
 }

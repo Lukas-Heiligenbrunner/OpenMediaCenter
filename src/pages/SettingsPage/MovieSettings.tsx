@@ -9,7 +9,8 @@ interface state {
     startbtnDisabled: boolean
 }
 
-interface props {}
+interface props {
+}
 
 /**
  * Component for MovieSettings on Settingspage
@@ -41,10 +42,14 @@ class MovieSettings extends React.Component<props, state> {
             <>
                 <button disabled={this.state.startbtnDisabled}
                         className='btn btn-success'
-                        onClick={(): void => {this.startReindex();}}>Reindex Movie
+                        onClick={(): void => {
+                            this.startReindex();
+                        }}>Reindex Movie
                 </button>
                 <button className='btn btn-warning'
-                        onClick={(): void => {this.cleanupGravity();}}>Cleanup Gravity
+                        onClick={(): void => {
+                            this.cleanupGravity();
+                        }}>Cleanup Gravity
                 </button>
                 <div className={style.indextextarea}>{this.state.text.map(m => (
                     <div className='textarea-element'>{m}</div>
@@ -58,11 +63,7 @@ class MovieSettings extends React.Component<props, state> {
      */
     startReindex(): void {
         // clear output text before start
-        this.setState({text: []});
-
-        this.setState({startbtnDisabled: true});
-
-        console.log('starting');
+        this.setState({text: [], startbtnDisabled: true});
 
         callAPI(APINode.Settings, {action: 'startReindex'}, (result: GeneralSuccess): void => {
             console.log(result);
@@ -85,15 +86,12 @@ class MovieSettings extends React.Component<props, state> {
      */
     updateStatus = (): void => {
         callAPI(APINode.Settings, {action: 'getStatusMessage'}, (result: SettingsTypes.getStatusMessageType) => {
-            if (result.contentAvailable === true) {
-                console.log(result);
-                // todo 2020-07-4: scroll to bottom of div here
-                this.setState({
-                    // insert a string for each line
-                    text: [...result.message.split('\n'),
-                        ...this.state.text]
-                });
-            } else {
+            this.setState({
+                // insert a string for each line
+                text: [...result.Messages, ...this.state.text]
+            });
+            // todo 2020-07-4: scroll to bottom of div here
+            if (!result.ContentAvailable) {
                 // clear refresh interval if no content available
                 clearInterval(this.myinterval);
 

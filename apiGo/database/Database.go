@@ -29,6 +29,13 @@ func InitDB(dbconf *DatabaseConfig) {
 	if err != nil {
 		fmt.Printf("Error while connecting to database! - %s\n", err.Error())
 	}
+
+	if db != nil {
+		ping := db.Ping()
+		if ping != nil {
+			fmt.Printf("Error while connecting to database! - %s\n", ping.Error())
+		}
+	}
 }
 
 func Query(query string, args ...interface{}) *sql.Rows {
