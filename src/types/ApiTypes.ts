@@ -34,6 +34,7 @@ export namespace SettingsTypes {
         DarkMode: boolean;
         Password: boolean;
         Mediacenter_name: string;
+        VideoPath: string;
     }
 
     export interface loadGeneralSettingsType {

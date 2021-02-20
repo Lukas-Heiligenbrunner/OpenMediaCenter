@@ -54,7 +54,7 @@ func handleAPICall(action string, requestBody string, apiNode int) []byte {
 				// decode the arguments to the corresponding arguments object
 				err := json.Unmarshal([]byte(requestBody), &handlers[i].arguments)
 				if err != nil {
-					fmt.Printf("failed to decode arguments of action %s\n", action)
+					fmt.Printf("failed to decode arguments of action %s :: %s\n", action, requestBody)
 				}
 			}
 
@@ -94,7 +94,7 @@ func handlefunc(rw http.ResponseWriter, req *http.Request, node int) {
 	var t actionStruct
 	err := json.Unmarshal([]byte(body), &t)
 	if err != nil {
-		panic(err)
+		fmt.Println("failed to read action from request! :: " + body)
 	}
 
 	rw.Write(handleAPICall(t.Action, body, node))

@@ -120,14 +120,14 @@ func loadVideosHandlers() {
 		MovieId int
 	}
 	AddHandler("loadVideo", VideoNode, &lv, func() []byte {
-		query := fmt.Sprintf(`SELECT movie_name,movie_id,thumbnail,poster,likes,quality,length 
+		query := fmt.Sprintf(`SELECT movie_name,movie_url,movie_id,thumbnail,poster,likes,quality,length 
 										FROM videos WHERE movie_id=%d`, lv.MovieId)
 
 		var res types.FullVideoType
 		var poster []byte
 		var thumbnail []byte
 
-		err := database.QueryRow(query).Scan(&res.MovieName, &res.MovieId, &thumbnail, &poster, &res.Likes, &res.Quality, &res.Length)
+		err := database.QueryRow(query).Scan(&res.MovieName, &res.MovieUrl, &res.MovieId, &thumbnail, &poster, &res.Likes, &res.Quality, &res.Length)
 		if err != nil {
 			fmt.Printf("error getting full data list of videoid - %d", lv.MovieId)
 			fmt.Println(err.Error())
@@ -135,9 +135,11 @@ func loadVideosHandlers() {
 		}
 
 		// we ned to urlencode the movieurl
-		res.MovieUrl = url.PathEscape(res.MovieName)
+		res.MovieUrl = url.PathEscape(res.MovieUrl)
+
 		// attention the extension is hardcoded here!!
-		res.MovieUrl = database.GetSettings().VideoPath + res.MovieUrl + ".mp4"
+		//res.MovieUrl = database.GetSettings().VideoPath + res.MovieUrl + ".mp4"
+
 		// we need to stringify the pic byte array
 		res.Poster = string(poster)
 
@@ -228,7 +230,7 @@ func addToVideoHandlers() {
 		MovieId int
 	}
 	AddHandler("deleteVideo", VideoNode, &dv, func() []byte {
-		query := fmt.Sprintf("DELETE FROM videos WHERE movie_id=%d", al.MovieId)
+		query := fmt.Sprintf("DELETE FROM videos WHERE movie_id=%d", dv.MovieId)
 		return database.SuccessQuery(query)
 	})
 }

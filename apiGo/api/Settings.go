@@ -16,17 +16,18 @@ func AddSettingsHandlers() {
 
 func getSettingsFromDB() {
 	AddHandler("loadInitialData", SettingsNode, nil, func() []byte {
-		query := "SELECT DarkMode, password, mediacenter_name from settings"
+		query := "SELECT DarkMode, password, mediacenter_name, video_path from settings"
 
 		type InitialDataType struct {
 			DarkMode         int
 			Pasword          int
 			Mediacenter_name string
+			VideoPath        string
 		}
 
 		result := InitialDataType{}
 
-		err := database.QueryRow(query).Scan(&result.DarkMode, &result.Pasword, &result.Mediacenter_name)
+		err := database.QueryRow(query).Scan(&result.DarkMode, &result.Pasword, &result.Mediacenter_name, &result.VideoPath)
 		if err != nil {
 			fmt.Println("error while parsing db data: " + err.Error())
 		}
@@ -35,12 +36,14 @@ func getSettingsFromDB() {
 			DarkMode         bool
 			Pasword          bool
 			Mediacenter_name string
+			VideoPath        string
 		}
 
 		res := InitialDataTypeResponse{
 			DarkMode:         result.DarkMode != 0,
 			Pasword:          result.Pasword != -1,
 			Mediacenter_name: result.Mediacenter_name,
+			VideoPath:        result.VideoPath,
 		}
 
 		str, _ := json.Marshal(res)

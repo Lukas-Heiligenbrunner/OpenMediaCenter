@@ -45,6 +45,8 @@ class App extends React.Component<{}, state> {
             // set theme
             GlobalInfos.enableDarkTheme(result.DarkMode);
 
+            GlobalInfos.setVideoPath(result.VideoPath);
+
             this.setState({
                 generalSettingsLoaded: true,
                 passwordsupport: result.Password,

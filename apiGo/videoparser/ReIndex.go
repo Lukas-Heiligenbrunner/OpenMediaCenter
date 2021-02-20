@@ -1,6 +1,7 @@
 package videoparser
 
 import (
+	"database/sql"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -44,20 +45,23 @@ func ReIndexVideos(path []string, sett types.SettingsType) {
 }
 
 func processVideo(fileNameOrig string) {
-	fmt.Printf("Processing %s video!\n", fileNameOrig)
+	fmt.Printf("Processing %s video-", fileNameOrig)
 
 	// match the file extension
-	r, _ := regexp.Compile(`\..*$`)
+	r, _ := regexp.Compile(`\.[a-zA-Z0-9]+$`)
 	fileName := r.ReplaceAllString(fileNameOrig, "")
 
 	year, fileName := matchYear(fileName)
 
 	// now we should look if this video already exists in db
 	query := "SELECT * FROM videos WHERE movie_name = ?"
-	if !database.Query(query, fileName).Next() {
+	err := database.QueryRow(query, fileName).Scan()
+	if err == sql.ErrNoRows {
 		fmt.Printf("The Video %s does't exist! Adding it to database.\n", fileName)
 
 		addVideo(fileName, fileNameOrig, year)
+	} else {
+		fmt.Println(" :existing!")
 	}
 }
 
@@ -69,7 +73,9 @@ func addVideo(videoName string, fileName string, year int) {
 	if mExtDepsAvailable.FFMpeg {
 		ppic, err = parseFFmpegPic(fileName)
 		if err != nil {
-			fmt.Printf("FFmpeg error occured: %s", err.Error())
+			fmt.Printf("FFmpeg error occured: %s\n", err.Error())
+		} else {
+			fmt.Println("successfully extracted thumbnail!!")
 		}
 	}
 
@@ -105,8 +111,8 @@ func addVideo(videoName string, fileName string, year int) {
 		}
 	}
 
-	query := `INSERT INTO videos(movie_name,poster,thumbnail,quality,length) VALUES (?,?,?,?,?)`
-	err = database.Edit(query, videoName, poster, ppic, vidAtr.Width, vidAtr.Duration)
+	query := `INSERT INTO videos(movie_name,movie_url,poster,thumbnail,quality,length) VALUES (?,?,?,?,?,?)`
+	err = database.Edit(query, videoName, fileName, poster, ppic, vidAtr.Width, vidAtr.Duration)
 	if err != nil {
 		fmt.Printf("Failed to insert video into db: %s\n", err.Error())
 	}
@@ -139,20 +145,21 @@ func matchYear(fileName string) (int, string) {
 func parseFFmpegPic(fileName string) (*string, error) {
 	app := "ffmpeg"
 
-	arg0 := "-hide_banner"
-	arg1 := "-loglevel panic"
-	arg2 := "-ss 00:04:00"
-	arg3 := fmt.Sprintf(`-i "%s%s"`, mSettings.VideoPath, fileName)
-	arg4 := "-vframes 1"
-	arg5 := "-q:v 2"
-	arg6 := "-f singlejpeg"
-	arg7 := "pipe:1 2>/dev/null"
+	cmd := exec.Command(app,
+		"-hide_banner",
+		"-loglevel", "panic",
+		"-ss", "00:04:00",
+		"-i", mSettings.VideoPath+fileName,
+		"-vframes", "1",
+		"-q:v", "2",
+		"-f", "singlejpeg",
+		"pipe:1")
 
-	cmd := exec.Command(app, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
 	stdout, err := cmd.Output()
 
 	if err != nil {
 		fmt.Println(err.Error())
+		fmt.Println(string(err.(*exec.ExitError).Stderr))
 		return nil, err
 	}
 

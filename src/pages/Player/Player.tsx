@@ -20,6 +20,7 @@ import {ActorType, TagType} from '../../types/VideoTypes';
 import PlyrJS from 'plyr';
 import {Button} from '../../elements/GPElements/Button';
 import {VideoTypes} from '../../types/ApiTypes';
+import GlobalInfos from "../../utils/GlobalInfos";
 
 interface myprops extends RouteComponentProps<{ id: string }> {}
 
@@ -247,7 +248,7 @@ export class Player extends React.Component<myprops, mystate> {
                     type: 'video',
                     sources: [
                         {
-                            src: getBackendDomain() + result.MovieUrl,
+                            src: getBackendDomain() + GlobalInfos.getVideoPath() + result.MovieUrl,
                             type: 'video/mp4',
                             size: 1080
                         }
@@ -294,7 +295,7 @@ export class Player extends React.Component<myprops, mystate> {
      * delete the current video and return to last page
      */
     deleteVideo(): void {
-        callAPI(APINode.Video, {action: 'deleteVideo', movieid: this.props.match.params.id}, (result: GeneralSuccess) => {
+        callAPI(APINode.Video, {action: 'deleteVideo', MovieId: parseInt(this.props.match.params.id)}, (result: GeneralSuccess) => {
             if (result.result === 'success') {
                 // return to last element if successful
                 this.props.history.goBack();
