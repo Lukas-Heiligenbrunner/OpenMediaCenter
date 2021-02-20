@@ -51,8 +51,8 @@ describe('<MovieSettings/>', function () {
 
     it('content available received and in state', done => {
         global.fetch = global.prepareFetchApi({
-            contentAvailable: true,
-            message: 'firstline\nsecondline'
+            ContentAvailable: true,
+            Messages: ['firstline', 'secondline']
         });
         const wrapper = shallow(<MovieSettings/>);
         wrapper.instance().updateStatus();
@@ -72,7 +72,8 @@ describe('<MovieSettings/>', function () {
 
     it('test reindex with no content available', done => {
         global.fetch = global.prepareFetchApi({
-            contentAvailable: false
+            Messages: [],
+            ContentAvailable: false
         });
 
         global.clearInterval = jest.fn();
