@@ -51,4 +51,6 @@ type SettingsType struct {
 	DBSize        float32
 	DifferentTags int
 	TagsAdded     int
+
+	PathPrefix string
 }

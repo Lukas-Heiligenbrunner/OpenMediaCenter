@@ -10,6 +10,9 @@ import (
 var db *sql.DB
 var DBName string
 
+// store the command line parameter for Videoprefix
+var SettingsVideoPrefix = ""
+
 type DatabaseConfig struct {
 	DBHost     string
 	DBPort     int
@@ -115,6 +118,7 @@ func GetSettings() types.SettingsType {
 	result.TMDBGrabbing = TMDBGrabbing != 0
 	result.PasswordEnabled = result.Password != "-1"
 	result.DarkMode = DarkMode != 0
+	result.PathPrefix = SettingsVideoPrefix
 
 	return result
 }

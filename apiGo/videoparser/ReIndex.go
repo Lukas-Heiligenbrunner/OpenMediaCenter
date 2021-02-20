@@ -101,7 +101,6 @@ func addVideo(videoName string, fileName string, year int) {
 
 	// if TMDB grabbing is enabled serach in api for video...
 	if mSettings.TMDBGrabbing {
-		fmt.Println("parsing tmdb pic")
 		tmdbData := tmdb.SearchVideo(videoName, year)
 		if tmdbData != nil {
 			// reassign parsed pic as poster

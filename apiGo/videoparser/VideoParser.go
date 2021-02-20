@@ -24,7 +24,7 @@ func StartReindex() bool {
 
 	mSettings := database.GetSettings()
 	// add the path prefix to videopath
-	mSettings.VideoPath = "/var/www/openmediacenter" + mSettings.VideoPath
+	mSettings.VideoPath = mSettings.PathPrefix + mSettings.VideoPath
 
 	// check if path even exists
 	if _, err := os.Stat(mSettings.VideoPath); os.IsNotExist(err) {

@@ -10,10 +10,14 @@ import (
 func main() {
 	fmt.Println("init OpenMediaCenter server")
 
-	db, verbose := handleCommandLineArguments()
+	db, verbose, pathPrefix := handleCommandLineArguments()
 	// todo some verbosity logger or sth
 
 	fmt.Printf("Use verbose output: %t\n", verbose)
+	fmt.Printf("Videopath prefix: %s\n", *pathPrefix)
+
+	// set pathprefix in database settings object
+	database.SettingsVideoPrefix = *pathPrefix
 
 	database.InitDB(db)
 	defer database.Close()
@@ -26,7 +30,7 @@ func main() {
 	api.ServerInit(8081)
 }
 
-func handleCommandLineArguments() (*database.DatabaseConfig, bool) {
+func handleCommandLineArguments() (*database.DatabaseConfig, bool, *string) {
 	dbhostPtr := flag.String("DBHost", "127.0.0.1", "database host name")
 	dbPortPtr := flag.Int("DBPort", 3306, "database port")
 	dbUserPtr := flag.String("DBUser", "mediacenteruser", "database username")
@@ -35,7 +39,7 @@ func handleCommandLineArguments() (*database.DatabaseConfig, bool) {
 
 	verbosePtr := flag.Bool("v", true, "Verbose log output")
 
-	//pathPrefix := flag.String("ReindexPrefix", "/var/www/openmediacenter", "Prefix path for videos to reindex")
+	pathPrefix := flag.String("ReindexPrefix", "/var/www/openmediacenter", "Prefix path for videos to reindex")
 
 	flag.Parse()
 
@@ -45,5 +49,5 @@ func handleCommandLineArguments() (*database.DatabaseConfig, bool) {
 		DBUser:     *dbUserPtr,
 		DBPassword: *dbPassPtr,
 		DBName:     *dbNamePtr,
-	}, *verbosePtr
+	}, *verbosePtr, pathPrefix
 }
