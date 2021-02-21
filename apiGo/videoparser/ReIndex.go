@@ -114,6 +114,12 @@ func addVideo(videoName string, fileName string, year int) {
 	err = database.Edit(query, videoName, fileName, poster, ppic, vidAtr.Width, vidAtr.Duration)
 	if err != nil {
 		fmt.Printf("Failed to insert video into db: %s\n", err.Error())
+		return
+	}
+
+	// add default tags
+	if vidAtr.Width != 0 {
+		//insertSizeTag(vidAtr.Width, )
 	}
 
 	if mSettings.TMDBGrabbing {
@@ -223,4 +229,28 @@ func checkExtDependencySupport() *ExtDependencySupport {
 func commandExists(cmd string) bool {
 	_, err := exec.LookPath(cmd)
 	return err == nil
+}
+
+const (
+	FullHd     = 2
+	Hd         = 4
+	LowQuality = 3
+)
+
+func insertSizeTag(width uint, videoId uint) {
+	var tagType uint
+
+	if width >= 1080 {
+		tagType = FullHd
+	} else if width >= 720 {
+		tagType = Hd
+	} else {
+		tagType = LowQuality
+	}
+
+	query := fmt.Sprintf("INSERT INTO video_tags(video_id,tag_id) VALUES (%d,%d)", videoId, tagType)
+	err := database.Edit(query)
+	if err != nil {
+		fmt.Printf("Eror occured while adding default Tag: %s\n", err.Error())
+	}
 }
