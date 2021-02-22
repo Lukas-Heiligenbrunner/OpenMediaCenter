@@ -105,24 +105,7 @@ export class Player extends React.Component<myprops, mystate> {
                         <Button onClick={(): void => this.setState({popupvisible: true})} title='Give this Video a Tag' color={{backgroundColor: '#3574fe'}}/>
                         <Button title='Delete Video' onClick={(): void => {this.deleteVideo();}} color={{backgroundColor: 'red'}}/>
                     </div>
-                    {/* rendering of actor tiles */}
-                    <div className={style.actorcontainer}>
-                        {this.state.actors ?
-                            this.state.actors.map((actr: ActorType) => (
-                                <ActorTile actor={actr}/>
-                            )) : <></>
-                        }
-                        <div className={style.actorAddTile} onClick={(): void => {
-                            this.addActor();
-                        }}>
-                            <div className={style.actorAddTile_thumbnail}>
-                                <FontAwesomeIcon style={{
-                                    lineHeight: '130px'
-                                }} icon={faPlusCircle} size='5x'/>
-                            </div>
-                            <div className={style.actorAddTile_name}>Add Actor</div>
-                        </div>
-                    </div>
+                    {this.assembleActorTiles()}
                 </div>
                 <button className={style.closebutton} onClick={(): void => this.closebtn()}>Close</button>
                 {
@@ -149,7 +132,7 @@ export class Player extends React.Component<myprops, mystate> {
                 <Line/>
                 <SideBarTitle>Tags:</SideBarTitle>
                 {this.state.tags.map((m: TagType) => (
-                    <Tag tagInfo={m}/>
+                    <Tag key={m.tag_id} tagInfo={m}/>
                 ))}
                 <Line/>
                 <SideBarTitle>Tag Quickadd:</SideBarTitle>
@@ -162,6 +145,58 @@ export class Player extends React.Component<myprops, mystate> {
                         }}/>
                 ))}
             </SideBar>
+        );
+    }
+
+    /**
+     * rendering of actor tiles
+     */
+    private assembleActorTiles(): JSX.Element {
+        return (
+            <div className={style.actorcontainer}>
+                {this.state.actors ?
+                    this.state.actors.map((actr: ActorType) => (
+                        <ActorTile key={actr.actor_id} actor={actr}/>
+                    )) : <></>
+                }
+                <div className={style.actorAddTile} onClick={(): void => {
+                    this.addActor();
+                }}>
+                    <div className={style.actorAddTile_thumbnail}>
+                        <FontAwesomeIcon style={{
+                            lineHeight: '130px'
+                        }} icon={faPlusCircle} size='5x'/>
+                    </div>
+                    <div className={style.actorAddTile_name}>Add Actor</div>
+                </div>
+            </div>
+        );
+    }
+
+
+    /**
+     * handle the popovers generated according to state changes
+     * @returns {JSX.Element}
+     */
+    handlePopOvers(): JSX.Element {
+        return (
+            <>
+                {this.state.popupvisible ?
+                    <AddTagPopup onHide={(): void => {
+                        this.setState({popupvisible: false});
+                    }}
+                                 submit={this.quickAddTag}
+                                 movie_id={this.state.movie_id}/> :
+                    null
+                }
+                {
+                    this.state.actorpopupvisible ?
+                        <AddActorPopup onHide={(): void => {
+                            this.refetchActors();
+                            this.setState({actorpopupvisible: false});
+                        }} movie_id={this.state.movie_id}/> : null
+                }
+            </>
         );
     }
 
@@ -209,32 +244,6 @@ export class Player extends React.Component<myprops, mystate> {
                 }
             }
         });
-    }
-
-    /**
-     * handle the popovers generated according to state changes
-     * @returns {JSX.Element}
-     */
-    handlePopOvers(): JSX.Element {
-        return (
-            <>
-                {this.state.popupvisible ?
-                    <AddTagPopup onHide={(): void => {
-                        this.setState({popupvisible: false});
-                    }}
-                                 submit={this.quickAddTag}
-                                 movie_id={this.state.movie_id}/> :
-                    null
-                }
-                {
-                    this.state.actorpopupvisible ?
-                        <AddActorPopup onHide={(): void => {
-                            this.refetchActors();
-                            this.setState({actorpopupvisible: false});
-                        }} movie_id={this.state.movie_id}/> : null
-                }
-            </>
-        );
     }
 
     /**

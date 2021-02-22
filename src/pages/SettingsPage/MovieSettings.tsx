@@ -9,8 +9,7 @@ interface state {
     startbtnDisabled: boolean
 }
 
-interface props {
-}
+interface props {}
 
 /**
  * Component for MovieSettings on Settingspage
@@ -42,17 +41,13 @@ class MovieSettings extends React.Component<props, state> {
             <>
                 <button disabled={this.state.startbtnDisabled}
                         className='btn btn-success'
-                        onClick={(): void => {
-                            this.startReindex();
-                        }}>Reindex Movie
+                        onClick={(): void => {this.startReindex();}}>Reindex Movie
                 </button>
                 <button className='btn btn-warning'
-                        onClick={(): void => {
-                            this.cleanupGravity();
-                        }}>Cleanup Gravity
+                        onClick={(): void => {this.cleanupGravity();}}>Cleanup Gravity
                 </button>
                 <div className={style.indextextarea}>{this.state.text.map(m => (
-                    <div className='textarea-element'>{m}</div>
+                    <div key={m} className='textarea-element'>{m}</div>
                 ))}</div>
             </>
         );

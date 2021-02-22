@@ -54,9 +54,8 @@ class TagView extends React.Component<props, TagViewState> {
                 <div className={videocontainerstyle.maincontent}>
                     {this.state.loadedtags ?
                         this.state.loadedtags.map((m) => (
-                            <Link to={'/categories/' + m.TagId}><TagPreview
-                                key={m.TagId}
-                                name={m.TagName}/></Link>
+                            <Link to={'/categories/' + m.TagId} key={m.TagId}>
+                                <TagPreview name={m.TagName}/></Link>
                         )) :
                         'loading'}
                 </div>
