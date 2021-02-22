@@ -50,11 +50,11 @@ describe('<MovieSettings/>', function () {
         });
     });
 
-    it('content available received and in state', done => {
+    it('content available received and in state', () => {
         const wrapper = shallow(<MovieSettings/>);
         callAPIMock({
-            contentAvailable: true,
-            message: ['firstline', 'secondline']
+            ContentAvailable: true,
+            Messages: ['firstline', 'secondline']
         })
 
         wrapper.instance().updateStatus();
@@ -99,7 +99,7 @@ describe('<MovieSettings/>', function () {
         expect(wrapper.instance().setState).toBeCalledTimes(1);
     });
 
-    it('test no textDiv insertion if string is empty', function () {
+    it('expect insertion before existing ones', function () {
         const wrapper = shallow(<MovieSettings/>);
 
         callAPIMock({
@@ -122,7 +122,7 @@ describe('<MovieSettings/>', function () {
         wrapper.instance().updateStatus();
 
         expect(wrapper.state()).toMatchObject({
-            text: ['test']
+            text: ['', 'test']
         });
     });
 });
