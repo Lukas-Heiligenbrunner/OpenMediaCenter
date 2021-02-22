@@ -57,9 +57,21 @@ func QueryRow(SQL string, args ...interface{}) *sql.Row {
 	return db.QueryRow(SQL, args...)
 }
 
+// edit something in the DB  and give only an error response
 func Edit(query string, args ...interface{}) error {
 	_, err := db.Exec(query, args...)
 	return err
+}
+
+// insert/edit a query and return last insert id
+func Insert(query string, args ...interface{}) (error, int64) {
+	resp, err := db.Exec(query, args...)
+	var id int64 = 0
+	if err == nil {
+		id, err = resp.LastInsertId()
+	}
+
+	return err, id
 }
 
 func SuccessQuery(query string, args ...interface{}) []byte {

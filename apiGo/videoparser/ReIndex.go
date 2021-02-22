@@ -16,6 +16,13 @@ import (
 var mSettings types.SettingsType
 var mExtDepsAvailable *ExtDependencySupport
 
+// default Tag ids
+const (
+	FullHd     = 2
+	Hd         = 4
+	LowQuality = 3
+)
+
 type ExtDependencySupport struct {
 	FFMpeg    bool
 	MediaInfo bool
@@ -111,7 +118,7 @@ func addVideo(videoName string, fileName string, year int) {
 	}
 
 	query := `INSERT INTO videos(movie_name,movie_url,poster,thumbnail,quality,length) VALUES (?,?,?,?,?,?)`
-	err = database.Edit(query, videoName, fileName, poster, ppic, vidAtr.Width, vidAtr.Duration)
+	err, insertId := database.Insert(query, videoName, fileName, poster, ppic, vidAtr.Width, vidAtr.Duration)
 	if err != nil {
 		fmt.Printf("Failed to insert video into db: %s\n", err.Error())
 		return
@@ -119,7 +126,7 @@ func addVideo(videoName string, fileName string, year int) {
 
 	// add default tags
 	if vidAtr.Width != 0 {
-		//insertSizeTag(vidAtr.Width, )
+		insertSizeTag(vidAtr.Width, uint(insertId))
 	}
 
 	if mSettings.TMDBGrabbing {
@@ -146,7 +153,7 @@ func matchYear(fileName string) (int, string) {
 	return year, r.ReplaceAllString(fileName, "")
 }
 
-// todo check this method
+// parse the thumbail picture from video file
 func parseFFmpegPic(fileName string) (*string, error) {
 	app := "ffmpeg"
 
@@ -231,12 +238,7 @@ func commandExists(cmd string) bool {
 	return err == nil
 }
 
-const (
-	FullHd     = 2
-	Hd         = 4
-	LowQuality = 3
-)
-
+// insert the default size tags to corresponding video
 func insertSizeTag(width uint, videoId uint) {
 	var tagType uint
 
