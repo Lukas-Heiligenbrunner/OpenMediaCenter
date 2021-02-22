@@ -17,6 +17,7 @@ type VideoTMDB struct {
 	Thumbnail string
 	Overview  string
 	Title     string
+	GenreIds  []int
 }
 
 type tmdbVidResult struct {
@@ -34,6 +35,11 @@ type tmdbVidResult struct {
 	Vote_count        int
 	Video             bool
 	Vote_average      int
+}
+
+type TMDBGenre struct {
+	Id   int
+	Name string
 }
 
 func SearchVideo(MovieName string, year int) *VideoTMDB {
@@ -82,6 +88,7 @@ cont:
 		Thumbnail: *thumbnail,
 		Overview:  tmdbVid.Overview,
 		Title:     tmdbVid.Title,
+		GenreIds:  tmdbVid.Genre_ids,
 	}
 
 	return &result
@@ -104,4 +111,34 @@ func fetchPoster(vid tmdbVidResult) *string {
 
 	backpic64 := "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(body)
 	return &backpic64
+}
+
+var tmdbGenres *[]TMDBGenre
+
+func fetchGenres() *[]TMDBGenre {
+	url := fmt.Sprintf("%sgenre/movie/list?api_key=%s", baseUrl, apiKey)
+	resp, err := http.Get(url)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil
+	}
+
+	var t []TMDBGenre
+	err = json.Unmarshal(body, &t)
+
+	return &t
+}
+
+func GetGenres() *[]TMDBGenre {
+	// if generes are nil fetch them once
+	if tmdbGenres == nil {
+		tmdbGenres = fetchGenres()
+	}
+	return tmdbGenres
 }
