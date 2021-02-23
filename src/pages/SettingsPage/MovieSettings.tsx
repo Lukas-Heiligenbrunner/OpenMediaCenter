@@ -58,11 +58,7 @@ class MovieSettings extends React.Component<props, state> {
      */
     startReindex(): void {
         // clear output text before start
-        this.setState({text: []});
-
-        this.setState({startbtnDisabled: true});
-
-        console.log('starting');
+        this.setState({text: [], startbtnDisabled: true});
 
         callAPI(APINode.Settings, {action: 'startReindex'}, (result: GeneralSuccess): void => {
             console.log(result);
@@ -85,18 +81,12 @@ class MovieSettings extends React.Component<props, state> {
      */
     updateStatus = (): void => {
         callAPI(APINode.Settings, {action: 'getStatusMessage'}, (result: SettingsTypes.getStatusMessageType) => {
-            if (result.contentAvailable) {
-                // ignore if message is empty
-                console.log(result);
-                if(result.message === '') return;
-
-                // todo 2020-07-4: scroll to bottom of div here
-                this.setState({
-                    // insert a string for each line
-                    text: [...result.message.split('\n'),
-                        ...this.state.text]
-                });
-            } else {
+            this.setState({
+                // insert a string for each line
+                text: [...result.Messages, ...this.state.text]
+            });
+            // todo 2020-07-4: scroll to bottom of div here
+            if (!result.ContentAvailable) {
                 // clear refresh interval if no content available
                 clearInterval(this.myinterval);
 

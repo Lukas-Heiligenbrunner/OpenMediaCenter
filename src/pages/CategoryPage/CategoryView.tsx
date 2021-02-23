@@ -103,8 +103,8 @@ export class CategoryView extends React.Component<CategoryViewProps, CategoryVie
     private deleteTag(force: boolean): void {
         callAPI<GeneralSuccess>(APINode.Tags, {
             action: 'deleteTag',
-            tagId: parseInt(this.props.match.params.id),
-            force: force
+            TagId: parseInt(this.props.match.params.id),
+            Force: force
         }, result => {
             console.log(result.result);
             if (result.result === 'success') {

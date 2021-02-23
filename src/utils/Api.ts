@@ -40,20 +40,7 @@ function getAPIDomain(): string {
 interface ApiBaseRequest {
     action: string | number,
 
-    [_: string]: string | number | boolean
-}
-
-/**
- * helper function to build a formdata for requesting post data correctly
- * @param args api request object
- */
-function buildFormData(args: ApiBaseRequest): FormData {
-    const req = new FormData();
-
-    for (const i in args) {
-        req.append(i, (args[i].toString()));
-    }
-    return req;
+    [_: string]: string | number | boolean | object
 }
 
 /**
@@ -64,7 +51,7 @@ function buildFormData(args: ApiBaseRequest): FormData {
  * @param errorcallback a optional callback if an error occured
  */
 export function callAPI<T>(apinode: APINode, fd: ApiBaseRequest, callback: (_: T) => void, errorcallback: (_: string) => void = (_: string): void => {}): void {
-    fetch(getAPIDomain() + apinode, {method: 'POST', body: buildFormData(fd)})
+    fetch(getAPIDomain() + apinode, {method: 'POST', body: JSON.stringify(fd)})
         .then((response) => response.json()
             .then((result) => {
                 callback(result);
@@ -78,7 +65,7 @@ export function callAPI<T>(apinode: APINode, fd: ApiBaseRequest, callback: (_: T
  * @param callback the callback with PLAIN text reply from backend
  */
 export function callAPIPlain(apinode: APINode, fd: ApiBaseRequest, callback: (_: string) => void): void {
-    fetch(getAPIDomain() + apinode, {method: 'POST', body: buildFormData(fd)})
+    fetch(getAPIDomain() + apinode, {method: 'POST', body: JSON.stringify(fd)})
         .then((response) => response.text()
             .then((result) => {
                 callback(result);
@@ -90,8 +77,8 @@ export function callAPIPlain(apinode: APINode, fd: ApiBaseRequest, callback: (_:
  * API nodes definitions
  */
 export enum APINode {
-    Settings = 'settings.php',
-    Tags = 'tags.php',
-    Actor = 'actor.php',
-    Video = 'video.php'
+    Settings = 'settings',
+    Tags = 'tags',
+    Actor = 'actor',
+    Video = 'video'
 }

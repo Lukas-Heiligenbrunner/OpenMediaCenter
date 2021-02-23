@@ -9,8 +9,8 @@ interface TagarrayType {
 }
 
 export const DefaultTags: TagarrayType = {
-    all: {tag_id: 1, tag_name: 'all'},
-    fullhd: {tag_id: 2, tag_name: 'fullhd'},
-    lowq: {tag_id: 3, tag_name: 'lowquality'},
-    hd: {tag_id: 4, tag_name: 'hd'}
+    all: {TagId: 1, TagName: 'all'},
+    fullhd: {TagId: 2, TagName: 'fullhd'},
+    lowq: {TagId: 3, TagName: 'lowquality'},
+    hd: {TagId: 4, TagName: 'hd'}
 };

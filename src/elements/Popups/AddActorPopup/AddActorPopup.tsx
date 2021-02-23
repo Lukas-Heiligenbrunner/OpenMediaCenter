@@ -134,8 +134,8 @@ class AddActorPopup extends React.Component<props, state> {
         // fetch the available actors
         callAPI<GeneralSuccess>(APINode.Actor, {
             action: 'addActorToVideo',
-            actorid: actor.actor_id,
-            videoid: this.props.movie_id
+            ActorId: actor.ActorId,
+            MovieId: this.props.movie_id
         }, result => {
             if (result.result === 'success') {
                 // return back to player page
@@ -170,7 +170,7 @@ class AddActorPopup extends React.Component<props, state> {
      * @param actor
      */
     private filterSearch(actor: ActorType): boolean {
-        return actor.name.toLowerCase().includes(this.state.filter.toLowerCase());
+        return actor.Name.toLowerCase().includes(this.state.filter.toLowerCase());
     }
 
     /**

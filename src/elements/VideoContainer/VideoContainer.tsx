@@ -40,9 +40,9 @@ class VideoContainer extends React.Component<props, state> {
             <div className={style.maincontent}>
                 {this.state.loadeditems.map(elem => (
                     <Preview
-                        key={elem.movie_id}
-                        name={elem.movie_name}
-                        movie_id={elem.movie_id}/>
+                        key={elem.MovieId}
+                        name={elem.MovieName}
+                        movie_id={elem.MovieId}/>
                 ))}
                 {/*todo css for no items to show*/}
                 {this.state.loadeditems.length === 0 ?

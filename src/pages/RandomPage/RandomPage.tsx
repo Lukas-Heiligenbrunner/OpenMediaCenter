@@ -15,8 +15,8 @@ interface state {
 }
 
 interface GetRandomMoviesType {
-    rows: VideoTypes.VideoUnloadedType[];
-    tags: TagType[];
+    Videos: VideoTypes.VideoUnloadedType[];
+    Tags: TagType[];
 }
 
 /**
@@ -53,7 +53,7 @@ class RandomPage extends React.Component<{}, state> {
                 <SideBar>
                     <SideBarTitle>Visible Tags:</SideBarTitle>
                     {this.state.tags.map((m) => (
-                        <Tag key={m.tag_id} tagInfo={m}/>
+                        <Tag key={m.TagId} tagInfo={m}/>
                     ))}
                 </SideBar>
 
@@ -84,10 +84,11 @@ class RandomPage extends React.Component<{}, state> {
      */
     loadShuffledvideos(nr: number): void {
         callAPI<GetRandomMoviesType>(APINode.Video, {action: 'getRandomMovies', number: nr}, result => {
+            console.log(result)
             this.setState({videos: []}); // needed to trigger rerender of main videoview
             this.setState({
-                videos: result.rows,
-                tags: result.tags
+                videos: result.Videos,
+                tags: result.Tags
             });
         });
     }

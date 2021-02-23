@@ -55,7 +55,7 @@ describe('<RandomPage/>', function () {
 
         shallow(<RandomPage/>);
 
-        callAPIMock({rows: [], tags: []});
+        callAPIMock({Videos: [], Tags: []});
 
         // trigger the keypress event
         events.keyup({key: 's'});

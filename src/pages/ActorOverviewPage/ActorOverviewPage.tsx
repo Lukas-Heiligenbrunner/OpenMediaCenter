@@ -38,7 +38,7 @@ class ActorOverviewPage extends React.Component<props, state> {
                     <Button title='Add Actor' onClick={(): void => this.setState({NActorPopupVisible: true})}/>
                 </SideBar>
                 <div className={style.container}>
-                    {this.state.actors.map((el) => (<ActorTile key={el.actor_id} actor={el}/>))}
+                    {this.state.actors.map((el) => (<ActorTile key={el.ActorId} actor={el}/>))}
                 </div>
                 {this.state.NActorPopupVisible ?
                     <NewActorPopup onHide={(): void => {

@@ -39,7 +39,7 @@ class AddTagPopup extends React.Component<props, state> {
                     this.state.items.map((i) => (
                         <Tag tagInfo={i}
                              onclick={(): void => {
-                                 this.props.submit(i.tag_id, i.tag_name);
+                                 this.props.submit(i.TagId, i.TagName);
                                  this.props.onHide();
                              }}/>
                     )) : null}
