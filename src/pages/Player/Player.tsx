@@ -132,7 +132,7 @@ export class Player extends React.Component<myprops, mystate> {
                 <Line/>
                 <SideBarTitle>Tags:</SideBarTitle>
                 {this.state.tags.map((m: TagType) => (
-                    <Tag key={m.tag_id} tagInfo={m}/>
+                    <Tag key={m.TagId} tagInfo={m}/>
                 ))}
                 <Line/>
                 <SideBarTitle>Tag Quickadd:</SideBarTitle>
@@ -156,7 +156,7 @@ export class Player extends React.Component<myprops, mystate> {
             <div className={style.actorcontainer}>
                 {this.state.actors ?
                     this.state.actors.map((actr: ActorType) => (
-                        <ActorTile key={actr.actor_id} actor={actr}/>
+                        <ActorTile key={actr.ActorId} actor={actr}/>
                     )) : <></>
                 }
                 <div className={style.actorAddTile} onClick={(): void => {
