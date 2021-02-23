@@ -18,7 +18,7 @@ class Tag extends React.Component<props> {
             return this.renderButton();
         } else {
             return (
-                <Link to={'/categories/' + this.props.tagInfo.tag_id}>
+                <Link to={'/categories/' + this.props.tagInfo.TagId}>
                     {this.renderButton()}
                 </Link>
             );
@@ -28,7 +28,7 @@ class Tag extends React.Component<props> {
     renderButton(): JSX.Element {
         return (
             <button className={styles.tagbtn} onClick={(): void => this.TagClick()}
-                    data-testid='Test-Tag'>{this.props.tagInfo.tag_name}</button>
+                    data-testid='Test-Tag'>{this.props.tagInfo.TagName}</button>
         );
     }
 
@@ -38,7 +38,7 @@ class Tag extends React.Component<props> {
     TagClick(): void {
         if (this.props.onclick) {
             // call custom onclick handling
-            this.props.onclick(this.props.tagInfo.tag_name); // todo check if param is neccessary
+            this.props.onclick(this.props.tagInfo.TagName); // todo check if param is neccessary
             return;
         }
     }

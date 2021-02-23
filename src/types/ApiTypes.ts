@@ -2,56 +2,59 @@ import {ActorType, TagType} from './VideoTypes';
 
 export namespace VideoTypes {
     export interface loadVideoType {
-        movie_url: string
-        thumbnail: string
-        movie_id: number
-        movie_name: string
-        likes: number
-        quality: number
-        length: number
-        tags: TagType[]
-        suggesttag: TagType[]
-        actors: ActorType[]
+        MovieUrl: string
+        Poster: string
+        MovieId: number
+        MovieName: string
+        Likes: number
+        Quality: number
+        Length: number
+        Tags: TagType[]
+        SuggestedTag: TagType[]
+        Actors: ActorType[]
     }
 
     export interface startDataType {
-        total: number;
-        fullhd: number;
-        hd: number;
-        sd: number;
-        tags: number;
+        VideoNr: number;
+        FullHdNr: number;
+        HDNr: number;
+        SDNr: number;
+        DifferentTags: number;
+        Tagged: number;
     }
 
     export interface VideoUnloadedType {
-        movie_id: number;
-        movie_name: string
+        MovieId: number;
+        MovieName: string
     }
 }
 
 export namespace SettingsTypes {
     export interface initialApiCallData {
         DarkMode: boolean;
-        passwordEnabled: boolean;
-        mediacenter_name: string;
+        Password: boolean;
+        Mediacenter_name: string;
+        VideoPath: string;
     }
 
     export interface loadGeneralSettingsType {
-        video_path: string,
-        episode_path: string,
-        mediacenter_name: string,
-        password: string,
-        passwordEnabled: boolean,
-        TMDB_grabbing: boolean,
+        VideoPath: string,
+        EpisodePath: string,
+        MediacenterName: string,
+        Password: string,
+        PasswordEnabled: boolean,
+        TMDBGrabbing: boolean,
+        DarkMode: boolean,
 
-        videonr: number,
-        dbsize: number,
-        difftagnr: number,
-        tagsadded: number
+        VideoNr: number,
+        DBSize: number,
+        DifferentTags: number,
+        TagsAdded: number
     }
 
     export interface getStatusMessageType {
-        contentAvailable: boolean;
-        message: string;
+        ContentAvailable: boolean;
+        Messages: string[];
     }
 }
 
@@ -60,7 +63,7 @@ export namespace ActorTypes {
      * result of actor fetch
      */
     export interface videofetchresult {
-        videos: VideoTypes.VideoUnloadedType[];
-        info: ActorType;
+        Videos: VideoTypes.VideoUnloadedType[];
+        Info: ActorType;
     }
 }

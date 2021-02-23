@@ -14,7 +14,7 @@ describe('<AddTagPopup/>', function () {
     it('test tag insertion', function () {
         const wrapper = shallow(<AddTagPopup/>);
         wrapper.setState({
-            items: [{tag_id: 1, tag_name: 'test'}, {tag_id: 2, tag_name: 'ee'}]
+            items: [{TagId: 1, TagName: 'test'}, {TagId: 2, TagName: 'ee'}]
         }, () => {
             expect(wrapper.find('Tag')).toHaveLength(2);
             expect(wrapper.find('Tag').first().dive().text()).toBe('test');

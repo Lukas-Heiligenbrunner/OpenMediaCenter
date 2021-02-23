@@ -52,10 +52,9 @@ describe('<MovieSettings/>', function () {
 
     it('content available received and in state', () => {
         const wrapper = shallow(<MovieSettings/>);
-
         callAPIMock({
-            contentAvailable: true,
-            message: 'firstline\nsecondline'
+            ContentAvailable: true,
+            Messages: ['firstline', 'secondline']
         })
 
         wrapper.instance().updateStatus();
@@ -70,7 +69,8 @@ describe('<MovieSettings/>', function () {
 
     it('test reindex with no content available', () => {
         callAPIMock({
-            contentAvailable: false
+            Messages: [],
+            ContentAvailable: false
         })
 
         global.clearInterval = jest.fn();
@@ -99,12 +99,12 @@ describe('<MovieSettings/>', function () {
         expect(wrapper.instance().setState).toBeCalledTimes(1);
     });
 
-    it('test no textDiv insertion if string is empty', function () {
+    it('expect insertion before existing ones', function () {
         const wrapper = shallow(<MovieSettings/>);
 
         callAPIMock({
-            contentAvailable: true,
-            message: 'test'
+            ContentAvailable: true,
+            Messages: ['test']
         })
 
         wrapper.instance().updateStatus();
@@ -115,14 +115,14 @@ describe('<MovieSettings/>', function () {
 
         // expect an untouched state if we try to add an empty string...
         callAPIMock({
-            contentAvailable: true,
-            message: ''
+            ContentAvailable: true,
+            Messages: ['']
         })
 
         wrapper.instance().updateStatus();
 
         expect(wrapper.state()).toMatchObject({
-            text: ['test']
+            text: ['', 'test']
         });
     });
 });
