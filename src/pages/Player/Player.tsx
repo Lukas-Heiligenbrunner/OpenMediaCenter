@@ -12,7 +12,7 @@ import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
 import AddActorPopup from '../../elements/Popups/AddActorPopup/AddActorPopup';
 import ActorTile from '../../elements/ActorTile/ActorTile';
 import {withRouter} from 'react-router-dom';
-import {callAPI, getBackendDomain} from '../../utils/Api';
+import {callAPI, getBackendDomain, APINode} from '../../utils/Api';
 import {RouteComponentProps} from 'react-router';
 import {GeneralSuccess} from '../../types/GeneralTypes';
 import {ActorType, TagType} from '../../types/VideoTypes';
@@ -358,7 +358,7 @@ export class Player extends React.Component<myprops, mystate> {
      * delete a tag from the current video
      */
     private deleteTag(tag_id: number): void {
-        callAPI<GeneralSuccess>('tags.php',
+        callAPI<GeneralSuccess>(APINode.Tags,
             {action: 'deleteVideoTag', video_id: this.props.match.params.id, tag_id: tag_id},
             (res) => {
                 if (res.result !== 'success') {
@@ -368,7 +368,7 @@ export class Player extends React.Component<myprops, mystate> {
                 }else{
                     // check if tag has already been added
                     const tagIndex = this.state.tags.map(function (e: TagType) {
-                        return e.tag_id;
+                        return e.TagId;
                     }).indexOf(tag_id);
 
 
