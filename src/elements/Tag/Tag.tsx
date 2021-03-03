@@ -42,10 +42,13 @@ class Tag extends React.Component<props, state> {
 
     renderButton(): JSX.Element {
         return (
-            <button className={styles.tagbtn}
-                    onClick={(): void => this.TagClick()}
-                    onContextMenu={this.contextmenu}
-                    data-testid='Test-Tag'>{this.props.tagInfo.TagName}</button>
+            <span className={styles.tagbtnContainer}>
+                <button className={styles.btnnostyle}
+                        onClick={(): void => this.TagClick()}
+                        onContextMenu={this.contextmenu}
+                        data-testid='Test-Tag'>{this.props.tagInfo.TagName}</button>
+                <span className={styles.deletebtn}>X</span>
+            </span>
         );
     }
 

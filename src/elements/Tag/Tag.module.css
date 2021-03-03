@@ -1,19 +1,37 @@
-.tagbtn {
-    background-color: #3574fe;
+.btnnostyle {
+    background: none;
+    color: inherit;
     border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+}
+
+.tagbtnContainer {
+    background-color: #3574fe;
     border-radius: 10px;
     color: white;
     margin-left: 10px;
     margin-top: 15px;
+    width: 50px;
     /*font-weight: bold;*/
     padding: 5px 15px 5px 15px;
 }
 
-.tagbtn:focus {
+.tagbtnContainer:focus {
     background-color: #004eff;
     outline: none;
 }
 
-.tagbtn:hover {
+.tagbtnContainer:hover {
     background-color: #004eff;
+}
+
+.deletebtn{
+    display: none;
+}
+
+.tagbtnContainer:hover .deletebtn {
+    display: inline;
 }
