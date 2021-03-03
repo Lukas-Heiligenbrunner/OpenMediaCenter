@@ -4,9 +4,10 @@ import SideBar, {SideBarTitle} from '../../elements/SideBar/SideBar';
 import Tag from '../../elements/Tag/Tag';
 import PageTitle from '../../elements/PageTitle/PageTitle';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
-import {callAPI} from '../../utils/Api';
+import {APINode, callAPI} from '../../utils/Api';
 import {TagType} from '../../types/VideoTypes';
 import {VideoTypes} from '../../types/ApiTypes';
+import {addKeyHandler, removeKeyHandler} from '../../utils/ShortkeyHandler';
 
 interface state {
     videos: VideoTypes.VideoUnloadedType[];
@@ -14,8 +15,8 @@ interface state {
 }
 
 interface GetRandomMoviesType {
-    rows: VideoTypes.VideoUnloadedType[];
-    tags: TagType[];
+    Videos: VideoTypes.VideoUnloadedType[];
+    Tags: TagType[];
 }
 
 /**
@@ -29,10 +30,18 @@ class RandomPage extends React.Component<{}, state> {
             videos: [],
             tags: []
         };
+
+        this.keypress = this.keypress.bind(this);
     }
 
     componentDidMount(): void {
+        addKeyHandler(this.keypress);
+
         this.loadShuffledvideos(4);
+    }
+
+    componentWillUnmount(): void {
+        removeKeyHandler(this.keypress);
     }
 
     render(): JSX.Element {
@@ -44,7 +53,7 @@ class RandomPage extends React.Component<{}, state> {
                 <SideBar>
                     <SideBarTitle>Visible Tags:</SideBarTitle>
                     {this.state.tags.map((m) => (
-                        <Tag key={m.tag_id} tagInfo={m}/>
+                        <Tag key={m.TagId} tagInfo={m}/>
                     ))}
                 </SideBar>
 
@@ -74,15 +83,25 @@ class RandomPage extends React.Component<{}, state> {
      * @param nr number of videos to load
      */
     loadShuffledvideos(nr: number): void {
-        callAPI<GetRandomMoviesType>('video.php', {action: 'getRandomMovies', number: nr}, result => {
-            console.log(result);
-
+        callAPI<GetRandomMoviesType>(APINode.Video, {action: 'getRandomMovies', number: nr}, result => {
+            console.log(result)
             this.setState({videos: []}); // needed to trigger rerender of main videoview
             this.setState({
-                videos: result.rows,
-                tags: result.tags
+                videos: result.Videos,
+                tags: result.Tags
             });
         });
+    }
+
+    /**
+     * key event handling
+     * @param event keyevent
+     */
+    private keypress(event: KeyboardEvent): void {
+        // bind s to shuffle
+        if (event.key === 's') {
+            this.loadShuffledvideos(4);
+        }
     }
 }
 

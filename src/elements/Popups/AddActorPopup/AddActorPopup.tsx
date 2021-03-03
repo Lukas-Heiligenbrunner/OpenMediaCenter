@@ -3,12 +3,13 @@ import React from 'react';
 import ActorTile from '../../ActorTile/ActorTile';
 import style from './AddActorPopup.module.css';
 import {NewActorPopupContent} from '../NewActorPopup/NewActorPopup';
-import {callAPI} from '../../../utils/Api';
+import {APINode, callAPI} from '../../../utils/Api';
 import {ActorType} from '../../../types/VideoTypes';
 import {GeneralSuccess} from '../../../types/GeneralTypes';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faFilter, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {Button} from '../../GPElements/Button';
+import {addKeyHandler, removeKeyHandler} from '../../../utils/ShortkeyHandler';
 
 interface props {
     onHide: () => void;
@@ -41,6 +42,19 @@ class AddActorPopup extends React.Component<props, state> {
 
         this.tileClickHandler = this.tileClickHandler.bind(this);
         this.filterSearch = this.filterSearch.bind(this);
+        this.parentSubmit = this.parentSubmit.bind(this);
+        this.keypress = this.keypress.bind(this);
+    }
+
+    componentWillUnmount(): void {
+        removeKeyHandler(this.keypress);
+    }
+
+    componentDidMount(): void {
+        addKeyHandler(this.keypress);
+
+        // fetch the available actors
+        this.loadActors();
     }
 
     render(): JSX.Element {
@@ -52,16 +66,11 @@ class AddActorPopup extends React.Component<props, state> {
                         className={style.newactorbutton}
                         onClick={(): void => {
                             this.setState({contentDefault: false});
-                        }}>Create new Actor</button>}>
+                        }}>Create new Actor</button>} ParentSubmit={this.parentSubmit}>
                     {this.resolvePage()}
                 </PopupBase>
             </>
         );
-    }
-
-    componentDidMount(): void {
-        // fetch the available actors
-        this.loadActors();
     }
 
     /**
@@ -101,15 +110,13 @@ class AddActorPopup extends React.Component<props, state> {
                                         this.setState({filter: '', filtervisible: false});
                                     }}/>
                                 </> :
-                                <Button title={<span>Filter <FontAwesomeIcon style={{
-                                    verticalAlign: 'middle',
-                                    lineHeight: '130px'
-                                }} icon={faFilter} size='1x'/></span>} color={{backgroundColor: 'cornflowerblue', color: 'white'}} onClick={(): void => {
-                                    this.setState({filtervisible: true}, () => {
-                                        // focus filterfield after state update
-                                        this.filterfield?.focus();
-                                    });
-                                }}/>
+                                <Button
+                                    title={<span>Filter <FontAwesomeIcon style={{
+                                        verticalAlign: 'middle',
+                                        lineHeight: '130px'
+                                    }} icon={faFilter} size='1x'/></span>}
+                                    color={{backgroundColor: 'cornflowerblue', color: 'white'}}
+                                    onClick={(): void => this.enableFilterField()}/>
                         }
                     </div>
                     {this.state.actors.filter(this.filterSearch).map((el) => (<ActorTile actor={el} onClick={this.tileClickHandler}/>))}
@@ -125,10 +132,10 @@ class AddActorPopup extends React.Component<props, state> {
      */
     tileClickHandler(actor: ActorType): void {
         // fetch the available actors
-        callAPI<GeneralSuccess>('actor.php', {
+        callAPI<GeneralSuccess>(APINode.Actor, {
             action: 'addActorToVideo',
-            actorid: actor.actor_id,
-            videoid: this.props.movie_id
+            ActorId: actor.ActorId,
+            MovieId: this.props.movie_id
         }, result => {
             if (result.result === 'success') {
                 // return back to player page
@@ -143,8 +150,18 @@ class AddActorPopup extends React.Component<props, state> {
      * load the actors from backend and set state
      */
     loadActors(): void {
-        callAPI<ActorType[]>('actor.php', {action: 'getAllActors'}, result => {
+        callAPI<ActorType[]>(APINode.Actor, {action: 'getAllActors'}, result => {
             this.setState({actors: result});
+        });
+    }
+
+    /**
+     * enable filterfield and focus into searchbar
+     */
+    private enableFilterField(): void {
+        this.setState({filtervisible: true}, () => {
+            // focus filterfield after state update
+            this.filterfield?.focus();
         });
     }
 
@@ -153,7 +170,31 @@ class AddActorPopup extends React.Component<props, state> {
      * @param actor
      */
     private filterSearch(actor: ActorType): boolean {
-        return actor.name.toLowerCase().includes(this.state.filter.toLowerCase());
+        return actor.Name.toLowerCase().includes(this.state.filter.toLowerCase());
+    }
+
+    /**
+     * handle a Popupbase parent submit action
+     */
+    private parentSubmit(): void {
+        // allow submit only if one item is left in selection
+        const filteredList = this.state.actors.filter(this.filterSearch);
+
+        if (filteredList.length === 1) {
+            // simulate click if parent submit
+            this.tileClickHandler(filteredList[0]);
+        }
+    }
+
+    /**
+     * key event handling
+     * @param event keyevent
+     */
+    private keypress(event: KeyboardEvent): void {
+        // hide if escape is pressed
+        if (event.key === 'f') {
+            this.enableFilterField();
+        }
     }
 }
 

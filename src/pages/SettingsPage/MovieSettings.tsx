@@ -1,6 +1,6 @@
 import React from 'react';
 import style from './MovieSettings.module.css';
-import {callAPI} from '../../utils/Api';
+import {APINode, callAPI} from '../../utils/Api';
 import {GeneralSuccess} from '../../types/GeneralTypes';
 import {SettingsTypes} from '../../types/ApiTypes';
 
@@ -47,7 +47,7 @@ class MovieSettings extends React.Component<props, state> {
                         onClick={(): void => {this.cleanupGravity();}}>Cleanup Gravity
                 </button>
                 <div className={style.indextextarea}>{this.state.text.map(m => (
-                    <div className='textarea-element'>{m}</div>
+                    <div key={m} className='textarea-element'>{m}</div>
                 ))}</div>
             </>
         );
@@ -58,13 +58,9 @@ class MovieSettings extends React.Component<props, state> {
      */
     startReindex(): void {
         // clear output text before start
-        this.setState({text: []});
+        this.setState({text: [], startbtnDisabled: true});
 
-        this.setState({startbtnDisabled: true});
-
-        console.log('starting');
-
-        callAPI('settings.php', {action: 'startReindex'}, (result: GeneralSuccess): void => {
+        callAPI(APINode.Settings, {action: 'startReindex'}, (result: GeneralSuccess): void => {
             console.log(result);
             if (result.result === 'success') {
                 console.log('started successfully');
@@ -84,16 +80,13 @@ class MovieSettings extends React.Component<props, state> {
      * This interval function reloads the current status of reindexing from backend
      */
     updateStatus = (): void => {
-        callAPI('settings.php', {action: 'getStatusMessage'}, (result: SettingsTypes.getStatusMessageType) => {
-            if (result.contentAvailable === true) {
-                console.log(result);
-                // todo 2020-07-4: scroll to bottom of div here
-                this.setState({
-                    // insert a string for each line
-                    text: [...result.message.split('\n'),
-                        ...this.state.text]
-                });
-            } else {
+        callAPI(APINode.Settings, {action: 'getStatusMessage'}, (result: SettingsTypes.getStatusMessageType) => {
+            this.setState({
+                // insert a string for each line
+                text: [...result.Messages, ...this.state.text]
+            });
+            // todo 2020-07-4: scroll to bottom of div here
+            if (!result.ContentAvailable) {
                 // clear refresh interval if no content available
                 clearInterval(this.myinterval);
 
@@ -106,7 +99,7 @@ class MovieSettings extends React.Component<props, state> {
      * send request to cleanup db gravity
      */
     cleanupGravity(): void {
-        callAPI('settings.php', {action: 'cleanupGravity'}, (result) => {
+        callAPI(APINode.Settings, {action: 'cleanupGravity'}, (result) => {
             this.setState({
                 text: ['successfully cleaned up gravity!']
             });

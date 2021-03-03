@@ -4,7 +4,7 @@ import GlobalInfos from '../../utils/GlobalInfos';
 
 interface props {
     title: string;
-    subtitle: string | null;
+    subtitle: string | number | null;
 }
 
 /**

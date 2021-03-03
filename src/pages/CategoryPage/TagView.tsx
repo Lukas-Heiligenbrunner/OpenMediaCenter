@@ -3,21 +3,28 @@ import React from 'react';
 import videocontainerstyle from '../../elements/VideoContainer/VideoContainer.module.css';
 import {Link} from 'react-router-dom';
 import {TagPreview} from '../../elements/Preview/Preview';
-import {callAPI} from '../../utils/Api';
+import {APINode, callAPI} from '../../utils/Api';
+import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
+import SideBar, {SideBarTitle} from '../../elements/SideBar/SideBar';
+import Tag from '../../elements/Tag/Tag';
+import {DefaultTags} from '../../types/GeneralTypes';
+import NewTagPopup from '../../elements/Popups/NewTagPopup/NewTagPopup';
 
 interface TagViewState {
     loadedtags: TagType[];
+    popupvisible: boolean;
 }
 
-interface props {
-    setSubTitle: (title: string) => void
-}
+interface props {}
 
 class TagView extends React.Component<props, TagViewState> {
     constructor(props: props) {
         super(props);
 
-        this.state = {loadedtags: []};
+        this.state = {
+            loadedtags: [],
+            popupvisible: false
+        };
     }
 
     componentDidMount(): void {
@@ -27,15 +34,32 @@ class TagView extends React.Component<props, TagViewState> {
     render(): JSX.Element {
         return (
             <>
+                <PageTitle
+                    title='Categories'
+                    subtitle={this.state.loadedtags.length + ' different Tags'}/>
+
+                <SideBar>
+                    <SideBarTitle>Default Tags:</SideBarTitle>
+                    <Tag tagInfo={DefaultTags.all}/>
+                    <Tag tagInfo={DefaultTags.fullhd}/>
+                    <Tag tagInfo={DefaultTags.hd}/>
+                    <Tag tagInfo={DefaultTags.lowq}/>
+
+                    <Line/>
+                    <button data-testid='btnaddtag' className='btn btn-success' onClick={(): void => {
+                        this.setState({popupvisible: true});
+                    }}>Add a new Tag!
+                    </button>
+                </SideBar>
                 <div className={videocontainerstyle.maincontent}>
                     {this.state.loadedtags ?
                         this.state.loadedtags.map((m) => (
-                            <Link to={'/categories/' + m.tag_id}><TagPreview
-                                key={m.tag_id}
-                                name={m.tag_name}/></Link>
+                            <Link to={'/categories/' + m.TagId} key={m.TagId}>
+                                <TagPreview name={m.TagName}/></Link>
                         )) :
                         'loading'}
                 </div>
+                {this.handlePopups()}
             </>
         );
     }
@@ -44,10 +68,22 @@ class TagView extends React.Component<props, TagViewState> {
      * load all available tags from db.
      */
     loadTags(): void {
-        callAPI<TagType[]>('tags.php', {action: 'getAllTags'}, result => {
+        callAPI<TagType[]>(APINode.Tags, {action: 'getAllTags'}, result => {
             this.setState({loadedtags: result});
-            this.props.setSubTitle(result.length + ' different Tags');
         });
+    }
+
+    private handlePopups(): JSX.Element {
+        if (this.state.popupvisible) {
+            return (
+                <NewTagPopup onHide={(): void => {
+                    this.setState({popupvisible: false});
+                    this.loadTags();
+                }}/>
+            );
+        } else {
+            return (<></>);
+        }
     }
 }
 

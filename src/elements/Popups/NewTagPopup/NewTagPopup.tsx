@@ -1,7 +1,7 @@
 import React from 'react';
 import PopupBase from '../PopupBase';
 import style from './NewTagPopup.module.css';
-import {callAPI} from '../../../utils/Api';
+import {APINode, callAPI} from '../../../utils/Api';
 import {GeneralSuccess} from '../../../types/GeneralTypes';
 
 interface props {
@@ -16,7 +16,7 @@ class NewTagPopup extends React.Component<props> {
 
     render(): JSX.Element {
         return (
-            <PopupBase title='Add new Tag' onHide={this.props.onHide} height='200px' width='400px'>
+            <PopupBase title='Add new Tag' onHide={this.props.onHide} height='200px' width='400px' ParentSubmit={(): void => this.storeselection()}>
                 <div><input type='text' placeholder='Tagname' onChange={(v): void => {
                     this.value = v.target.value;
                 }}/></div>
@@ -29,7 +29,7 @@ class NewTagPopup extends React.Component<props> {
      * store the filled in form to the backend
      */
     storeselection(): void {
-        callAPI('tags.php', {action: 'createTag', tagname: this.value}, (result: GeneralSuccess) => {
+        callAPI(APINode.Tags, {action: 'createTag', TagName: this.value}, (result: GeneralSuccess) => {
             if (result.result !== 'success') {
                 console.log('error occured while writing to db -- todo error handling');
                 console.log(result.result);

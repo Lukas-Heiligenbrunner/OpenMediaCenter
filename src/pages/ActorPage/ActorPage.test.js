@@ -10,13 +10,13 @@ describe('<ActorPage/>', function () {
 
     it('fetch infos', function () {
         callAPIMock({
-            videos: [{
-                movie_id: 0,
-                movie_name: 'test'
-            }], info: {
-                thumbnail: '',
-                name: '',
-                actor_id: 0
+            Videos: [{
+                MovieId: 0,
+                MovieName: 'test'
+            }], Info: {
+                Thumbnail: '',
+                Name: '',
+                ActorId: 0
             }
         });
 

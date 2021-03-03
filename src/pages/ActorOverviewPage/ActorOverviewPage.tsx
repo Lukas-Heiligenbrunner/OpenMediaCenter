@@ -1,5 +1,5 @@
 import React from 'react';
-import {callAPI} from '../../utils/Api';
+import {APINode, callAPI} from '../../utils/Api';
 import {ActorType} from '../../types/VideoTypes';
 import ActorTile from '../../elements/ActorTile/ActorTile';
 import PageTitle from '../../elements/PageTitle/PageTitle';
@@ -24,7 +24,9 @@ class ActorOverviewPage extends React.Component<props, state> {
             actors: [],
             NActorPopupVisible: false
         };
+    }
 
+    componentDidMount(): void {
         this.fetchAvailableActors();
     }
 
@@ -36,7 +38,7 @@ class ActorOverviewPage extends React.Component<props, state> {
                     <Button title='Add Actor' onClick={(): void => this.setState({NActorPopupVisible: true})}/>
                 </SideBar>
                 <div className={style.container}>
-                    {this.state.actors.map((el) => (<ActorTile actor={el}/>))}
+                    {this.state.actors.map((el) => (<ActorTile key={el.ActorId} actor={el}/>))}
                 </div>
                 {this.state.NActorPopupVisible ?
                     <NewActorPopup onHide={(): void => {
@@ -48,7 +50,7 @@ class ActorOverviewPage extends React.Component<props, state> {
     }
 
     fetchAvailableActors(): void {
-        callAPI<ActorType[]>('actor.php', {action: 'getAllActors'}, result => {
+        callAPI<ActorType[]>(APINode.Actor, {action: 'getAllActors'}, result => {
             this.setState({actors: result});
         });
     }

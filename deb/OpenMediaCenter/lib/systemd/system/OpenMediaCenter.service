@@ -1,0 +1,12 @@
+[Unit]
+Description=OpenMediaCenter start job
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=openmediacenter
+Restart=always
+User=root
+
+[Install]
+WantedBy=default.target

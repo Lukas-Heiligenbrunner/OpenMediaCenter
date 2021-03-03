@@ -31,7 +31,7 @@ describe('<AddActorPopup/>', function () {
     });
 
     it('test api call and insertion of actor tiles', function () {
-        global.callAPIMock([{id: 1, name: 'test'}, {id: 2, name: 'test2'}]);
+        global.callAPIMock([{Id: 1, Name: 'test'}, {Id: 2, Name: 'test2'}]);
 
         const wrapper = shallow(<AddActorPopup/>);
 
@@ -44,7 +44,7 @@ describe('<AddActorPopup/>', function () {
 
         global.callAPIMock({result: 'success'});
 
-        wrapper.setState({actors: [{actor_id: 1, name: 'test'}]}, () => {
+        wrapper.setState({actors: [{ActorId: 1, Name: 'test'}]}, () => {
             wrapper.find('ActorTile').dive().simulate('click');
 
             expect(callAPI).toHaveBeenCalledTimes(1);
@@ -59,7 +59,7 @@ describe('<AddActorPopup/>', function () {
 
         global.callAPIMock({result: 'nosuccess'});
 
-        wrapper.setState({actors: [{actor_id: 1, name: 'test'}]}, () => {
+        wrapper.setState({actors: [{ActorId: 1, Name: 'test'}]}, () => {
             wrapper.find('ActorTile').dive().simulate('click');
 
             expect(callAPI).toHaveBeenCalledTimes(1);
@@ -73,5 +73,17 @@ describe('<AddActorPopup/>', function () {
         const wrapper = shallow(<AddActorPopup/>);
 
         expect(wrapper.find('PopupBase').find('ActorTile')).toHaveLength(0);
+    });
+
+    it('test Enter submit if only one element left', function () {
+        const wrapper = shallow(<AddActorPopup/>);
+
+        callAPIMock({});
+
+        wrapper.setState({actors: [{Name: 'test', ActorId: 1}]});
+
+        wrapper.find('PopupBase').props().ParentSubmit();
+
+        expect(callAPI).toHaveBeenCalledTimes(1);
     });
 });

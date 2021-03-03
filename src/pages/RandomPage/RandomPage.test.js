@@ -1,6 +1,7 @@
 import {shallow} from 'enzyme';
 import React from 'react';
 import RandomPage from './RandomPage';
+import {callAPI} from '../../utils/Api';
 
 describe('<RandomPage/>', function () {
     it('renders without crashing ', function () {
@@ -44,5 +45,21 @@ describe('<RandomPage/>', function () {
         });
 
         expect(wrapper.find('Tag')).toHaveLength(2);
+    });
+
+    it('test shortkey press', function () {
+        let events = [];
+        document.addEventListener = jest.fn((event, cb) => {
+            events[event] = cb;
+        });
+
+        shallow(<RandomPage/>);
+
+        callAPIMock({Videos: [], Tags: []});
+
+        // trigger the keypress event
+        events.keyup({key: 's'});
+
+        expect(callAPI).toBeCalledTimes(1);
     });
 });

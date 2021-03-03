@@ -3,10 +3,10 @@ import style from './Preview.module.css';
 import {Spinner} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import GlobalInfos from '../../utils/GlobalInfos';
-import {callAPIPlain} from '../../utils/Api';
 import {faEllipsisV} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import QuickActionPop from '../QuickActionPop/QuickActionPop';
+import {APINode, callAPIPlain} from '../../utils/Api';
 
 interface PreviewProps {
     name: string;
@@ -33,7 +33,7 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
     }
 
     componentDidMount(): void {
-        callAPIPlain('video.php', {action: 'readThumbnail', movieid: this.props.movie_id}, (result) => {
+        callAPIPlain(APINode.Video, {action: 'readThumbnail', movieid: this.props.movie_id}, (result) => {
             this.setState({
                 previewpicture: result
             });

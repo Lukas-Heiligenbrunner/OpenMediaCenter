@@ -1,16 +1,21 @@
 import {RouteComponentProps} from 'react-router';
 import React from 'react';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
-import {callAPI} from '../../utils/Api';
+import {APINode, callAPI} from '../../utils/Api';
 import {withRouter} from 'react-router-dom';
 import {VideoTypes} from '../../types/ApiTypes';
+import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
+import SideBar, {SideBarTitle} from '../../elements/SideBar/SideBar';
+import Tag from '../../elements/Tag/Tag';
+import {DefaultTags, GeneralSuccess} from '../../types/GeneralTypes';
+import {Button} from '../../elements/GPElements/Button';
+import SubmitPopup from '../../elements/Popups/SubmitPopup/SubmitPopup';
 
-interface CategoryViewProps extends RouteComponentProps<{ id: string }> {
-    setSubTitle: (title: string) => void
-}
+interface CategoryViewProps extends RouteComponentProps<{ id: string }> {}
 
 interface CategoryViewState {
-    loaded: boolean
+    loaded: boolean;
+    submitForceDelete: boolean;
 }
 
 /**
@@ -23,7 +28,8 @@ export class CategoryView extends React.Component<CategoryViewProps, CategoryVie
         super(props);
 
         this.state = {
-            loaded: false
+            loaded: false,
+            submitForceDelete: false
         };
     }
 
@@ -42,6 +48,20 @@ export class CategoryView extends React.Component<CategoryViewProps, CategoryVie
     render(): JSX.Element {
         return (
             <>
+                <PageTitle
+                    title='Categories'
+                    subtitle={this.videodata.length + ' Videos'}/>
+
+                <SideBar>
+                    <SideBarTitle>Default Tags:</SideBarTitle>
+                    <Tag tagInfo={DefaultTags.all}/>
+                    <Tag tagInfo={DefaultTags.fullhd}/>
+                    <Tag tagInfo={DefaultTags.hd}/>
+                    <Tag tagInfo={DefaultTags.lowq}/>
+
+                    <Line/>
+                    <Button title='Delete Tag' onClick={(): void => {this.deleteTag(false);}} color={{backgroundColor: 'red'}}/>
+                </SideBar>
                 {this.state.loaded ?
                     <VideoContainer
                         data={this.videodata}/> : null}
@@ -51,22 +71,50 @@ export class CategoryView extends React.Component<CategoryViewProps, CategoryVie
                             this.props.history.push('/categories');
                         }}>Back to Categories
                 </button>
+                {this.handlePopups()}
             </>
         );
+    }
+
+    private handlePopups(): JSX.Element {
+        if (this.state.submitForceDelete) {
+            return (<SubmitPopup
+                onHide={(): void => this.setState({submitForceDelete: false})}
+                submit={(): void => {this.deleteTag(true);}}/>);
+        } else {
+            return <></>;
+        }
     }
 
     /**
      * fetch data for a specific tag from backend
      * @param id tagid
      */
-    fetchVideoData(id: number): void {
-        callAPI<VideoTypes.VideoUnloadedType[]>('video.php', {action: 'getMovies', tag: id}, result => {
+    private fetchVideoData(id: number): void {
+        callAPI<VideoTypes.VideoUnloadedType[]>(APINode.Video, {action: 'getMovies', tag: id}, result => {
             this.videodata = result;
             this.setState({loaded: true});
-            this.props.setSubTitle(this.videodata.length + ' Videos');
         });
     }
 
+    /**
+     * delete the current tag
+     */
+    private deleteTag(force: boolean): void {
+        callAPI<GeneralSuccess>(APINode.Tags, {
+            action: 'deleteTag',
+            TagId: parseInt(this.props.match.params.id),
+            Force: force
+        }, result => {
+            console.log(result.result);
+            if (result.result === 'success') {
+                this.props.history.push('/categories');
+            } else if (result.result === 'not empty tag') {
+                // show submisison tag to ask if really delete
+                this.setState({submitForceDelete: true});
+            }
+        });
+    }
 }
 
 /**

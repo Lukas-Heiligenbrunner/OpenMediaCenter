@@ -22,13 +22,12 @@ class ActorTile extends React.Component<props> {
             return this.renderActorTile(this.props.onClick);
         } else {
             return (
-                <Link to={{pathname: '/actors/' + this.props.actor.actor_id}}>
+                <Link to={{pathname: '/actors/' + this.props.actor.ActorId}}>
                     {this.renderActorTile(() => {
                     })}
                 </Link>
             );
         }
-
     }
 
     /**
@@ -39,11 +38,11 @@ class ActorTile extends React.Component<props> {
         return (
             <div className={style.actortile} onClick={(): void => customclickhandler(this.props.actor)}>
                 <div className={style.actortile_thumbnail}>
-                    {this.props.actor.thumbnail === null ? <FontAwesomeIcon style={{
+                    {this.props.actor.Thumbnail === '' ? <FontAwesomeIcon style={{
                         lineHeight: '130px'
                     }} icon={faUser} size='5x'/> : 'dfdf' /* todo render picture provided here! */}
                 </div>
-                <div className={style.actortile_name}>{this.props.actor.name}</div>
+                <div className={style.actortile_name}>{this.props.actor.Name}</div>
             </div>
         );
     }

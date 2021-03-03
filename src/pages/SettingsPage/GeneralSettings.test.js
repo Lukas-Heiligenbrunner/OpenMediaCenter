@@ -80,48 +80,48 @@ describe('<GeneralSettings/>', function () {
     it('test videopath change event', function () {
         const wrapper = shallow(<GeneralSettings/>);
 
-        expect(wrapper.state().videopath).not.toBe('test');
+        expect(wrapper.state().generalSettings.VideoPath).not.toBe('test');
 
         const event = {target: {name: 'pollName', value: 'test'}};
         wrapper.find('[data-testid=\'videpathform\']').find('FormControl').simulate('change', event);
-        expect(wrapper.state().videopath).toBe('test');
+        expect(wrapper.state().generalSettings.VideoPath).toBe('test');
     });
 
     it('test tvshowpath change event', function () {
         const wrapper = shallow(<GeneralSettings/>);
 
         const event = {target: {name: 'pollName', value: 'test'}};
-        expect(wrapper.state().tvshowpath).not.toBe('test');
+        expect(wrapper.state().generalSettings.EpisodePath).not.toBe('test');
         wrapper.find('[data-testid=\'tvshowpath\']').find('FormControl').simulate('change', event);
-        expect(wrapper.state().tvshowpath).toBe('test');
+        expect(wrapper.state().generalSettings.EpisodePath).toBe('test');
     });
 
     it('test mediacentername-form change event', function () {
         const wrapper = shallow(<GeneralSettings/>);
 
         const event = {target: {name: 'pollName', value: 'test'}};
-        expect(wrapper.state().mediacentername).not.toBe('test');
+        expect(wrapper.state().generalSettings.MediacenterName).not.toBe('test');
         wrapper.find('[data-testid=\'nameform\']').find('FormControl').simulate('change', event);
-        expect(wrapper.state().mediacentername).toBe('test');
+        expect(wrapper.state().generalSettings.MediacenterName).toBe('test');
     });
 
     it('test password-form change event', function () {
         const wrapper = shallow(<GeneralSettings/>);
-        wrapper.setState({passwordsupport: true});
+        wrapper.setState({generalSettings : {PasswordEnabled: true}});
 
         const event = {target: {name: 'pollName', value: 'test'}};
-        expect(wrapper.state().password).not.toBe('test');
+        expect(wrapper.state().generalSettings.Password).not.toBe('test');
         wrapper.find('[data-testid=\'passwordfield\']').find('FormControl').simulate('change', event);
-        expect(wrapper.state().password).toBe('test');
+        expect(wrapper.state().generalSettings.Password).toBe('test');
     });
 
     it('test tmdbsupport change event', function () {
         const wrapper = shallow(<GeneralSettings/>);
-        wrapper.setState({tmdbsupport: true});
+        wrapper.setState({generalSettings : {TMDBGrabbing: true}});
 
-        expect(wrapper.state().tmdbsupport).toBe(true);
+        expect(wrapper.state().generalSettings.TMDBGrabbing).toBe(true);
         wrapper.find('[data-testid=\'tmdb-switch\']').simulate('change');
-        expect(wrapper.state().tmdbsupport).toBe(false);
+        expect(wrapper.state().generalSettings.TMDBGrabbing).toBe(false);
     });
 
     it('test insertion of 4 infoheaderitems', function () {

@@ -190,15 +190,15 @@ describe('<Player/>', function () {
         const wrapper = instance();
         global.callAPIMock({result: 'success'});
 
-        wrapper.setState({suggesttag: [{tag_name: 'test', tag_id: 1}]}, () => {
+        wrapper.setState({suggesttag: [{TagName: 'test', TagId: 1}]}, () => {
             // mock funtion should have not been called
             expect(callAPI).toBeCalledTimes(0);
-            wrapper.find('Tag').findWhere(p => p.props().tagInfo.tag_name === 'test').dive().simulate('click');
+            wrapper.find('Tag').findWhere(p => p.props().tagInfo.TagName === 'test').dive().simulate('click');
             // mock function should have been called once
             expect(callAPI).toBeCalledTimes(1);
 
             // expect tag added to video tags
-            expect(wrapper.state().tags).toMatchObject([{tag_name: 'test'}]);
+            expect(wrapper.state().tags).toMatchObject([{TagName: 'test'}]);
             // expect tag to be removed from tag suggestions
             expect(wrapper.state().suggesttag).toHaveLength(0);
         });

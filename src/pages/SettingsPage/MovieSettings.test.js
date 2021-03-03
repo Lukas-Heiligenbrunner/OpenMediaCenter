@@ -1,6 +1,7 @@
 import {shallow} from 'enzyme';
 import React from 'react';
 import MovieSettings from './MovieSettings';
+import {callAPI} from "../../utils/Api";
 
 describe('<MovieSettings/>', function () {
     it('renders without crashing ', function () {
@@ -49,64 +50,79 @@ describe('<MovieSettings/>', function () {
         });
     });
 
-    it('content available received and in state', done => {
-        global.fetch = global.prepareFetchApi({
-            contentAvailable: true,
-            message: 'firstline\nsecondline'
-        });
+    it('content available received and in state', () => {
         const wrapper = shallow(<MovieSettings/>);
+        callAPIMock({
+            ContentAvailable: true,
+            Messages: ['firstline', 'secondline']
+        })
+
         wrapper.instance().updateStatus();
 
-        process.nextTick(() => {
-            expect(wrapper.state()).toMatchObject({
-                text: [
-                    'firstline',
-                    'secondline'
-                ]
-            });
-
-            global.fetch.mockClear();
-            done();
+        expect(wrapper.state()).toMatchObject({
+            text: [
+                'firstline',
+                'secondline'
+            ]
         });
     });
 
-    it('test reindex with no content available', done => {
-        global.fetch = global.prepareFetchApi({
-            contentAvailable: false
-        });
+    it('test reindex with no content available', () => {
+        callAPIMock({
+            Messages: [],
+            ContentAvailable: false
+        })
 
         global.clearInterval = jest.fn();
 
         const wrapper = shallow(<MovieSettings/>);
         wrapper.instance().updateStatus();
 
-        process.nextTick(() => {
-            // expect the refresh interval to be cleared
-            expect(global.clearInterval).toBeCalledTimes(1);
+        // expect the refresh interval to be cleared
+        expect(global.clearInterval).toBeCalledTimes(1);
 
-            // expect startbtn to be reenabled
-            expect(wrapper.state()).toMatchObject({startbtnDisabled: false});
-
-            global.fetch.mockClear();
-            done();
-        });
+        // expect startbtn to be reenabled
+        expect(wrapper.state()).toMatchObject({startbtnDisabled: false});
     });
 
-    it('test simulate gravity cleanup', done => {
-        global.fetch = global.prepareFetchApi('mmi');
+    it('test simulate gravity cleanup', () => {
+        // global.fetch = global.prepareFetchApi('mmi');
+        callAPIMock({})
         const wrapper = shallow(<MovieSettings/>);
-        wrapper.instance().setState = jest.fn(),
+        wrapper.instance().setState = jest.fn();
 
-            wrapper.find('button').findWhere(e => e.text() === 'Cleanup Gravity' && e.type() === 'button').simulate('click');
+        wrapper.find('button').findWhere(e => e.text() === 'Cleanup Gravity' && e.type() === 'button').simulate('click');
 
         // initial send of reindex request to server
-        expect(global.fetch).toBeCalledTimes(1);
+        expect(callAPI).toBeCalledTimes(1);
 
-        process.nextTick(() => {
-            expect(wrapper.instance().setState).toBeCalledTimes(1);
+        expect(wrapper.instance().setState).toBeCalledTimes(1);
+    });
 
-            global.fetch.mockClear();
-            done();
+    it('expect insertion before existing ones', function () {
+        const wrapper = shallow(<MovieSettings/>);
+
+        callAPIMock({
+            ContentAvailable: true,
+            Messages: ['test']
+        })
+
+        wrapper.instance().updateStatus();
+
+        expect(wrapper.state()).toMatchObject({
+            text: ['test']
+        });
+
+        // expect an untouched state if we try to add an empty string...
+        callAPIMock({
+            ContentAvailable: true,
+            Messages: ['']
+        })
+
+        wrapper.instance().updateStatus();
+
+        expect(wrapper.state()).toMatchObject({
+            text: ['', 'test']
         });
     });
 });

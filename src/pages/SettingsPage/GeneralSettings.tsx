@@ -6,28 +6,18 @@ import InfoHeaderItem from '../../elements/InfoHeaderItem/InfoHeaderItem';
 import {faArchive, faBalanceScaleLeft, faRulerVertical} from '@fortawesome/free-solid-svg-icons';
 import {faAddressCard} from '@fortawesome/free-regular-svg-icons';
 import {version} from '../../../package.json';
-import {callAPI, setCustomBackendDomain} from '../../utils/Api';
+import {APINode, callAPI, setCustomBackendDomain} from '../../utils/Api';
 import {SettingsTypes} from '../../types/ApiTypes';
 import {GeneralSuccess} from '../../types/GeneralTypes';
 
 interface state {
-    passwordsupport: boolean,
-    tmdbsupport: boolean,
-    customapi: boolean,
-
-    videopath: string,
-    tvshowpath: string,
-    mediacentername: string,
-    password: string,
-    apipath: string,
-
-    videonr: number,
-    dbsize: number,
-    difftagnr: number,
-    tagsadded: number
+    customapi: boolean
+    apipath: string
+    generalSettings: SettingsTypes.loadGeneralSettingsType
 }
 
-interface props {}
+interface props {
+}
 
 /**
  * Component for Generalsettings tag on Settingspage
@@ -38,20 +28,21 @@ class GeneralSettings extends React.Component<props, state> {
         super(props);
 
         this.state = {
-            passwordsupport: false,
-            tmdbsupport: false,
             customapi: false,
-
-            videopath: '',
-            tvshowpath: '',
-            mediacentername: '',
-            password: '',
             apipath: '',
-
-            videonr: 0,
-            dbsize: 0,
-            difftagnr: 0,
-            tagsadded: 0
+            generalSettings: {
+                DarkMode: true,
+                DBSize: 0,
+                DifferentTags: 0,
+                EpisodePath: "",
+                MediacenterName: "",
+                Password: "",
+                PasswordEnabled: false,
+                TagsAdded: 0,
+                TMDBGrabbing: false,
+                VideoNr: 0,
+                VideoPath: ""
+            }
         };
     }
 
@@ -65,19 +56,19 @@ class GeneralSettings extends React.Component<props, state> {
             <>
                 <div className={style.infoheader}>
                     <InfoHeaderItem backColor='lightblue'
-                                    text={this.state.videonr}
+                                    text={this.state.generalSettings.VideoNr}
                                     subtext='Videos in Gravity'
                                     icon={faArchive}/>
                     <InfoHeaderItem backColor='yellow'
-                                    text={this.state.dbsize !== undefined ? this.state.dbsize + ' MB' : ''}
+                                    text={this.state.generalSettings.DBSize + ' MB'}
                                     subtext='Database size'
                                     icon={faRulerVertical}/>
                     <InfoHeaderItem backColor='green'
-                                    text={this.state.difftagnr}
+                                    text={this.state.generalSettings.DifferentTags}
                                     subtext='different Tags'
                                     icon={faAddressCard}/>
                     <InfoHeaderItem backColor='orange'
-                                    text={this.state.tagsadded}
+                                    text={this.state.generalSettings.TagsAdded}
                                     subtext='tags added'
                                     icon={faBalanceScaleLeft}/>
                 </div>
@@ -89,15 +80,26 @@ class GeneralSettings extends React.Component<props, state> {
                         <Form.Row>
                             <Form.Group as={Col} data-testid='videpathform'>
                                 <Form.Label>Video Path</Form.Label>
-                                <Form.Control type='text' placeholder='/var/www/html/video' value={this.state.videopath}
-                                              onChange={(ee): void => this.setState({videopath: ee.target.value})}/>
+                                <Form.Control type='text' placeholder='/var/www/html/video'
+                                              value={this.state.generalSettings.VideoPath}
+                                              onChange={(ee): void => this.setState({
+                                                  generalSettings: {
+                                                      ...this.state.generalSettings,
+                                                      VideoPath: ee.target.value
+                                                  }
+                                              })}/>
                             </Form.Group>
 
                             <Form.Group as={Col} data-testid='tvshowpath'>
                                 <Form.Label>TV Show Path</Form.Label>
                                 <Form.Control type='text' placeholder='/var/www/html/tvshow'
-                                              value={this.state.tvshowpath}
-                                              onChange={(e): void => this.setState({tvshowpath: e.target.value})}/>
+                                              value={this.state.generalSettings.EpisodePath}
+                                              onChange={(e): void => this.setState({
+                                                  generalSettings: {
+                                                      ...this.state.generalSettings,
+                                                      EpisodePath: e.target.value
+                                                  }
+                                              })}/>
                             </Form.Group>
                         </Form.Row>
 
@@ -131,17 +133,28 @@ class GeneralSettings extends React.Component<props, state> {
                             id='custom-switch'
                             data-testid='passwordswitch'
                             label='Enable Password support'
-                            checked={this.state.passwordsupport}
+                            checked={this.state.generalSettings.PasswordEnabled}
                             onChange={(): void => {
-                                this.setState({passwordsupport: !this.state.passwordsupport});
+                                this.setState({
+                                    generalSettings: {
+                                        ...this.state.generalSettings,
+                                        PasswordEnabled: !this.state.generalSettings.PasswordEnabled
+                                    }
+                                });
                             }}
                         />
 
-                        {this.state.passwordsupport ?
+                        {this.state.generalSettings.PasswordEnabled ?
                             <Form.Group data-testid='passwordfield'>
                                 <Form.Label>Password</Form.Label>
-                                <Form.Control type='password' placeholder='**********' value={this.state.password}
-                                              onChange={(e): void => this.setState({password: e.target.value})}/>
+                                <Form.Control type='password' placeholder='**********'
+                                              value={this.state.generalSettings.Password}
+                                              onChange={(e): void => this.setState({
+                                                  generalSettings: {
+                                                      ...this.state.generalSettings,
+                                                      Password: e.target.value
+                                                  }
+                                              })}/>
                             </Form.Group> : null
                         }
 
@@ -150,9 +163,14 @@ class GeneralSettings extends React.Component<props, state> {
                             id='custom-switch-2'
                             data-testid='tmdb-switch'
                             label='Enable TMDB video grabbing support'
-                            checked={this.state.tmdbsupport}
+                            checked={this.state.generalSettings.TMDBGrabbing}
                             onChange={(): void => {
-                                this.setState({tmdbsupport: !this.state.tmdbsupport});
+                                this.setState({
+                                    generalSettings: {
+                                        ...this.state.generalSettings,
+                                        TMDBGrabbing: !this.state.generalSettings.TMDBGrabbing
+                                    }
+                                });
                             }}
                         />
 
@@ -171,8 +189,14 @@ class GeneralSettings extends React.Component<props, state> {
 
                         <Form.Group className={style.mediacenternameform} data-testid='nameform'>
                             <Form.Label>The name of the Mediacenter</Form.Label>
-                            <Form.Control type='text' placeholder='Mediacentername' value={this.state.mediacentername}
-                                          onChange={(e): void => this.setState({mediacentername: e.target.value})}/>
+                            <Form.Control type='text' placeholder='Mediacentername'
+                                          value={this.state.generalSettings.MediacenterName}
+                                          onChange={(e): void => this.setState({
+                                              generalSettings: {
+                                                  ...this.state.generalSettings,
+                                                  MediacenterName: e.target.value
+                                              }
+                                          })}/>
                         </Form.Group>
 
                         <Button variant='primary' type='submit'>
@@ -191,20 +215,8 @@ class GeneralSettings extends React.Component<props, state> {
      * inital load of already specified settings from backend
      */
     loadSettings(): void {
-        callAPI('settings.php', {action: 'loadGeneralSettings'}, (result: SettingsTypes.loadGeneralSettingsType) => {
-            this.setState({
-                videopath: result.video_path,
-                tvshowpath: result.episode_path,
-                mediacentername: result.mediacenter_name,
-                password: result.password,
-                passwordsupport: result.passwordEnabled,
-                tmdbsupport: result.TMDB_grabbing,
-
-                videonr: result.videonr,
-                dbsize: result.dbsize,
-                difftagnr: result.difftagnr,
-                tagsadded: result.tagsadded
-            });
+        callAPI(APINode.Settings, {action: 'loadGeneralSettings'}, (result: SettingsTypes.loadGeneralSettingsType) => {
+            this.setState({generalSettings: result});
         });
     }
 
@@ -212,14 +224,15 @@ class GeneralSettings extends React.Component<props, state> {
      * save the selected and typed settings to the backend
      */
     saveSettings(): void {
-        callAPI('settings.php', {
+        let settings = this.state.generalSettings;
+        if(!this.state.generalSettings.PasswordEnabled){
+            settings.Password = '-1';
+        }
+        settings.DarkMode = GlobalInfos.isDarkTheme()
+
+        callAPI(APINode.Settings, {
             action: 'saveGeneralSettings',
-            password: this.state.passwordsupport ? this.state.password : '-1',
-            videopath: this.state.videopath,
-            tvshowpath: this.state.tvshowpath,
-            mediacentername: this.state.mediacentername,
-            tmdbsupport: this.state.tmdbsupport,
-            darkmodeenabled: GlobalInfos.isDarkTheme().toString()
+            Settings: settings
         }, (result: GeneralSuccess) => {
             if (result.result) {
                 console.log('successfully saved settings');
