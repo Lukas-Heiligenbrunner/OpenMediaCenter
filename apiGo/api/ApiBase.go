@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"openmediacenter/apiGo/api/oauth"
 )
 
 const APIPREFIX = "/api"
@@ -40,6 +41,8 @@ func ServerInit(port uint16) {
 	http.Handle(APIPREFIX+"/tags", http.HandlerFunc(tagHandler))
 	http.Handle(APIPREFIX+"/settings", http.HandlerFunc(settingsHandler))
 	http.Handle(APIPREFIX+"/actor", http.HandlerFunc(actorHandler))
+
+	oauth.InitOAuth()
 
 	fmt.Printf("OpenMediacenter server up and running on port %d\n", port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
