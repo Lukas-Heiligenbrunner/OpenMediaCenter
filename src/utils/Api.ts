@@ -43,6 +43,72 @@ interface ApiBaseRequest {
     [_: string]: string | number | boolean | object
 }
 
+// store api token - empty if not set
+let apiToken = ''
+
+// a callback que to be called after api token refresh
+let callQue: (()=>void)[] = []
+// flag to check wheter a api refresh is currently pending
+let refreshInProcess = false;
+// store the expire seconds of token
+let expireSeconds = -1;
+
+interface APIToken {
+    access_token: string;
+    expires_in: number;
+    scope: string;
+    token_type: string;
+}
+
+export function refreshAPIToken(callback: () => void): void {
+    callQue.push(callback);
+
+    // check if already is a token refresh is in process
+    if (refreshInProcess) {
+        // if yes return
+        return;
+    } else {
+        // if not set flat
+        refreshInProcess = true;
+    }
+
+    const formData = new FormData();
+    formData.append("grant_type", "client_credentials");
+    formData.append("client_id", "openmediacenter");
+    formData.append("client_secret", 'openmediacenter');
+    formData.append("scope", 'all');
+
+
+    fetch(getBackendDomain() + '/token', {method: 'POST', body: formData})
+        .then((response) => response.json()
+            .then((result: APIToken) => {
+                console.log(result)
+                // set api token
+                apiToken = result.access_token;
+                // set expire time
+                expireSeconds = new Date().getTime() + result.expires_in;
+                // call all pending handlers
+                callQue.map(func => {
+                    return func();
+                })
+                // reset pending que
+                callQue = []
+                // release flag to be able to start new refresh
+                refreshInProcess = false;
+            }));
+}
+
+function checkAPITokenValid(callback: () => void): void {
+    // check if token is valid and set
+    if (apiToken === '' || expireSeconds <= new Date().getTime()) {
+        refreshAPIToken(() => {
+            callback()
+        })
+    } else {
+        callback()
+    }
+}
+
 /**
  * A backend api call
  * @param apinode which api backend handler to call
@@ -50,12 +116,21 @@ interface ApiBaseRequest {
  * @param callback the callback with json reply from backend
  * @param errorcallback a optional callback if an error occured
  */
-export function callAPI<T>(apinode: APINode, fd: ApiBaseRequest, callback: (_: T) => void, errorcallback: (_: string) => void = (_: string): void => {}): void {
-    fetch(getAPIDomain() + apinode, {method: 'POST', body: JSON.stringify(fd)})
-        .then((response) => response.json()
-            .then((result) => {
+export function callAPI<T>(apinode: APINode,
+                           fd: ApiBaseRequest,
+                           callback: (_: T) => void,
+                           errorcallback: (_: string) => void = (_: string): void => { }): void {
+    checkAPITokenValid(() => {
+        fetch(getAPIDomain() + apinode, {
+            method: 'POST', body: JSON.stringify(fd), headers: new Headers({
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + apiToken,
+            }),
+        }).then((response) => response.json()
+            .then((result: T) => {
                 callback(result);
             })).catch(reason => errorcallback(reason));
+    })
 }
 
 /**
@@ -65,12 +140,18 @@ export function callAPI<T>(apinode: APINode, fd: ApiBaseRequest, callback: (_: T
  * @param callback the callback with PLAIN text reply from backend
  */
 export function callAPIPlain(apinode: APINode, fd: ApiBaseRequest, callback: (_: string) => void): void {
-    fetch(getAPIDomain() + apinode, {method: 'POST', body: JSON.stringify(fd)})
-        .then((response) => response.text()
-            .then((result) => {
-                callback(result);
-            }));
-
+    checkAPITokenValid(() => {
+        fetch(getAPIDomain() + apinode, {
+            method: 'POST', body: JSON.stringify(fd), headers: new Headers({
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + apiToken,
+            })
+        })
+            .then((response) => response.text()
+                .then((result) => {
+                    callback(result);
+                }));
+    });
 }
 
 /**
