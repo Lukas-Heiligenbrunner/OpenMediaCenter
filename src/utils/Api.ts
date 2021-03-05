@@ -47,7 +47,7 @@ interface ApiBaseRequest {
 let apiToken = ''
 
 // a callback que to be called after api token refresh
-let callQue: (()=>void)[] = []
+let callQue: (() => void)[] = []
 // flag to check wheter a api refresh is currently pending
 let refreshInProcess = false;
 // store the expire seconds of token
@@ -60,6 +60,10 @@ interface APIToken {
     token_type: string;
 }
 
+/**
+ * refresh the api token or use that one in cookie if still valid
+ * @param callback to be called after successful refresh
+ */
 export function refreshAPIToken(callback: () => void): void {
     callQue.push(callback);
 
@@ -70,6 +74,20 @@ export function refreshAPIToken(callback: () => void): void {
     } else {
         // if not set flat
         refreshInProcess = true;
+    }
+
+    // check if a cookie with token is available
+    const token = getTokenCookie();
+    if(token !== null){
+        // check if token is at least valid for the next minute
+        if(token.expire > (new Date().getTime() / 1000) + 60){
+            apiToken = token.token;
+            expireSeconds = token.expire;
+            callback();
+            console.log("token still valid...")
+            callFuncQue();
+            return;
+        }
     }
 
     const formData = new FormData();
@@ -86,21 +104,84 @@ export function refreshAPIToken(callback: () => void): void {
                 // set api token
                 apiToken = result.access_token;
                 // set expire time
-                expireSeconds = new Date().getTime() + result.expires_in;
-                // call all pending handlers
-                callQue.map(func => {
-                    return func();
-                })
-                // reset pending que
-                callQue = []
-                // release flag to be able to start new refresh
-                refreshInProcess = false;
+                expireSeconds = (new Date().getTime() / 1000) + result.expires_in;
+                setTokenCookie(apiToken, expireSeconds);
+                // call all handlers and release flag
+                callFuncQue();
             }));
 }
 
+/**
+ * call all qued callbacks
+ */
+function callFuncQue(): void {
+    // call all pending handlers
+    callQue.map(func => {
+        return func();
+    })
+    // reset pending que
+    callQue = []
+    // release flag to be able to start new refresh
+    refreshInProcess = false;
+}
+
+/**
+ * set the cookie for the currently gotten token
+ * @param token token string
+ * @param validSec second time when the token will be invalid
+ */
+function setTokenCookie(token: string, validSec: number): void {
+    let d = new Date();
+    d.setTime(validSec * 1000);
+    console.log("token set" + d.toUTCString())
+    let expires = "expires=" + d.toUTCString();
+    document.cookie = "token=" + token + ";" + expires + ";path=/";
+    document.cookie = "token_expire=" + validSec + ";" + expires + ";path=/";
+}
+
+/**
+ * get all required cookies for the token
+ */
+function getTokenCookie(): {token: string, expire: number } | null {
+    const token = decodeCookie('token');
+    const expireInString = decodeCookie('token_expire');
+    const expireIn = parseInt(expireInString, 10) | 0;
+
+    if(expireIn !== 0 && token !== ''){
+        return {token: token, expire: expireIn};
+    }else{
+        return null
+    }
+}
+
+/**
+ * decode a simple cookie with key specified
+ * @param key cookie key
+ */
+function decodeCookie(key: string): string {
+    let name = key + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) === 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+/**
+ * check if api token is valid -- if not request new one
+ * when finished call callback
+ * @param callback function to be called afterwards
+ */
 function checkAPITokenValid(callback: () => void): void {
     // check if token is valid and set
-    if (apiToken === '' || expireSeconds <= new Date().getTime()) {
+    if (apiToken === '' || expireSeconds <= new Date().getTime() / 1000) {
         refreshAPIToken(() => {
             callback()
         })
@@ -119,7 +200,8 @@ function checkAPITokenValid(callback: () => void): void {
 export function callAPI<T>(apinode: APINode,
                            fd: ApiBaseRequest,
                            callback: (_: T) => void,
-                           errorcallback: (_: string) => void = (_: string): void => { }): void {
+                           errorcallback: (_: string) => void = (_: string): void => {
+                           }): void {
     checkAPITokenValid(() => {
         fetch(getAPIDomain() + apinode, {
             method: 'POST', body: JSON.stringify(fd), headers: new Headers({
