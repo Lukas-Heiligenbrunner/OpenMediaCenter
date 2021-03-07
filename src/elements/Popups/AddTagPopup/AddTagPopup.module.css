@@ -1,26 +1,3 @@
-.popup {
-    border: 3px #3574fe solid;
-    border-radius: 18px;
-    height: 80%;
-    left: 20%;
-    opacity: 0.95;
-    position: absolute;
-    top: 10%;
-    width: 60%;
-    z-index: 2;
-}
-
-.header {
-    cursor: move;
-    font-size: x-large;
-    margin-left: 15px;
-    margin-top: 10px;
-    opacity: 1;
-}
-
-.content {
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-top: 10px;
-    opacity: 1;
+.actionbar{
+    margin-bottom: 15px;
 }
