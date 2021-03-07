@@ -25,7 +25,7 @@ describe('<AddTagPopup/>', function () {
         const wrapper = shallow(<AddTagPopup submit={jest.fn()} onHide={jest.fn()}/>);
 
         wrapper.setState({
-            items: [{tag_id: 1, tag_name: 'test'}]
+            items: [{TagId: 1, TagName: 'test'}]
         }, () => {
             wrapper.find('Tag').first().dive().simulate('click');
             expect(wrapper.instance().props.submit).toHaveBeenCalledTimes(1);

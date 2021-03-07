@@ -9,7 +9,6 @@ import styles from './AddTagPopup.module.css'
 interface props {
     onHide: () => void;
     submit: (tagId: number, tagName: string) => void;
-    movie_id: number;
 }
 
 interface state {

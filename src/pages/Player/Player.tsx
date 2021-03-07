@@ -181,13 +181,10 @@ export class Player extends React.Component<myprops, mystate> {
     handlePopOvers(): JSX.Element {
         return (
             <>
-                {this.state.popupvisible ?
-                    <AddTagPopup onHide={(): void => {
-                        this.setState({popupvisible: false});
-                    }}
-                                 submit={this.quickAddTag}
-                                 movie_id={this.state.movie_id}/> :
-                    null
+                {
+                    this.state.popupvisible ?
+                        <AddTagPopup onHide={(): void => this.setState({popupvisible: false})}
+                                     submit={this.quickAddTag}/> : null
                 }
                 {
                     this.state.actorpopupvisible ?
