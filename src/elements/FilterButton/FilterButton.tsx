@@ -28,6 +28,7 @@ class FilterButton extends React.Component<props, state> {
         }
 
         this.keypress = this.keypress.bind(this);
+        this.enableFilterField = this.enableFilterField.bind(this);
     }
 
     componentWillUnmount(): void {
@@ -61,12 +62,15 @@ class FilterButton extends React.Component<props, state> {
             );
         } else {
             return (<Button
-                title={<span>Filter <FontAwesomeIcon style={{
-                    verticalAlign: 'middle',
-                    lineHeight: '130px'
-                }} icon={faFilter} size='1x'/></span>}
+                title={<span>Filter <FontAwesomeIcon
+                    style={{
+                        verticalAlign: 'middle',
+                        lineHeight: '130px'
+                    }}
+                    icon={faFilter}
+                    size='1x'/></span>}
                 color={{backgroundColor: 'cornflowerblue', color: 'white'}}
-                onClick={(): void => this.enableFilterField()}/>)
+                onClick={this.enableFilterField}/>)
         }
     }
 
