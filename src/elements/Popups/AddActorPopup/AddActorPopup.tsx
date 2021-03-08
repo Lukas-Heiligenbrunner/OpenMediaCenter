@@ -6,10 +6,7 @@ import {NewActorPopupContent} from '../NewActorPopup/NewActorPopup';
 import {APINode, callAPI} from '../../../utils/Api';
 import {ActorType} from '../../../types/VideoTypes';
 import {GeneralSuccess} from '../../../types/GeneralTypes';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faFilter, faTimes} from '@fortawesome/free-solid-svg-icons';
-import {Button} from '../../GPElements/Button';
-import {addKeyHandler, removeKeyHandler} from '../../../utils/ShortkeyHandler';
+import FilterButton from "../../FilterButton/FilterButton";
 
 interface props {
     onHide: () => void;
@@ -20,7 +17,6 @@ interface state {
     contentDefault: boolean;
     actors: ActorType[];
     filter: string;
-    filtervisible: boolean;
 }
 
 /**
@@ -36,23 +32,14 @@ class AddActorPopup extends React.Component<props, state> {
         this.state = {
             contentDefault: true,
             actors: [],
-            filter: '',
-            filtervisible: false
+            filter: ''
         };
 
         this.tileClickHandler = this.tileClickHandler.bind(this);
         this.filterSearch = this.filterSearch.bind(this);
         this.parentSubmit = this.parentSubmit.bind(this);
-        this.keypress = this.keypress.bind(this);
     }
-
-    componentWillUnmount(): void {
-        removeKeyHandler(this.keypress);
-    }
-
     componentDidMount(): void {
-        addKeyHandler(this.keypress);
-
         // fetch the available actors
         this.loadActors();
     }
@@ -94,30 +81,9 @@ class AddActorPopup extends React.Component<props, state> {
             return (
                 <>
                     <div className={style.searchbar}>
-                        {
-                            this.state.filtervisible ?
-                                <>
-                                    <input className={'form-control mr-sm-2 ' + style.searchinput}
-                                           type='text' placeholder='Filter' value={this.state.filter}
-                                           onChange={(e): void => {
-                                               this.setState({filter: e.target.value});
-                                           }}
-                                           ref={(input): void => {this.filterfield = input;}}/>
-                                    <Button title={<FontAwesomeIcon style={{
-                                        verticalAlign: 'middle',
-                                        lineHeight: '130px'
-                                    }} icon={faTimes} size='1x'/>} color={{backgroundColor: 'red'}} onClick={(): void => {
-                                        this.setState({filter: '', filtervisible: false});
-                                    }}/>
-                                </> :
-                                <Button
-                                    title={<span>Filter <FontAwesomeIcon style={{
-                                        verticalAlign: 'middle',
-                                        lineHeight: '130px'
-                                    }} icon={faFilter} size='1x'/></span>}
-                                    color={{backgroundColor: 'cornflowerblue', color: 'white'}}
-                                    onClick={(): void => this.enableFilterField()}/>
-                        }
+                        <FilterButton onFilterChange={(filter): void => {
+                            this.setState({filter: filter})
+                        }}/>
                     </div>
                     {this.state.actors.filter(this.filterSearch).map((el) => (<ActorTile actor={el} onClick={this.tileClickHandler}/>))}
                 </>
@@ -156,16 +122,6 @@ class AddActorPopup extends React.Component<props, state> {
     }
 
     /**
-     * enable filterfield and focus into searchbar
-     */
-    private enableFilterField(): void {
-        this.setState({filtervisible: true}, () => {
-            // focus filterfield after state update
-            this.filterfield?.focus();
-        });
-    }
-
-    /**
      * filter the actor array for search matches
      * @param actor
      */
@@ -183,17 +139,6 @@ class AddActorPopup extends React.Component<props, state> {
         if (filteredList.length === 1) {
             // simulate click if parent submit
             this.tileClickHandler(filteredList[0]);
-        }
-    }
-
-    /**
-     * key event handling
-     * @param event keyevent
-     */
-    private keypress(event: KeyboardEvent): void {
-        // hide if escape is pressed
-        if (event.key === 'f') {
-            this.enableFilterField();
         }
     }
 }
