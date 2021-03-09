@@ -78,9 +78,9 @@ export function refreshAPIToken(callback: () => void): void {
 
     // check if a cookie with token is available
     const token = getTokenCookie();
-    if(token !== null){
+    if (token !== null) {
         // check if token is at least valid for the next minute
-        if(token.expire > (new Date().getTime() / 1000) + 60){
+        if (token.expire > (new Date().getTime() / 1000) + 60) {
             apiToken = token.token;
             expireSeconds = token.expire;
             callback();
@@ -142,14 +142,14 @@ function setTokenCookie(token: string, validSec: number): void {
 /**
  * get all required cookies for the token
  */
-function getTokenCookie(): {token: string, expire: number } | null {
+function getTokenCookie(): { token: string, expire: number } | null {
     const token = decodeCookie('token');
     const expireInString = decodeCookie('token_expire');
     const expireIn = parseInt(expireInString, 10) | 0;
 
-    if(expireIn !== 0 && token !== ''){
+    if (expireIn !== 0 && token !== '') {
         return {token: token, expire: expireIn};
-    }else{
+    } else {
         return null
     }
 }
@@ -208,10 +208,16 @@ export function callAPI<T>(apinode: APINode,
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + apiToken,
             }),
-        }).then((response) => response.json()
-            .then((result: T) => {
-                callback(result);
-            })).catch(reason => errorcallback(reason));
+        }).then((response) => {
+            if (response.status !== 200) {
+                console.log('Error: ' + response.statusText);
+                // todo place error popup here
+            } else {
+                response.json().then((result: T) => {
+                    callback(result);
+                })
+            }
+        }).catch(reason => errorcallback(reason));
     })
 }
 
