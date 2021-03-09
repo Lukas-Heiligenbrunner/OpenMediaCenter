@@ -19,7 +19,8 @@ global.prepareFetchApi = (response) => {
     const mockJsonPromise = Promise.resolve(response);
     const mockFetchPromise = Promise.resolve({
         json: () => mockJsonPromise,
-        text: () => mockJsonPromise
+        text: () => mockJsonPromise,
+        status: 200
     });
     return (jest.fn().mockImplementation(() => mockFetchPromise));
 };
@@ -31,19 +32,6 @@ global.prepareFetchApi = (response) => {
 global.prepareFailingFetchApi = () => {
     const mockFetchPromise = Promise.reject('myreason');
     return (jest.fn().mockImplementation(() => mockFetchPromise));
-};
-
-/**
- * prepares a viewbinding instance
- * @param func a mock function to be called
- */
-global.prepareViewBinding = (func) => {
-    GlobalInfos.getViewBinding = () => {
-        return {
-            changeRootElement: func,
-            returnToLastElement: func
-        };
-    };
 };
 
 global.callAPIMock = (resonse) => {
