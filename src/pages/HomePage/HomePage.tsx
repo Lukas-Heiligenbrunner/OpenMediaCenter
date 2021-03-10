@@ -12,7 +12,8 @@ import SearchHandling from './SearchHandling';
 import {VideoTypes} from '../../types/ApiTypes';
 import {DefaultTags} from "../../types/GeneralTypes";
 
-interface props extends RouteComponentProps {}
+interface props extends RouteComponentProps {
+}
 
 interface state {
     sideinfo: VideoTypes.startDataType
@@ -50,6 +51,8 @@ export class HomePage extends React.Component<props, state> {
         // initial get of all videos
         this.fetchVideoData(DefaultTags.all.TagId);
         this.fetchStartData();
+
+        console.log(this.props)
     }
 
     /**
@@ -100,7 +103,8 @@ export class HomePage extends React.Component<props, state> {
                                        onChange={(e): void => {
                                            this.keyword = e.target.value;
                                        }}/>
-                                <button data-testid='searchbtnsubmit' className='btn btn-success' type='submit'>Search</button>
+                                <button data-testid='searchbtnsubmit' className='btn btn-success' type='submit'>Search
+                                </button>
                             </form>
                         </PageTitle>
                         <SideBar>
@@ -133,7 +137,19 @@ export class HomePage extends React.Component<props, state> {
                         </SideBar>
                         {this.state.data.length !== 0 ?
                             <VideoContainer
-                                data={this.state.data}/> :
+                                data={this.state.data}
+                                onScrollPositionChange={(pos, loadedTiles): void => {
+                                    this.props.location.state = {pos: pos, loaded: loadedTiles};
+
+                                    console.log("history state update called...")
+                                    const {state} = this.props.location;
+                                    const stateCopy: { pos: number, loaded: number } = {...state as { pos: number, loaded: number }};
+                                    stateCopy.loaded = loadedTiles;
+                                    stateCopy.pos = pos;
+                                    this.props.history.replace({state: stateCopy});
+                                    console.log(this.props)
+                                }}
+                            initialScrollPosition={this.props.location.state !== null ? {scrollPos: (this.props.location.state as { pos: number, loaded: number }).pos, loadedTiles: (this.props.location.state as { pos: number, loaded: number }).loaded} : undefined}/> :
                             <div>No Data found!</div>}
                         <div className={style.rightinfo}>
 

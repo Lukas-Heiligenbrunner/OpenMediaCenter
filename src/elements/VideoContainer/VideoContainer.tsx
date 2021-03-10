@@ -4,7 +4,9 @@ import style from './VideoContainer.module.css';
 import {VideoTypes} from '../../types/ApiTypes';
 
 interface props {
-    data: VideoTypes.VideoUnloadedType[]
+    data: VideoTypes.VideoUnloadedType[];
+    onScrollPositionChange?: (scrollPos: number, loadedTiles: number) => void;
+    initialScrollPosition?: {scrollPos: number, loadedTiles: number};
 }
 
 interface state {
@@ -32,7 +34,16 @@ class VideoContainer extends React.Component<props, state> {
     componentDidMount(): void {
         document.addEventListener('scroll', this.trackScrolling);
 
-        this.loadPreviewBlock(16);
+        console.log(this.props.initialScrollPosition)
+        if(this.props.initialScrollPosition !== undefined){
+            this.loadPreviewBlock(this.props.initialScrollPosition.loadedTiles, () => {
+                if(this.props.initialScrollPosition !== undefined)
+                window.scrollTo(0, this.props.initialScrollPosition.scrollPos);
+            });
+        }else{
+            this.loadPreviewBlock(16);
+        }
+
     }
 
     render(): JSX.Element {
@@ -42,7 +53,11 @@ class VideoContainer extends React.Component<props, state> {
                     <Preview
                         key={elem.MovieId}
                         name={elem.MovieName}
-                        movie_id={elem.MovieId}/>
+                        movie_id={elem.MovieId}
+                    onClick={(): void => {
+                        if (this.props.onScrollPositionChange !== undefined)
+                            this.props.onScrollPositionChange(window.pageYOffset - document.documentElement.clientHeight, this.loadindex)
+                    }}/>
                 ))}
                 {/*todo css for no items to show*/}
                 {this.state.loadeditems.length === 0 ?
@@ -62,7 +77,7 @@ class VideoContainer extends React.Component<props, state> {
      * load previews to the container
      * @param nr number of previews to load
      */
-    loadPreviewBlock(nr: number): void {
+    loadPreviewBlock(nr: number, callback? : () => void): void {
         console.log('loadpreviewblock called ...');
         let ret = [];
         for (let i = 0; i < nr; i++) {
@@ -77,7 +92,7 @@ class VideoContainer extends React.Component<props, state> {
                 ...this.state.loadeditems,
                 ...ret
             ]
-        });
+        }, callback);
 
 
         this.loadindex += nr;
@@ -88,8 +103,10 @@ class VideoContainer extends React.Component<props, state> {
      */
     trackScrolling = (): void => {
         // comparison if current scroll position is on bottom --> 200 is bottom offset to trigger load
-        if (window.innerHeight + document.documentElement.scrollTop + 200 >= document.documentElement.offsetHeight) {
+        if (document.documentElement.clientHeight + document.documentElement.scrollTop + 200 >= document.documentElement.offsetHeight) {
             this.loadPreviewBlock(8);
+            if (this.props.onScrollPositionChange !== undefined)
+                this.props.onScrollPositionChange(document.documentElement.clientHeight + window.pageYOffset, this.loadindex)
         }
     };
 }
