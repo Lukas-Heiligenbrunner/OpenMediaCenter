@@ -254,7 +254,7 @@ export class Player extends React.Component<myprops, mystate> {
                     type: 'video',
                     sources: [
                         {
-                            src: getBackendDomain() + GlobalInfos.getVideoPath() + result.MovieUrl,
+                            src: 'http://192.168.0.209:8080' + GlobalInfos.getVideoPath() + result.MovieUrl,
                             type: 'video/mp4',
                             size: 1080
                         }
