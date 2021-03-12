@@ -20,21 +20,13 @@ describe('<App/>', function () {
 
     it('test initial fetch from api', done => {
         global.fetch = global.prepareFetchApi({
-            generalSettingsLoaded: true,
-            passwordsupport: true,
-            mediacentername: 'testname'
+            MediacenterName: 'testname'
         });
 
         const wrapper = shallow(<App/>);
 
-
-        const func = jest.fn();
-        wrapper.instance().setState = func;
-
-        expect(global.fetch).toBeCalledTimes(1);
-
         process.nextTick(() => {
-            expect(func).toBeCalledTimes(1);
+            expect(document.title).toBe('testname');
 
             global.fetch.mockClear();
             done();
