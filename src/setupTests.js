@@ -37,6 +37,7 @@ global.prepareFailingFetchApi = () => {
 global.callAPIMock = (resonse) => {
     const helpers = require('./utils/Api');
     helpers.callAPI = jest.fn().mockImplementation((_, __, func1) => {func1(resonse);});
+    helpers.callApiUnsafe = jest.fn().mockImplementation((_, __, func1) => {func1(resonse);});
 };
 
 // code to run before each test

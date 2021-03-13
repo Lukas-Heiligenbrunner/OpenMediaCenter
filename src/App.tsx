@@ -88,68 +88,71 @@ class App extends React.Component<{}, state> {
         // add the main theme to the page body
         document.body.className = themeStyle.backgroundcolor;
 
-        return (
-            <Router>
-                <div className={style.app}>
-                    <div
-                        className={[style.navcontainer, themeStyle.backgroundcolor, themeStyle.textcolor, themeStyle.hrcolor].join(' ')}>
-                        <div className={style.navbrand}>{this.state.mediacentername}</div>
-                        <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/'}
-                                 activeStyle={{opacity: '0.85'}}>Home</NavLink>
-                        <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/random'}
-                                 activeStyle={{opacity: '0.85'}}>Random
-                            Video</NavLink>
+        if (this.state.password === true) {
+            return (
+                <AuthenticationPage submit={(password): void => {
+                    refreshAPIToken((error) => {
+                        if (error !== '') {
+                            console.log("wrong password!!!");
+                        } else {
+                            this.setState({password: false});
+                        }
+                    }, password);
+                }}/>
+            );
+        } else if (this.state.password === false) {
+            return (
+                <Router>
+                    <div className={style.app}>
+                        <div
+                            className={[style.navcontainer, themeStyle.backgroundcolor, themeStyle.textcolor, themeStyle.hrcolor].join(' ')}>
+                            <div className={style.navbrand}>{this.state.mediacentername}</div>
+                            <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/'}
+                                     activeStyle={{opacity: '0.85'}}>Home</NavLink>
+                            <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/random'}
+                                     activeStyle={{opacity: '0.85'}}>Random
+                                Video</NavLink>
 
-                        <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/categories'}
-                                 activeStyle={{opacity: '0.85'}}>Categories</NavLink>
-                        <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/settings'}
-                                 activeStyle={{opacity: '0.85'}}>Settings</NavLink>
+                            <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/categories'}
+                                     activeStyle={{opacity: '0.85'}}>Categories</NavLink>
+                            <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/settings'}
+                                     activeStyle={{opacity: '0.85'}}>Settings</NavLink>
+                        </div>
+                        {this.routing()}
                     </div>
-                    {this.routing()}
-                </div>
-                {this.state.onapierror ? this.ApiError() : null}
-            </Router>
-        );
+                    {this.state.onapierror ? this.ApiError() : null}
+                </Router>
+            );
+        } else {
+            return (<>still loading...</>);
+        }
     }
 
     routing(): JSX.Element {
         return (
-            <>
-                {this.state.password === false ?
-                    <Switch>
-                        <Route path="/random">
-                            <RandomPage/>
-                        </Route>
-                        <Route path="/categories">
-                            <CategoryPage/>
-                        </Route>
-                        <Route path="/settings">
-                            <SettingsPage/>
-                        </Route>
-                        <Route exact path="/player/:id">
-                            <Player/>
-                        </Route>
-                        <Route exact path="/actors">
-                            <ActorOverviewPage/>
-                        </Route>
-                        <Route path="/actors/:id">
-                            <ActorPage/>
-                        </Route>
-                        <Route path="/">
-                            <HomePage/>
-                        </Route>
-                    </Switch>
-                    : this.state.password === true ? <AuthenticationPage submit={(password): void => {
-                        refreshAPIToken((error) => {
-                            if (error !== '') {
-                                console.log("wrong password!!!");
-                            } else {
-                                this.setState({password: false});
-                                // this.initialAPICall();
-                            }
-                        }, password);
-                    }}/> : <>still loading..</>}
-            </>
+            <Switch>
+                <Route path="/random">
+                    <RandomPage/>
+                </Route>
+                <Route path="/categories">
+                    <CategoryPage/>
+                </Route>
+                <Route path="/settings">
+                    <SettingsPage/>
+                </Route>
+                <Route exact path="/player/:id">
+                    <Player/>
+                </Route>
+                <Route exact path="/actors">
+                    <ActorOverviewPage/>
+                </Route>
+                <Route path="/actors/:id">
+                    <ActorPage/>
+                </Route>
+                <Route path="/">
+                    <HomePage/>
+                </Route>
+            </Switch>
         );
     }
 

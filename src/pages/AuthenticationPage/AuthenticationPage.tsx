@@ -1,5 +1,6 @@
 import React from "react";
 import {Button} from "../../elements/GPElements/Button";
+import style from './AuthenticationPage.module.css'
 
 interface state {
     pwdText: string
@@ -21,13 +22,20 @@ class AuthenticationPage extends React.Component<props, state> {
     render(): JSX.Element {
         return (
             <>
-                <div>Please type in the Password:</div>
-                <input placeholder='Password' type='password' onChange={(ch): void => {
-                    this.setState({pwdText: ch.target.value});
-                }} value={this.state.pwdText}/>
-                <Button title='Submit' onClick={(): void => {
-                    this.props.submit(this.state.pwdText);
-                }}></Button>
+                <div className={style.openmediacenterlabel}>OpenMediaCenter</div>
+                <div className={style.main}>
+                    <div className={style.loginText}>Login</div>
+                    <div>
+                        <input className={style.input} placeholder='Password' type='password' onChange={(ch): void => {
+                            this.setState({pwdText: ch.target.value});
+                        }} value={this.state.pwdText}/>
+                    </div>
+                    <div>
+                        <Button title='Submit' onClick={(): void => {
+                            this.props.submit(this.state.pwdText);
+                        }}/>
+                    </div>
+                </div>
             </>
         );
     }

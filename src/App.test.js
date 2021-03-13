@@ -1,6 +1,7 @@
 import React from 'react';
 import App from './App';
 import {shallow} from 'enzyme';
+import GlobalInfos from "./utils/GlobalInfos";
 
 describe('<App/>', function () {
     it('renders without crashing ', function () {
@@ -19,9 +20,11 @@ describe('<App/>', function () {
     });
 
     it('test initial fetch from api', done => {
-        global.fetch = global.prepareFetchApi({
+        callAPIMock({
             MediacenterName: 'testname'
-        });
+        })
+
+        GlobalInfos.enableDarkTheme = jest.fn((r) => {})
 
         const wrapper = shallow(<App/>);
 
