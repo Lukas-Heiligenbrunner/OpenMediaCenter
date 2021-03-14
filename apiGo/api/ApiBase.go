@@ -16,6 +16,7 @@ const (
 	TagNode      = iota
 	SettingsNode = iota
 	ActorNode    = iota
+	InitNode     = iota
 )
 
 type actionStruct struct {
@@ -41,6 +42,9 @@ func ServerInit(port uint16) {
 	http.Handle(APIPREFIX+"/tags", oauth.ValidateToken(tagHandler))
 	http.Handle(APIPREFIX+"/settings", oauth.ValidateToken(settingsHandler))
 	http.Handle(APIPREFIX+"/actor", oauth.ValidateToken(actorHandler))
+
+	// initialization api calls to check if password is neccessaray
+	http.Handle(APIPREFIX+"/init", http.HandlerFunc(initHandler))
 
 	// initialize oauth service and add corresponding auth routes
 	oauth.InitOAuth()
@@ -83,6 +87,10 @@ func tagHandler(rw http.ResponseWriter, req *http.Request) {
 
 func settingsHandler(rw http.ResponseWriter, req *http.Request) {
 	handlefunc(rw, req, SettingsNode)
+}
+
+func initHandler(rw http.ResponseWriter, req *http.Request) {
+	handlefunc(rw, req, InitNode)
 }
 
 func handlefunc(rw http.ResponseWriter, req *http.Request, node int) {
