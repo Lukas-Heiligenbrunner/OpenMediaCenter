@@ -55,10 +55,10 @@ let expireSeconds = -1;
 
 interface APIToken {
     error?: string;
-    access_token: string;
-    expires_in: number;
+    accessToken: string;
+    expiresIn: number;
     scope: string;
-    token_type: string;
+    tokenType: string;
 }
 
 /**
@@ -98,9 +98,9 @@ export function refreshAPIToken(callback: (error: string) => void, password?: st
             }
             console.log(result);
             // set api token
-            apiToken = result.access_token;
+            apiToken = result.accessToken;
             // set expire time
-            expireSeconds = new Date().getTime() / 1000 + result.expires_in;
+            expireSeconds = new Date().getTime() / 1000 + result.expiresIn;
             setTokenCookie(apiToken, expireSeconds);
             // call all handlers and release flag
             callFuncQue('');
@@ -157,7 +157,7 @@ function setTokenCookie(token: string, validSec: number): void {
 function getTokenCookie(): {token: string; expire: number} | null {
     const token = decodeCookie('token');
     const expireInString = decodeCookie('token_expire');
-    const expireIn = parseInt(expireInString, 10) | 0;
+    const expireIn = parseInt(expireInString, 10);
 
     if (expireIn !== 0 && token !== '') {
         return {token: token, expire: expireIn};
@@ -243,6 +243,7 @@ export function callAPI<T>(
  * @param apinode
  * @param fd
  * @param callback
+ * @param errorcallback
  */
 export function callApiUnsafe<T>(
     apinode: APINode,
@@ -290,6 +291,7 @@ export function callAPIPlain(apinode: APINode, fd: ApiBaseRequest, callback: (_:
 /**
  * API nodes definitions
  */
+// eslint-disable-next-line no-shadow
 export enum APINode {
     Settings = 'settings',
     Tags = 'tags',

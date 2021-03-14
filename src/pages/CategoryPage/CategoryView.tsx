@@ -40,9 +40,13 @@ export class CategoryView extends React.Component<CategoryViewProps, CategoryVie
     componentDidUpdate(prevProps: Readonly<CategoryViewProps>): void {
         // trigger video refresh if id changed
         if (prevProps.match.params.id !== this.props.match.params.id) {
-            this.setState({loaded: false});
-            this.fetchVideoData(parseInt(this.props.match.params.id, 10));
+            this.reloadVideoData();
         }
+    }
+
+    reloadVideoData(): void {
+        this.setState({loaded: false});
+        this.fetchVideoData(parseInt(this.props.match.params.id, 10));
     }
 
     render(): JSX.Element {

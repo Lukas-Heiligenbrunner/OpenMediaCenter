@@ -6,12 +6,12 @@ interface state {
     pwdText: string;
 }
 
-interface props {
+interface Props {
     submit: (password: string) => void;
 }
 
-class AuthenticationPage extends React.Component<props, state> {
-    constructor(props: props) {
+class AuthenticationPage extends React.Component<Props, state> {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
