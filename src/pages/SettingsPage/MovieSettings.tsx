@@ -9,16 +9,16 @@ interface state {
     startbtnDisabled: boolean;
 }
 
-interface props {}
+interface Props {}
 
 /**
  * Component for MovieSettings on Settingspage
  * handles settings concerning to movies in general
  */
-class MovieSettings extends React.Component<props, state> {
+class MovieSettings extends React.Component<Props, state> {
     myinterval: number = -1;
 
-    constructor(props: props) {
+    constructor(props: Props) {
         super(props);
 
         this.state = {

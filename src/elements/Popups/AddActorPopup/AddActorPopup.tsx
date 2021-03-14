@@ -8,9 +8,9 @@ import {ActorType} from '../../../types/VideoTypes';
 import {GeneralSuccess} from '../../../types/GeneralTypes';
 import FilterButton from '../../FilterButton/FilterButton';
 
-interface props {
+interface Props {
     onHide: () => void;
-    movie_id: number;
+    movieId: number;
 }
 
 interface state {
@@ -22,11 +22,11 @@ interface state {
 /**
  * Popup for Adding a new Actor to a Video
  */
-class AddActorPopup extends React.Component<props, state> {
+class AddActorPopup extends React.Component<Props, state> {
     // filterfield anchor, needed to focus after filter btn click
     private filterfield: HTMLInputElement | null | undefined;
 
-    constructor(props: props) {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
@@ -121,7 +121,7 @@ class AddActorPopup extends React.Component<props, state> {
             {
                 action: 'addActorToVideo',
                 ActorId: actor.ActorId,
-                MovieId: this.props.movie_id
+                MovieId: this.props.movieId
             },
             (result) => {
                 if (result.result === 'success') {

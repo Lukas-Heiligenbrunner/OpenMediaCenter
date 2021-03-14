@@ -12,7 +12,7 @@ import SearchHandling from './SearchHandling';
 import {VideoTypes} from '../../types/ApiTypes';
 import {DefaultTags} from '../../types/GeneralTypes';
 
-interface props extends RouteComponentProps {}
+interface Props extends RouteComponentProps {}
 
 interface state {
     sideinfo: VideoTypes.startDataType;
@@ -24,11 +24,11 @@ interface state {
 /**
  * The home page component showing on the initial pageload
  */
-export class HomePage extends React.Component<props, state> {
+export class HomePage extends React.Component<Props, state> {
     /** keyword variable needed temporary store search keyword */
     keyword = '';
 
-    constructor(props: props) {
+    constructor(props: Props) {
         super(props);
 
         this.state = {

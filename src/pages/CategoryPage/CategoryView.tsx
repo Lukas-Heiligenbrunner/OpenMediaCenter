@@ -34,14 +34,14 @@ export class CategoryView extends React.Component<CategoryViewProps, CategoryVie
     }
 
     componentDidMount(): void {
-        this.fetchVideoData(parseInt(this.props.match.params.id));
+        this.fetchVideoData(parseInt(this.props.match.params.id, 10));
     }
 
     componentDidUpdate(prevProps: Readonly<CategoryViewProps>): void {
         // trigger video refresh if id changed
         if (prevProps.match.params.id !== this.props.match.params.id) {
             this.setState({loaded: false});
-            this.fetchVideoData(parseInt(this.props.match.params.id));
+            this.fetchVideoData(parseInt(this.props.match.params.id, 10));
         }
     }
 
@@ -115,7 +115,7 @@ export class CategoryView extends React.Component<CategoryViewProps, CategoryVie
             APINode.Tags,
             {
                 action: 'deleteTag',
-                TagId: parseInt(this.props.match.params.id),
+                TagId: parseInt(this.props.match.params.id, 10),
                 Force: force
             },
             (result) => {

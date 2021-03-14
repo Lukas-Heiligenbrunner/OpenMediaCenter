@@ -11,14 +11,14 @@ interface params {
     name: string;
 }
 
-interface props extends RouteComponentProps<params> {}
+interface Props extends RouteComponentProps<params> {}
 
 interface state {
     data: VideoTypes.VideoUnloadedType[];
 }
 
-export class SearchHandling extends React.Component<props, state> {
-    constructor(props: props) {
+export class SearchHandling extends React.Component<Props, state> {
+    constructor(props: Props) {
         super(props);
 
         this.state = {

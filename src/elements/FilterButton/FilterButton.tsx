@@ -5,7 +5,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faFilter, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {addKeyHandler, removeKeyHandler} from '../../utils/ShortkeyHandler';
 
-interface props {
+interface Props {
     onFilterChange: (filter: string) => void;
 }
 
@@ -14,11 +14,11 @@ interface state {
     filter: string;
 }
 
-class FilterButton extends React.Component<props, state> {
+class FilterButton extends React.Component<Props, state> {
     // filterfield anchor, needed to focus after filter btn click
     private filterfield: HTMLInputElement | null | undefined;
 
-    constructor(props: props) {
+    constructor(props: Props) {
         super(props);
 
         this.state = {

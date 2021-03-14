@@ -26,8 +26,8 @@ interface myprops extends RouteComponentProps<{id: string}> {}
 
 interface mystate {
     sources?: PlyrJS.SourceInfo;
-    movie_id: number;
-    movie_name: string;
+    movieId: number;
+    movieName: string;
     likes: number;
     quality: number;
     length: number;
@@ -64,8 +64,8 @@ export class Player extends React.Component<myprops, mystate> {
         super(props);
 
         this.state = {
-            movie_id: -1,
-            movie_name: '',
+            movieId: -1,
+            movieName: '',
             likes: 0,
             quality: 0,
             length: 0,
@@ -87,7 +87,7 @@ export class Player extends React.Component<myprops, mystate> {
     render(): JSX.Element {
         return (
             <div id='videocontainer'>
-                <PageTitle title='Watch' subtitle={this.state.movie_name} />
+                <PageTitle title='Watch' subtitle={this.state.movieName} />
 
                 {this.assembleSideBar()}
 
@@ -210,7 +210,7 @@ export class Player extends React.Component<myprops, mystate> {
                             this.refetchActors();
                             this.setState({actorpopupvisible: false});
                         }}
-                        movie_id={this.state.movie_id}
+                        movieId={this.state.movieId}
                     />
                 ) : null}
             </>
@@ -228,7 +228,7 @@ export class Player extends React.Component<myprops, mystate> {
             {
                 action: 'addTag',
                 TagId: tagId,
-                MovieId: parseInt(this.props.match.params.id)
+                MovieId: parseInt(this.props.match.params.id, 10)
             },
             (result: GeneralSuccess) => {
                 if (result.result !== 'success') {
@@ -277,7 +277,7 @@ export class Player extends React.Component<myprops, mystate> {
     fetchMovieData(): void {
         callAPI(
             APINode.Video,
-            {action: 'loadVideo', MovieId: parseInt(this.props.match.params.id)},
+            {action: 'loadVideo', MovieId: parseInt(this.props.match.params.id, 10)},
             (result: VideoTypes.loadVideoType) => {
                 console.log(result);
                 this.setState({
@@ -292,8 +292,8 @@ export class Player extends React.Component<myprops, mystate> {
                         ],
                         poster: result.Poster
                     },
-                    movie_id: result.MovieId,
-                    movie_name: result.MovieName,
+                    movieId: result.MovieId,
+                    movieName: result.MovieName,
                     likes: result.Likes,
                     quality: result.Quality,
                     length: result.Length,
@@ -309,7 +309,7 @@ export class Player extends React.Component<myprops, mystate> {
      * click handler for the like btn
      */
     likebtn(): void {
-        callAPI(APINode.Video, {action: 'addLike', MovieId: parseInt(this.props.match.params.id)}, (result: GeneralSuccess) => {
+        callAPI(APINode.Video, {action: 'addLike', MovieId: parseInt(this.props.match.params.id, 10)}, (result: GeneralSuccess) => {
             if (result.result === 'success') {
                 // likes +1 --> avoid reload of all data
                 this.setState({likes: this.state.likes + 1});
@@ -332,15 +332,19 @@ export class Player extends React.Component<myprops, mystate> {
      * delete the current video and return to last page
      */
     deleteVideo(): void {
-        callAPI(APINode.Video, {action: 'deleteVideo', MovieId: parseInt(this.props.match.params.id)}, (result: GeneralSuccess) => {
-            if (result.result === 'success') {
-                // return to last element if successful
-                this.props.history.goBack();
-            } else {
-                console.error('an error occured while liking');
-                console.error(result);
+        callAPI(
+            APINode.Video,
+            {action: 'deleteVideo', MovieId: parseInt(this.props.match.params.id, 10)},
+            (result: GeneralSuccess) => {
+                if (result.result === 'success') {
+                    // return to last element if successful
+                    this.props.history.goBack();
+                } else {
+                    console.error('an error occured while liking');
+                    console.error(result);
+                }
             }
-        });
+        );
     }
 
     /**
@@ -354,9 +358,13 @@ export class Player extends React.Component<myprops, mystate> {
      * fetch the available video actors again
      */
     refetchActors(): void {
-        callAPI<ActorType[]>(APINode.Actor, {action: 'getActorsOfVideo', MovieId: parseInt(this.props.match.params.id)}, (result) => {
-            this.setState({actors: result});
-        });
+        callAPI<ActorType[]>(
+            APINode.Actor,
+            {action: 'getActorsOfVideo', MovieId: parseInt(this.props.match.params.id, 10)},
+            (result) => {
+                this.setState({actors: result});
+            }
+        );
     }
 }
 

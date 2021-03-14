@@ -16,14 +16,14 @@ interface state {
     generalSettings: SettingsTypes.loadGeneralSettingsType;
 }
 
-interface props {}
+interface Props {}
 
 /**
  * Component for Generalsettings tag on Settingspage
  * handles general settings of mediacenter which concerns to all pages
  */
-class GeneralSettings extends React.Component<props, state> {
-    constructor(props: props) {
+class GeneralSettings extends React.Component<Props, state> {
+    constructor(props: Props) {
         super(props);
 
         this.state = {

@@ -15,10 +15,10 @@ interface TagViewState {
     popupvisible: boolean;
 }
 
-interface props {}
+interface Props {}
 
-class TagView extends React.Component<props, TagViewState> {
-    constructor(props: props) {
+class TagView extends React.Component<Props, TagViewState> {
+    constructor(props: Props) {
         super(props);
 
         this.state = {

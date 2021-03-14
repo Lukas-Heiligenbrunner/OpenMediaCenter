@@ -5,13 +5,13 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import {ActorType} from '../../types/VideoTypes';
 
-interface props {
+interface Props {
     actor: ActorType;
     onClick?: (actor: ActorType) => void;
 }
 
-class ActorTile extends React.Component<props> {
-    constructor(props: props) {
+class ActorTile extends React.Component<Props> {
+    constructor(props: Props) {
         super(props);
 
         this.state = {};
