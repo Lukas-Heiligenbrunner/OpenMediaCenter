@@ -3,7 +3,7 @@ package oauth
 import (
 	"gopkg.in/oauth2.v3/errors"
 	"gopkg.in/oauth2.v3/manage"
-	"gopkg.in/oauth2.v3/models"
+	//"gopkg.in/oauth2.v3/models"
 	"gopkg.in/oauth2.v3/server"
 	"gopkg.in/oauth2.v3/store"
 	"log"
@@ -17,15 +17,19 @@ func InitOAuth() {
 	// token store
 	manager.MustTokenStorage(store.NewMemoryTokenStore())
 
-	clientStore := store.NewClientStore()
-	// todo we need to check here if a password is enabled in db -- when yes set it here!
-	clientStore.Set("openmediacenter", &models.Client{
-		ID:     "openmediacenter",
-		Secret: "openmediacenter",
-		Domain: "http://localhost:8081",
-	})
+	//clientStore := store.NewClientStore()
+	//// todo we need to check here if a password is enabled in db -- when yes set it here!
+	//clientStore.Set("openmediacenter", &models.Client{
+	//	ID:     "openmediacenter",
+	//	Secret: "openmediacenter",
+	//	Domain: "http://localhost:8081",
+	//})
+	//
+	//manager.MapClientStorage(clientStore)
 
-	manager.MapClientStorage(clientStore)
+	strtest := NewCustomStore()
+	manager.MapClientStorage(strtest)
+
 	srv = server.NewServer(server.NewConfig(), manager)
 	srv.SetClientInfoHandler(server.ClientFormHandler)
 	manager.SetRefreshTokenCfg(manage.DefaultRefreshTokenCfg)

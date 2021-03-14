@@ -47,13 +47,14 @@ interface ApiBaseRequest {
 let apiToken = ''
 
 // a callback que to be called after api token refresh
-let callQue: (() => void)[] = []
+let callQue: ((error: string) => void)[] = []
 // flag to check wheter a api refresh is currently pending
 let refreshInProcess = false;
 // store the expire seconds of token
 let expireSeconds = -1;
 
 interface APIToken {
+    error?: string;
     access_token: string;
     expires_in: number;
     scope: string;
@@ -63,8 +64,9 @@ interface APIToken {
 /**
  * refresh the api token or use that one in cookie if still valid
  * @param callback to be called after successful refresh
+ * @param password
  */
-export function refreshAPIToken(callback: () => void): void {
+export function refreshAPIToken(callback: (error: string) => void, password?: string): void {
     callQue.push(callback);
 
     // check if already is a token refresh is in process
@@ -76,30 +78,26 @@ export function refreshAPIToken(callback: () => void): void {
         refreshInProcess = true;
     }
 
-    // check if a cookie with token is available
-    const token = getTokenCookie();
-    if (token !== null) {
-        // check if token is at least valid for the next minute
-        if (token.expire > (new Date().getTime() / 1000) + 60) {
-            apiToken = token.token;
-            expireSeconds = token.expire;
-            callback();
-            console.log("token still valid...")
-            callFuncQue();
-            return;
-        }
+    if (apiTokenValid()) {
+        console.log("token still valid...")
+        callFuncQue('');
+        return;
     }
 
     const formData = new FormData();
     formData.append("grant_type", "client_credentials");
     formData.append("client_id", "openmediacenter");
-    formData.append("client_secret", 'openmediacenter');
+    formData.append("client_secret", password ? password : 'openmediacenter');
     formData.append("scope", 'all');
 
 
     fetch(getBackendDomain() + '/token', {method: 'POST', body: formData})
         .then((response) => response.json()
             .then((result: APIToken) => {
+                if (result.error) {
+                    callFuncQue(result.error);
+                    return;
+                }
                 console.log(result)
                 // set api token
                 apiToken = result.access_token;
@@ -107,17 +105,32 @@ export function refreshAPIToken(callback: () => void): void {
                 expireSeconds = (new Date().getTime() / 1000) + result.expires_in;
                 setTokenCookie(apiToken, expireSeconds);
                 // call all handlers and release flag
-                callFuncQue();
+                callFuncQue('');
             }));
+}
+
+export function apiTokenValid(): boolean {
+    // check if a cookie with token is available
+    const token = getTokenCookie();
+    if (token !== null) {
+        // check if token is at least valid for the next minute
+        if (token.expire > (new Date().getTime() / 1000) + 60) {
+            apiToken = token.token;
+            expireSeconds = token.expire;
+
+            return true;
+        }
+    }
+    return false;
 }
 
 /**
  * call all qued callbacks
  */
-function callFuncQue(): void {
+function callFuncQue(error: string): void {
     // call all pending handlers
     callQue.map(func => {
-        return func();
+        return func(error);
     })
     // reset pending que
     callQue = []
@@ -222,6 +235,25 @@ export function callAPI<T>(apinode: APINode,
 }
 
 /**
+ * make a public unsafe api call (without token) -- use as rare as possible only for initialization (eg. check if pwd is neccessary)
+ * @param apinode
+ * @param fd
+ * @param callback
+ */
+export function callApiUnsafe<T>(apinode: APINode, fd: ApiBaseRequest, callback: (_: T) => void, errorcallback?: (_: string) => void): void {
+    fetch(getAPIDomain() + apinode, {method: 'POST', body: JSON.stringify(fd),}).then((response) => {
+        if (response.status !== 200) {
+            console.log('Error: ' + response.statusText);
+            // todo place error popup here
+        } else {
+            response.json().then((result: T) => {
+                callback(result);
+            })
+        }
+    }).catch(reason => errorcallback ? errorcallback(reason) : {})
+}
+
+/**
  * A backend api call
  * @param apinode which api backend handler to call
  * @param fd the object to send to backend
@@ -249,5 +281,6 @@ export enum APINode {
     Settings = 'settings',
     Tags = 'tags',
     Actor = 'actor',
-    Video = 'video'
+    Video = 'video',
+    Init = 'init'
 }

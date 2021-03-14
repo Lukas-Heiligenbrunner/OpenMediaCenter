@@ -33,7 +33,7 @@ export namespace SettingsTypes {
     export interface initialApiCallData {
         DarkMode: boolean;
         Password: boolean;
-        Mediacenter_name: string;
+        MediacenterName: string;
         VideoPath: string;
     }
 
