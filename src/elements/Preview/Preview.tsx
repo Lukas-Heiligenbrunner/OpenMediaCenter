@@ -7,7 +7,7 @@ import {APINode, callAPIPlain} from '../../utils/Api';
 
 interface PreviewProps {
     name: string;
-    movie_id: number;
+    movieId: number;
 }
 
 interface PreviewState {
@@ -28,7 +28,7 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
     }
 
     componentDidMount(): void {
-        callAPIPlain(APINode.Video, {action: 'readThumbnail', movieid: this.props.movie_id}, (result) => {
+        callAPIPlain(APINode.Video, {action: 'readThumbnail', movieid: this.props.movieId}, (result) => {
             this.setState({
                 previewpicture: result
             });
@@ -38,7 +38,7 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
     render(): JSX.Element {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
-            <Link to={'/player/' + this.props.movie_id}>
+            <Link to={'/player/' + this.props.movieId}>
                 <div className={style.videopreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview}>
                     <div className={style.previewtitle + ' ' + themeStyle.lighttextcolor}>{this.props.name}</div>
                     <div className={style.previewpic}>

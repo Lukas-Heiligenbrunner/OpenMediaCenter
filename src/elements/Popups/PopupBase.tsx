@@ -4,7 +4,7 @@ import {Line} from '../PageTitle/PageTitle';
 import React, {RefObject} from 'react';
 import {addKeyHandler, removeKeyHandler} from '../../utils/ShortkeyHandler';
 
-interface props {
+interface Props {
     width?: string;
     height?: string;
     banner?: JSX.Element;
@@ -16,11 +16,11 @@ interface props {
 /**
  * wrapper class for generic types of popups
  */
-class PopupBase extends React.Component<props> {
+class PopupBase extends React.Component<Props> {
     private wrapperRef: RefObject<HTMLDivElement>;
     private framedimensions: {minHeight: string | undefined; width: string | undefined; height: string | undefined};
 
-    constructor(props: props) {
+    constructor(props: Props) {
         super(props);
 
         this.state = {items: []};

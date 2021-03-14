@@ -8,15 +8,15 @@ import style from './ActorOverviewPage.module.css';
 import {Button} from '../../elements/GPElements/Button';
 import NewActorPopup from '../../elements/Popups/NewActorPopup/NewActorPopup';
 
-interface props {}
+interface Props {}
 
 interface state {
     actors: ActorType[];
     NActorPopupVisible: boolean;
 }
 
-class ActorOverviewPage extends React.Component<props, state> {
-    constructor(props: props) {
+class ActorOverviewPage extends React.Component<Props, state> {
+    constructor(props: Props) {
         super(props);
 
         this.state = {

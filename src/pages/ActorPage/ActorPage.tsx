@@ -20,13 +20,13 @@ interface state {
 /**
  * empty default props with id in url
  */
-interface props extends RouteComponentProps<{id: string}> {}
+interface Props extends RouteComponentProps<{id: string}> {}
 
 /**
  * info page about a specific actor and a list of all its videos
  */
-export class ActorPage extends React.Component<props, state> {
-    constructor(props: props) {
+export class ActorPage extends React.Component<Props, state> {
+    constructor(props: Props) {
         super(props);
 
         this.state = {data: [], actor: {ActorId: 0, Name: '', Thumbnail: ''}};
@@ -65,7 +65,7 @@ export class ActorPage extends React.Component<props, state> {
             APINode.Actor,
             {
                 action: 'getActorInfo',
-                ActorId: parseInt(this.props.match.params.id)
+                ActorId: parseInt(this.props.match.params.id, 10)
             },
             (result: ActorTypes.videofetchresult) => {
                 this.setState({

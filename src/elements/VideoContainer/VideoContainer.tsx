@@ -3,7 +3,7 @@ import Preview from '../Preview/Preview';
 import style from './VideoContainer.module.css';
 import {VideoTypes} from '../../types/ApiTypes';
 
-interface props {
+interface Props {
     data: VideoTypes.VideoUnloadedType[];
 }
 
@@ -16,11 +16,11 @@ interface state {
  * A videocontainer storing lots of Preview elements
  * includes scroll handling and loading of preview infos
  */
-class VideoContainer extends React.Component<props, state> {
+class VideoContainer extends React.Component<Props, state> {
     // stores current index of loaded elements
     loadindex: number = 0;
 
-    constructor(props: props) {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
@@ -39,7 +39,7 @@ class VideoContainer extends React.Component<props, state> {
         return (
             <div className={style.maincontent}>
                 {this.state.loadeditems.map((elem) => (
-                    <Preview key={elem.MovieId} name={elem.MovieName} movie_id={elem.MovieId} />
+                    <Preview key={elem.MovieId} name={elem.MovieName} movieId={elem.MovieId} />
                 ))}
                 {/*todo css for no items to show*/}
                 {this.state.loadeditems.length === 0 ? 'no items to show!' : null}

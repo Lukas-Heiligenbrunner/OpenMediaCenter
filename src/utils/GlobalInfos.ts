@@ -23,9 +23,9 @@ class StaticInfos {
      */
     enableDarkTheme(enable = true): void {
         this.darktheme = enable;
-        this.handlers.map(func => {
+        this.handlers.map((func) => {
             return func();
-        })
+        });
     }
 
     /**

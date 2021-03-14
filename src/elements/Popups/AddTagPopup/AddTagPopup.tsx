@@ -6,7 +6,7 @@ import {TagType} from '../../../types/VideoTypes';
 import FilterButton from '../../FilterButton/FilterButton';
 import styles from './AddTagPopup.module.css';
 
-interface props {
+interface Props {
     onHide: () => void;
     submit: (tagId: number, tagName: string) => void;
 }
@@ -19,8 +19,8 @@ interface state {
 /**
  * component creates overlay to add a new tag to a video
  */
-class AddTagPopup extends React.Component<props, state> {
-    constructor(props: props) {
+class AddTagPopup extends React.Component<Props, state> {
+    constructor(props: Props) {
         super(props);
 
         this.state = {items: [], filter: ''};
