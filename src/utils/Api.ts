@@ -8,13 +8,13 @@ export function getBackendDomain(): string {
     let userAgent = navigator.userAgent.toLowerCase();
     if (userAgent.indexOf(' electron/') > -1) {
         // Electron-specific code - force a custom backendurl
-        return (customBackendURL);
+        return customBackendURL;
     } else {
         // use custom only if defined
         if (customBackendURL) {
-            return (customBackendURL);
+            return customBackendURL;
         } else {
-            return (window.location.origin);
+            return window.location.origin;
         }
     }
 }
@@ -38,16 +38,16 @@ function getAPIDomain(): string {
  * interface how an api request should look like
  */
 interface ApiBaseRequest {
-    action: string | number,
+    action: string | number;
 
-    [_: string]: string | number | boolean | object
+    [_: string]: string | number | boolean | object;
 }
 
 // store api token - empty if not set
-let apiToken = ''
+let apiToken = '';
 
 // a callback que to be called after api token refresh
-let callQue: (() => void)[] = []
+let callQue: (() => void)[] = [];
 // flag to check wheter a api refresh is currently pending
 let refreshInProcess = false;
 // store the expire seconds of token
@@ -80,35 +80,34 @@ export function refreshAPIToken(callback: () => void): void {
     const token = getTokenCookie();
     if (token !== null) {
         // check if token is at least valid for the next minute
-        if (token.expire > (new Date().getTime() / 1000) + 60) {
+        if (token.expire > new Date().getTime() / 1000 + 60) {
             apiToken = token.token;
             expireSeconds = token.expire;
             callback();
-            console.log("token still valid...")
+            console.log('token still valid...');
             callFuncQue();
             return;
         }
     }
 
     const formData = new FormData();
-    formData.append("grant_type", "client_credentials");
-    formData.append("client_id", "openmediacenter");
-    formData.append("client_secret", 'openmediacenter');
-    formData.append("scope", 'all');
+    formData.append('grant_type', 'client_credentials');
+    formData.append('client_id', 'openmediacenter');
+    formData.append('client_secret', 'openmediacenter');
+    formData.append('scope', 'all');
 
-
-    fetch(getBackendDomain() + '/token', {method: 'POST', body: formData})
-        .then((response) => response.json()
-            .then((result: APIToken) => {
-                console.log(result)
-                // set api token
-                apiToken = result.access_token;
-                // set expire time
-                expireSeconds = (new Date().getTime() / 1000) + result.expires_in;
-                setTokenCookie(apiToken, expireSeconds);
-                // call all handlers and release flag
-                callFuncQue();
-            }));
+    fetch(getBackendDomain() + '/token', {method: 'POST', body: formData}).then((response) =>
+        response.json().then((result: APIToken) => {
+            console.log(result);
+            // set api token
+            apiToken = result.access_token;
+            // set expire time
+            expireSeconds = new Date().getTime() / 1000 + result.expires_in;
+            setTokenCookie(apiToken, expireSeconds);
+            // call all handlers and release flag
+            callFuncQue();
+        })
+    );
 }
 
 /**
@@ -116,11 +115,11 @@ export function refreshAPIToken(callback: () => void): void {
  */
 function callFuncQue(): void {
     // call all pending handlers
-    callQue.map(func => {
+    callQue.map((func) => {
         return func();
-    })
+    });
     // reset pending que
-    callQue = []
+    callQue = [];
     // release flag to be able to start new refresh
     refreshInProcess = false;
 }
@@ -133,16 +132,16 @@ function callFuncQue(): void {
 function setTokenCookie(token: string, validSec: number): void {
     let d = new Date();
     d.setTime(validSec * 1000);
-    console.log("token set" + d.toUTCString())
-    let expires = "expires=" + d.toUTCString();
-    document.cookie = "token=" + token + ";" + expires + ";path=/";
-    document.cookie = "token_expire=" + validSec + ";" + expires + ";path=/";
+    console.log('token set' + d.toUTCString());
+    let expires = 'expires=' + d.toUTCString();
+    document.cookie = 'token=' + token + ';' + expires + ';path=/';
+    document.cookie = 'token_expire=' + validSec + ';' + expires + ';path=/';
 }
 
 /**
  * get all required cookies for the token
  */
-function getTokenCookie(): { token: string, expire: number } | null {
+function getTokenCookie(): {token: string; expire: number} | null {
     const token = decodeCookie('token');
     const expireInString = decodeCookie('token_expire');
     const expireIn = parseInt(expireInString, 10) | 0;
@@ -150,7 +149,7 @@ function getTokenCookie(): { token: string, expire: number } | null {
     if (expireIn !== 0 && token !== '') {
         return {token: token, expire: expireIn};
     } else {
-        return null
+        return null;
     }
 }
 
@@ -159,7 +158,7 @@ function getTokenCookie(): { token: string, expire: number } | null {
  * @param key cookie key
  */
 function decodeCookie(key: string): string {
-    let name = key + "=";
+    let name = key + '=';
     let decodedCookie = decodeURIComponent(document.cookie);
     let ca = decodedCookie.split(';');
     for (let i = 0; i < ca.length; i++) {
@@ -171,7 +170,7 @@ function decodeCookie(key: string): string {
             return c.substring(name.length, c.length);
         }
     }
-    return "";
+    return '';
 }
 
 /**
@@ -183,10 +182,10 @@ function checkAPITokenValid(callback: () => void): void {
     // check if token is valid and set
     if (apiToken === '' || expireSeconds <= new Date().getTime() / 1000) {
         refreshAPIToken(() => {
-            callback()
-        })
+            callback();
+        });
     } else {
-        callback()
+        callback();
     }
 }
 
@@ -197,28 +196,33 @@ function checkAPITokenValid(callback: () => void): void {
  * @param callback the callback with json reply from backend
  * @param errorcallback a optional callback if an error occured
  */
-export function callAPI<T>(apinode: APINode,
-                           fd: ApiBaseRequest,
-                           callback: (_: T) => void,
-                           errorcallback: (_: string) => void = (_: string): void => {
-                           }): void {
+export function callAPI<T>(
+    apinode: APINode,
+    fd: ApiBaseRequest,
+    callback: (_: T) => void,
+    errorcallback: (_: string) => void = (_: string): void => {}
+): void {
     checkAPITokenValid(() => {
         fetch(getAPIDomain() + apinode, {
-            method: 'POST', body: JSON.stringify(fd), headers: new Headers({
+            method: 'POST',
+            body: JSON.stringify(fd),
+            headers: new Headers({
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + apiToken,
-            }),
-        }).then((response) => {
-            if (response.status !== 200) {
-                console.log('Error: ' + response.statusText);
-                // todo place error popup here
-            } else {
-                response.json().then((result: T) => {
-                    callback(result);
-                })
-            }
-        }).catch(reason => errorcallback(reason));
-    })
+                Authorization: 'Bearer ' + apiToken
+            })
+        })
+            .then((response) => {
+                if (response.status !== 200) {
+                    console.log('Error: ' + response.statusText);
+                    // todo place error popup here
+                } else {
+                    response.json().then((result: T) => {
+                        callback(result);
+                    });
+                }
+            })
+            .catch((reason) => errorcallback(reason));
+    });
 }
 
 /**
@@ -230,15 +234,17 @@ export function callAPI<T>(apinode: APINode,
 export function callAPIPlain(apinode: APINode, fd: ApiBaseRequest, callback: (_: string) => void): void {
     checkAPITokenValid(() => {
         fetch(getAPIDomain() + apinode, {
-            method: 'POST', body: JSON.stringify(fd), headers: new Headers({
+            method: 'POST',
+            body: JSON.stringify(fd),
+            headers: new Headers({
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + apiToken,
+                Authorization: 'Bearer ' + apiToken
             })
-        })
-            .then((response) => response.text()
-                .then((result) => {
-                    callback(result);
-                }));
+        }).then((response) =>
+            response.text().then((result) => {
+                callback(result);
+            })
+        );
     });
 }
 

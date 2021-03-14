@@ -42,19 +42,17 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
                 <div className={style.videopreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview}>
                     <div className={style.previewtitle + ' ' + themeStyle.lighttextcolor}>{this.props.name}</div>
                     <div className={style.previewpic}>
-                        {this.state.previewpicture !== null ?
-                            <img className={style.previewimage}
-                                 src={this.state.previewpicture}
-                                 alt='Pic loading.'/> :
-                            <span className={style.loadAnimation}><Spinner animation='border'/></span>}
-
+                        {this.state.previewpicture !== null ? (
+                            <img className={style.previewimage} src={this.state.previewpicture} alt='Pic loading.' />
+                        ) : (
+                            <span className={style.loadAnimation}>
+                                <Spinner animation='border' />
+                            </span>
+                        )}
                     </div>
-                    <div className={style.previewbottom}>
-
-                    </div>
+                    <div className={style.previewbottom} />
                 </div>
             </Link>
-
         );
     }
 }
@@ -62,15 +60,12 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
 /**
  * Component for a Tag-name tile (used in category page)
  */
-export class TagPreview extends React.Component<{ name: string }> {
+export class TagPreview extends React.Component<{name: string}> {
     render(): JSX.Element {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
-            <div
-                className={style.videopreview + ' ' + style.tagpreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview}>
-                <div className={style.tagpreviewtitle + ' ' + themeStyle.lighttextcolor}>
-                    {this.props.name}
-                </div>
+            <div className={style.videopreview + ' ' + style.tagpreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview}>
+                <div className={style.tagpreviewtitle + ' ' + themeStyle.lighttextcolor}>{this.props.name}</div>
             </div>
         );
     }

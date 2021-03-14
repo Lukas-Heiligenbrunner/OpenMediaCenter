@@ -7,7 +7,7 @@ import lighttheme from '../AppLightTheme.module.css';
  */
 class StaticInfos {
     private darktheme: boolean = true;
-    private videopath: string = ""
+    private videopath: string = '';
 
     /**
      * check if the current theme is the dark theme
@@ -15,7 +15,7 @@ class StaticInfos {
      */
     isDarkTheme(): boolean {
         return this.darktheme;
-    };
+    }
 
     /**
      * setter to enable or disable the dark or light theme
@@ -29,7 +29,7 @@ class StaticInfos {
      * get the currently selected theme stylesheet
      * @returns {*} the style object of the current active theme
      */
-    getThemeStyle(): { [_: string]: string } {
+    getThemeStyle(): {[_: string]: string} {
         return this.isDarkTheme() ? darktheme : lighttheme;
     }
 

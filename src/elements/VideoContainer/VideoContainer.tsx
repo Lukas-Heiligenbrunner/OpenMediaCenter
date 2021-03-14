@@ -4,7 +4,7 @@ import style from './VideoContainer.module.css';
 import {VideoTypes} from '../../types/ApiTypes';
 
 interface props {
-    data: VideoTypes.VideoUnloadedType[]
+    data: VideoTypes.VideoUnloadedType[];
 }
 
 interface state {
@@ -38,15 +38,11 @@ class VideoContainer extends React.Component<props, state> {
     render(): JSX.Element {
         return (
             <div className={style.maincontent}>
-                {this.state.loadeditems.map(elem => (
-                    <Preview
-                        key={elem.MovieId}
-                        name={elem.MovieName}
-                        movie_id={elem.MovieId}/>
+                {this.state.loadeditems.map((elem) => (
+                    <Preview key={elem.MovieId} name={elem.MovieName} movie_id={elem.MovieId} />
                 ))}
                 {/*todo css for no items to show*/}
-                {this.state.loadeditems.length === 0 ?
-                    'no items to show!' : null}
+                {this.state.loadeditems.length === 0 ? 'no items to show!' : null}
                 {this.props.children}
             </div>
         );
@@ -73,12 +69,8 @@ class VideoContainer extends React.Component<props, state> {
         }
 
         this.setState({
-            loadeditems: [
-                ...this.state.loadeditems,
-                ...ret
-            ]
+            loadeditems: [...this.state.loadeditems, ...ret]
         });
-
 
         this.loadindex += nr;
     }

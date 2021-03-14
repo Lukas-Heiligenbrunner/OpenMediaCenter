@@ -6,9 +6,6 @@ stages:
   - packaging
   - deploy
 
-include:
-  - template: Code-Quality.gitlab-ci.yml
-
 variables:
   SAST_DISABLE_DIND: "true"
 
@@ -68,9 +65,18 @@ Backend_Tests:
     reports:
       junit: ./apiGo/report.xml
 
-code_quality:
-  tags:
-    - dind
+lint:
+  stage: test
+  before_script:
+    - yarn install --cache-folder .yarn
+  script:
+    - yarn run lint
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .yarn/
+      - ./node_modules/
+  needs: []
 
 Debian_Server:
   stage: packaging

@@ -8,12 +8,11 @@ import style from './ActorOverviewPage.module.css';
 import {Button} from '../../elements/GPElements/Button';
 import NewActorPopup from '../../elements/Popups/NewActorPopup/NewActorPopup';
 
-interface props {
-}
+interface props {}
 
 interface state {
     actors: ActorType[];
-    NActorPopupVisible: boolean
+    NActorPopupVisible: boolean;
 }
 
 class ActorOverviewPage extends React.Component<props, state> {
@@ -33,24 +32,29 @@ class ActorOverviewPage extends React.Component<props, state> {
     render(): JSX.Element {
         return (
             <>
-                <PageTitle title='Actors' subtitle={this.state.actors.length + ' Actors'}/>
+                <PageTitle title='Actors' subtitle={this.state.actors.length + ' Actors'} />
                 <SideBar>
-                    <Button title='Add Actor' onClick={(): void => this.setState({NActorPopupVisible: true})}/>
+                    <Button title='Add Actor' onClick={(): void => this.setState({NActorPopupVisible: true})} />
                 </SideBar>
                 <div className={style.container}>
-                    {this.state.actors.map((el) => (<ActorTile key={el.ActorId} actor={el}/>))}
+                    {this.state.actors.map((el) => (
+                        <ActorTile key={el.ActorId} actor={el} />
+                    ))}
                 </div>
-                {this.state.NActorPopupVisible ?
-                    <NewActorPopup onHide={(): void => {
-                        this.setState({NActorPopupVisible: false});
-                        this.fetchAvailableActors(); // refetch actors
-                    }}/> : null}
+                {this.state.NActorPopupVisible ? (
+                    <NewActorPopup
+                        onHide={(): void => {
+                            this.setState({NActorPopupVisible: false});
+                            this.fetchAvailableActors(); // refetch actors
+                        }}
+                    />
+                ) : null}
             </>
         );
     }
 
     fetchAvailableActors(): void {
-        callAPI<ActorType[]>(APINode.Actor, {action: 'getAllActors'}, result => {
+        callAPI<ActorType[]>(APINode.Actor, {action: 'getAllActors'}, (result) => {
             this.setState({actors: result});
         });
     }

@@ -25,7 +25,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "CI=true react-scripts test --reporters=jest-junit --verbose --silent --coverage --reporters=default"
+    "test": "CI=true react-scripts test --reporters=jest-junit --verbose --silent --coverage --reporters=default",
+    "lint": "eslint src/"
   },
   "jest": {
     "collectCoverageFrom": [

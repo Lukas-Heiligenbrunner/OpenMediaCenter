@@ -10,9 +10,8 @@ interface props {
 export default function SubmitPopup(props: props): JSX.Element {
     return (
         <PopupBase title='Are you sure?' onHide={props.onHide} height='160px' width='300px'>
-            <Button title='Submit' color={{backgroundColor: 'green'}} onClick={(): void => props.submit()}/>
-            <Button title='Cancel' color={{backgroundColor: 'red'}} onClick={(): void => props.onHide()}/>
+            <Button title='Submit' color={{backgroundColor: 'green'}} onClick={(): void => props.submit()} />
+            <Button title='Cancel' color={{backgroundColor: 'red'}} onClick={(): void => props.onHide()} />
         </PopupBase>
     );
-
 }

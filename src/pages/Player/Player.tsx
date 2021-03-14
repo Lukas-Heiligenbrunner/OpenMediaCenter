@@ -20,22 +20,22 @@ import {ActorType, TagType} from '../../types/VideoTypes';
 import PlyrJS from 'plyr';
 import {Button} from '../../elements/GPElements/Button';
 import {VideoTypes} from '../../types/ApiTypes';
-import GlobalInfos from "../../utils/GlobalInfos";
+import GlobalInfos from '../../utils/GlobalInfos';
 
-interface myprops extends RouteComponentProps<{ id: string }> {}
+interface myprops extends RouteComponentProps<{id: string}> {}
 
 interface mystate {
-    sources?: PlyrJS.SourceInfo,
-    movie_id: number,
-    movie_name: string,
-    likes: number,
-    quality: number,
-    length: number,
-    tags: TagType[],
-    suggesttag: TagType[],
-    popupvisible: boolean,
-    actorpopupvisible: boolean,
-    actors: ActorType[]
+    sources?: PlyrJS.SourceInfo;
+    movie_id: number;
+    movie_name: string;
+    likes: number;
+    quality: number;
+    length: number;
+    tags: TagType[];
+    suggesttag: TagType[];
+    popupvisible: boolean;
+    actorpopupvisible: boolean;
+    actors: ActorType[];
 }
 
 /**
@@ -87,27 +87,37 @@ export class Player extends React.Component<myprops, mystate> {
     render(): JSX.Element {
         return (
             <div id='videocontainer'>
-                <PageTitle
-                    title='Watch'
-                    subtitle={this.state.movie_name}/>
+                <PageTitle title='Watch' subtitle={this.state.movie_name} />
 
                 {this.assembleSideBar()}
 
                 <div className={style.videowrapper}>
                     {/* video component is added here */}
-                    {this.state.sources ? <Plyr
-                            style={plyrstyle}
-                            source={this.state.sources}
-                            options={this.options}/> :
-                        <div>not loaded yet</div>}
+                    {this.state.sources ? (
+                        <Plyr style={plyrstyle} source={this.state.sources} options={this.options} />
+                    ) : (
+                        <div>not loaded yet</div>
+                    )}
                     <div className={style.videoactions}>
-                        <Button onClick={(): void => this.likebtn()} title='Like this Video!' color={{backgroundColor: 'green'}}/>
-                        <Button onClick={(): void => this.setState({popupvisible: true})} title='Give this Video a Tag' color={{backgroundColor: '#3574fe'}}/>
-                        <Button title='Delete Video' onClick={(): void => {this.deleteVideo();}} color={{backgroundColor: 'red'}}/>
+                        <Button onClick={(): void => this.likebtn()} title='Like this Video!' color={{backgroundColor: 'green'}} />
+                        <Button
+                            onClick={(): void => this.setState({popupvisible: true})}
+                            title='Give this Video a Tag'
+                            color={{backgroundColor: '#3574fe'}}
+                        />
+                        <Button
+                            title='Delete Video'
+                            onClick={(): void => {
+                                this.deleteVideo();
+                            }}
+                            color={{backgroundColor: 'red'}}
+                        />
                     </div>
                     {this.assembleActorTiles()}
                 </div>
-                <button className={style.closebutton} onClick={(): void => this.closebtn()}>Close</button>
+                <button className={style.closebutton} onClick={(): void => this.closebtn()}>
+                    Close
+                </button>
                 {
                     // handle the popovers switched on and off according to state changes
                     this.handlePopOvers()
@@ -123,18 +133,26 @@ export class Player extends React.Component<myprops, mystate> {
         return (
             <SideBar>
                 <SideBarTitle>Infos:</SideBarTitle>
-                <Line/>
-                <SideBarItem><b>{this.state.likes}</b> Likes!</SideBarItem>
-                {this.state.quality !== 0 ?
-                    <SideBarItem><b>{this.state.quality}p</b> Quality!</SideBarItem> : null}
-                {this.state.length !== 0 ?
-                    <SideBarItem><b>{Math.round(this.state.length / 60)}</b> Minutes of length!</SideBarItem> : null}
-                <Line/>
+                <Line />
+                <SideBarItem>
+                    <b>{this.state.likes}</b> Likes!
+                </SideBarItem>
+                {this.state.quality !== 0 ? (
+                    <SideBarItem>
+                        <b>{this.state.quality}p</b> Quality!
+                    </SideBarItem>
+                ) : null}
+                {this.state.length !== 0 ? (
+                    <SideBarItem>
+                        <b>{Math.round(this.state.length / 60)}</b> Minutes of length!
+                    </SideBarItem>
+                ) : null}
+                <Line />
                 <SideBarTitle>Tags:</SideBarTitle>
                 {this.state.tags.map((m: TagType) => (
-                    <Tag key={m.TagId} tagInfo={m}/>
+                    <Tag key={m.TagId} tagInfo={m} />
                 ))}
-                <Line/>
+                <Line />
                 <SideBarTitle>Tag Quickadd:</SideBarTitle>
                 {this.state.suggesttag.map((m: TagType) => (
                     <Tag
@@ -142,7 +160,8 @@ export class Player extends React.Component<myprops, mystate> {
                         key={m.TagName}
                         onclick={(): void => {
                             this.quickAddTag(m.TagId, m.TagName);
-                        }}/>
+                        }}
+                    />
                 ))}
             </SideBar>
         );
@@ -154,25 +173,26 @@ export class Player extends React.Component<myprops, mystate> {
     private assembleActorTiles(): JSX.Element {
         return (
             <div className={style.actorcontainer}>
-                {this.state.actors ?
-                    this.state.actors.map((actr: ActorType) => (
-                        <ActorTile key={actr.ActorId} actor={actr}/>
-                    )) : <></>
-                }
-                <div className={style.actorAddTile} onClick={(): void => {
-                    this.addActor();
-                }}>
+                {this.state.actors ? this.state.actors.map((actr: ActorType) => <ActorTile key={actr.ActorId} actor={actr} />) : <></>}
+                <div
+                    className={style.actorAddTile}
+                    onClick={(): void => {
+                        this.addActor();
+                    }}>
                     <div className={style.actorAddTile_thumbnail}>
-                        <FontAwesomeIcon style={{
-                            lineHeight: '130px'
-                        }} icon={faPlusCircle} size='5x'/>
+                        <FontAwesomeIcon
+                            style={{
+                                lineHeight: '130px'
+                            }}
+                            icon={faPlusCircle}
+                            size='5x'
+                        />
                     </div>
                     <div className={style.actorAddTile_name}>Add Actor</div>
                 </div>
             </div>
         );
     }
-
 
     /**
      * handle the popovers generated according to state changes
@@ -181,18 +201,18 @@ export class Player extends React.Component<myprops, mystate> {
     handlePopOvers(): JSX.Element {
         return (
             <>
-                {
-                    this.state.popupvisible ?
-                        <AddTagPopup onHide={(): void => this.setState({popupvisible: false})}
-                                     submit={this.quickAddTag}/> : null
-                }
-                {
-                    this.state.actorpopupvisible ?
-                        <AddActorPopup onHide={(): void => {
+                {this.state.popupvisible ? (
+                    <AddTagPopup onHide={(): void => this.setState({popupvisible: false})} submit={this.quickAddTag} />
+                ) : null}
+                {this.state.actorpopupvisible ? (
+                    <AddActorPopup
+                        onHide={(): void => {
                             this.refetchActors();
                             this.setState({actorpopupvisible: false});
-                        }} movie_id={this.state.movie_id}/> : null
-                }
+                        }}
+                        movie_id={this.state.movie_id}
+                    />
+                ) : null}
             </>
         );
     }
@@ -203,76 +223,87 @@ export class Player extends React.Component<myprops, mystate> {
      * @param tagName name of tag to add
      */
     quickAddTag(tagId: number, tagName: string): void {
-        callAPI(APINode.Tags, {
-            action: 'addTag',
-            TagId: tagId,
-            MovieId: parseInt(this.props.match.params.id)
-        }, (result: GeneralSuccess) => {
-            if (result.result !== 'success') {
-                console.error('error occured while writing to db -- todo error handling');
-                console.error(result.result);
-            } else {
-                // check if tag has already been added
-                const tagIndex = this.state.tags.map(function (e: TagType) {
-                    return e.TagName;
-                }).indexOf(tagName);
+        callAPI(
+            APINode.Tags,
+            {
+                action: 'addTag',
+                TagId: tagId,
+                MovieId: parseInt(this.props.match.params.id)
+            },
+            (result: GeneralSuccess) => {
+                if (result.result !== 'success') {
+                    console.error('error occured while writing to db -- todo error handling');
+                    console.error(result.result);
+                } else {
+                    // check if tag has already been added
+                    const tagIndex = this.state.tags
+                        .map(function (e: TagType) {
+                            return e.TagName;
+                        })
+                        .indexOf(tagName);
 
-                // only add tag if it isn't already there
-                if (tagIndex === -1) {
-                    // update tags if successful
-                    let array = [...this.state.suggesttag]; // make a separate copy of the array (because of setState)
-                    const quickaddindex = this.state.suggesttag.map(function (e: TagType) {
-                        return e.TagId;
-                    }).indexOf(tagId);
+                    // only add tag if it isn't already there
+                    if (tagIndex === -1) {
+                        // update tags if successful
+                        let array = [...this.state.suggesttag]; // make a separate copy of the array (because of setState)
+                        const quickaddindex = this.state.suggesttag
+                            .map(function (e: TagType) {
+                                return e.TagId;
+                            })
+                            .indexOf(tagId);
 
-                    // check if tag is available in quickadds
-                    if (quickaddindex !== -1) {
-                        array.splice(quickaddindex, 1);
+                        // check if tag is available in quickadds
+                        if (quickaddindex !== -1) {
+                            array.splice(quickaddindex, 1);
 
-                        this.setState({
-                            tags: [...this.state.tags, {TagName: tagName, TagId: tagId}],
-                            suggesttag: array
-                        });
-                    } else {
-                        this.setState({
-                            tags: [...this.state.tags, {TagName: tagName, TagId: tagId}]
-                        });
+                            this.setState({
+                                tags: [...this.state.tags, {TagName: tagName, TagId: tagId}],
+                                suggesttag: array
+                            });
+                        } else {
+                            this.setState({
+                                tags: [...this.state.tags, {TagName: tagName, TagId: tagId}]
+                            });
+                        }
                     }
                 }
             }
-        });
+        );
     }
 
     /**
      * fetch all the required infos of a video from backend
      */
     fetchMovieData(): void {
-        callAPI(APINode.Video, {action: 'loadVideo', MovieId: parseInt(this.props.match.params.id)}, (result: VideoTypes.loadVideoType) => {
-            console.log(result)
-            this.setState({
-                sources: {
-                    type: 'video',
-                    sources: [
-                        {
-                            src: getBackendDomain() + GlobalInfos.getVideoPath() + result.MovieUrl,
-                            type: 'video/mp4',
-                            size: 1080
-                        }
-                    ],
-                    poster: result.Poster
-                },
-                movie_id: result.MovieId,
-                movie_name: result.MovieName,
-                likes: result.Likes,
-                quality: result.Quality,
-                length: result.Length,
-                tags: result.Tags,
-                suggesttag: result.SuggestedTag,
-                actors: result.Actors
-            });
-        });
+        callAPI(
+            APINode.Video,
+            {action: 'loadVideo', MovieId: parseInt(this.props.match.params.id)},
+            (result: VideoTypes.loadVideoType) => {
+                console.log(result);
+                this.setState({
+                    sources: {
+                        type: 'video',
+                        sources: [
+                            {
+                                src: getBackendDomain() + GlobalInfos.getVideoPath() + result.MovieUrl,
+                                type: 'video/mp4',
+                                size: 1080
+                            }
+                        ],
+                        poster: result.Poster
+                    },
+                    movie_id: result.MovieId,
+                    movie_name: result.MovieName,
+                    likes: result.Likes,
+                    quality: result.Quality,
+                    length: result.Length,
+                    tags: result.Tags,
+                    suggesttag: result.SuggestedTag,
+                    actors: result.Actors
+                });
+            }
+        );
     }
-
 
     /**
      * click handler for the like btn
@@ -323,11 +354,10 @@ export class Player extends React.Component<myprops, mystate> {
      * fetch the available video actors again
      */
     refetchActors(): void {
-        callAPI<ActorType[]>(APINode.Actor, {action: 'getActorsOfVideo', MovieId: parseInt(this.props.match.params.id)}, result => {
+        callAPI<ActorType[]>(APINode.Actor, {action: 'getActorsOfVideo', MovieId: parseInt(this.props.match.params.id)}, (result) => {
             this.setState({actors: result});
         });
     }
 }
 
 export default withRouter(Player);
-

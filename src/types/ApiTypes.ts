@@ -2,16 +2,16 @@ import {ActorType, TagType} from './VideoTypes';
 
 export namespace VideoTypes {
     export interface loadVideoType {
-        MovieUrl: string
-        Poster: string
-        MovieId: number
-        MovieName: string
-        Likes: number
-        Quality: number
-        Length: number
-        Tags: TagType[]
-        SuggestedTag: TagType[]
-        Actors: ActorType[]
+        MovieUrl: string;
+        Poster: string;
+        MovieId: number;
+        MovieName: string;
+        Likes: number;
+        Quality: number;
+        Length: number;
+        Tags: TagType[];
+        SuggestedTag: TagType[];
+        Actors: ActorType[];
     }
 
     export interface startDataType {
@@ -25,7 +25,7 @@ export namespace VideoTypes {
 
     export interface VideoUnloadedType {
         MovieId: number;
-        MovieName: string
+        MovieName: string;
     }
 }
 
@@ -38,18 +38,18 @@ export namespace SettingsTypes {
     }
 
     export interface loadGeneralSettingsType {
-        VideoPath: string,
-        EpisodePath: string,
-        MediacenterName: string,
-        Password: string,
-        PasswordEnabled: boolean,
-        TMDBGrabbing: boolean,
-        DarkMode: boolean,
+        VideoPath: string;
+        EpisodePath: string;
+        MediacenterName: string;
+        Password: string;
+        PasswordEnabled: boolean;
+        TMDBGrabbing: boolean;
+        DarkMode: boolean;
 
-        VideoNr: number,
-        DBSize: number,
-        DifferentTags: number,
-        TagsAdded: number
+        VideoNr: number;
+        DBSize: number;
+        DifferentTags: number;
+        TagsAdded: number;
     }
 
     export interface getStatusMessageType {

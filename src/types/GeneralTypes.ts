@@ -1,11 +1,11 @@
 import {TagType} from './VideoTypes';
 
 export interface GeneralSuccess {
-    result: string
+    result: string;
 }
 
 interface TagarrayType {
-    [_: string]: TagType
+    [_: string]: TagType;
 }
 
 export const DefaultTags: TagarrayType = {

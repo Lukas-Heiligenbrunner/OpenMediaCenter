@@ -28,17 +28,17 @@ class SettingsPage extends React.Component {
                 </div>
                 <div className={style.SettingsContent}>
                     <Switch>
-                        <Route path="/settings/general">
-                            <GeneralSettings/>
+                        <Route path='/settings/general'>
+                            <GeneralSettings />
                         </Route>
-                        <Route path="/settings/movies">
-                            <MovieSettings/>
+                        <Route path='/settings/movies'>
+                            <MovieSettings />
                         </Route>
-                        <Route path="/settings/tv">
-                            <span/>
+                        <Route path='/settings/tv'>
+                            <span />
                         </Route>
-                        <Route path="/settings">
-                            <Redirect to='/settings/general'/>
+                        <Route path='/settings'>
+                            <Redirect to='/settings/general' />
                         </Route>
                     </Switch>
                 </div>

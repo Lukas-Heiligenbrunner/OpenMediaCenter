@@ -34,30 +34,33 @@ class TagView extends React.Component<props, TagViewState> {
     render(): JSX.Element {
         return (
             <>
-                <PageTitle
-                    title='Categories'
-                    subtitle={this.state.loadedtags.length + ' different Tags'}/>
+                <PageTitle title='Categories' subtitle={this.state.loadedtags.length + ' different Tags'} />
 
                 <SideBar>
                     <SideBarTitle>Default Tags:</SideBarTitle>
-                    <Tag tagInfo={DefaultTags.all}/>
-                    <Tag tagInfo={DefaultTags.fullhd}/>
-                    <Tag tagInfo={DefaultTags.hd}/>
-                    <Tag tagInfo={DefaultTags.lowq}/>
+                    <Tag tagInfo={DefaultTags.all} />
+                    <Tag tagInfo={DefaultTags.fullhd} />
+                    <Tag tagInfo={DefaultTags.hd} />
+                    <Tag tagInfo={DefaultTags.lowq} />
 
-                    <Line/>
-                    <button data-testid='btnaddtag' className='btn btn-success' onClick={(): void => {
-                        this.setState({popupvisible: true});
-                    }}>Add a new Tag!
+                    <Line />
+                    <button
+                        data-testid='btnaddtag'
+                        className='btn btn-success'
+                        onClick={(): void => {
+                            this.setState({popupvisible: true});
+                        }}>
+                        Add a new Tag!
                     </button>
                 </SideBar>
                 <div className={videocontainerstyle.maincontent}>
-                    {this.state.loadedtags ?
-                        this.state.loadedtags.map((m) => (
-                            <Link to={'/categories/' + m.TagId} key={m.TagId}>
-                                <TagPreview name={m.TagName}/></Link>
-                        )) :
-                        'loading'}
+                    {this.state.loadedtags
+                        ? this.state.loadedtags.map((m) => (
+                              <Link to={'/categories/' + m.TagId} key={m.TagId}>
+                                  <TagPreview name={m.TagName} />
+                              </Link>
+                          ))
+                        : 'loading'}
                 </div>
                 {this.handlePopups()}
             </>
@@ -68,7 +71,7 @@ class TagView extends React.Component<props, TagViewState> {
      * load all available tags from db.
      */
     loadTags(): void {
-        callAPI<TagType[]>(APINode.Tags, {action: 'getAllTags'}, result => {
+        callAPI<TagType[]>(APINode.Tags, {action: 'getAllTags'}, (result) => {
             this.setState({loadedtags: result});
         });
     }
@@ -76,13 +79,15 @@ class TagView extends React.Component<props, TagViewState> {
     private handlePopups(): JSX.Element {
         if (this.state.popupvisible) {
             return (
-                <NewTagPopup onHide={(): void => {
-                    this.setState({popupvisible: false});
-                    this.loadTags();
-                }}/>
+                <NewTagPopup
+                    onHide={(): void => {
+                        this.setState({popupvisible: false});
+                        this.loadTags();
+                    }}
+                />
             );
         } else {
-            return (<></>);
+            return <></>;
         }
     }
 }

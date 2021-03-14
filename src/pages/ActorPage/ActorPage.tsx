@@ -13,16 +13,14 @@ import {Button} from '../../elements/GPElements/Button';
 import {ActorTypes, VideoTypes} from '../../types/ApiTypes';
 
 interface state {
-    data: VideoTypes.VideoUnloadedType[],
-    actor: ActorType
+    data: VideoTypes.VideoUnloadedType[];
+    actor: ActorType;
 }
 
 /**
  * empty default props with id in url
  */
-interface props extends RouteComponentProps<{ id: string }> {
-}
-
+interface props extends RouteComponentProps<{id: string}> {}
 
 /**
  * info page about a specific actor and a list of all its videos
@@ -40,20 +38,17 @@ export class ActorPage extends React.Component<props, state> {
                 <PageTitle title={this.state.actor.Name} subtitle={this.state.data ? this.state.data.length + ' videos' : null}>
                     <span className={style.overviewbutton}>
                         <Link to='/actors'>
-                            <Button onClick={(): void => {}} title='Go to Actor overview'/>
+                            <Button onClick={(): void => {}} title='Go to Actor overview' />
                         </Link>
                     </span>
                 </PageTitle>
                 <SideBar>
                     <div className={style.pic}>
-                        <FontAwesomeIcon style={{color: 'white'}} icon={faUser} size='10x'/>
+                        <FontAwesomeIcon style={{color: 'white'}} icon={faUser} size='10x' />
                     </div>
                     <SideBarTitle>Attention: This is an early preview!</SideBarTitle>
                 </SideBar>
-                {this.state.data.length !== 0 ?
-                    <VideoContainer
-                        data={this.state.data}/> :
-                    <div>No Data found!</div>}
+                {this.state.data.length !== 0 ? <VideoContainer data={this.state.data} /> : <div>No Data found!</div>}
             </>
         );
     }
@@ -66,15 +61,19 @@ export class ActorPage extends React.Component<props, state> {
      * request more actor info from backend
      */
     getActorInfo(): void {
-        callAPI(APINode.Actor, {
-            action: 'getActorInfo',
-            ActorId: parseInt(this.props.match.params.id)
-        }, (result: ActorTypes.videofetchresult) => {
-            this.setState({
-                data: result.Videos ? result.Videos : [],
-                actor: result.Info
-            });
-        });
+        callAPI(
+            APINode.Actor,
+            {
+                action: 'getActorInfo',
+                ActorId: parseInt(this.props.match.params.id)
+            },
+            (result: ActorTypes.videofetchresult) => {
+                this.setState({
+                    data: result.Videos ? result.Videos : [],
+                    actor: result.Info
+                });
+            }
+        );
     }
 }
 
