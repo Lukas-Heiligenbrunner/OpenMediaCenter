@@ -139,8 +139,8 @@ func matchYear(fileName string) (int, string) {
 	if len(years) == 0 {
 		return -1, fileName
 	}
-
-	year, err := strconv.Atoi(years[len(years)-1])
+	// get last year occurance and cut first and last char
+	year, err := strconv.Atoi(years[len(years)-1][1 : len(years)-1])
 
 	if err != nil {
 		return -1, fileName

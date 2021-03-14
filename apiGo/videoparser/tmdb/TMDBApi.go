@@ -63,6 +63,11 @@ func SearchVideo(MovieName string, year int) *VideoTMDB {
 
 	fmt.Println(len(t.Results))
 
+	// if there was no match with tmdb return 0
+	if len(t.Results) == 0 {
+		return nil
+	}
+
 	var tmdbVid tmdbVidResult
 	if year != -1 {
 		for _, result := range t.Results {
