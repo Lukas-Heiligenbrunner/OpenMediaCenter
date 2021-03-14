@@ -15,7 +15,7 @@ class NewActorPopup extends React.Component<NewActorPopupProps> {
     render(): JSX.Element {
         return (
             <PopupBase title='Add new Tag' onHide={this.props.onHide} height='200px' width='400px'>
-                <NewActorPopupContent onHide={this.props.onHide}/>
+                <NewActorPopupContent onHide={this.props.onHide} />
             </PopupBase>
         );
     }
@@ -28,10 +28,17 @@ export class NewActorPopupContent extends React.Component<NewActorPopupProps> {
         return (
             <>
                 <div>
-                    <input type='text' placeholder='Actor Name' onChange={(v): void => {
-                        this.value = v.target.value;
-                    }}/></div>
-                <button className={style.savebtn} onClick={(): void => this.storeselection()}>Save</button>
+                    <input
+                        type='text'
+                        placeholder='Actor Name'
+                        onChange={(v): void => {
+                            this.value = v.target.value;
+                        }}
+                    />
+                </div>
+                <button className={style.savebtn} onClick={(): void => this.storeselection()}>
+                    Save
+                </button>
             </>
         );
     }
@@ -41,7 +48,9 @@ export class NewActorPopupContent extends React.Component<NewActorPopupProps> {
      */
     storeselection(): void {
         // check if user typed in name
-        if (this.value === '' || this.value === undefined) return;
+        if (this.value === '' || this.value === undefined) {
+            return;
+        }
 
         callAPI(APINode.Actor, {action: 'createActor', actorname: this.value}, (result: GeneralSuccess) => {
             if (result.result !== 'success') {

@@ -8,13 +8,13 @@ export function getBackendDomain(): string {
     let userAgent = navigator.userAgent.toLowerCase();
     if (userAgent.indexOf(' electron/') > -1) {
         // Electron-specific code - force a custom backendurl
-        return (customBackendURL);
+        return customBackendURL;
     } else {
         // use custom only if defined
         if (customBackendURL) {
-            return (customBackendURL);
+            return customBackendURL;
         } else {
-            return (window.location.origin);
+            return window.location.origin;
         }
     }
 }
@@ -38,28 +38,20 @@ function getAPIDomain(): string {
  * interface how an api request should look like
  */
 interface ApiBaseRequest {
-    action: string | number,
+    action: string | number;
 
-    [_: string]: string | number | boolean | object
+    [_: string]: string | number | boolean | object;
 }
 
 // store api token - empty if not set
-let apiToken = ''
+let apiToken = '';
 
 // a callback que to be called after api token refresh
-let callQue: ((error: string) => void)[] = []
+let callQue: ((error: string) => void)[] = [];
 // flag to check wheter a api refresh is currently pending
 let refreshInProcess = false;
 // store the expire seconds of token
 let expireSeconds = -1;
-
-interface APIToken {
-    error?: string;
-    access_token: string;
-    expires_in: number;
-    scope: string;
-    token_type: string;
-}
 
 /**
  * refresh the api token or use that one in cookie if still valid
@@ -79,34 +71,44 @@ export function refreshAPIToken(callback: (error: string) => void, password?: st
     }
 
     if (apiTokenValid()) {
-        console.log("token still valid...")
+        console.log('token still valid...');
         callFuncQue('');
         return;
     }
 
     const formData = new FormData();
-    formData.append("grant_type", "client_credentials");
-    formData.append("client_id", "openmediacenter");
-    formData.append("client_secret", password ? password : 'openmediacenter');
-    formData.append("scope", 'all');
+    formData.append('grant_type', 'client_credentials');
+    formData.append('client_id', 'openmediacenter');
+    formData.append('client_secret', password ? password : 'openmediacenter');
+    formData.append('scope', 'all');
 
+    interface APIToken {
+        error?: string;
+        // eslint-disable-next-line camelcase
+        access_token: string; // no camel case allowed because of backendlib
+        // eslint-disable-next-line camelcase
+        expires_in: number; // no camel case allowed because of backendlib
+        scope: string;
+        // eslint-disable-next-line camelcase
+        token_type: string; // no camel case allowed because of backendlib
+    }
 
-    fetch(getBackendDomain() + '/token', {method: 'POST', body: formData})
-        .then((response) => response.json()
-            .then((result: APIToken) => {
-                if (result.error) {
-                    callFuncQue(result.error);
-                    return;
-                }
-                console.log(result)
-                // set api token
-                apiToken = result.access_token;
-                // set expire time
-                expireSeconds = (new Date().getTime() / 1000) + result.expires_in;
-                setTokenCookie(apiToken, expireSeconds);
-                // call all handlers and release flag
-                callFuncQue('');
-            }));
+    fetch(getBackendDomain() + '/token', {method: 'POST', body: formData}).then((response) =>
+        response.json().then((result: APIToken) => {
+            if (result.error) {
+                callFuncQue(result.error);
+                return;
+            }
+            console.log(result);
+            // set api token
+            apiToken = result.access_token;
+            // set expire time
+            expireSeconds = new Date().getTime() / 1000 + result.expires_in;
+            setTokenCookie(apiToken, expireSeconds);
+            // call all handlers and release flag
+            callFuncQue('');
+        })
+    );
 }
 
 export function apiTokenValid(): boolean {
@@ -114,7 +116,7 @@ export function apiTokenValid(): boolean {
     const token = getTokenCookie();
     if (token !== null) {
         // check if token is at least valid for the next minute
-        if (token.expire > (new Date().getTime() / 1000) + 60) {
+        if (token.expire > new Date().getTime() / 1000 + 60) {
             apiToken = token.token;
             expireSeconds = token.expire;
 
@@ -129,11 +131,11 @@ export function apiTokenValid(): boolean {
  */
 function callFuncQue(error: string): void {
     // call all pending handlers
-    callQue.map(func => {
+    callQue.map((func) => {
         return func(error);
-    })
+    });
     // reset pending que
-    callQue = []
+    callQue = [];
     // release flag to be able to start new refresh
     refreshInProcess = false;
 }
@@ -146,24 +148,24 @@ function callFuncQue(error: string): void {
 function setTokenCookie(token: string, validSec: number): void {
     let d = new Date();
     d.setTime(validSec * 1000);
-    console.log("token set" + d.toUTCString())
-    let expires = "expires=" + d.toUTCString();
-    document.cookie = "token=" + token + ";" + expires + ";path=/";
-    document.cookie = "token_expire=" + validSec + ";" + expires + ";path=/";
+    console.log('token set' + d.toUTCString());
+    let expires = 'expires=' + d.toUTCString();
+    document.cookie = 'token=' + token + ';' + expires + ';path=/';
+    document.cookie = 'token_expire=' + validSec + ';' + expires + ';path=/';
 }
 
 /**
  * get all required cookies for the token
  */
-function getTokenCookie(): { token: string, expire: number } | null {
+function getTokenCookie(): {token: string; expire: number} | null {
     const token = decodeCookie('token');
     const expireInString = decodeCookie('token_expire');
-    const expireIn = parseInt(expireInString, 10) | 0;
+    const expireIn = parseInt(expireInString, 10);
 
     if (expireIn !== 0 && token !== '') {
         return {token: token, expire: expireIn};
     } else {
-        return null
+        return null;
     }
 }
 
@@ -172,7 +174,7 @@ function getTokenCookie(): { token: string, expire: number } | null {
  * @param key cookie key
  */
 function decodeCookie(key: string): string {
-    let name = key + "=";
+    let name = key + '=';
     let decodedCookie = decodeURIComponent(document.cookie);
     let ca = decodedCookie.split(';');
     for (let i = 0; i < ca.length; i++) {
@@ -184,7 +186,7 @@ function decodeCookie(key: string): string {
             return c.substring(name.length, c.length);
         }
     }
-    return "";
+    return '';
 }
 
 /**
@@ -196,10 +198,10 @@ function checkAPITokenValid(callback: () => void): void {
     // check if token is valid and set
     if (apiToken === '' || expireSeconds <= new Date().getTime() / 1000) {
         refreshAPIToken(() => {
-            callback()
-        })
+            callback();
+        });
     } else {
-        callback()
+        callback();
     }
 }
 
@@ -210,28 +212,34 @@ function checkAPITokenValid(callback: () => void): void {
  * @param callback the callback with json reply from backend
  * @param errorcallback a optional callback if an error occured
  */
-export function callAPI<T>(apinode: APINode,
-                           fd: ApiBaseRequest,
-                           callback: (_: T) => void,
-                           errorcallback: (_: string) => void = (_: string): void => {
-                           }): void {
+export function callAPI<T>(
+    apinode: APINode,
+    fd: ApiBaseRequest,
+    callback: (_: T) => void,
+    errorcallback: (_: string) => void = (_: string): void => {}
+): void {
     checkAPITokenValid(() => {
+        console.log(apiToken);
         fetch(getAPIDomain() + apinode, {
-            method: 'POST', body: JSON.stringify(fd), headers: new Headers({
+            method: 'POST',
+            body: JSON.stringify(fd),
+            headers: new Headers({
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + apiToken,
-            }),
-        }).then((response) => {
-            if (response.status !== 200) {
-                console.log('Error: ' + response.statusText);
-                // todo place error popup here
-            } else {
-                response.json().then((result: T) => {
-                    callback(result);
-                })
-            }
-        }).catch(reason => errorcallback(reason));
-    })
+                Authorization: 'Bearer ' + apiToken
+            })
+        })
+            .then((response) => {
+                if (response.status !== 200) {
+                    console.log('Error: ' + response.statusText);
+                    // todo place error popup here
+                } else {
+                    response.json().then((result: T) => {
+                        callback(result);
+                    });
+                }
+            })
+            .catch((reason) => errorcallback(reason));
+    });
 }
 
 /**
@@ -239,18 +247,26 @@ export function callAPI<T>(apinode: APINode,
  * @param apinode
  * @param fd
  * @param callback
+ * @param errorcallback
  */
-export function callApiUnsafe<T>(apinode: APINode, fd: ApiBaseRequest, callback: (_: T) => void, errorcallback?: (_: string) => void): void {
-    fetch(getAPIDomain() + apinode, {method: 'POST', body: JSON.stringify(fd),}).then((response) => {
-        if (response.status !== 200) {
-            console.log('Error: ' + response.statusText);
-            // todo place error popup here
-        } else {
-            response.json().then((result: T) => {
-                callback(result);
-            })
-        }
-    }).catch(reason => errorcallback ? errorcallback(reason) : {})
+export function callApiUnsafe<T>(
+    apinode: APINode,
+    fd: ApiBaseRequest,
+    callback: (_: T) => void,
+    errorcallback?: (_: string) => void
+): void {
+    fetch(getAPIDomain() + apinode, {method: 'POST', body: JSON.stringify(fd)})
+        .then((response) => {
+            if (response.status !== 200) {
+                console.log('Error: ' + response.statusText);
+                // todo place error popup here
+            } else {
+                response.json().then((result: T) => {
+                    callback(result);
+                });
+            }
+        })
+        .catch((reason) => (errorcallback ? errorcallback(reason) : {}));
 }
 
 /**
@@ -262,21 +278,24 @@ export function callApiUnsafe<T>(apinode: APINode, fd: ApiBaseRequest, callback:
 export function callAPIPlain(apinode: APINode, fd: ApiBaseRequest, callback: (_: string) => void): void {
     checkAPITokenValid(() => {
         fetch(getAPIDomain() + apinode, {
-            method: 'POST', body: JSON.stringify(fd), headers: new Headers({
+            method: 'POST',
+            body: JSON.stringify(fd),
+            headers: new Headers({
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + apiToken,
+                Authorization: 'Bearer ' + apiToken
             })
-        })
-            .then((response) => response.text()
-                .then((result) => {
-                    callback(result);
-                }));
+        }).then((response) =>
+            response.text().then((result) => {
+                callback(result);
+            })
+        );
     });
 }
 
 /**
  * API nodes definitions
  */
+// eslint-disable-next-line no-shadow
 export enum APINode {
     Settings = 'settings',
     Tags = 'tags',

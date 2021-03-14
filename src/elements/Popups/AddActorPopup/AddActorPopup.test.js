@@ -40,7 +40,7 @@ describe('<AddActorPopup/>', function () {
 
     it('simulate actortile click', function () {
         const func = jest.fn();
-        const wrapper = shallow(<AddActorPopup onHide={() => {func();}} movie_id={1}/>);
+        const wrapper = shallow(<AddActorPopup onHide={() => {func();}} movieId={1}/>);
 
         global.callAPIMock({result: 'success'});
 

@@ -1,22 +1,22 @@
-import React from "react";
-import {Button} from "../../elements/GPElements/Button";
-import style from './AuthenticationPage.module.css'
+import React from 'react';
+import {Button} from '../../elements/GPElements/Button';
+import style from './AuthenticationPage.module.css';
 
 interface state {
-    pwdText: string
+    pwdText: string;
 }
 
-interface props {
-    submit: (password: string) => void
+interface Props {
+    submit: (password: string) => void;
 }
 
-class AuthenticationPage extends React.Component<props, state> {
-    constructor(props: props) {
+class AuthenticationPage extends React.Component<Props, state> {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
             pwdText: ''
-        }
+        };
     }
 
     render(): JSX.Element {
@@ -26,16 +26,21 @@ class AuthenticationPage extends React.Component<props, state> {
                 <div className={style.main}>
                     <div className={style.loginText}>Login</div>
                     <div>
-                        <input className={style.input}
-                               placeholder='Password'
-                               type='password'
-                               onChange={(ch): void => this.setState({pwdText: ch.target.value})}
-                               value={this.state.pwdText}/>
+                        <input
+                            className={style.input}
+                            placeholder='Password'
+                            type='password'
+                            onChange={(ch): void => this.setState({pwdText: ch.target.value})}
+                            value={this.state.pwdText}
+                        />
                     </div>
                     <div>
-                        <Button title='Submit' onClick={(): void => {
-                            this.props.submit(this.state.pwdText);
-                        }}/>
+                        <Button
+                            title='Submit'
+                            onClick={(): void => {
+                                this.props.submit(this.state.pwdText);
+                            }}
+                        />
                     </div>
                 </div>
             </>

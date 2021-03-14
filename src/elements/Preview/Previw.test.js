@@ -5,7 +5,7 @@ import Preview, {TagPreview} from './Preview';
 
 describe('<Preview/>', function () {
     it('renders without crashing ', function () {
-        const wrapper = shallow(<Preview movie_id={1}/>);
+        const wrapper = shallow(<Preview movieId={1}/>);
         wrapper.unmount();
     });
 
@@ -17,7 +17,7 @@ describe('<Preview/>', function () {
         });
         global.fetch = jest.fn().mockImplementation(() => mockFetchPromise);
 
-        const wrapper = shallow(<Preview name='test' movie_id={1}/>);
+        const wrapper = shallow(<Preview name='test' movieId={1}/>);
 
         // now called 1 times
         expect(global.fetch).toHaveBeenCalledTimes(1);
@@ -35,7 +35,7 @@ describe('<Preview/>', function () {
     });
 
     it('spinner loads correctly', function () {
-        const wrapper = shallow(<Preview movie_id={1}/>);
+        const wrapper = shallow(<Preview movieId={1}/>);
 
         // expect load animation to be visible
         expect(wrapper.find('.loadAnimation')).toHaveLength(1);

@@ -12,10 +12,10 @@ class CategoryPage extends React.Component {
         return (
             <Switch>
                 <Route path='/categories/:id'>
-                    <CategoryViewWR/>
+                    <CategoryViewWR />
                 </Route>
                 <Route path='/categories'>
-                    <TagView/>
+                    <TagView />
                 </Route>
             </Switch>
         );

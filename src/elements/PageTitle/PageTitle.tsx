@@ -17,10 +17,8 @@ class PageTitle extends React.Component<props> {
             <div className={style.pageheader + ' ' + themeStyle.backgroundcolor}>
                 <span className={style.pageheadertitle + ' ' + themeStyle.textcolor}>{this.props.title}</span>
                 <span className={style.pageheadersubtitle + ' ' + themeStyle.textcolor}>{this.props.subtitle}</span>
-                <>
-                    {this.props.children}
-                </>
-                <Line/>
+                <>{this.props.children}</>
+                <Line />
             </div>
         );
     }
@@ -35,7 +33,7 @@ export class Line extends React.Component {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
             <>
-                <hr className={themeStyle.hrcolor}/>
+                <hr className={themeStyle.hrcolor} />
             </>
         );
     }
