@@ -23,6 +23,9 @@ class StaticInfos {
      */
     enableDarkTheme(enable = true): void {
         this.darktheme = enable;
+        this.handlers.map(func => {
+            return func();
+        })
     }
 
     /**
@@ -31,6 +34,11 @@ class StaticInfos {
      */
     getThemeStyle(): { [_: string]: string } {
         return this.isDarkTheme() ? darktheme : lighttheme;
+    }
+
+    handlers: (() => void)[] = [];
+    onThemeChange(func: () => void): void {
+        this.handlers.push(func);
     }
 
     /**

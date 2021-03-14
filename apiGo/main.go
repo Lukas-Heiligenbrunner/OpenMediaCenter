@@ -26,6 +26,7 @@ func main() {
 	api.AddSettingsHandlers()
 	api.AddTagHandlers()
 	api.AddActorsHandlers()
+	api.AddInitHandlers()
 
 	api.ServerInit(8081)
 }
