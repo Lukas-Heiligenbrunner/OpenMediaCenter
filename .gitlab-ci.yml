@@ -76,6 +76,9 @@ lint:
     paths:
       - .yarn/
       - ./node_modules/
+  artifacts:
+    reports:
+      codequality: gl-codequality.json
   needs: []
 
 Debian_Server:
