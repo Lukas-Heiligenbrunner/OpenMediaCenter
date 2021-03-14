@@ -227,7 +227,20 @@ func addToVideoHandlers() {
 		MovieId int
 	}
 	AddHandler("deleteVideo", VideoNode, &dv, func() []byte {
-		query := fmt.Sprintf("DELETE FROM videos WHERE movie_id=%d", dv.MovieId)
+		// delete tag constraints
+		query := fmt.Sprintf("DELETE FROM video_tags WHERE video_id=%d", dv.MovieId)
+		err := database.Edit(query)
+
+		// delete actor constraints
+		query = fmt.Sprintf("DELETE FROM actors_videos WHERE video_id=%d", dv.MovieId)
+		err = database.Edit(query)
+
+		// respond only if result not successful
+		if err != nil {
+			return database.ManualSuccessResponse(err)
+		}
+
+		query = fmt.Sprintf("DELETE FROM videos WHERE movie_id=%d", dv.MovieId)
 		return database.SuccessQuery(query)
 	})
 }

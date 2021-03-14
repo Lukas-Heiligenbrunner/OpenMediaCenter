@@ -172,7 +172,11 @@ func parseFFmpegPic(fileName string) (*string, error) {
 		return nil, err
 	}
 
-	backpic64 := "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(stdout)
+	strEncPic := base64.StdEncoding.EncodeToString(stdout)
+	if strEncPic == "" {
+		return nil, nil
+	}
+	backpic64 := fmt.Sprintf("data:image/jpeg;base64,%s", strEncPic)
 
 	return &backpic64, nil
 }

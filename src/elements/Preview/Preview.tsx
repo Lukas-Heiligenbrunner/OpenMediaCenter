@@ -4,6 +4,8 @@ import {Spinner} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import GlobalInfos from '../../utils/GlobalInfos';
 import {APINode, callAPIPlain} from '../../utils/Api';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faPhotoVideo} from '@fortawesome/free-solid-svg-icons';
 
 interface PreviewProps {
     name: string;
@@ -42,12 +44,21 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
                 <div className={style.videopreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview}>
                     <div className={style.previewtitle + ' ' + themeStyle.lighttextcolor}>{this.props.name}</div>
                     <div className={style.previewpic}>
-                        {this.state.previewpicture !== null ? (
-                            <img className={style.previewimage} src={this.state.previewpicture} alt='Pic loading.' />
-                        ) : (
+                        {this.state.previewpicture === '' ? (
+                            <FontAwesomeIcon
+                                style={{
+                                    color: 'white',
+                                    marginTop: '55px'
+                                }}
+                                icon={faPhotoVideo}
+                                size='5x'
+                            />
+                        ) : this.state.previewpicture === null ? (
                             <span className={style.loadAnimation}>
                                 <Spinner animation='border' />
                             </span>
+                        ) : (
+                            <img className={style.previewimage} src={this.state.previewpicture} alt='Pic loading.' />
                         )}
                     </div>
                     <div className={style.previewbottom} />
