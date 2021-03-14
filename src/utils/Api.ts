@@ -53,14 +53,6 @@ let refreshInProcess = false;
 // store the expire seconds of token
 let expireSeconds = -1;
 
-interface APIToken {
-    error?: string;
-    accessToken: string;
-    expiresIn: number;
-    scope: string;
-    tokenType: string;
-}
-
 /**
  * refresh the api token or use that one in cookie if still valid
  * @param callback to be called after successful refresh
@@ -90,6 +82,17 @@ export function refreshAPIToken(callback: (error: string) => void, password?: st
     formData.append('client_secret', password ? password : 'openmediacenter');
     formData.append('scope', 'all');
 
+    interface APIToken {
+        error?: string;
+        // eslint-disable-next-line camelcase
+        access_token: string; // no camel case allowed because of backendlib
+        // eslint-disable-next-line camelcase
+        expires_in: number; // no camel case allowed because of backendlib
+        scope: string;
+        // eslint-disable-next-line camelcase
+        token_type: string; // no camel case allowed because of backendlib
+    }
+
     fetch(getBackendDomain() + '/token', {method: 'POST', body: formData}).then((response) =>
         response.json().then((result: APIToken) => {
             if (result.error) {
@@ -98,9 +101,9 @@ export function refreshAPIToken(callback: (error: string) => void, password?: st
             }
             console.log(result);
             // set api token
-            apiToken = result.accessToken;
+            apiToken = result.access_token;
             // set expire time
-            expireSeconds = new Date().getTime() / 1000 + result.expiresIn;
+            expireSeconds = new Date().getTime() / 1000 + result.expires_in;
             setTokenCookie(apiToken, expireSeconds);
             // call all handlers and release flag
             callFuncQue('');
@@ -216,6 +219,7 @@ export function callAPI<T>(
     errorcallback: (_: string) => void = (_: string): void => {}
 ): void {
     checkAPITokenValid(() => {
+        console.log(apiToken);
         fetch(getAPIDomain() + apinode, {
             method: 'POST',
             body: JSON.stringify(fd),
