@@ -26,9 +26,11 @@ class AuthenticationPage extends React.Component<props, state> {
                 <div className={style.main}>
                     <div className={style.loginText}>Login</div>
                     <div>
-                        <input className={style.input} placeholder='Password' type='password' onChange={(ch): void => {
-                            this.setState({pwdText: ch.target.value});
-                        }} value={this.state.pwdText}/>
+                        <input className={style.input}
+                               placeholder='Password'
+                               type='password'
+                               onChange={(ch): void => this.setState({pwdText: ch.target.value})}
+                               value={this.state.pwdText}/>
                     </div>
                     <div>
                         <Button title='Submit' onClick={(): void => {
