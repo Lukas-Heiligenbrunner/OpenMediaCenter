@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"regexp"
 )
 
@@ -43,8 +44,9 @@ type TMDBGenre struct {
 }
 
 func SearchVideo(MovieName string, year int) *VideoTMDB {
-	url := fmt.Sprintf("%ssearch/movie?api_key=%s&query=%s", baseUrl, apiKey, MovieName)
-	resp, err := http.Get(url)
+	fmt.Printf("Searching TMDB for: Moviename: %s, year:%d \n", MovieName, year)
+	queryURL := fmt.Sprintf("%ssearch/movie?api_key=%s&query=%s", baseUrl, apiKey, url.QueryEscape(MovieName))
+	resp, err := http.Get(queryURL)
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil
