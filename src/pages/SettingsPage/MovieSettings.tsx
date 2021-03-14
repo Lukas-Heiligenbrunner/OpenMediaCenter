@@ -5,20 +5,20 @@ import {GeneralSuccess} from '../../types/GeneralTypes';
 import {SettingsTypes} from '../../types/ApiTypes';
 
 interface state {
-    text: string[]
-    startbtnDisabled: boolean
+    text: string[];
+    startbtnDisabled: boolean;
 }
 
-interface props {}
+interface Props {}
 
 /**
  * Component for MovieSettings on Settingspage
  * handles settings concerning to movies in general
  */
-class MovieSettings extends React.Component<props, state> {
+class MovieSettings extends React.Component<Props, state> {
     myinterval: number = -1;
 
-    constructor(props: props) {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
@@ -32,23 +32,36 @@ class MovieSettings extends React.Component<props, state> {
     }
 
     componentWillUnmount(): void {
-        if (this.myinterval !== -1)
+        if (this.myinterval !== -1) {
             clearInterval(this.myinterval);
+        }
     }
 
     render(): JSX.Element {
         return (
             <>
-                <button disabled={this.state.startbtnDisabled}
-                        className='btn btn-success'
-                        onClick={(): void => {this.startReindex();}}>Reindex Movie
+                <button
+                    disabled={this.state.startbtnDisabled}
+                    className='btn btn-success'
+                    onClick={(): void => {
+                        this.startReindex();
+                    }}>
+                    Reindex Movie
                 </button>
-                <button className='btn btn-warning'
-                        onClick={(): void => {this.cleanupGravity();}}>Cleanup Gravity
+                <button
+                    className='btn btn-warning'
+                    onClick={(): void => {
+                        this.cleanupGravity();
+                    }}>
+                    Cleanup Gravity
                 </button>
-                <div className={style.indextextarea}>{this.state.text.map(m => (
-                    <div key={m} className='textarea-element'>{m}</div>
-                ))}</div>
+                <div className={style.indextextarea}>
+                    {this.state.text.map((m) => (
+                        <div key={m} className='textarea-element'>
+                            {m}
+                        </div>
+                    ))}
+                </div>
             </>
         );
     }
@@ -99,7 +112,7 @@ class MovieSettings extends React.Component<props, state> {
      * send request to cleanup db gravity
      */
     cleanupGravity(): void {
-        callAPI(APINode.Settings, {action: 'cleanupGravity'}, (result) => {
+        callAPI(APINode.Settings, {action: 'cleanupGravity'}, () => {
             this.setState({
                 text: ['successfully cleaned up gravity!']
             });

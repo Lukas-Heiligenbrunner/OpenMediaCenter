@@ -47,26 +47,26 @@ class RandomPage extends React.Component<{}, state> {
     render(): JSX.Element {
         return (
             <div>
-                <PageTitle title='Random Videos'
-                           subtitle='4pc'/>
+                <PageTitle title='Random Videos' subtitle='4pc' />
 
                 <SideBar>
                     <SideBarTitle>Visible Tags:</SideBarTitle>
                     {this.state.tags.map((m) => (
-                        <Tag key={m.TagId} tagInfo={m}/>
+                        <Tag key={m.TagId} tagInfo={m} />
                     ))}
                 </SideBar>
 
-                {this.state.videos.length !== 0 ?
-                    <VideoContainer
-                        data={this.state.videos}>
+                {this.state.videos.length !== 0 ? (
+                    <VideoContainer data={this.state.videos}>
                         <div className={style.Shufflebutton}>
-                            <button onClick={(): void => this.shuffleclick()} className={style.btnshuffle}>Shuffle</button>
+                            <button onClick={(): void => this.shuffleclick()} className={style.btnshuffle}>
+                                Shuffle
+                            </button>
                         </div>
                     </VideoContainer>
-                    :
-                    <div>No Data found!</div>}
-
+                ) : (
+                    <div>No Data found!</div>
+                )}
             </div>
         );
     }
@@ -83,8 +83,8 @@ class RandomPage extends React.Component<{}, state> {
      * @param nr number of videos to load
      */
     loadShuffledvideos(nr: number): void {
-        callAPI<GetRandomMoviesType>(APINode.Video, {action: 'getRandomMovies', number: nr}, result => {
-            console.log(result)
+        callAPI<GetRandomMoviesType>(APINode.Video, {action: 'getRandomMovies', number: nr}, (result) => {
+            console.log(result);
             this.setState({videos: []}); // needed to trigger rerender of main videoview
             this.setState({
                 videos: result.Videos,

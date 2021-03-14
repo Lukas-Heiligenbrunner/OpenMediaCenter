@@ -5,8 +5,8 @@ import {Link} from 'react-router-dom';
 import {TagType} from '../../types/VideoTypes';
 
 interface props {
-    onclick?: (_: string) => void
-    tagInfo: TagType
+    onclick?: (_: string) => void;
+    tagInfo: TagType;
 }
 
 /**
@@ -17,18 +17,15 @@ class Tag extends React.Component<props> {
         if (this.props.onclick) {
             return this.renderButton();
         } else {
-            return (
-                <Link to={'/categories/' + this.props.tagInfo.TagId}>
-                    {this.renderButton()}
-                </Link>
-            );
+            return <Link to={'/categories/' + this.props.tagInfo.TagId}>{this.renderButton()}</Link>;
         }
     }
 
     renderButton(): JSX.Element {
         return (
-            <button className={styles.tagbtn} onClick={(): void => this.TagClick()}
-                    data-testid='Test-Tag'>{this.props.tagInfo.TagName}</button>
+            <button className={styles.tagbtn} onClick={(): void => this.TagClick()} data-testid='Test-Tag'>
+                {this.props.tagInfo.TagName}
+            </button>
         );
     }
 

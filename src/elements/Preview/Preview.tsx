@@ -7,7 +7,7 @@ import {APINode, callAPIPlain} from '../../utils/Api';
 
 interface PreviewProps {
     name: string;
-    movie_id: number;
+    movieId: number;
 }
 
 interface PreviewState {
@@ -28,7 +28,7 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
     }
 
     componentDidMount(): void {
-        callAPIPlain(APINode.Video, {action: 'readThumbnail', movieid: this.props.movie_id}, (result) => {
+        callAPIPlain(APINode.Video, {action: 'readThumbnail', movieid: this.props.movieId}, (result) => {
             this.setState({
                 previewpicture: result
             });
@@ -38,23 +38,21 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
     render(): JSX.Element {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
-            <Link to={'/player/' + this.props.movie_id}>
+            <Link to={'/player/' + this.props.movieId}>
                 <div className={style.videopreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview}>
                     <div className={style.previewtitle + ' ' + themeStyle.lighttextcolor}>{this.props.name}</div>
                     <div className={style.previewpic}>
-                        {this.state.previewpicture !== null ?
-                            <img className={style.previewimage}
-                                 src={this.state.previewpicture}
-                                 alt='Pic loading.'/> :
-                            <span className={style.loadAnimation}><Spinner animation='border'/></span>}
-
+                        {this.state.previewpicture !== null ? (
+                            <img className={style.previewimage} src={this.state.previewpicture} alt='Pic loading.' />
+                        ) : (
+                            <span className={style.loadAnimation}>
+                                <Spinner animation='border' />
+                            </span>
+                        )}
                     </div>
-                    <div className={style.previewbottom}>
-
-                    </div>
+                    <div className={style.previewbottom} />
                 </div>
             </Link>
-
         );
     }
 }
@@ -62,15 +60,12 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
 /**
  * Component for a Tag-name tile (used in category page)
  */
-export class TagPreview extends React.Component<{ name: string }> {
+export class TagPreview extends React.Component<{name: string}> {
     render(): JSX.Element {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
-            <div
-                className={style.videopreview + ' ' + style.tagpreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview}>
-                <div className={style.tagpreviewtitle + ' ' + themeStyle.lighttextcolor}>
-                    {this.props.name}
-                </div>
+            <div className={style.videopreview + ' ' + style.tagpreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview}>
+                <div className={style.tagpreviewtitle + ' ' + themeStyle.lighttextcolor}>{this.props.name}</div>
             </div>
         );
     }

@@ -3,10 +3,10 @@ import Tag from '../../Tag/Tag';
 import PopupBase from '../PopupBase';
 import {APINode, callAPI} from '../../../utils/Api';
 import {TagType} from '../../../types/VideoTypes';
-import FilterButton from "../../FilterButton/FilterButton";
-import styles from './AddTagPopup.module.css'
+import FilterButton from '../../FilterButton/FilterButton';
+import styles from './AddTagPopup.module.css';
 
-interface props {
+interface Props {
     onHide: () => void;
     submit: (tagId: number, tagName: string) => void;
 }
@@ -19,8 +19,8 @@ interface state {
 /**
  * component creates overlay to add a new tag to a video
  */
-class AddTagPopup extends React.Component<props, state> {
-    constructor(props: props) {
+class AddTagPopup extends React.Component<Props, state> {
+    constructor(props: Props) {
         super(props);
 
         this.state = {items: [], filter: ''};
@@ -42,13 +42,11 @@ class AddTagPopup extends React.Component<props, state> {
         return (
             <PopupBase title='Add a Tag to this Video:' onHide={this.props.onHide} ParentSubmit={this.parentSubmit}>
                 <div className={styles.actionbar}>
-                    <FilterButton onFilterChange={(filter): void => this.setState({filter: filter})}/>
+                    <FilterButton onFilterChange={(filter): void => this.setState({filter: filter})} />
                 </div>
-                {this.state.items ?
-                    this.state.items.filter(this.tagFilter).map((i) => (
-                        <Tag tagInfo={i}
-                             onclick={(): void => this.onItemClick(i)}/>
-                    )) : null}
+                {this.state.items
+                    ? this.state.items.filter(this.tagFilter).map((i) => <Tag tagInfo={i} onclick={(): void => this.onItemClick(i)} />)
+                    : null}
             </PopupBase>
         );
     }
