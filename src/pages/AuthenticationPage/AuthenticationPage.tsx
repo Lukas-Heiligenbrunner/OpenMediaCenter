@@ -1,6 +1,7 @@
 import React from 'react';
 import {Button} from '../../elements/GPElements/Button';
 import style from './AuthenticationPage.module.css';
+import {addKeyHandler, removeKeyHandler} from '../../utils/ShortkeyHandler';
 
 interface state {
     pwdText: string;
@@ -17,6 +18,16 @@ class AuthenticationPage extends React.Component<Props, state> {
         this.state = {
             pwdText: ''
         };
+
+        this.keypress = this.keypress.bind(this);
+    }
+
+    componentDidMount(): void {
+        addKeyHandler(this.keypress);
+    }
+
+    componentWillUnmount(): void {
+        removeKeyHandler(this.keypress);
     }
 
     render(): JSX.Element {
@@ -45,6 +56,20 @@ class AuthenticationPage extends React.Component<Props, state> {
                 </div>
             </>
         );
+    }
+
+    /**
+     * key event handling
+     * @param event keyevent
+     */
+    keypress(event: KeyboardEvent): void {
+        // hide if escape is pressed
+        if (event.key === 'Enter') {
+            // call a parentsubmit if defined
+            if (this.props.submit) {
+                this.props.submit(this.state.pwdText);
+            }
+        }
     }
 }
 

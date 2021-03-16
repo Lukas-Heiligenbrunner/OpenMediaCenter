@@ -22,23 +22,29 @@ and in dark mode:
 ![](https://i.ibb.co/xzhdsbJ/Screenshot-20200812-172926.png)
 
 ## Installation
-First of all clone the repository.
 
-`git clone https://gitlab.heili.eu/lukas/openmediacenter.git`
+Download the latest release .deb file from the Releases page and install it via `apt install ./OpenMediaCenter-0.1.x_amd64.deb`
 
-Then build a production build via npm. 
-
-`npm run build`
-
-Afterwards you can copy the content of the generated `build` folder as well as the `api` folder to your webserver root. 
-
-You need also to setup a Database with the structure described in [SQL Style Reference](https://gitlab.heili.eu/lukas/openmediacenter/-/blob/master/database.sql). 
-The login data to this database needs to be specified in the `api/Database.php` file.
- 
+Now you could optionally check if the service is up and running: `systemctl status OpenMediaCenter`
 ## Usage
-Now you can access your MediaCenter via your servers global ip (:
+Now you can access your MediaCenter via your servers global ip on port 8080 (:
 
 At the settings tab you can set the correct videopath on server and click reindex afterwards. 
+
+
+## Development
+
+Build and start the go backend:
+
+`go build`
+
+Start frontend dev server:
+
+`npm start`
+
+### Environent Variables:
+
+`REACT_APP_CUST_BACK_DOMAIN` :: Set a custom movie domain
 
 ## Contact
 Any contribution is appreciated. 

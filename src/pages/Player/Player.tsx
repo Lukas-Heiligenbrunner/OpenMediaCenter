@@ -280,12 +280,18 @@ export class Player extends React.Component<myprops, mystate> {
             {action: 'loadVideo', MovieId: parseInt(this.props.match.params.id, 10)},
             (result: VideoTypes.loadVideoType) => {
                 console.log(result);
+                console.log(process.env.REACT_APP_CUST_BACK_DOMAIN);
                 this.setState({
                     sources: {
                         type: 'video',
                         sources: [
                             {
-                                src: getBackendDomain() + GlobalInfos.getVideoPath() + result.MovieUrl,
+                                src:
+                                    (process.env.REACT_APP_CUST_BACK_DOMAIN
+                                        ? process.env.REACT_APP_CUST_BACK_DOMAIN
+                                        : getBackendDomain()) +
+                                    GlobalInfos.getVideoPath() +
+                                    result.MovieUrl,
                                 type: 'video/mp4',
                                 size: 1080
                             }
