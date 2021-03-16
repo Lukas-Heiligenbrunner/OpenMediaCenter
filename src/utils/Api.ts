@@ -1,3 +1,5 @@
+import GlobalInfos from './GlobalInfos';
+
 let customBackendURL: string;
 
 /**
@@ -57,8 +59,9 @@ let expireSeconds = -1;
  * refresh the api token or use that one in cookie if still valid
  * @param callback to be called after successful refresh
  * @param password
+ * @param force
  */
-export function refreshAPIToken(callback: (error: string) => void, password?: string): void {
+export function refreshAPIToken(callback: (error: string) => void, force?: boolean, password?: string): void {
     callQue.push(callback);
 
     // check if already is a token refresh is in process
@@ -70,7 +73,7 @@ export function refreshAPIToken(callback: (error: string) => void, password?: st
         refreshInProcess = true;
     }
 
-    if (apiTokenValid()) {
+    if (apiTokenValid() && !force) {
         console.log('token still valid...');
         callFuncQue('');
         return;
@@ -229,13 +232,22 @@ export function callAPI<T>(
             })
         })
             .then((response) => {
-                if (response.status !== 200) {
-                    console.log('Error: ' + response.statusText);
-                    // todo place error popup here
-                } else {
+                if (response.status === 200) {
+                    // success
                     response.json().then((result: T) => {
                         callback(result);
                     });
+                } else if (response.status === 400) {
+                    // Bad Request --> invalid token
+                    console.log('loading Password page.');
+                    // load password page
+                    if (GlobalInfos.loadPasswordPage) {
+                        GlobalInfos.loadPasswordPage(() => {
+                            callAPI(apinode, fd, callback, errorcallback);
+                        });
+                    }
+                } else {
+                    console.log('Error: ' + response.statusText);
                 }
             })
             .catch((reason) => errorcallback(reason));
@@ -295,6 +307,7 @@ export function callAPIPlain(apinode: APINode, fd: ApiBaseRequest, callback: (_:
 /**
  * API nodes definitions
  */
+
 // eslint-disable-next-line no-shadow
 export enum APINode {
     Settings = 'settings',

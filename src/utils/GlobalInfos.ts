@@ -55,7 +55,11 @@ class StaticInfos {
     getVideoPath(): string {
         return this.videopath;
     }
+
+    /**
+     * load the Password page manually
+     */
+    loadPasswordPage: ((callback?: () => void) => void) | undefined = undefined;
 }
 
-const GlobalInfos = new StaticInfos();
-export default GlobalInfos;
+export default new StaticInfos();

@@ -54,9 +54,25 @@ class App extends React.Component<{}, state> {
             password: pwdneeded
         };
 
+        // force an update on theme change
         GlobalInfos.onThemeChange(() => {
             this.forceUpdate();
         });
+
+        // set the hook to load passwordfield on global func call
+        GlobalInfos.loadPasswordPage = (callback?: () => void) => {
+            // try refreshing the token
+            refreshAPIToken((err) => {
+                if (err !== '') {
+                    this.setState({password: true});
+                } else {
+                    // call callback if request was successful
+                    if (callback) {
+                        callback();
+                    }
+                }
+            }, true);
+        };
     }
 
     initialAPICall(): void {
@@ -96,13 +112,17 @@ class App extends React.Component<{}, state> {
             return (
                 <AuthenticationPage
                     submit={(password): void => {
-                        refreshAPIToken((error) => {
-                            if (error !== '') {
-                                console.log('wrong password!!!');
-                            } else {
-                                this.setState({password: false});
-                            }
-                        }, password);
+                        refreshAPIToken(
+                            (error) => {
+                                if (error !== '') {
+                                    console.log('wrong password!!!');
+                                } else {
+                                    this.setState({password: false});
+                                }
+                            },
+                            true,
+                            password
+                        );
                     }}
                 />
             );
