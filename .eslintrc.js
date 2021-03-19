@@ -95,7 +95,8 @@ module.exports = {
     },
 
     rules: {
-        // 'multiline-ternary': [1, 'always-multiline'],
+        "@typescript-eslint/no-explicit-any": "error",
+        "@typescript-eslint/explicit-function-return-type": "error",
 
         // General
         'comma-dangle': [1, 'never'], // allow or disallow trailing commas

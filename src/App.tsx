@@ -60,7 +60,7 @@ class App extends React.Component<{}, state> {
         });
 
         // set the hook to load passwordfield on global func call
-        GlobalInfos.loadPasswordPage = (callback?: () => void) => {
+        GlobalInfos.loadPasswordPage = (callback?: () => void): void => {
             // try refreshing the token
             refreshAPIToken((err) => {
                 if (err !== '') {

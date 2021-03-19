@@ -24,6 +24,7 @@ func NewCustomStore() oauth2.ClientStore {
 
 func (a *CustomClientStore) GetByID(id string) (oauth2.ClientInfo, error) {
 	password := settings.GetPassword()
+	// if password not set assign default password
 	if password == nil {
 		defaultpassword := "openmediacenter"
 		password = &defaultpassword

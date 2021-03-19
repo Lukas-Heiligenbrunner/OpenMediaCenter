@@ -39,23 +39,6 @@
   },
   "proxy": "http://127.0.0.1:8081",
   "homepage": "/",
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ],
-    "overrides": [
-      {
-        "files": [
-          "**/*.ts?(x)"
-        ],
-        "rules": {
-          "@typescript-eslint/no-explicit-any": "error",
-          "@typescript-eslint/explicit-function-return-type": "error"
-        }
-      }
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",
