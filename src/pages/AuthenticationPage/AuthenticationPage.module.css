@@ -37,6 +37,10 @@
     font-size: larger;
 }
 
+.submitbtn {
+    margin-top: 10px;
+}
+
 ::placeholder {
     color: #505050;
     opacity: 1;

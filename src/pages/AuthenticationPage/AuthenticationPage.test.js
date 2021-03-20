@@ -9,13 +9,13 @@ describe('<AuthenticationPage/>', function () {
     });
 
     it('test button click', function () {
-        let pass;
-        const func = jest.fn((pwd) => {pass = pwd});
-        const wrapper = shallow(<AuthenticationPage submit={func}/>);
+        const func = jest.fn();
+        const wrapper = shallow(<AuthenticationPage onSuccessLogin={func}/>);
+        wrapper.instance().authenticate = jest.fn(() => {wrapper.instance().props.onSuccessLogin()});
         wrapper.setState({pwdText: 'testpwd'});
+
         wrapper.find('Button').simulate('click');
 
         expect(func).toHaveBeenCalledTimes(1);
-        expect(pass).toBe('testpwd');
     });
 });

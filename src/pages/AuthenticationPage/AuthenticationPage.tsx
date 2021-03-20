@@ -2,13 +2,17 @@ import React from 'react';
 import {Button} from '../../elements/GPElements/Button';
 import style from './AuthenticationPage.module.css';
 import {addKeyHandler, removeKeyHandler} from '../../utils/ShortkeyHandler';
+import {refreshAPIToken} from '../../utils/Api';
+import {faTimes} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 interface state {
     pwdText: string;
+    wrontPWDInfo: boolean;
 }
 
 interface Props {
-    submit: (password: string) => void;
+    onSuccessLogin: () => void;
 }
 
 class AuthenticationPage extends React.Component<Props, state> {
@@ -16,10 +20,12 @@ class AuthenticationPage extends React.Component<Props, state> {
         super(props);
 
         this.state = {
-            pwdText: ''
+            pwdText: '',
+            wrontPWDInfo: false
         };
 
         this.keypress = this.keypress.bind(this);
+        this.authenticate = this.authenticate.bind(this);
     }
 
     componentDidMount(): void {
@@ -44,17 +50,47 @@ class AuthenticationPage extends React.Component<Props, state> {
                             onChange={(ch): void => this.setState({pwdText: ch.target.value})}
                             value={this.state.pwdText}
                         />
+                        {this.state.wrontPWDInfo ? (
+                            <div>
+                                <FontAwesomeIcon
+                                    style={{
+                                        color: 'red',
+                                        marginRight: '7px'
+                                    }}
+                                    icon={faTimes}
+                                    size='1x'
+                                />
+                                wrong password!
+                            </div>
+                        ) : null}
                     </div>
-                    <div>
-                        <Button
-                            title='Submit'
-                            onClick={(): void => {
-                                this.props.submit(this.state.pwdText);
-                            }}
-                        />
+                    <div className={style.submitbtn}>
+                        <Button title='Submit' onClick={this.authenticate} />
                     </div>
                 </div>
             </>
+        );
+    }
+
+    /**
+     * request a new token and check if pwd was valid
+     */
+    authenticate(): void {
+        refreshAPIToken(
+            (error) => {
+                if (error !== '') {
+                    this.setState({wrontPWDInfo: true});
+
+                    // set timeout to make the info auto-disappearing
+                    setTimeout(() => {
+                        this.setState({wrontPWDInfo: false});
+                    }, 2000);
+                } else {
+                    this.props.onSuccessLogin();
+                }
+            },
+            true,
+            this.state.pwdText
         );
     }
 
@@ -65,10 +101,8 @@ class AuthenticationPage extends React.Component<Props, state> {
     keypress(event: KeyboardEvent): void {
         // hide if escape is pressed
         if (event.key === 'Enter') {
-            // call a parentsubmit if defined
-            if (this.props.submit) {
-                this.props.submit(this.state.pwdText);
-            }
+            // call submit
+            this.authenticate();
         }
     }
 }
