@@ -48,10 +48,10 @@ create table if not exists actors_videos
         foreign key (video_id) references videos (movie_id)
 );
 
-create index actors_videos_actor_id_index
+create index if not exists actors_videos_actor_id_index
     on actors_videos (actor_id);
 
-create index actors_videos_video_id_index
+create index if not exists actors_videos_video_id_index
     on actors_videos (video_id);
 
 create table if not exists video_tags
