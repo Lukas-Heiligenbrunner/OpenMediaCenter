@@ -18,4 +18,4 @@ chown -R www-data:www-data /var/www/openmediacenter
 systemctl restart nginx
 
 systemctl enable OpenMediaCenter.service
-systemctl start OpenMediaCenter.service
+systemctl restart OpenMediaCenter.service
