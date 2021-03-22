@@ -11,6 +11,7 @@ import (
 	"os/exec"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 var mSettings types.SettingsType
@@ -41,7 +42,12 @@ func ReIndexVideos(path []string, sett types.SettingsType) {
 	fmt.Printf("FFMPEG support: %t\n", mExtDepsAvailable.FFMpeg)
 	fmt.Printf("MediaInfo support: %t\n", mExtDepsAvailable.MediaInfo)
 
-	for _, s := range path {
+	// filter out those urls which are already existing in db
+	nonExisting := filterExisting(path)
+
+	fmt.Printf("There are %d videos not existing in db.\n", len(*nonExisting))
+
+	for _, s := range *nonExisting {
 		processVideo(s)
 	}
 
@@ -51,6 +57,45 @@ func ReIndexVideos(path []string, sett types.SettingsType) {
 	fmt.Println("Reindexing finished!")
 }
 
+// filter those entries from array which are already existing!
+func filterExisting(paths []string) *[]string {
+	var nameStr string
+
+	// build the query string with files on disk
+	for i, s := range paths {
+		// escape ' in url name
+		s = strings.Replace(s, "'", "\\'", -1)
+		nameStr += "SELECT '" + s + "' "
+
+		// if first index add as url
+		if i == 0 {
+			nameStr += "AS url "
+		}
+
+		// if not last index add union all
+		if i != len(paths)-1 {
+			nameStr += "UNION ALL "
+		}
+	}
+
+	query := fmt.Sprintf("SELECT * FROM (%s) urls WHERE urls.url NOT IN(SELECT movie_url FROM videos)", nameStr)
+	rows := database.Query(query)
+
+	var resultarr []string
+	// parse the result rows into a array
+	for rows.Next() {
+		var url string
+		err := rows.Scan(&url)
+		if err != nil {
+			continue
+		}
+		resultarr = append(resultarr, url)
+	}
+	rows.Close()
+
+	return &resultarr
+}
+
 func processVideo(fileNameOrig string) {
 	fmt.Printf("Processing %s video-", fileNameOrig)
 
@@ -58,18 +103,11 @@ func processVideo(fileNameOrig string) {
 	r, _ := regexp.Compile(`\.[a-zA-Z0-9]+$`)
 	fileName := r.ReplaceAllString(fileNameOrig, "")
 
+	// match the year and cut year from name
 	year, fileName := matchYear(fileName)
 
-	// now we should look if this video already exists in db
-	query := "SELECT * FROM videos WHERE movie_name = ?"
-	err := database.QueryRow(query, fileName).Scan()
-	if err == sql.ErrNoRows {
-		fmt.Printf("The Video %s does't exist! Adding it to database.\n", fileName)
-
-		addVideo(fileName, fileNameOrig, year)
-	} else {
-		fmt.Println(" :existing!")
-	}
+	fmt.Printf("The Video %s doesn't exist! Adding it to database.\n", fileName)
+	addVideo(fileName, fileNameOrig, year)
 }
 
 // add a video to the database
