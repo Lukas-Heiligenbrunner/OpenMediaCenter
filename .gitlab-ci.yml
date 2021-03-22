@@ -6,15 +6,13 @@ stages:
   - packaging
   - deploy
 
-variables:
-  SAST_DISABLE_DIND: "true"
-
 Minimize_Frontend:
   stage: build
   before_script:
     - yarn install --cache-folder .yarn
   script:
     - yarn run build
+    - rm build/*/*/*.map
   artifacts:
     expire_in: 2 days
     paths:

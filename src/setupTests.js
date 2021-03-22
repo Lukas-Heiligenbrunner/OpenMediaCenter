@@ -52,3 +52,12 @@ global.afterEach(() => {
     jest.resetAllMocks();
 });
 
+
+global.mockKeyPress = () => {
+    let events = [];
+    document.addEventListener = jest.fn((event, cb) => {
+        events[event] = cb;
+    });
+    return events;
+}
+

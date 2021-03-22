@@ -109,23 +109,8 @@ class App extends React.Component<{}, state> {
         document.body.className = themeStyle.backgroundcolor;
 
         if (this.state.password === true) {
-            return (
-                <AuthenticationPage
-                    submit={(password): void => {
-                        refreshAPIToken(
-                            (error) => {
-                                if (error !== '') {
-                                    console.log('wrong password!!!');
-                                } else {
-                                    this.setState({password: false});
-                                }
-                            },
-                            true,
-                            password
-                        );
-                    }}
-                />
-            );
+            // render authentication page if auth is neccessary
+            return <AuthenticationPage onSuccessLogin={(): void => this.setState({password: false})} />;
         } else if (this.state.password === false) {
             return (
                 <Router>
