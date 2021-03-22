@@ -8,7 +8,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 interface state {
     pwdText: string;
-    wrontPWDInfo: boolean;
+    wrongPWDInfo: boolean;
 }
 
 interface Props {
@@ -21,7 +21,7 @@ class AuthenticationPage extends React.Component<Props, state> {
 
         this.state = {
             pwdText: '',
-            wrontPWDInfo: false
+            wrongPWDInfo: false
         };
 
         this.keypress = this.keypress.bind(this);
@@ -50,7 +50,7 @@ class AuthenticationPage extends React.Component<Props, state> {
                             onChange={(ch): void => this.setState({pwdText: ch.target.value})}
                             value={this.state.pwdText}
                         />
-                        {this.state.wrontPWDInfo ? (
+                        {this.state.wrongPWDInfo ? (
                             <div>
                                 <FontAwesomeIcon
                                     style={{
@@ -79,11 +79,11 @@ class AuthenticationPage extends React.Component<Props, state> {
         refreshAPIToken(
             (error) => {
                 if (error !== '') {
-                    this.setState({wrontPWDInfo: true});
+                    this.setState({wrongPWDInfo: true});
 
                     // set timeout to make the info auto-disappearing
                     setTimeout(() => {
-                        this.setState({wrontPWDInfo: false});
+                        this.setState({wrongPWDInfo: false});
                     }, 2000);
                 } else {
                     this.props.onSuccessLogin();
