@@ -8,18 +8,11 @@ describe('<PopupBase/>', function () {
         wrapper.unmount();
     });
 
-    let events;
-
-    function mockKeyPress() {
-        events = [];
-        document.addEventListener = jest.fn((event, cb) => {
-            events[event] = cb;
-        });
-    }
-
     it('simulate keypress', function () {
         mockKeyPress();
         const func = jest.fn();
+        const events = mockKeyPress();
+
         shallow(<PopupBase onHide={() => func()}/>);
 
         // trigger the keypress event
@@ -29,7 +22,7 @@ describe('<PopupBase/>', function () {
     });
 
     it('test an Enter sumit', function () {
-        mockKeyPress();
+        const events = mockKeyPress();
         const func = jest.fn();
         shallow(<PopupBase ParentSubmit={() => func()}/>);
 
