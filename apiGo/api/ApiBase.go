@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"openmediacenter/apiGo/api/oauth"
+	"openmediacenter/apiGo/static"
 )
 
 const APIPREFIX = "/api"
@@ -42,6 +43,9 @@ func ServerInit(port uint16) {
 	http.Handle(APIPREFIX+"/tags", oauth.ValidateToken(tagHandler))
 	http.Handle(APIPREFIX+"/settings", oauth.ValidateToken(settingsHandler))
 	http.Handle(APIPREFIX+"/actor", oauth.ValidateToken(actorHandler))
+
+	// add the static files
+	static.ServeStaticFiles()
 
 	// initialization api calls to check if password is neccessaray
 	http.Handle(APIPREFIX+"/init", http.HandlerFunc(initHandler))
