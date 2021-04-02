@@ -29,7 +29,9 @@ Build_Backend:
   script:
     - cd apiGo
     - go build -v -o openmediacenter
-    - env GOOS=windows GOARCH=amd64 go build -v -o openmediacenter.exe
+    - cp -r ../build/ ./static/
+    - go build -v -tags static -o openmediacenter_full
+    - env GOOS=windows GOARCH=amd64 go build -v -tags static -o openmediacenter.exe
   artifacts:
     expire_in: 2 days
     paths:
