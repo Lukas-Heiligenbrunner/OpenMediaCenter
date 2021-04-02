@@ -3,12 +3,16 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
+	"net/http"
 	"openmediacenter/apiGo/api"
 	"openmediacenter/apiGo/database"
+	"openmediacenter/apiGo/static"
 )
 
 func main() {
 	fmt.Println("init OpenMediaCenter server")
+	port := 8081
 
 	db, verbose, pathPrefix := handleCommandLineArguments()
 	// todo some verbosity logger or sth
@@ -28,7 +32,13 @@ func main() {
 	api.AddActorsHandlers()
 	api.AddInitHandlers()
 
-	api.ServerInit(8081)
+	// add the static files
+	static.ServeStaticFiles()
+
+	api.ServerInit()
+
+	fmt.Printf("OpenMediacenter server up and running on port %d\n", port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
 }
 
 func handleCommandLineArguments() (*database.DatabaseConfig, bool, *string) {

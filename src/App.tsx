@@ -10,7 +10,6 @@ import style from './App.module.css';
 import SettingsPage from './pages/SettingsPage/SettingsPage';
 import CategoryPage from './pages/CategoryPage/CategoryPage';
 import {APINode, apiTokenValid, callApiUnsafe, refreshAPIToken} from './utils/Api';
-import {NoBackendConnectionPopup} from './elements/Popups/NoBackendConnectionPopup/NoBackendConnectionPopup';
 
 import {BrowserRouter as Router, NavLink, Route, Switch} from 'react-router-dom';
 import Player from './pages/Player/Player';
@@ -22,7 +21,6 @@ import AuthenticationPage from './pages/AuthenticationPage/AuthenticationPage';
 interface state {
     password: boolean | null; // null if uninitialized - true if pwd needed false if not needed
     mediacentername: string;
-    onapierror: boolean;
 }
 
 /**
@@ -50,7 +48,6 @@ class App extends React.Component<{}, state> {
 
         this.state = {
             mediacentername: 'OpenMediaCenter',
-            onapierror: false,
             password: pwdneeded
         };
 
@@ -77,26 +74,18 @@ class App extends React.Component<{}, state> {
 
     initialAPICall(): void {
         // this is the first api call so if it fails we know there is no connection to backend
-        callApiUnsafe(
-            APINode.Init,
-            {action: 'loadInitialData'},
-            (result: SettingsTypes.initialApiCallData) => {
-                // set theme
-                GlobalInfos.enableDarkTheme(result.DarkMode);
+        callApiUnsafe(APINode.Init, {action: 'loadInitialData'}, (result: SettingsTypes.initialApiCallData) => {
+            // set theme
+            GlobalInfos.enableDarkTheme(result.DarkMode);
 
-                GlobalInfos.setVideoPath(result.VideoPath);
+            GlobalInfos.setVideoPath(result.VideoPath);
 
-                this.setState({
-                    mediacentername: result.MediacenterName,
-                    onapierror: false
-                });
-                // set tab title to received mediacenter name
-                document.title = result.MediacenterName;
-            },
-            () => {
-                this.setState({onapierror: true});
-            }
-        );
+            this.setState({
+                mediacentername: result.MediacenterName
+            });
+            // set tab title to received mediacenter name
+            document.title = result.MediacenterName;
+        });
     }
 
     componentDidMount(): void {
@@ -148,7 +137,6 @@ class App extends React.Component<{}, state> {
                         </div>
                         {this.routing()}
                     </div>
-                    {this.state.onapierror ? this.ApiError() : null}
                 </Router>
             );
         } else {
@@ -182,11 +170,6 @@ class App extends React.Component<{}, state> {
                 </Route>
             </Switch>
         );
-    }
-
-    ApiError(): JSX.Element {
-        // on api error show popup and retry and show again if failing..
-        return <NoBackendConnectionPopup onHide={(): void => this.initialAPICall()} />;
     }
 }
 

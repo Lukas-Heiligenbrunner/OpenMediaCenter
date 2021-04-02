@@ -13,7 +13,7 @@ import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import AddActorPopup from '../../elements/Popups/AddActorPopup/AddActorPopup';
 import ActorTile from '../../elements/ActorTile/ActorTile';
 import {withRouter} from 'react-router-dom';
-import {APINode, callAPI, getBackendDomain} from '../../utils/Api';
+import {APINode, callAPI} from '../../utils/Api';
 import {RouteComponentProps} from 'react-router';
 import {GeneralSuccess} from '../../types/GeneralTypes';
 import {ActorType, TagType} from '../../types/VideoTypes';
@@ -289,9 +289,7 @@ export class Player extends React.Component<myprops, mystate> {
                                 src:
                                     (process.env.REACT_APP_CUST_BACK_DOMAIN
                                         ? process.env.REACT_APP_CUST_BACK_DOMAIN
-                                        : getBackendDomain()) +
-                                    GlobalInfos.getVideoPath() +
-                                    result.MovieUrl,
+                                        : GlobalInfos.getVideoPath()) + result.MovieUrl,
                                 type: 'video/mp4',
                                 size: 1080
                             }

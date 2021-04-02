@@ -6,13 +6,11 @@ import InfoHeaderItem from '../../elements/InfoHeaderItem/InfoHeaderItem';
 import {faArchive, faBalanceScaleLeft, faRulerVertical} from '@fortawesome/free-solid-svg-icons';
 import {faAddressCard} from '@fortawesome/free-regular-svg-icons';
 import {version} from '../../../package.json';
-import {APINode, callAPI, setCustomBackendDomain} from '../../utils/Api';
+import {APINode, callAPI} from '../../utils/Api';
 import {SettingsTypes} from '../../types/ApiTypes';
 import {GeneralSuccess} from '../../types/GeneralTypes';
 
 interface state {
-    customapi: boolean;
-    apipath: string;
     generalSettings: SettingsTypes.loadGeneralSettingsType;
 }
 
@@ -27,8 +25,6 @@ class GeneralSettings extends React.Component<Props, state> {
         super(props);
 
         this.state = {
-            customapi: false,
-            apipath: '',
             generalSettings: {
                 DarkMode: true,
                 DBSize: 0,
@@ -121,35 +117,6 @@ class GeneralSettings extends React.Component<Props, state> {
                                 />
                             </Form.Group>
                         </Form.Row>
-
-                        <Form.Check
-                            type='switch'
-                            id='custom-switch-api'
-                            label='Use custom API url'
-                            checked={this.state.customapi}
-                            onChange={(): void => {
-                                if (this.state.customapi) {
-                                    setCustomBackendDomain('');
-                                }
-
-                                this.setState({customapi: !this.state.customapi});
-                            }}
-                        />
-                        {this.state.customapi ? (
-                            <Form.Group className={style.customapiform} data-testid='apipath'>
-                                <Form.Label>API Backend url</Form.Label>
-                                <Form.Control
-                                    type='text'
-                                    placeholder='https://127.0.0.1'
-                                    value={this.state.apipath}
-                                    onChange={(e): void => {
-                                        this.setState({apipath: e.target.value});
-                                        setCustomBackendDomain(e.target.value);
-                                    }}
-                                />
-                            </Form.Group>
-                        ) : null}
-
                         <Form.Check
                             type='switch'
                             id='custom-switch'
@@ -209,8 +176,6 @@ class GeneralSettings extends React.Component<Props, state> {
                             checked={GlobalInfos.isDarkTheme()}
                             onChange={(): void => {
                                 GlobalInfos.enableDarkTheme(!GlobalInfos.isDarkTheme());
-                                this.forceUpdate();
-                                // todo initiate rerender
                             }}
                         />
 

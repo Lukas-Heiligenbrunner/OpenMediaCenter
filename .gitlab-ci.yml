@@ -1,13 +1,14 @@
 image: node:14
 
 stages:
-  - build
+  - build_frontend
+  - build_backend
   - test
   - packaging
   - deploy
 
 Minimize_Frontend:
-  stage: build
+  stage: build_frontend
   before_script:
     - yarn install --cache-folder .yarn
   script:
@@ -25,11 +26,15 @@ Minimize_Frontend:
 
 Build_Backend:
   image: golang:latest
-  stage: build
+  stage: build_backend
   script:
     - cd apiGo
     - go build -v -o openmediacenter
-    - env GOOS=windows GOARCH=amd64 go build -v -o openmediacenter.exe
+    - cp -r ../build/ ./static/
+    - go build -v -tags static -o openmediacenter_full
+    - env GOOS=windows GOARCH=amd64 go build -v -tags static -o openmediacenter.exe
+  needs:
+    - Minimize_Frontend
   artifacts:
     expire_in: 2 days
     paths:
@@ -41,6 +46,7 @@ Frontend_Tests:
     - yarn install --cache-folder .yarn
   script:
     - yarn run test
+  needs: []
   artifacts:
     reports:
       junit:
@@ -58,6 +64,7 @@ Backend_Tests:
     - cd apiGo
     - go get -u github.com/jstemmer/go-junit-report
     - go test -v ./... 2>&1 | go-junit-report -set-exit-code > report.xml
+  needs: []
   artifacts:
     when: always
     reports:
