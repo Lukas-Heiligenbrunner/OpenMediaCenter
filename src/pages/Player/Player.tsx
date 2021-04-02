@@ -289,9 +289,7 @@ export class Player extends React.Component<myprops, mystate> {
                                 src:
                                     (process.env.REACT_APP_CUST_BACK_DOMAIN
                                         ? process.env.REACT_APP_CUST_BACK_DOMAIN
-                                        : getBackendDomain()) +
-                                    GlobalInfos.getVideoPath() +
-                                    result.MovieUrl,
+                                        : GlobalInfos.getVideoPath()) + result.MovieUrl,
                                 type: 'video/mp4',
                                 size: 1080
                             }

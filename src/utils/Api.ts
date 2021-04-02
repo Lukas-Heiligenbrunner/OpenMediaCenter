@@ -1,40 +1,6 @@
 import GlobalInfos from './GlobalInfos';
 
-let customBackendURL: string;
-
-/**
- * get the domain of the api backend
- * @return string domain of backend http://x.x.x.x/bla
- */
-export function getBackendDomain(): string {
-    let userAgent = navigator.userAgent.toLowerCase();
-    if (userAgent.indexOf(' electron/') > -1) {
-        // Electron-specific code - force a custom backendurl
-        return customBackendURL;
-    } else {
-        // use custom only if defined
-        if (customBackendURL) {
-            return customBackendURL;
-        } else {
-            return window.location.origin;
-        }
-    }
-}
-
-/**
- * set a custom backend domain
- * @param domain a url in format [http://x.x.x.x/somanode]
- */
-export function setCustomBackendDomain(domain: string): void {
-    customBackendURL = domain;
-}
-
-/**
- * a helper function to get the api path
- */
-function getAPIDomain(): string {
-    return getBackendDomain() + '/api/';
-}
+const APIPREFIX: string = '/api/';
 
 /**
  * interface how an api request should look like
@@ -96,7 +62,7 @@ export function refreshAPIToken(callback: (error: string) => void, force?: boole
         token_type: string; // no camel case allowed because of backendlib
     }
 
-    fetch(getBackendDomain() + '/token', {method: 'POST', body: formData}).then((response) =>
+    fetch('/token', {method: 'POST', body: formData}).then((response) =>
         response.json().then((result: APIToken) => {
             if (result.error) {
                 callFuncQue(result.error);
@@ -223,7 +189,7 @@ export function callAPI<T>(
 ): void {
     checkAPITokenValid(() => {
         console.log(apiToken);
-        fetch(getAPIDomain() + apinode, {
+        fetch(APIPREFIX + apinode, {
             method: 'POST',
             body: JSON.stringify(fd),
             headers: new Headers({
@@ -267,7 +233,7 @@ export function callApiUnsafe<T>(
     callback: (_: T) => void,
     errorcallback?: (_: string) => void
 ): void {
-    fetch(getAPIDomain() + apinode, {method: 'POST', body: JSON.stringify(fd)})
+    fetch(APIPREFIX + apinode, {method: 'POST', body: JSON.stringify(fd)})
         .then((response) => {
             if (response.status !== 200) {
                 console.log('Error: ' + response.statusText);
@@ -289,7 +255,7 @@ export function callApiUnsafe<T>(
  */
 export function callAPIPlain(apinode: APINode, fd: ApiBaseRequest, callback: (_: string) => void): void {
     checkAPITokenValid(() => {
-        fetch(getAPIDomain() + apinode, {
+        fetch(APIPREFIX + apinode, {
             method: 'POST',
             body: JSON.stringify(fd),
             headers: new Headers({
