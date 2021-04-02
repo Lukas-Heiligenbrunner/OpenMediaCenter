@@ -1,13 +1,14 @@
 image: node:14
 
 stages:
-  - build
+  - build_frontend
+  - build_backend
   - test
   - packaging
   - deploy
 
 Minimize_Frontend:
-  stage: build
+  stage: build_frontend
   before_script:
     - yarn install --cache-folder .yarn
   script:
@@ -25,7 +26,7 @@ Minimize_Frontend:
 
 Build_Backend:
   image: golang:latest
-  stage: build
+  stage: build_backend
   script:
     - cd apiGo
     - go build -v -o openmediacenter
