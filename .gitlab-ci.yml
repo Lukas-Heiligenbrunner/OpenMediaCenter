@@ -46,6 +46,7 @@ Frontend_Tests:
     - yarn install --cache-folder .yarn
   script:
     - yarn run test
+  needs: []
   artifacts:
     reports:
       junit:
@@ -63,6 +64,7 @@ Backend_Tests:
     - cd apiGo
     - go get -u github.com/jstemmer/go-junit-report
     - go test -v ./... 2>&1 | go-junit-report -set-exit-code > report.xml
+  needs: []
   artifacts:
     when: always
     reports:
