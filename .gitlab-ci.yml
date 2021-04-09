@@ -112,7 +112,7 @@ Debian_Server:
 
 Test_Server:
   stage: deploy
-  image: luki42/alpineopenssh:latest
+  image: luki42/ssh:latest
   needs:
     - Frontend_Tests
     - Backend_Tests
