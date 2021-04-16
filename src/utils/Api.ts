@@ -279,5 +279,6 @@ export enum APINode {
     Settings = 'settings',
     Tags = 'tags',
     Actor = 'actor',
-    Video = 'video'
+    Video = 'video',
+    TVShow = 'tvshow'
 }

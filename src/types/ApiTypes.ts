@@ -35,6 +35,7 @@ export namespace SettingsTypes {
         Password: boolean;
         MediacenterName: string;
         VideoPath: string;
+        TVShowPath: string;
     }
 
     export interface loadGeneralSettingsType {
@@ -55,6 +56,16 @@ export namespace SettingsTypes {
     export interface getStatusMessageType {
         ContentAvailable: boolean;
         Messages: string[];
+    }
+}
+
+export namespace TVShow {
+    /**
+     * result of actor fetch
+     */
+    export interface TVshowType {
+        Id: number;
+        Name: string;
     }
 }
 

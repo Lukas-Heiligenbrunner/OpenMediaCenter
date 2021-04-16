@@ -54,6 +54,11 @@ func StartReindex() bool {
 	return true
 }
 
+// StartTVShowReindex reindex dir walks for TVShow reindex
+func StartTVShowReindex() {
+	// todo implement walking through dirs and reindex!
+}
+
 func GetStatusMessage() *StatusMessage {
 	msg := StatusMessage{
 		Messages:         messageBuffer,

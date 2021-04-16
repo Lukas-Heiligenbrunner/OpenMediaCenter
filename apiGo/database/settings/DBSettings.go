@@ -15,35 +15,24 @@ func GetPassword() *string {
 }
 
 type SettingsType struct {
-	DarkMode         bool
-	Pasword          string
-	Mediacenter_name string
-	VideoPath        string
+	DarkMode        bool
+	Pasword         string
+	MediacenterName string
+	VideoPath       string
+	TVShowPath      string
 }
 
 func LoadSettings() *SettingsType {
-	query := "SELECT DarkMode, password, mediacenter_name, video_path from settings"
+	query := "SELECT DarkMode, password, mediacenter_name, video_path, episode_path from settings"
 
-	type RawSettingsType struct {
-		DarkMode         int
-		Pasword          string
-		Mediacenter_name string
-		VideoPath        string
-	}
+	result := SettingsType{}
+	var darkmode uint8
 
-	result := RawSettingsType{}
-
-	err := database.QueryRow(query).Scan(&result.DarkMode, &result.Pasword, &result.Mediacenter_name, &result.VideoPath)
+	err := database.QueryRow(query).Scan(&darkmode, &result.Pasword, &result.MediacenterName, &result.VideoPath, &result.TVShowPath)
 	if err != nil {
 		fmt.Println("error while parsing db data: " + err.Error())
 	}
 
-	res := SettingsType{
-		DarkMode:         result.DarkMode != 0,
-		Pasword:          result.Pasword,
-		Mediacenter_name: result.Mediacenter_name,
-		VideoPath:        result.VideoPath,
-	}
-
-	return &res
+	result.DarkMode = darkmode != 0
+	return &result
 }

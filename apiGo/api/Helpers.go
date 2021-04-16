@@ -61,6 +61,22 @@ func readActorsFromResultset(rows *sql.Rows) []types.Actor {
 	return result
 }
 
+// ID - Name : pay attention to the order!
+func readTVshowsFromResultset(rows *sql.Rows) []types.TVShow {
+	result := []types.TVShow{}
+	for rows.Next() {
+		var vid types.TVShow
+		err := rows.Scan(&vid.Id, &vid.Name)
+		if err != nil {
+			panic(err.Error()) // proper error handling instead of panic in your app
+		}
+		result = append(result, vid)
+	}
+	rows.Close()
+
+	return result
+}
+
 func jsonify(v interface{}) []byte {
 	// jsonify results
 	str, err := json.Marshal(v)

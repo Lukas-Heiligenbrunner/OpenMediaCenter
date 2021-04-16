@@ -24,6 +24,26 @@ create table if not exists tags
     tag_name varchar(50) null
 );
 
+create table if not exists tvshow
+(
+    name      varchar(100) null,
+    thumbnail mediumblob   null,
+    id        int auto_increment
+        primary key
+);
+
+create table if not exists tvshow_episodes
+(
+    id        int auto_increment
+        primary key,
+    name      varchar(100) null,
+    season    int          null,
+    poster    mediumblob   null,
+    tvshow_id int          null,
+    constraint tvshow_episodes_tvshow_id_fk
+        foreign key (tvshow_id) references tvshow (id)
+);
+
 create table if not exists videos
 (
     movie_id    int auto_increment

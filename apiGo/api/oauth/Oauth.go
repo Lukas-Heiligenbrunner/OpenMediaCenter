@@ -48,7 +48,7 @@ func InitOAuth() {
 	})
 }
 
-func ValidateToken(f http.HandlerFunc) http.HandlerFunc {
+func ValidateToken(f func(rw http.ResponseWriter, req *http.Request, node int), node int) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		_, err := srv.ValidationBearerToken(r)
 		if err != nil {
@@ -56,6 +56,6 @@ func ValidateToken(f http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		f.ServeHTTP(w, r)
+		f(w, r, node)
 	}
 }

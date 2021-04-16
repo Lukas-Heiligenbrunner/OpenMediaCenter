@@ -7,12 +7,12 @@ type VideoUnloadedType struct {
 
 type FullVideoType struct {
 	MovieName    string
-	MovieId      int
+	MovieId      uint32
 	MovieUrl     string
 	Poster       string
-	Likes        int
-	Quality      int
-	Length       int
+	Likes        uint64
+	Quality      uint16
+	Length       uint16
 	Tags         []Tag
 	SuggestedTag []Tag
 	Actors       []Actor
@@ -20,22 +20,22 @@ type FullVideoType struct {
 
 type Tag struct {
 	TagName string
-	TagId   int
+	TagId   uint32
 }
 
 type Actor struct {
-	ActorId   int
+	ActorId   uint32
 	Name      string
 	Thumbnail string
 }
 
 type StartData struct {
-	VideoNr       int
-	FullHdNr      int
-	HDNr          int
-	SDNr          int
-	DifferentTags int
-	Tagged        int
+	VideoNr       uint32
+	FullHdNr      uint32
+	HDNr          uint32
+	SDNr          uint32
+	DifferentTags uint32
+	Tagged        uint32
 }
 
 type SettingsType struct {
@@ -47,10 +47,15 @@ type SettingsType struct {
 	TMDBGrabbing    bool
 	DarkMode        bool
 
-	VideoNr       int
+	VideoNr       uint32
 	DBSize        float32
-	DifferentTags int
-	TagsAdded     int
+	DifferentTags uint32
+	TagsAdded     uint32
 
 	PathPrefix string
+}
+
+type TVShow struct {
+	Id   uint32
+	Name string
 }

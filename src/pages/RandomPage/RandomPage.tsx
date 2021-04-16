@@ -23,6 +23,8 @@ interface GetRandomMoviesType {
  * Randompage shuffles random viedeopreviews and provides a shuffle btn
  */
 class RandomPage extends React.Component<{}, state> {
+    readonly LoadNR = 3;
+
     constructor(props: {}) {
         super(props);
 
@@ -37,7 +39,7 @@ class RandomPage extends React.Component<{}, state> {
     componentDidMount(): void {
         addKeyHandler(this.keypress);
 
-        this.loadShuffledvideos(4);
+        this.loadShuffledvideos(this.LoadNR);
     }
 
     componentWillUnmount(): void {
@@ -75,7 +77,7 @@ class RandomPage extends React.Component<{}, state> {
      * click handler for shuffle btn
      */
     shuffleclick(): void {
-        this.loadShuffledvideos(4);
+        this.loadShuffledvideos(this.LoadNR);
     }
 
     /**

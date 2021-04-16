@@ -29,17 +29,21 @@ func getSettingsFromDB() {
 			Pasword         bool
 			MediacenterName string
 			VideoPath       string
+			TVShowPath      string
 		}
 
-		regexMatchUrl := regexp.MustCompile("^http(|s):\\/\\/([0-9]){1,3}\\.([0-9]){1,3}\\.([0-9]){1,3}\\.([0-9]){1,3}:[0-9]{1,5}")
+		regexMatchUrl := regexp.MustCompile("^http(|s)://([0-9]){1,3}\\.([0-9]){1,3}\\.([0-9]){1,3}\\.([0-9]){1,3}:[0-9]{1,5}")
 		videoUrl := regexMatchUrl.FindString(sett.VideoPath)
+		tvshowurl := regexMatchUrl.FindString(sett.TVShowPath)
 		serverVideoPath := strings.TrimPrefix(sett.VideoPath, videoUrl)
+		serverTVShowPath := strings.TrimPrefix(sett.TVShowPath, tvshowurl)
 
 		res := InitialDataTypeResponse{
 			DarkMode:        sett.DarkMode,
 			Pasword:         sett.Pasword != "-1",
-			MediacenterName: sett.Mediacenter_name,
+			MediacenterName: sett.MediacenterName,
 			VideoPath:       serverVideoPath,
+			TVShowPath:      serverTVShowPath,
 		}
 
 		str, _ := json.Marshal(res)
@@ -71,6 +75,11 @@ func saveSettingsToDB() {
 func reIndexHandling() {
 	AddHandler("startReindex", SettingsNode, nil, func() []byte {
 		videoparser.StartReindex()
+		return database.ManualSuccessResponse(nil)
+	})
+
+	AddHandler("startTVShowReindex", SettingsNode, nil, func() []byte {
+		videoparser.StartTVShowReindex()
 		return database.ManualSuccessResponse(nil)
 	})
 

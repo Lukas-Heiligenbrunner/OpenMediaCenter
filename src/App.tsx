@@ -79,7 +79,7 @@ class App extends React.Component<{}, state> {
             // set theme
             GlobalInfos.enableDarkTheme(result.DarkMode);
 
-            GlobalInfos.setVideoPath(result.VideoPath);
+            GlobalInfos.setVideoPaths(result.VideoPath, result.TVShowPath);
 
             this.setState({
                 mediacentername: result.MediacenterName
