@@ -100,7 +100,7 @@ func processVideo(fileNameOrig string) {
 	fmt.Printf("Processing %s video-", fileNameOrig)
 
 	// match the file extension
-	r, _ := regexp.Compile(`\.[a-zA-Z0-9]+$`)
+	r := regexp.MustCompile(`\.[a-zA-Z0-9]+$`)
 	fileName := r.ReplaceAllString(fileNameOrig, "")
 
 	// match the year and cut year from name
@@ -172,7 +172,7 @@ func addVideo(videoName string, fileName string, year int) {
 }
 
 func matchYear(fileName string) (int, string) {
-	r, _ := regexp.Compile(`\([0-9]{4}?\)`)
+	r := regexp.MustCompile(`\([0-9]{4}?\)`)
 	years := r.FindAllString(fileName, -1)
 	if len(years) == 0 {
 		return -1, fileName
