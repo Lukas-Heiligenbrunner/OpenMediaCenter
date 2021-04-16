@@ -9,7 +9,6 @@ interface Props<T> {
 
 interface state<T> {
     loadeditems: T[];
-    selectionnr: number;
 }
 
 /**
@@ -24,8 +23,7 @@ class DynamicContentContainer<T> extends React.Component<Props<T>, state<T>> {
         super(props);
 
         this.state = {
-            loadeditems: [],
-            selectionnr: 0
+            loadeditems: []
         };
     }
 
@@ -33,6 +31,22 @@ class DynamicContentContainer<T> extends React.Component<Props<T>, state<T>> {
         document.addEventListener('scroll', this.trackScrolling);
 
         this.loadPreviewBlock(this.props.initialLoadNr ? this.props.initialLoadNr : 16);
+    }
+
+    componentDidUpdate(prevProps: Props<T>): void {
+        // when source props change force update!
+        if (prevProps.data.length !== this.props.data.length) {
+            this.clean();
+            this.loadPreviewBlock(this.props.initialLoadNr ? this.props.initialLoadNr : 16);
+        }
+    }
+
+    /**
+     * clear all elements rendered...
+     */
+    clean(): void {
+        this.loadindex = 0;
+        this.setState({loadeditems: []});
     }
 
     render(): JSX.Element {

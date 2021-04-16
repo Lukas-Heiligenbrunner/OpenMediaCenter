@@ -9,7 +9,7 @@ import style from './App.module.css';
 
 import SettingsPage from './pages/SettingsPage/SettingsPage';
 import CategoryPage from './pages/CategoryPage/CategoryPage';
-import {APINode, apiTokenValid, callApiUnsafe, refreshAPIToken} from './utils/Api';
+import {APINode, apiTokenValid, callAPI, refreshAPIToken} from './utils/Api';
 
 import {BrowserRouter as Router, NavLink, Route, Switch} from 'react-router-dom';
 import Player from './pages/Player/Player';
@@ -75,7 +75,7 @@ class App extends React.Component<{}, state> {
 
     initialAPICall(): void {
         // this is the first api call so if it fails we know there is no connection to backend
-        callApiUnsafe(APINode.Init, {action: 'loadInitialData'}, (result: SettingsTypes.initialApiCallData) => {
+        callAPI(APINode.Settings, {action: 'loadInitialData'}, (result: SettingsTypes.initialApiCallData) => {
             // set theme
             GlobalInfos.enableDarkTheme(result.DarkMode);
 
@@ -99,7 +99,15 @@ class App extends React.Component<{}, state> {
 
         if (this.state.password === true) {
             // render authentication page if auth is neccessary
-            return <AuthenticationPage onSuccessLogin={(): void => this.setState({password: false})} />;
+            return (
+                <AuthenticationPage
+                    onSuccessLogin={(): void => {
+                        this.setState({password: false});
+                        // reinit general infos
+                        this.initialAPICall();
+                    }}
+                />
+            );
         } else if (this.state.password === false) {
             return (
                 <Router>

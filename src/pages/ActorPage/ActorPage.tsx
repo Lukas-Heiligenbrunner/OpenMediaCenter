@@ -48,7 +48,7 @@ export class ActorPage extends React.Component<Props, state> {
                     </div>
                     <SideBarTitle>Attention: This is an early preview!</SideBarTitle>
                 </SideBar>
-                {this.state.data.length !== 0 ? <VideoContainer data={this.state.data} /> : <div>No Data found!</div>}
+                <VideoContainer data={this.state.data} />
             </>
         );
     }

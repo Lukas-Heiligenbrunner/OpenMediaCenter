@@ -53,19 +53,15 @@ class TagView extends React.Component<Props, TagViewState> {
                         Add a new Tag!
                     </button>
                 </SideBar>
-                {this.state.loadedtags.length !== 0 ? (
-                    <DynamicContentContainer
-                        data={this.state.loadedtags}
-                        renderElement={(m): JSX.Element => (
-                            <Link to={'/categories/' + m.TagId} key={m.TagId}>
-                                <TagPreview name={m.TagName} />
-                            </Link>
-                        )}
-                        initialLoadNr={20}
-                    />
-                ) : (
-                    'loading'
-                )}
+                <DynamicContentContainer
+                    data={this.state.loadedtags}
+                    renderElement={(m): JSX.Element => (
+                        <Link to={'/categories/' + m.TagId} key={m.TagId}>
+                            <TagPreview name={m.TagName} />
+                        </Link>
+                    )}
+                    initialLoadNr={20}
+                />
                 {this.handlePopups()}
             </>
         );

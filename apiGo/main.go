@@ -30,7 +30,6 @@ func main() {
 	api.AddSettingsHandlers()
 	api.AddTagHandlers()
 	api.AddActorsHandlers()
-	api.AddInitHandlers()
 
 	// add the static files
 	static.ServeStaticFiles()
