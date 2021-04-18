@@ -87,8 +87,4 @@ func reIndexHandling() {
 		videoparser.StartCleanup()
 		return nil
 	})
-
-	AddHandler("getStatusMessage", SettingsNode, nil, func() []byte {
-		return jsonify(videoparser.GetStatusMessage())
-	})
 }

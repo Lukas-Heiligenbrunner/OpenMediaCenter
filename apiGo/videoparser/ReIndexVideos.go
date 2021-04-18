@@ -2,13 +2,10 @@ package videoparser
 
 import (
 	"database/sql"
-	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"openmediacenter/apiGo/api/types"
 	"openmediacenter/apiGo/database"
 	"openmediacenter/apiGo/videoparser/tmdb"
-	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
@@ -51,9 +48,8 @@ func ReIndexVideos(path []string, sett types.SettingsType) {
 		processVideo(s)
 	}
 
-	AppendMessageBuffer("reindex finished successfully!")
-
-	contentAvailable = false
+	AppendMessage("reindex finished successfully!")
+	SendEvent("stop")
 	fmt.Println("Reindexing finished!")
 }
 
@@ -125,7 +121,7 @@ func addVideo(videoName string, fileName string, year int) {
 	}
 
 	if mExtDepsAvailable.FFMpeg {
-		ppic, err = parseFFmpegPic(fileName)
+		ppic, err = parseFFmpegPic(mSettings.VideoPath + fileName)
 		if err != nil {
 			fmt.Printf("FFmpeg error occured: %s\n", err.Error())
 		} else {
@@ -134,7 +130,7 @@ func addVideo(videoName string, fileName string, year int) {
 	}
 
 	if mExtDepsAvailable.MediaInfo {
-		atr := getVideoAttributes(fileName)
+		atr := getVideoAttributes(mSettings.VideoPath + fileName)
 		if atr != nil {
 			vidAtr = atr
 		}
@@ -168,7 +164,7 @@ func addVideo(videoName string, fileName string, year int) {
 		insertTMDBTags(tmdbData.GenreIds, insertId)
 	}
 
-	AppendMessageBuffer(fmt.Sprintf("%s - added!", videoName))
+	AppendMessage(fmt.Sprintf("%s - added!", videoName))
 }
 
 func matchYear(fileName string) (int, string) {
@@ -187,95 +183,6 @@ func matchYear(fileName string) (int, string) {
 
 	// cut out year from filename
 	return year, r.ReplaceAllString(fileName, "")
-}
-
-// parse the thumbail picture from video file
-func parseFFmpegPic(fileName string) (*string, error) {
-	app := "ffmpeg"
-
-	cmd := exec.Command(app,
-		"-hide_banner",
-		"-loglevel", "panic",
-		"-ss", "00:04:00",
-		"-i", mSettings.VideoPath+fileName,
-		"-vframes", "1",
-		"-q:v", "2",
-		"-f", "singlejpeg",
-		"pipe:1")
-
-	stdout, err := cmd.Output()
-
-	if err != nil {
-		fmt.Println(err.Error())
-		fmt.Println(string(err.(*exec.ExitError).Stderr))
-		return nil, err
-	}
-
-	strEncPic := base64.StdEncoding.EncodeToString(stdout)
-	if strEncPic == "" {
-		return nil, nil
-	}
-	backpic64 := fmt.Sprintf("data:image/jpeg;base64,%s", strEncPic)
-
-	return &backpic64, nil
-}
-
-func getVideoAttributes(fileName string) *VideoAttributes {
-	app := "mediainfo"
-
-	arg0 := mSettings.VideoPath + fileName
-	arg1 := "--Output=JSON"
-
-	cmd := exec.Command(app, arg1, "-f", arg0)
-	stdout, err := cmd.Output()
-
-	var t struct {
-		Media struct {
-			Track []struct {
-				Duration string
-				FileSize string
-				Width    string
-			}
-		}
-	}
-	err = json.Unmarshal(stdout, &t)
-
-	if err != nil {
-		fmt.Println(err.Error())
-		return nil
-	}
-
-	duration, err := strconv.ParseFloat(t.Media.Track[0].Duration, 32)
-	filesize, err := strconv.Atoi(t.Media.Track[0].FileSize)
-	width, err := strconv.Atoi(t.Media.Track[1].Width)
-
-	ret := VideoAttributes{
-		Duration: float32(duration),
-		FileSize: uint(filesize),
-		Width:    uint(width),
-	}
-
-	return &ret
-}
-
-func AppendMessageBuffer(message string) {
-	messageBuffer = append(messageBuffer, message)
-}
-
-// ext dependency support check
-func checkExtDependencySupport() *ExtDependencySupport {
-	var extDepsAvailable ExtDependencySupport
-
-	extDepsAvailable.FFMpeg = commandExists("ffmpeg")
-	extDepsAvailable.MediaInfo = commandExists("mediainfo")
-
-	return &extDepsAvailable
-}
-
-// check if a specific system command is available
-func commandExists(cmd string) bool {
-	_, err := exec.LookPath(cmd)
-	return err == nil
 }
 
 // insert the default size tags to corresponding video
