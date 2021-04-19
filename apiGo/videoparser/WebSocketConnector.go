@@ -29,10 +29,6 @@ func newChatSender() *ChatSender {
 	}
 }
 
-func (t *ChatSender) TestCall() {
-	fmt.Println("hello world")
-}
-
 func (t *ChatSender) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	c, err := websocket.Accept(w, r, &websocket.AcceptOptions{
 		OriginPatterns: []string{"*"},

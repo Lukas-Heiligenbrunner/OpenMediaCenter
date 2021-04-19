@@ -3,6 +3,7 @@ import Preview from '../../elements/Preview/Preview';
 import {APINode, callAPI} from '../../utils/Api';
 import {TVShow} from '../../types/ApiTypes';
 import DynamicContentContainer from '../../elements/DynamicContentContainer/DynamicContentContainer';
+import {Route, Switch, useRouteMatch} from 'react-router-dom';
 
 interface State {
     loading: boolean;
@@ -26,16 +27,27 @@ class TVShowPage extends React.Component<Props, State> {
 
     render(): JSX.Element {
         return (
-            <>
-                <DynamicContentContainer
-                    renderElement={(elem): JSX.Element => (
-                        <Preview name={elem.Name} picLoader={(callback): void => callback('')} linkPath={'/tvshows/' + elem.Id} />
-                    )}
-                    data={this.state.loading ? [] : this.data}
-                />
-            </>
+            <DynamicContentContainer
+                renderElement={(elem): JSX.Element => (
+                    <Preview name={elem.Name} picLoader={(callback): void => callback('')} linkPath={'/tvshows/' + elem.Id} />
+                )}
+                data={this.state.loading ? [] : this.data}
+            />
         );
     }
 }
 
-export default TVShowPage;
+export default function (): JSX.Element {
+    let match = useRouteMatch();
+
+    return (
+        <Switch>
+            <Route path={`${match.path}/:episodeID`}>
+                <div>hey from episode page</div>
+            </Route>
+            <Route path={match.path}>
+                <TVShowPage />
+            </Route>
+        </Switch>
+    );
+}
