@@ -27,7 +27,7 @@ class StaticInfos {
 
         // trigger onThemeChange handlers
         this.handlers.map((func) => {
-            return func();
+            func();
         });
     }
 

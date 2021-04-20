@@ -279,8 +279,6 @@ export class Player extends React.Component<myprops, mystate> {
             APINode.Video,
             {action: 'loadVideo', MovieId: parseInt(this.props.match.params.id, 10)},
             (result: VideoTypes.loadVideoType) => {
-                console.log(result);
-                console.log(process.env.REACT_APP_CUST_BACK_DOMAIN);
                 this.setState({
                     sources: {
                         type: 'video',
