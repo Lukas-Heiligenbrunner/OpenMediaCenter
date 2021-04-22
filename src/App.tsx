@@ -18,6 +18,7 @@ import ActorPage from './pages/ActorPage/ActorPage';
 import {SettingsTypes} from './types/ApiTypes';
 import AuthenticationPage from './pages/AuthenticationPage/AuthenticationPage';
 import TVShowPage from './pages/TVShowPage/TVShowPage';
+import TVPlayer from './pages/TVShowPage/TVPlayer';
 
 interface state {
     password: boolean | null; // null if uninitialized - true if pwd needed false if not needed
@@ -171,6 +172,9 @@ class App extends React.Component<{}, state> {
                 </Route>
                 <Route exact path='/player/:id'>
                     <Player />
+                </Route>
+                <Route exact path='/tvplayer/:id'>
+                    <TVPlayer />
                 </Route>
                 <Route exact path='/actors'>
                     <ActorOverviewPage />

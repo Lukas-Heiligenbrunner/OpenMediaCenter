@@ -15,14 +15,14 @@ import ActorTile from '../../elements/ActorTile/ActorTile';
 import {withRouter} from 'react-router-dom';
 import {APINode, callAPI} from '../../utils/Api';
 import {RouteComponentProps} from 'react-router';
-import {GeneralSuccess} from '../../types/GeneralTypes';
+import {DefaultPlyrOptions, GeneralSuccess} from '../../types/GeneralTypes';
 import {ActorType, TagType} from '../../types/VideoTypes';
 import PlyrJS from 'plyr';
 import {Button} from '../../elements/GPElements/Button';
 import {VideoTypes} from '../../types/ApiTypes';
 import GlobalInfos from '../../utils/GlobalInfos';
 
-interface myprops extends RouteComponentProps<{id: string}> {}
+interface Props extends RouteComponentProps<{id: string}> {}
 
 interface mystate {
     sources?: PlyrJS.SourceInfo;
@@ -42,25 +42,8 @@ interface mystate {
  * Player page loads when a video is selected to play and handles the video view
  * and actions such as tag adding and liking
  */
-export class Player extends React.Component<myprops, mystate> {
-    options: PlyrJS.Options = {
-        controls: [
-            'play-large', // The large play button in the center
-            'play', // Play/pause playback
-            'progress', // The progress bar and scrubber for playback and buffering
-            'current-time', // The current time of playback
-            'duration', // The full duration of the media
-            'mute', // Toggle mute
-            'volume', // Volume control
-            'captions', // Toggle captions
-            'settings', // Settings menu
-            'airplay', // Airplay (currently Safari only)
-            'download', // Show a download button with a link to either the current source or a custom URL you specify in your options
-            'fullscreen' // Toggle fullscreen
-        ]
-    };
-
-    constructor(props: myprops) {
+export class Player extends React.Component<Props, mystate> {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
@@ -94,7 +77,7 @@ export class Player extends React.Component<myprops, mystate> {
                 <div className={style.videowrapper}>
                     {/* video component is added here */}
                     {this.state.sources ? (
-                        <Plyr style={plyrstyle} source={this.state.sources} options={this.options} />
+                        <Plyr style={plyrstyle} source={this.state.sources} options={DefaultPlyrOptions} />
                     ) : (
                         <div>not loaded yet</div>
                     )}

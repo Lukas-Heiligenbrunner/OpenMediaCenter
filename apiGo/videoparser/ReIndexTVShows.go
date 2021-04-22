@@ -67,8 +67,8 @@ func insertEpisode(path string, ShowName string) {
 	}
 
 	query := fmt.Sprintf(`
-INSERT INTO tvshow_episodes (name, season, poster, tvshow_id, episode)
-VALUES ('%s', %d, '%s', (SELECT tvshow.id FROM tvshow WHERE tvshow.name='%s'), %d)`, name, season, "", ShowName, episode)
+INSERT INTO tvshow_episodes (name, season, poster, tvshow_id, episode, filename)
+VALUES ('%s', %d, '%s', (SELECT tvshow.id FROM tvshow WHERE tvshow.name='%s'), %d, '%s')`, name, season, "", ShowName, episode, path)
 	err = database.Edit(query)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -100,7 +100,8 @@ func insertShowIfNotExisting(show Show, allShows *[]string) {
 	}
 
 	// todo load tmdb pic
-	query := fmt.Sprintf("INSERT INTO tvshow (name, thumbnail) VALUES ('%s', '%s')", show.Name, "")
+	// currently the foldernamme == name which mustn't necessarily be
+	query := fmt.Sprintf("INSERT INTO tvshow (name, thumbnail, foldername) VALUES ('%s', '%s', '%s')", show.Name, "", show.Name)
 	err := database.Edit(query)
 	if err != nil {
 		fmt.Println(err.Error())
