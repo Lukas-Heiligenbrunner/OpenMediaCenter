@@ -28,20 +28,36 @@ type TVShowTMDB struct {
 }
 
 type tmdbVidResult struct {
-	Poster_path       string
-	Adult             bool
-	Overview          string
-	Release_date      string
-	Genre_ids         []int
-	Id                int
-	Original_title    string
-	Original_language string
-	Title             string
-	Backdrop_path     string
-	Popularity        int
-	Vote_count        int
-	Video             bool
-	Vote_average      int
+	PosterPath       string `json:"poster_path"`
+	Adult            bool   `json:"adult"`
+	Overview         string `json:"overview"`
+	ReleaseDate      string `json:"release_date"`
+	GenreIds         []int  `json:"genre_ids"`
+	Id               int    `json:"id"`
+	OriginalTitle    string `json:"original_title"`
+	OriginalLanguage string `json:"original_language"`
+	Title            string `json:"title"`
+	BackdropPath     string `json:"backdrop_path"`
+	Popularity       int    `json:"popularity"`
+	VoteCount        int    `json:"vote_count"`
+	Video            bool   `json:"video"`
+	VoteAverage      int    `json:"vote_average"`
+}
+
+type tmdbTvResult struct {
+	PosterPath       string   `json:"poster_path"`
+	Popularity       int      `json:"popularity"`
+	Id               int      `json:"id"`
+	BackdropPath     string   `json:"backdrop_path"`
+	VoteAverage      int      `json:"vote_average"`
+	Overview         string   `json:"overview"`
+	FirstAirDate     string   `json:"first_air_date"`
+	OriginCountry    []string `json:"origin_country"`
+	GenreIds         []int    `json:"genre_ids"`
+	OriginalLanguage string   `json:"original_language"`
+	VoteCount        int      `json:"vote_count"`
+	Name             string   `json:"name"`
+	OriginalName     string   `json:"original_name"`
 }
 
 type TMDBGenre struct {
@@ -80,7 +96,7 @@ func SearchVideo(MovieName string, year int) *VideoTMDB {
 	if year != -1 {
 		for _, result := range t.Results {
 			r, _ := regexp.Compile(fmt.Sprintf(`^%d-[0-9]{2}?-[0-9]{2}?$`, year))
-			if r.MatchString(result.Release_date) {
+			if r.MatchString(result.ReleaseDate) {
 				tmdbVid = result
 				// continue parsing
 				goto cont
@@ -95,32 +111,16 @@ func SearchVideo(MovieName string, year int) *VideoTMDB {
 	// continue label
 cont:
 
-	thumbnail := fetchPoster(tmdbVid.Poster_path)
+	thumbnail := fetchPoster(tmdbVid.PosterPath)
 
 	result := VideoTMDB{
 		Thumbnail: *thumbnail,
 		Overview:  tmdbVid.Overview,
 		Title:     tmdbVid.Title,
-		GenreIds:  tmdbVid.Genre_ids,
+		GenreIds:  tmdbVid.GenreIds,
 	}
 
 	return &result
-}
-
-type tmdbTvResult struct {
-	PosterPath       string   `json:"poster_path"`
-	Popularity       int      `json:"popularity"`
-	Id               int      `json:"id"`
-	BackdropPath     string   `json:"backdrop_path"`
-	VoteAverage      int      `json:"vote_average"`
-	Overview         string   `json:"overview"`
-	FirstAirDate     string   `json:"first_air_date"`
-	OriginCountry    []string `json:"origin_country"`
-	GenreIds         []int    `json:"genre_ids"`
-	OriginalLanguage string   `json:"original_language"`
-	VoteCount        int      `json:"vote_count"`
-	Name             string   `json:"name"`
-	OriginalName     string   `json:"original_name"`
 }
 
 func SearchTVShow(Name string) *TVShowTMDB {
@@ -164,9 +164,8 @@ func SearchTVShow(Name string) *TVShowTMDB {
 }
 
 func fetchPoster(posterPath string) *string {
-	url := fmt.Sprintf("%s%s", pictureBase, posterPath)
-
-	resp, err := http.Get(url)
+	posterURL := fmt.Sprintf("%s%s", pictureBase, posterPath)
+	resp, err := http.Get(posterURL)
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil
@@ -185,8 +184,8 @@ func fetchPoster(posterPath string) *string {
 var tmdbGenres *[]TMDBGenre
 
 func fetchGenres() *[]TMDBGenre {
-	url := fmt.Sprintf("%sgenre/movie/list?api_key=%s", baseUrl, apiKey)
-	resp, err := http.Get(url)
+	posterURL := fmt.Sprintf("%sgenre/movie/list?api_key=%s", baseUrl, apiKey)
+	resp, err := http.Get(posterURL)
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil
