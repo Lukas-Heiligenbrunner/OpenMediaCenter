@@ -19,6 +19,12 @@ class DynamicContentContainer<T> extends React.Component<Props<T>, state<T>> {
     // stores current index of loaded elements
     loadindex: number = 0;
 
+    readonly InitialLoadNR = this.props.initialLoadNr
+        ? this.props.initialLoadNr === -1
+            ? this.props.data.length
+            : this.props.initialLoadNr
+        : 16;
+
     constructor(props: Props<T>) {
         super(props);
 
@@ -30,14 +36,14 @@ class DynamicContentContainer<T> extends React.Component<Props<T>, state<T>> {
     componentDidMount(): void {
         document.addEventListener('scroll', this.trackScrolling);
 
-        this.loadPreviewBlock(this.props.initialLoadNr ? this.props.initialLoadNr : 16);
+        this.loadPreviewBlock(this.InitialLoadNR);
     }
 
     componentDidUpdate(prevProps: Props<T>): void {
         // when source props change force update!
         if (prevProps.data.length !== this.props.data.length) {
             this.clean();
-            this.loadPreviewBlock(this.props.initialLoadNr ? this.props.initialLoadNr : 16);
+            this.loadPreviewBlock(this.InitialLoadNR);
         }
     }
 

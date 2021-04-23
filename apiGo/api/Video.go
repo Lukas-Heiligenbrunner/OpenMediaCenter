@@ -44,7 +44,7 @@ func getVideoHandlers() {
 	AddHandler("readThumbnail", VideoNode, &rtn, func() []byte {
 		var pic []byte
 
-		query := fmt.Sprintf("SELECT thumbnail FROM videos WHERE movie_id='%d'", rtn.Movieid)
+		query := fmt.Sprintf("SELECT thumbnail FROM videos WHERE movie_id=%d", rtn.Movieid)
 
 		err := database.QueryRow(query).Scan(&pic)
 		if err != nil {

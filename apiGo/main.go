@@ -9,11 +9,14 @@ import (
 	"openmediacenter/apiGo/database"
 	"openmediacenter/apiGo/static"
 	"openmediacenter/apiGo/videoparser"
+	"openmediacenter/apiGo/videoparser/tmdb"
 )
 
 func main() {
 	fmt.Println("init OpenMediaCenter server")
 	port := 8081
+
+	tmdb.SearchTVShow("Arrow")
 
 	db, verbose, pathPrefix := handleCommandLineArguments()
 	// todo some verbosity logger or sth

@@ -72,4 +72,21 @@ WHERE tvshow_episodes.id=%d`, le.ID)
 
 		return jsonify(ret)
 	})
+
+	var rtn struct {
+		Id int
+	}
+	AddHandler("readThumbnail", TVShowNode, &rtn, func() []byte {
+		var pic []byte
+
+		query := fmt.Sprintf("SELECT thumbnail FROM tvshow WHERE id=%d", rtn.Id)
+
+		err := database.QueryRow(query).Scan(&pic)
+		if err != nil {
+			fmt.Printf("the thumbnail of movie id %d couldn't be found", rtn.Id)
+			return nil
+		}
+
+		return pic
+	})
 }

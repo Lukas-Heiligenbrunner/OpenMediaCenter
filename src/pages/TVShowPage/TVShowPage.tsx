@@ -1,6 +1,6 @@
 import React from 'react';
 import Preview from '../../elements/Preview/Preview';
-import {APINode, callAPI} from '../../utils/Api';
+import {APINode, callAPI, callAPIPlain} from '../../utils/Api';
 import {TVShow} from '../../types/ApiTypes';
 import DynamicContentContainer from '../../elements/DynamicContentContainer/DynamicContentContainer';
 import {Route, Switch, useRouteMatch} from 'react-router-dom';
@@ -33,11 +33,21 @@ class TVShowPage extends React.Component<Props, State> {
                     <Preview
                         key={elem.Id}
                         name={elem.Name}
-                        picLoader={(callback): void => callback('')}
+                        picLoader={(callback: (pic: string) => void): void => {
+                            callAPIPlain(
+                                APINode.TVShow,
+                                {
+                                    action: 'readThumbnail',
+                                    Id: elem.Id
+                                },
+                                (result) => callback(result)
+                            );
+                        }}
                         linkPath={'/tvshows/' + elem.Id}
                     />
                 )}
                 data={this.state.loading ? [] : this.data}
+                initialLoadNr={20}
             />
         );
     }

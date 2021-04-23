@@ -42,6 +42,7 @@ class EpisodePage extends React.Component<Props, State> {
                 <DynamicContentContainer
                     renderElement={(el): JSX.Element => <EpisodeTile key={el.ID} episode={el} />}
                     data={this.episodes}
+                    initialLoadNr={-1}
                 />
             </>
         );

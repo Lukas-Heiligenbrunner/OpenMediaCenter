@@ -21,6 +21,12 @@ type VideoTMDB struct {
 	GenreIds  []int
 }
 
+type TVShowTMDB struct {
+	Thumbnail string
+	Overview  string
+	GenreIds  []int
+}
+
 type tmdbVidResult struct {
 	Poster_path       string
 	Adult             bool
@@ -89,7 +95,7 @@ func SearchVideo(MovieName string, year int) *VideoTMDB {
 	// continue label
 cont:
 
-	thumbnail := fetchPoster(tmdbVid)
+	thumbnail := fetchPoster(tmdbVid.Poster_path)
 
 	result := VideoTMDB{
 		Thumbnail: *thumbnail,
@@ -101,8 +107,64 @@ cont:
 	return &result
 }
 
-func fetchPoster(vid tmdbVidResult) *string {
-	url := fmt.Sprintf("%s%s", pictureBase, vid.Poster_path)
+type tmdbTvResult struct {
+	PosterPath       string   `json:"poster_path"`
+	Popularity       int      `json:"popularity"`
+	Id               int      `json:"id"`
+	BackdropPath     string   `json:"backdrop_path"`
+	VoteAverage      int      `json:"vote_average"`
+	Overview         string   `json:"overview"`
+	FirstAirDate     string   `json:"first_air_date"`
+	OriginCountry    []string `json:"origin_country"`
+	GenreIds         []int    `json:"genre_ids"`
+	OriginalLanguage string   `json:"original_language"`
+	VoteCount        int      `json:"vote_count"`
+	Name             string   `json:"name"`
+	OriginalName     string   `json:"original_name"`
+}
+
+func SearchTVShow(Name string) *TVShowTMDB {
+	fmt.Printf("Searching TMDB for: TVShow: %s\n", Name)
+	queryURL := fmt.Sprintf("%ssearch/tv?api_key=%s&query=%s", baseUrl, apiKey, url.QueryEscape(Name))
+	resp, err := http.Get(queryURL)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil
+	}
+
+	var t struct {
+		Results []tmdbTvResult `json:"results"`
+	}
+	err = json.Unmarshal(body, &t)
+
+	fmt.Println(len(t.Results))
+
+	if len(t.Results) == 0 {
+		return nil
+	}
+
+	res := TVShowTMDB{
+		Thumbnail: "",
+		Overview:  t.Results[0].Overview,
+		GenreIds:  t.Results[0].GenreIds,
+	}
+
+	thumbnail := fetchPoster(t.Results[0].PosterPath)
+	if thumbnail != nil {
+		res.Thumbnail = *thumbnail
+	}
+
+	return &res
+}
+
+func fetchPoster(posterPath string) *string {
+	url := fmt.Sprintf("%s%s", pictureBase, posterPath)
 
 	resp, err := http.Get(url)
 	if err != nil {

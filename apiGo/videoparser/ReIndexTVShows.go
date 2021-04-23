@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"openmediacenter/apiGo/api/types"
 	"openmediacenter/apiGo/database"
+	"openmediacenter/apiGo/videoparser/tmdb"
 	"regexp"
 	"strconv"
 	"strings"
@@ -23,8 +24,8 @@ func startTVShowReindex(files []Show, sett types.SettingsType) {
 }
 
 func insertEpisodesIfNotExisting(show Show) {
-	query := fmt.Sprintf("SELECT tvshow_episodes.name, season, episode FROM tvshow_episodes JOIN tvshow t on t.id = tvshow_episodes.tvshow_id WHERE t.name='%s'", show.Name)
-	rows := database.Query(query)
+	query := "SELECT tvshow_episodes.name, season, episode FROM tvshow_episodes JOIN tvshow t on t.id = tvshow_episodes.tvshow_id WHERE t.name=?"
+	rows := database.Query(query, show.Name)
 
 	var dbepisodes []string
 	for rows.Next() {
@@ -47,7 +48,7 @@ func insertEpisodesIfNotExisting(show Show) {
 	}
 
 	fmt.Println("diff is...")
-	fmt.Println(diff)
+	fmt.Println(len(diff))
 }
 
 func insertEpisode(path string, ShowName string) {
@@ -55,21 +56,27 @@ func insertEpisode(path string, ShowName string) {
 	episodeRegex := regexp.MustCompile("E[0-9][0-9]")
 	matchENDPattern := regexp.MustCompile(" S[0-9][0-9]E[0-9][0-9].+$")
 
-	seasonStr := seasonRegex.FindString(path)[1:]
-	episodeStr := episodeRegex.FindString(path)[1:]
+	seasonStr := seasonRegex.FindString(path)
+	episodeStr := episodeRegex.FindString(path)
 	extString := matchENDPattern.FindString(path)
+	// handle invalid matches
+	if len(seasonStr) != 3 || len(episodeStr) != 3 || len(extString) < 8 {
+		fmt.Printf("Error inserting episode: %s  -- %s/%s/%s\n", path, seasonStr, episodeStr, extString)
+		return
+	}
+
 	name := strings.TrimSuffix(path, extString)
 
-	season, err := strconv.ParseInt(seasonStr, 10, 8)
-	episode, err := strconv.ParseInt(episodeStr, 10, 8)
+	season, err := strconv.ParseInt(seasonStr[1:], 10, 8)
+	episode, err := strconv.ParseInt(episodeStr[1:], 10, 8)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 
-	query := fmt.Sprintf(`
+	query := `
 INSERT INTO tvshow_episodes (name, season, poster, tvshow_id, episode, filename)
-VALUES ('%s', %d, '%s', (SELECT tvshow.id FROM tvshow WHERE tvshow.name='%s'), %d, '%s')`, name, season, "", ShowName, episode, path)
-	err = database.Edit(query)
+VALUES (?, ?, ?, (SELECT tvshow.id FROM tvshow WHERE tvshow.name=?), ?, ?)`
+	err = database.Edit(query, name, season, "", ShowName, episode, path)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -99,10 +106,18 @@ func insertShowIfNotExisting(show Show, allShows *[]string) {
 		}
 	}
 
-	// todo load tmdb pic
+	// insert empty thubnail if tmdb fails
+	thubnail := ""
+
+	// load tmdb infos
+	tmdbInfo := tmdb.SearchTVShow(show.Name)
+	if tmdbInfo != nil {
+		thubnail = tmdbInfo.Thumbnail
+	}
+
 	// currently the foldernamme == name which mustn't necessarily be
-	query := fmt.Sprintf("INSERT INTO tvshow (name, thumbnail, foldername) VALUES ('%s', '%s', '%s')", show.Name, "", show.Name)
-	err := database.Edit(query)
+	query := "INSERT INTO tvshow (name, thumbnail, foldername) VALUES (?, ?, ?)"
+	err := database.Edit(query, show.Name, thubnail, show.Name)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
