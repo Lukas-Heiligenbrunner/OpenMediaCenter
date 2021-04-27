@@ -42,29 +42,34 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
         return (
             <Link to={'/player/' + this.props.movieId}>
                 <div className={style.videopreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview}>
-                    <div className={style.previewtitle + ' ' + themeStyle.lighttextcolor}>{this.props.name}</div>
-                    <div className={style.previewpic}>
-                        {this.state.previewpicture === '' ? (
-                            <FontAwesomeIcon
-                                style={{
-                                    color: 'white',
-                                    marginTop: '55px'
-                                }}
-                                icon={faPhotoVideo}
-                                size='5x'
-                            />
-                        ) : this.state.previewpicture === null ? (
-                            <span className={style.loadAnimation}>
-                                <Spinner animation='border' />
-                            </span>
-                        ) : (
-                            <img className={style.previewimage} src={this.state.previewpicture} alt='Pic loading.' />
-                        )}
-                    </div>
-                    <div className={style.previewbottom} />
+                    <div className={style.previewpic}>{this.renderPic()}</div>
+                    <div className={style.previewText + ' ' + themeStyle.lighttextcolor}>{this.props.name}</div>
                 </div>
             </Link>
         );
+    }
+
+    private renderPic(): JSX.Element {
+        if (this.state.previewpicture === '') {
+            return (
+                <FontAwesomeIcon
+                    style={{
+                        color: 'white',
+                        marginTop: '55px'
+                    }}
+                    icon={faPhotoVideo}
+                    size='5x'
+                />
+            );
+        } else if (this.state.previewpicture === null) {
+            return (
+                <span className={style.loadAnimation}>
+                    <Spinner animation='border' />
+                </span>
+            );
+        } else {
+            return <img className={style.previewimage} src={this.state.previewpicture} alt='Pic loading.' />;
+        }
     }
 }
 
