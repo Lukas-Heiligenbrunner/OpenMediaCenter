@@ -4,6 +4,12 @@ import {withRouter} from 'react-router-dom';
 import {APINode, callAPI} from '../../utils/Api';
 import {Link} from 'react-router-dom';
 import DynamicContentContainer from '../../elements/DynamicContentContainer/DynamicContentContainer';
+import tileStyle from './EpisodeTile.module.css';
+import GlobalInfos from '../../utils/GlobalInfos';
+import {faPlay} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
+import SideBar, {SideBarItem, SideBarTitle} from '../../elements/SideBar/SideBar';
 
 interface Props extends RouteComponentProps<{id: string}> {}
 
@@ -18,7 +24,7 @@ interface Episode {
     Episode: number;
 }
 
-class EpisodePage extends React.Component<Props, State> {
+export class EpisodePage extends React.Component<Props, State> {
     episodes: Episode[] = [];
 
     state = {
@@ -39,6 +45,14 @@ class EpisodePage extends React.Component<Props, State> {
 
         return (
             <>
+                <PageTitle title='TV Shows' subtitle='' />
+                <SideBar>
+                    <SideBarTitle>Infos:</SideBarTitle>
+                    <Line />
+                    <SideBarItem>
+                        <b>{this.episodes.length}</b> Episodes Total!
+                    </SideBarItem>
+                </SideBar>
                 <DynamicContentContainer
                     renderElement={(el): JSX.Element => <EpisodeTile key={el.ID} episode={el} />}
                     data={this.episodes}
@@ -49,11 +63,19 @@ class EpisodePage extends React.Component<Props, State> {
     }
 }
 
-const EpisodeTile = (props: {episode: Episode}): JSX.Element => {
+export const EpisodeTile = (props: {episode: Episode}): JSX.Element => {
+    const themestyle = GlobalInfos.getThemeStyle();
     return (
         <Link to={'/tvplayer/' + props.episode.ID}>
-            <div>
-                Season:{props.episode.Season} Episode:{props.episode.Episode} {props.episode.Name}
+            <div className={tileStyle.tile + ' ' + themestyle.secbackground + ' ' + themestyle.textcolor}>
+                <FontAwesomeIcon
+                    style={{
+                        marginRight: '10px'
+                    }}
+                    icon={faPlay}
+                    size='1x'
+                />
+                Season: {props.episode.Season} Episode: {props.episode.Episode} {props.episode.Name}
             </div>
         </Link>
     );
