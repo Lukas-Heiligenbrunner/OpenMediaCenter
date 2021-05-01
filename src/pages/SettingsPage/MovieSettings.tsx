@@ -44,7 +44,6 @@ class MovieSettings extends React.Component<Props, state> {
     dial(): void {
         console.log('trying to connect...');
         const conn = new WebSocket(`ws://${window.location.host}/subscribe`);
-        console.log('dd to connect...');
         conn.addEventListener('close', (ev) => {
             this.appendLog(`WebSocket Disconnected code: ${ev.code}, reason: ${ev.reason}`, true);
             if (ev.code !== 1001) {
@@ -58,7 +57,6 @@ class MovieSettings extends React.Component<Props, state> {
 
         // This is where we handle messages received.
         conn.addEventListener('message', (ev) => {
-            console.log('new message!');
             if (typeof ev.data !== 'string') {
                 console.error('unexpected message type', typeof ev.data);
                 return;
@@ -80,6 +78,8 @@ class MovieSettings extends React.Component<Props, state> {
             } else if (msg.Event === 'stop') {
                 this.setState({startbtnDisabled: false});
             }
+        } else {
+            console.error('unexpected response from server: ' + message);
         }
     }
 
