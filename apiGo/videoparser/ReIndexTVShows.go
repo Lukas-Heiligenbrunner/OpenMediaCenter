@@ -2,7 +2,6 @@ package videoparser
 
 import (
 	"fmt"
-	"openmediacenter/apiGo/api/types"
 	"openmediacenter/apiGo/database"
 	"openmediacenter/apiGo/videoparser/tmdb"
 	"regexp"
@@ -10,17 +9,19 @@ import (
 	"strings"
 )
 
-func startTVShowReindex(files []Show, sett types.SettingsType) {
-	// have fun with db insertions here!
-
+func startTVShowReindex(files []Show) {
 	allTVshows := getAllTVShows()
 
 	for _, file := range files {
 		// insert new TVShow entry if not existing.
 		insertShowIfNotExisting(file, allTVshows)
+		AppendMessage("Processing show: " + file.Name)
 
 		insertEpisodesIfNotExisting(file)
 	}
+
+	AppendMessage("reindex finished successfully!")
+	SendEvent("stop")
 }
 
 func insertEpisodesIfNotExisting(show Show) {
@@ -44,11 +45,9 @@ func insertEpisodesIfNotExisting(show Show) {
 	diff := difference(show.files, dbepisodes)
 
 	for _, s := range diff {
+		AppendMessage("Adding Episode: " + s)
 		insertEpisode(s, show.Name)
 	}
-
-	fmt.Println("diff is...")
-	fmt.Println(len(diff))
 }
 
 func insertEpisode(path string, ShowName string) {

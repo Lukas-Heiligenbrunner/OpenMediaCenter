@@ -112,15 +112,13 @@ func StartTVShowReindex() {
 		}
 	}
 
-	fmt.Println(files)
-
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 
 	// start reindex process
 	AppendMessage("Starting Reindexing!")
-	go startTVShowReindex(files, mSettings)
+	go startTVShowReindex(files)
 }
 
 func StartCleanup() {
