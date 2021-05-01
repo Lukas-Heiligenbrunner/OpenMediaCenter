@@ -8,6 +8,7 @@ import (
 	"openmediacenter/apiGo/api"
 	"openmediacenter/apiGo/database"
 	"openmediacenter/apiGo/static"
+	"openmediacenter/apiGo/videoparser"
 )
 
 func main() {
@@ -30,7 +31,9 @@ func main() {
 	api.AddSettingsHandlers()
 	api.AddTagHandlers()
 	api.AddActorsHandlers()
-	api.AddInitHandlers()
+	api.AddTvshowHandlers()
+
+	videoparser.SetupSettingsWebsocket()
 
 	// add the static files
 	static.ServeStaticFiles()

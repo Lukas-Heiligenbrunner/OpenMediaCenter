@@ -37,7 +37,7 @@ func deleteFromDB() {
 			return database.ManualSuccessResponse(err)
 		} else {
 			// check with regex if its the key constraint error
-			r, _ := regexp.Compile("^.*a foreign key constraint fails.*$")
+			r := regexp.MustCompile("^.*a foreign key constraint fails.*$")
 			if r.MatchString(err.Error()) {
 				return []byte(`{"result":"not empty tag"}`)
 			} else {

@@ -1,6 +1,5 @@
 import {TagType} from '../../types/VideoTypes';
 import React from 'react';
-import videocontainerstyle from '../../elements/VideoContainer/VideoContainer.module.css';
 import {Link} from 'react-router-dom';
 import {TagPreview} from '../../elements/Preview/Preview';
 import {APINode, callAPI} from '../../utils/Api';
@@ -9,6 +8,7 @@ import SideBar, {SideBarTitle} from '../../elements/SideBar/SideBar';
 import Tag from '../../elements/Tag/Tag';
 import {DefaultTags} from '../../types/GeneralTypes';
 import NewTagPopup from '../../elements/Popups/NewTagPopup/NewTagPopup';
+import DynamicContentContainer from '../../elements/DynamicContentContainer/DynamicContentContainer';
 
 interface TagViewState {
     loadedtags: TagType[];
@@ -53,15 +53,15 @@ class TagView extends React.Component<Props, TagViewState> {
                         Add a new Tag!
                     </button>
                 </SideBar>
-                <div className={videocontainerstyle.maincontent}>
-                    {this.state.loadedtags
-                        ? this.state.loadedtags.map((m) => (
-                              <Link to={'/categories/' + m.TagId} key={m.TagId}>
-                                  <TagPreview name={m.TagName} />
-                              </Link>
-                          ))
-                        : 'loading'}
-                </div>
+                <DynamicContentContainer
+                    data={this.state.loadedtags}
+                    renderElement={(m): JSX.Element => (
+                        <Link to={'/categories/' + m.TagId} key={m.TagId}>
+                            <TagPreview name={m.TagName} />
+                        </Link>
+                    )}
+                    initialLoadNr={20}
+                />
                 {this.handlePopups()}
             </>
         );

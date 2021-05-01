@@ -9,7 +9,7 @@ import style from './App.module.css';
 
 import SettingsPage from './pages/SettingsPage/SettingsPage';
 import CategoryPage from './pages/CategoryPage/CategoryPage';
-import {APINode, apiTokenValid, callApiUnsafe, refreshAPIToken} from './utils/Api';
+import {APINode, apiTokenValid, callAPI, refreshAPIToken} from './utils/Api';
 
 import {BrowserRouter as Router, NavLink, Route, Switch} from 'react-router-dom';
 import Player from './pages/Player/Player';
@@ -17,6 +17,8 @@ import ActorOverviewPage from './pages/ActorOverviewPage/ActorOverviewPage';
 import ActorPage from './pages/ActorPage/ActorPage';
 import {SettingsTypes} from './types/ApiTypes';
 import AuthenticationPage from './pages/AuthenticationPage/AuthenticationPage';
+import TVShowPage from './pages/TVShowPage/TVShowPage';
+import TVPlayer from './pages/TVShowPage/TVPlayer';
 
 interface state {
     password: boolean | null; // null if uninitialized - true if pwd needed false if not needed
@@ -74,11 +76,11 @@ class App extends React.Component<{}, state> {
 
     initialAPICall(): void {
         // this is the first api call so if it fails we know there is no connection to backend
-        callApiUnsafe(APINode.Init, {action: 'loadInitialData'}, (result: SettingsTypes.initialApiCallData) => {
+        callAPI(APINode.Settings, {action: 'loadInitialData'}, (result: SettingsTypes.initialApiCallData) => {
             // set theme
             GlobalInfos.enableDarkTheme(result.DarkMode);
 
-            GlobalInfos.setVideoPath(result.VideoPath);
+            GlobalInfos.setVideoPaths(result.VideoPath, result.TVShowPath);
 
             this.setState({
                 mediacentername: result.MediacenterName
@@ -93,48 +95,25 @@ class App extends React.Component<{}, state> {
     }
 
     render(): JSX.Element {
-        const themeStyle = GlobalInfos.getThemeStyle();
         // add the main theme to the page body
-        document.body.className = themeStyle.backgroundcolor;
+        document.body.className = GlobalInfos.getThemeStyle().backgroundcolor;
 
         if (this.state.password === true) {
             // render authentication page if auth is neccessary
-            return <AuthenticationPage onSuccessLogin={(): void => this.setState({password: false})} />;
+            return (
+                <AuthenticationPage
+                    onSuccessLogin={(): void => {
+                        this.setState({password: false});
+                        // reinit general infos
+                        this.initialAPICall();
+                    }}
+                />
+            );
         } else if (this.state.password === false) {
             return (
                 <Router>
                     <div className={style.app}>
-                        <div
-                            className={[style.navcontainer, themeStyle.backgroundcolor, themeStyle.textcolor, themeStyle.hrcolor].join(
-                                ' '
-                            )}>
-                            <div className={style.navbrand}>{this.state.mediacentername}</div>
-                            <NavLink
-                                className={[style.navitem, themeStyle.navitem].join(' ')}
-                                to={'/'}
-                                activeStyle={{opacity: '0.85'}}>
-                                Home
-                            </NavLink>
-                            <NavLink
-                                className={[style.navitem, themeStyle.navitem].join(' ')}
-                                to={'/random'}
-                                activeStyle={{opacity: '0.85'}}>
-                                Random Video
-                            </NavLink>
-
-                            <NavLink
-                                className={[style.navitem, themeStyle.navitem].join(' ')}
-                                to={'/categories'}
-                                activeStyle={{opacity: '0.85'}}>
-                                Categories
-                            </NavLink>
-                            <NavLink
-                                className={[style.navitem, themeStyle.navitem].join(' ')}
-                                to={'/settings'}
-                                activeStyle={{opacity: '0.85'}}>
-                                Settings
-                            </NavLink>
-                        </div>
+                        {this.navBar()}
                         {this.routing()}
                     </div>
                 </Router>
@@ -144,6 +123,38 @@ class App extends React.Component<{}, state> {
         }
     }
 
+    /**
+     * render the top navigation bar
+     */
+    navBar(): JSX.Element {
+        const themeStyle = GlobalInfos.getThemeStyle();
+
+        return (
+            <div className={[style.navcontainer, themeStyle.backgroundcolor, themeStyle.textcolor, themeStyle.hrcolor].join(' ')}>
+                <div className={style.navbrand}>{this.state.mediacentername}</div>
+                <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/'} activeStyle={{opacity: '0.85'}}>
+                    Home
+                </NavLink>
+                <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/random'} activeStyle={{opacity: '0.85'}}>
+                    Random Video
+                </NavLink>
+
+                <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/categories'} activeStyle={{opacity: '0.85'}}>
+                    Categories
+                </NavLink>
+                <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/tvshows'} activeStyle={{opacity: '0.85'}}>
+                    TV Shows
+                </NavLink>
+                <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/settings'} activeStyle={{opacity: '0.85'}}>
+                    Settings
+                </NavLink>
+            </div>
+        );
+    }
+
+    /**
+     * render the react router elements
+     */
     routing(): JSX.Element {
         return (
             <Switch>
@@ -153,11 +164,17 @@ class App extends React.Component<{}, state> {
                 <Route path='/categories'>
                     <CategoryPage />
                 </Route>
+                <Route path='/tvshows'>
+                    <TVShowPage />
+                </Route>
                 <Route path='/settings'>
                     <SettingsPage />
                 </Route>
                 <Route exact path='/player/:id'>
                     <Player />
+                </Route>
+                <Route exact path='/tvplayer/:id'>
+                    <TVPlayer />
                 </Route>
                 <Route exact path='/actors'>
                     <ActorOverviewPage />

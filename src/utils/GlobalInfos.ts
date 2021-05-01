@@ -8,6 +8,7 @@ import lighttheme from '../AppLightTheme.module.css';
 class StaticInfos {
     private darktheme: boolean = true;
     private videopath: string = '';
+    private tvshowpath: string = '';
 
     /**
      * check if the current theme is the dark theme
@@ -26,7 +27,7 @@ class StaticInfos {
 
         // trigger onThemeChange handlers
         this.handlers.map((func) => {
-            return func();
+            func();
         });
     }
 
@@ -47,8 +48,9 @@ class StaticInfos {
      * set the current videopath
      * @param vidpath videopath with beginning and ending slash
      */
-    setVideoPath(vidpath: string): void {
+    setVideoPaths(vidpath: string, tvshowpath: string): void {
         this.videopath = vidpath;
+        this.tvshowpath = tvshowpath;
     }
 
     /**
@@ -56,6 +58,13 @@ class StaticInfos {
      */
     getVideoPath(): string {
         return this.videopath;
+    }
+
+    /**
+     * return the current tvshow path
+     */
+    getTVShowPath(): string {
+        return this.tvshowpath;
     }
 
     /**

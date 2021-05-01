@@ -157,7 +157,7 @@ export class HomePage extends React.Component<Props, state> {
                                 }}
                             />
                         </SideBar>
-                        {this.state.data.length !== 0 ? <VideoContainer data={this.state.data} /> : <div>No Data found!</div>}
+                        <VideoContainer data={this.state.data} />
                         <div className={style.rightinfo} />
                     </Route>
                 </Switch>

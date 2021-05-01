@@ -2,14 +2,12 @@ package videoparser
 
 import (
 	"fmt"
+	"io/ioutil"
 	"openmediacenter/apiGo/database"
 	"os"
 	"path/filepath"
 	"strings"
 )
-
-var messageBuffer []string
-var contentAvailable = false
 
 type StatusMessage struct {
 	Messages         []string
@@ -17,10 +15,9 @@ type StatusMessage struct {
 }
 
 func StartReindex() bool {
-	messageBuffer = []string{}
-	contentAvailable = true
-
 	fmt.Println("starting reindex..")
+	SendEvent("start")
+	AppendMessage("starting reindex..")
 
 	mSettings := database.GetSettings()
 	// add the path prefix to videopath
@@ -29,6 +26,8 @@ func StartReindex() bool {
 	// check if path even exists
 	if _, err := os.Stat(mSettings.VideoPath); os.IsNotExist(err) {
 		fmt.Println("Reindex path doesn't exist!")
+		AppendMessage(fmt.Sprintf("Reindex path doesn't exist! :%s", mSettings.VideoPath))
+		SendEvent("stop")
 		return false
 	}
 
@@ -49,20 +48,77 @@ func StartReindex() bool {
 		fmt.Println(err.Error())
 	}
 	// start reindex process
-	AppendMessageBuffer("Starting Reindexing!")
+	AppendMessage("Starting Reindexing!")
 	go ReIndexVideos(files, mSettings)
 	return true
 }
 
-func GetStatusMessage() *StatusMessage {
-	msg := StatusMessage{
-		Messages:         messageBuffer,
-		ContentAvailable: contentAvailable,
+type Show struct {
+	Name  string
+	files []string
+}
+
+// StartTVShowReindex reindex dir walks for TVShow reindex
+func StartTVShowReindex() {
+	fmt.Println("starting tvshow reindex..")
+	SendEvent("start")
+	AppendMessage("starting tvshow reindex...")
+
+	mSettings := database.GetSettings()
+	// add the path prefix to videopath
+	mSettings.EpisodePath = mSettings.PathPrefix + mSettings.EpisodePath
+
+	// add slash suffix if not existing
+	if !strings.HasSuffix(mSettings.EpisodePath, "/") {
+		mSettings.EpisodePath += "/"
 	}
 
-	messageBuffer = []string{}
+	// check if path even exists
+	if _, err := os.Stat(mSettings.EpisodePath); os.IsNotExist(err) {
+		msg := fmt.Sprintf("Reindex path doesn't exist! :%s", mSettings.EpisodePath)
+		fmt.Println(msg)
+		AppendMessage(msg)
+		SendEvent("stop")
+		return
+	}
 
-	return &msg
+	var files []Show
+
+	filess, err := ioutil.ReadDir(mSettings.EpisodePath)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	for _, file := range filess {
+		if file.IsDir() {
+			elem := Show{
+				Name:  file.Name(),
+				files: nil,
+			}
+
+			fmt.Println(file.Name())
+
+			episodefiles, err := ioutil.ReadDir(mSettings.EpisodePath + file.Name())
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+
+			for _, epfile := range episodefiles {
+				if strings.HasSuffix(epfile.Name(), ".mp4") {
+					elem.files = append(elem.files, epfile.Name())
+				}
+			}
+			files = append(files, elem)
+		}
+	}
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	// start reindex process
+	AppendMessage("Starting Reindexing!")
+	go startTVShowReindex(files)
 }
 
 func StartCleanup() {

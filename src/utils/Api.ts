@@ -68,7 +68,6 @@ export function refreshAPIToken(callback: (error: string) => void, force?: boole
                 callFuncQue(result.error);
                 return;
             }
-            console.log(result);
             // set api token
             apiToken = result.access_token;
             // set expire time
@@ -188,7 +187,6 @@ export function callAPI<T>(
     errorcallback: (_: string) => void = (_: string): void => {}
 ): void {
     checkAPITokenValid(() => {
-        console.log(apiToken);
         fetch(APIPREFIX + apinode, {
             method: 'POST',
             body: JSON.stringify(fd),
@@ -280,5 +278,5 @@ export enum APINode {
     Tags = 'tags',
     Actor = 'actor',
     Video = 'video',
-    Init = 'init'
+    TVShow = 'tvshow'
 }

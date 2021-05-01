@@ -15,7 +15,7 @@ const (
 	TagNode      = iota
 	SettingsNode = iota
 	ActorNode    = iota
-	InitNode     = iota
+	TVShowNode   = iota
 )
 
 type actionStruct struct {
@@ -37,13 +37,11 @@ func AddHandler(action string, apiNode int, n interface{}, h func() []byte) {
 }
 
 func ServerInit() {
-	http.Handle(APIPREFIX+"/video", oauth.ValidateToken(videoHandler))
-	http.Handle(APIPREFIX+"/tags", oauth.ValidateToken(tagHandler))
-	http.Handle(APIPREFIX+"/settings", oauth.ValidateToken(settingsHandler))
-	http.Handle(APIPREFIX+"/actor", oauth.ValidateToken(actorHandler))
-
-	// initialization api calls to check if password is neccessaray
-	http.Handle(APIPREFIX+"/init", http.HandlerFunc(initHandler))
+	http.Handle(APIPREFIX+"/video", oauth.ValidateToken(handlefunc, VideoNode))
+	http.Handle(APIPREFIX+"/tags", oauth.ValidateToken(handlefunc, TagNode))
+	http.Handle(APIPREFIX+"/settings", oauth.ValidateToken(handlefunc, SettingsNode))
+	http.Handle(APIPREFIX+"/actor", oauth.ValidateToken(handlefunc, ActorNode))
+	http.Handle(APIPREFIX+"/tvshow", oauth.ValidateToken(handlefunc, TVShowNode))
 
 	// initialize oauth service and add corresponding auth routes
 	oauth.InitOAuth()
@@ -67,26 +65,6 @@ func handleAPICall(action string, requestBody string, apiNode int) []byte {
 	}
 	fmt.Printf("no handler found for Action: %d/%s\n", apiNode, action)
 	return nil
-}
-
-func actorHandler(rw http.ResponseWriter, req *http.Request) {
-	handlefunc(rw, req, ActorNode)
-}
-
-func videoHandler(rw http.ResponseWriter, req *http.Request) {
-	handlefunc(rw, req, VideoNode)
-}
-
-func tagHandler(rw http.ResponseWriter, req *http.Request) {
-	handlefunc(rw, req, TagNode)
-}
-
-func settingsHandler(rw http.ResponseWriter, req *http.Request) {
-	handlefunc(rw, req, SettingsNode)
-}
-
-func initHandler(rw http.ResponseWriter, req *http.Request) {
-	handlefunc(rw, req, InitNode)
 }
 
 func handlefunc(rw http.ResponseWriter, req *http.Request, node int) {

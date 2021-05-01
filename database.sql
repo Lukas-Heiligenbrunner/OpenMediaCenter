@@ -9,12 +9,12 @@ create table if not exists actors
 
 create table if not exists settings
 (
-    video_path       varchar(255)      null,
-    episode_path     varchar(255)      null,
-    password         varchar(32)       null,
-    mediacenter_name varchar(32)       null,
-    TMDB_grabbing    tinyint           null,
-    DarkMode         tinyint default 0 null
+    video_path       varchar(255)                          null,
+    episode_path     varchar(255)                          null,
+    password         varchar(32) default '-1'              null,
+    mediacenter_name varchar(32) default 'OpenMediaCenter' null,
+    TMDB_grabbing    tinyint                               null,
+    DarkMode         tinyint     default 0                 null
 );
 
 create table if not exists tags
@@ -24,18 +24,41 @@ create table if not exists tags
     tag_name varchar(50) null
 );
 
+create table if not exists tvshow
+(
+    name       varchar(100) null,
+    thumbnail  mediumblob   null,
+    id         int auto_increment
+        primary key,
+    foldername varchar(100) null
+);
+
+create table if not exists tvshow_episodes
+(
+    id        int auto_increment
+        primary key,
+    name      varchar(100) null,
+    season    int          null,
+    poster    mediumblob   null,
+    tvshow_id int          null,
+    episode   int          null,
+    filename  varchar(100) null,
+    constraint tvshow_episodes_tvshow_id_fk
+        foreign key (tvshow_id) references tvshow (id)
+);
+
 create table if not exists videos
 (
     movie_id    int auto_increment
         primary key,
-    movie_name  varchar(200)                       null,
-    movie_url   varchar(250)                       null,
-    thumbnail   mediumblob                         null,
-    likes       int      default 0                 null,
-    create_date datetime default CURRENT_TIMESTAMP null,
-    quality     int                                null,
-    length      int                                null comment 'in seconds',
-    poster      mediumblob                         null
+    movie_name  varchar(200)                         null,
+    movie_url   varchar(250)                         null,
+    thumbnail   mediumblob                           null,
+    poster      mediumblob                           null,
+    likes       int      default 0                   null,
+    quality     int                                  null,
+    length      int                                  null comment 'in seconds',
+    create_date datetime default current_timestamp() null
 );
 
 create table if not exists actors_videos

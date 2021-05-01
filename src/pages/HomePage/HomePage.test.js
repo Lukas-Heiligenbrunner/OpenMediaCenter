@@ -10,21 +10,6 @@ describe('<HomePage/>', function () {
         wrapper.unmount();
     });
 
-    it('test data insertion', function () {
-        const wrapper = shallow(<HomePage/>);
-
-        expect(wrapper.find('VideoContainer')).toHaveLength(0);
-
-        wrapper.setState({
-            data: [
-                {}, {}
-            ]
-        });
-
-        // there shoud be loaded the Videocontainer element into dom after fetching videos correctly
-        expect(wrapper.find('VideoContainer')).toHaveLength(1);
-    });
-
     it('test title and nr insertions', function () {
         const wrapper = shallow(<HomePage/>);
 
