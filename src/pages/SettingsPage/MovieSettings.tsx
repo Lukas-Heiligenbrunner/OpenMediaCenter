@@ -43,7 +43,10 @@ class MovieSettings extends React.Component<Props, state> {
 
     dial(): void {
         console.log('trying to connect...');
-        const conn = new WebSocket(`ws://${window.location.host}/subscribe`);
+        // check which ws protocol we need
+        const wsProt = window.location.protocol === 'http:' ? 'ws' : 'wss';
+
+        const conn = new WebSocket(`${wsProt}://${window.location.host}/subscribe`);
         conn.addEventListener('close', (ev) => {
             this.appendLog(`WebSocket Disconnected code: ${ev.code}, reason: ${ev.reason}`, true);
             if (ev.code !== 1001) {
