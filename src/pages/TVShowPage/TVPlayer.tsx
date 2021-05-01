@@ -24,7 +24,7 @@ interface EpisodeData {
     Path: string;
 }
 
-class TVPlayer extends React.Component<Props, State> {
+export class TVPlayer extends React.Component<Props, State> {
     state = {
         loaded: false
     };

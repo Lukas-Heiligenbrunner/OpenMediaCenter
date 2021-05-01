@@ -14,7 +14,7 @@ interface State {
 
 interface Props {}
 
-class TVShowPage extends React.Component<Props, State> {
+export class TVShowPage extends React.Component<Props, State> {
     state = {
         loading: true
     };

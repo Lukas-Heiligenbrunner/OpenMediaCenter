@@ -34,4 +34,16 @@ describe('<DynamicContentContainer/>', function () {
         wrapper.instance().clean();
         expect(wrapper.find('a')).toHaveLength(0);
     });
+
+    it('test update', function () {
+        const wrapper = shallow(<DynamicContentContainer data={[{}, {}, {}]} renderElement={(el) => (<a/>)}/>);
+
+        const func = jest.fn();
+        wrapper.instance().clean = func;
+
+        // perform component update
+        wrapper.setProps({data: [{}, {}]});
+
+        expect(func).toHaveBeenCalledTimes(1);
+    });
 });
