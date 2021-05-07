@@ -9,7 +9,7 @@ import style from './App.module.css';
 
 import SettingsPage from './pages/SettingsPage/SettingsPage';
 import CategoryPage from './pages/CategoryPage/CategoryPage';
-import {APINode, apiTokenValid, callAPI, refreshAPIToken} from './utils/Api';
+import {APINode, callAPI, token} from './utils/Api';
 
 import {BrowserRouter as Router, NavLink, Route, Switch} from 'react-router-dom';
 import Player from './pages/Player/Player';
@@ -19,6 +19,7 @@ import {SettingsTypes} from './types/ApiTypes';
 import AuthenticationPage from './pages/AuthenticationPage/AuthenticationPage';
 import TVShowPage from './pages/TVShowPage/TVShowPage';
 import TVPlayer from './pages/TVShowPage/TVPlayer';
+import {CookieTokenStore} from './utils/TokenStore/CookieTokenStore';
 
 interface state {
     password: boolean | null; // null if uninitialized - true if pwd needed false if not needed
@@ -32,12 +33,14 @@ class App extends React.Component<{}, state> {
     constructor(props: {}) {
         super(props);
 
+        token.setTokenStore(new CookieTokenStore());
+
         let pwdneeded: boolean | null = null;
 
-        if (apiTokenValid()) {
+        if (token.apiTokenValid()) {
             pwdneeded = false;
         } else {
-            refreshAPIToken((err) => {
+            token.refreshAPIToken((err) => {
                 if (err === 'invalid_client') {
                     this.setState({password: true});
                 } else if (err === '') {
@@ -61,7 +64,7 @@ class App extends React.Component<{}, state> {
         // set the hook to load passwordfield on global func call
         GlobalInfos.loadPasswordPage = (callback?: () => void): void => {
             // try refreshing the token
-            refreshAPIToken((err) => {
+            token.refreshAPIToken((err) => {
                 if (err !== '') {
                     this.setState({password: true});
                 } else {

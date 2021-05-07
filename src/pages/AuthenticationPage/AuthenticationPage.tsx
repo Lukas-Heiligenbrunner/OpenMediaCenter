@@ -2,7 +2,7 @@ import React from 'react';
 import {Button} from '../../elements/GPElements/Button';
 import style from './AuthenticationPage.module.css';
 import {addKeyHandler, removeKeyHandler} from '../../utils/ShortkeyHandler';
-import {refreshAPIToken} from '../../utils/Api';
+import {token} from '../../utils/Api';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
@@ -76,7 +76,7 @@ class AuthenticationPage extends React.Component<Props, state> {
      * request a new token and check if pwd was valid
      */
     authenticate(): void {
-        refreshAPIToken(
+        token.refreshAPIToken(
             (error) => {
                 if (error !== '') {
                     this.setState({wrongPWDInfo: true});

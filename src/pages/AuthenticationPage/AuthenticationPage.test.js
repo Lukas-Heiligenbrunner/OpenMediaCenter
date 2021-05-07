@@ -1,6 +1,7 @@
 import React from 'react';
 import AuthenticationPage from './AuthenticationPage';
 import {shallow} from 'enzyme';
+import {token} from "../../utils/Api";
 
 describe('<AuthenticationPage/>', function () {
     it('renders without crashing ', function () {
@@ -25,8 +26,7 @@ describe('<AuthenticationPage/>', function () {
     it('test fail authenticate', function () {
         const events = mockKeyPress();
 
-        const helpers = require('../../utils/Api');
-        helpers.refreshAPIToken = jest.fn().mockImplementation((callback, force, pwd) => {
+        token.refreshAPIToken = jest.fn().mockImplementation((callback, force, pwd) => {
             callback('there was an error')
         });
 
@@ -41,8 +41,7 @@ describe('<AuthenticationPage/>', function () {
         const events = mockKeyPress();
         const func = jest.fn()
 
-        const helpers = require('../../utils/Api');
-        helpers.refreshAPIToken = jest.fn().mockImplementation((callback, force, pwd) => {
+        token.refreshAPIToken = jest.fn().mockImplementation((callback, force, pwd) => {
             callback('')
         });
 
