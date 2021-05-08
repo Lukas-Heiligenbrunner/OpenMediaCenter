@@ -9,7 +9,7 @@ import style from './App.module.css';
 
 import SettingsPage from './pages/SettingsPage/SettingsPage';
 import CategoryPage from './pages/CategoryPage/CategoryPage';
-import {APINode, callAPI, token} from './utils/Api';
+import {APINode, callAPI} from './utils/Api';
 
 import {BrowserRouter as Router, NavLink, Route, Switch} from 'react-router-dom';
 import Player from './pages/Player/Player';
@@ -20,6 +20,7 @@ import AuthenticationPage from './pages/AuthenticationPage/AuthenticationPage';
 import TVShowPage from './pages/TVShowPage/TVShowPage';
 import TVPlayer from './pages/TVShowPage/TVPlayer';
 import {CookieTokenStore} from './utils/TokenStore/CookieTokenStore';
+import {token} from './utils/TokenHandler';
 
 interface state {
     password: boolean | null; // null if uninitialized - true if pwd needed false if not needed
@@ -33,7 +34,7 @@ class App extends React.Component<{}, state> {
     constructor(props: {}) {
         super(props);
 
-        token.setTokenStore(new CookieTokenStore());
+        token.init(new CookieTokenStore());
 
         let pwdneeded: boolean | null = null;
 

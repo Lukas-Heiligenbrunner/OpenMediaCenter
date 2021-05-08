@@ -6,9 +6,8 @@ import '@testing-library/jest-dom/extend-expect';
 
 import {configure} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import GlobalInfos from './utils/GlobalInfos';
 import {CookieTokenStore} from "./utils/TokenStore/CookieTokenStore";
-import {token} from "./utils/Api";
+import {token} from "./utils/TokenHandler";
 
 configure({adapter: new Adapter()});
 
@@ -46,7 +45,7 @@ global.callAPIMock = (resonse) => {
 global.beforeEach(() => {
     // empty fetch response implementation for each test
     global.fetch = prepareFetchApi({});
-    token.setTokenStore(new CookieTokenStore());
+    token.init(new CookieTokenStore());
     // todo with callAPIMock
 });
 
