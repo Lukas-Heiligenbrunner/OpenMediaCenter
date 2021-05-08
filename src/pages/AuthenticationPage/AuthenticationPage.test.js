@@ -1,7 +1,7 @@
 import React from 'react';
 import AuthenticationPage from './AuthenticationPage';
 import {shallow} from 'enzyme';
-import {token} from "../../utils/Api";
+import {token} from "../../utils/TokenHandler";
 
 describe('<AuthenticationPage/>', function () {
     it('renders without crashing ', function () {
