@@ -64,22 +64,26 @@ export namespace token {
 
         console.log(APiHost);
 
-        fetch(APiHost + 'token', {method: 'POST', body: formData}).then((response) =>
-            response.json().then((result: APIToken) => {
-                if (result.error) {
-                    callFuncQue(result.error);
-                    return;
-                }
-                // set api token
-                apiToken = result.access_token;
-                // set expire time
-                expireSeconds = new Date().getTime() / 1000 + result.expires_in;
-                // setTokenCookie(apiToken, expireSeconds);
-                tokenStore.setToken({accessToken: apiToken, expireTime: expireSeconds, tokenType: '', scope: ''});
-                // call all handlers and release flag
-                callFuncQue('');
-            })
-        );
+        fetch(APiHost + 'token', {method: 'POST', body: formData})
+            .then((response) =>
+                response.json().then((result: APIToken) => {
+                    if (result.error) {
+                        callFuncQue(result.error);
+                        return;
+                    }
+                    // set api token
+                    apiToken = result.access_token;
+                    // set expire time
+                    expireSeconds = new Date().getTime() / 1000 + result.expires_in;
+                    // setTokenCookie(apiToken, expireSeconds);
+                    tokenStore.setToken({accessToken: apiToken, expireTime: expireSeconds, tokenType: '', scope: ''});
+                    // call all handlers and release flag
+                    callFuncQue('');
+                })
+            )
+            .catch((e) => {
+                callback(e);
+            });
     }
 
     export function apiTokenValid(): boolean {
