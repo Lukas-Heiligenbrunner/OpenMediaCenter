@@ -1,9 +1,12 @@
 package videoparser
 
 import (
+	"bytes"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"image/jpeg"
+	"log"
 	"os/exec"
 	"strconv"
 )
@@ -76,6 +79,16 @@ func parseFFmpegPic(path string) (*string, error) {
 	if strEncPic == "" {
 		return nil, nil
 	}
+
+	// extract dimensions of picture
+	reader := bytes.NewReader(stdout)
+	im, err := jpeg.DecodeConfig(reader)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%d %d\n", im.Width, im.Height)
+	// todo use this information somewhere...
+
 	backpic64 := fmt.Sprintf("data:image/jpeg;base64,%s", strEncPic)
 
 	return &backpic64, nil
@@ -103,6 +116,11 @@ func getVideoAttributes(path string) *VideoAttributes {
 
 	if err != nil {
 		fmt.Println(err.Error())
+		return nil
+	}
+
+	// nil slice check of track array
+	if len(t.Media.Track) == 0 {
 		return nil
 	}
 
