@@ -13,14 +13,19 @@ func AddTagHandlers() {
 }
 
 func deleteFromDB() {
-	var dT struct {
-		TagId int
-		Force bool
-	}
-	AddHandler("deleteTag", TagNode, &dT, func() []byte {
+	AddHandler("deleteTag", TagNode, func(info *HandlerInfo) []byte {
+		var args struct {
+			TagId int
+			Force bool
+		}
+		if err := FillStruct(&args, info.Data); err != nil {
+			fmt.Println(err.Error())
+			return nil
+		}
+
 		// delete key constraints first
-		if dT.Force {
-			query := fmt.Sprintf("DELETE FROM video_tags WHERE tag_id=%d", dT.TagId)
+		if args.Force {
+			query := fmt.Sprintf("DELETE FROM video_tags WHERE tag_id=%d", args.TagId)
 			err := database.Edit(query)
 
 			// respond only if result not successful
@@ -29,7 +34,7 @@ func deleteFromDB() {
 			}
 		}
 
-		query := fmt.Sprintf("DELETE FROM tags WHERE tag_id=%d", dT.TagId)
+		query := fmt.Sprintf("DELETE FROM tags WHERE tag_id=%d", args.TagId)
 		err := database.Edit(query)
 
 		if err == nil {
@@ -48,27 +53,37 @@ func deleteFromDB() {
 }
 
 func getFromDB() {
-	AddHandler("getAllTags", TagNode, nil, func() []byte {
+	AddHandler("getAllTags", TagNode, func(info *HandlerInfo) []byte {
 		query := "SELECT tag_id,tag_name from tags"
 		return jsonify(readTagsFromResultset(database.Query(query)))
 	})
 }
 
 func addToDB() {
-	var ct struct {
-		TagName string
-	}
-	AddHandler("createTag", TagNode, &ct, func() []byte {
+	AddHandler("createTag", TagNode, func(info *HandlerInfo) []byte {
+		var args struct {
+			TagName string
+		}
+		if err := FillStruct(&args, info.Data); err != nil {
+			fmt.Println(err.Error())
+			return nil
+		}
+
 		query := "INSERT IGNORE INTO tags (tag_name) VALUES (?)"
-		return database.SuccessQuery(query, ct.TagName)
+		return database.SuccessQuery(query, args.TagName)
 	})
 
-	var at struct {
-		MovieId int
-		TagId   int
-	}
-	AddHandler("addTag", TagNode, &at, func() []byte {
+	AddHandler("addTag", TagNode, func(info *HandlerInfo) []byte {
+		var args struct {
+			MovieId int
+			TagId   int
+		}
+		if err := FillStruct(&args, info.Data); err != nil {
+			fmt.Println(err.Error())
+			return nil
+		}
+
 		query := "INSERT IGNORE INTO video_tags(tag_id, video_id) VALUES (?,?)"
-		return database.SuccessQuery(query, at.TagId, at.MovieId)
+		return database.SuccessQuery(query, args.TagId, args.MovieId)
 	})
 }

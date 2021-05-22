@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"gopkg.in/oauth2.v3"
 	"net/http"
 	"openmediacenter/apiGo/api/oauth"
 )
@@ -18,22 +19,27 @@ const (
 	TVShowNode   = iota
 )
 
+type HandlerInfo struct {
+	ID    string
+	Token string
+	Data  map[string]interface{}
+}
+
 type actionStruct struct {
 	Action string
 }
 
 type Handler struct {
-	action    string
-	handler   func() []byte
-	arguments interface{}
-	apiNode   int
+	action  string
+	handler func(info *HandlerInfo) []byte
+	apiNode int
 }
 
-var handlers []Handler
+var handlers = make(map[string]Handler)
 
-func AddHandler(action string, apiNode int, n interface{}, h func() []byte) {
+func AddHandler(action string, apiNode int, h func(info *HandlerInfo) []byte) {
 	// append new handler to the handlers
-	handlers = append(handlers, Handler{action, h, n, apiNode})
+	handlers[fmt.Sprintf("%s/%d", action, apiNode)] = Handler{action, h, apiNode}
 }
 
 func ServerInit() {
@@ -47,27 +53,39 @@ func ServerInit() {
 	oauth.InitOAuth()
 }
 
-func handleAPICall(action string, requestBody string, apiNode int) []byte {
-	for i := range handlers {
-		if handlers[i].action == action && handlers[i].apiNode == apiNode {
-			// call the handler and return
-
-			if handlers[i].arguments != nil {
-				// decode the arguments to the corresponding arguments object
-				err := json.Unmarshal([]byte(requestBody), &handlers[i].arguments)
-				if err != nil {
-					fmt.Printf("failed to decode arguments of action %s :: %s\n", action, requestBody)
-				}
-			}
-
-			return handlers[i].handler()
-		}
+func handleAPICall(action string, requestBody string, apiNode int, info *HandlerInfo) []byte {
+	handler, ok := handlers[fmt.Sprintf("%s/%d", action, apiNode)]
+	if !ok {
+		// handler doesn't exist!
+		fmt.Printf("no handler found for Action: %d/%s\n", apiNode, action)
+		return nil
 	}
-	fmt.Printf("no handler found for Action: %d/%s\n", apiNode, action)
-	return nil
+
+	// check if info even exists
+	if info == nil {
+		info = &HandlerInfo{}
+	}
+
+	// parse the arguments
+	var args map[string]interface{}
+	err := json.Unmarshal([]byte(requestBody), &args)
+
+	if err != nil {
+		fmt.Printf("failed to decode arguments of action %s :: %s\n", action, requestBody)
+	} else {
+		// check if map has an action
+		if _, ok := args["action"]; ok {
+			delete(args, "action")
+		}
+
+		info.Data = args
+	}
+
+	// call the handler
+	return handler.handler(info)
 }
 
-func handlefunc(rw http.ResponseWriter, req *http.Request, node int) {
+func handlefunc(rw http.ResponseWriter, req *http.Request, node int, tokenInfo *oauth2.TokenInfo) {
 	// only allow post requests
 	if req.Method != "POST" {
 		return
@@ -83,5 +101,13 @@ func handlefunc(rw http.ResponseWriter, req *http.Request, node int) {
 		fmt.Println("failed to read action from request! :: " + body)
 	}
 
-	rw.Write(handleAPICall(t.Action, body, node))
+	// load userid from received token object
+	id := (*tokenInfo).GetClientID()
+
+	userinfo := &HandlerInfo{
+		ID:    id,
+		Token: (*tokenInfo).GetCode(),
+	}
+
+	rw.Write(handleAPICall(t.Action, body, node, userinfo))
 }

@@ -1,6 +1,7 @@
 package oauth
 
 import (
+	"gopkg.in/oauth2.v3"
 	"gopkg.in/oauth2.v3/errors"
 	"gopkg.in/oauth2.v3/manage"
 	"gopkg.in/oauth2.v3/server"
@@ -48,14 +49,14 @@ func InitOAuth() {
 	})
 }
 
-func ValidateToken(f func(rw http.ResponseWriter, req *http.Request, node int), node int) http.HandlerFunc {
+func ValidateToken(f func(rw http.ResponseWriter, req *http.Request, node int, tokenInfo *oauth2.TokenInfo), node int) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		_, err := srv.ValidationBearerToken(r)
+		tokeninfo, err := srv.ValidationBearerToken(r)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		f(w, r, node)
+		f(w, r, node, &tokeninfo)
 	}
 }

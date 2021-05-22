@@ -85,8 +85,7 @@ class RandomPage extends React.Component<{}, state> {
      * @param nr number of videos to load
      */
     loadShuffledvideos(nr: number): void {
-        callAPI<GetRandomMoviesType>(APINode.Video, {action: 'getRandomMovies', number: nr}, (result) => {
-            console.log(result);
+        callAPI<GetRandomMoviesType>(APINode.Video, {action: 'getRandomMovies', Number: nr}, (result) => {
             this.setState({videos: []}); // needed to trigger rerender of main videoview
             this.setState({
                 videos: result.Videos,

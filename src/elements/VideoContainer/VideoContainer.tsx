@@ -20,7 +20,7 @@ const VideoContainer = (props: Props): JSX.Element => {
                             APINode.Video,
                             {
                                 action: 'readThumbnail',
-                                movieid: el.MovieId
+                                Movieid: el.MovieId
                             },
                             (result) => callback(result)
                         );

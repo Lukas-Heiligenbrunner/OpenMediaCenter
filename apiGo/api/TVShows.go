@@ -6,17 +6,22 @@ import (
 )
 
 func AddTvshowHandlers() {
-	AddHandler("getTVShows", TVShowNode, nil, func() []byte {
+	AddHandler("getTVShows", TVShowNode, func(info *HandlerInfo) []byte {
 		query := "SELECT id, name FROM tvshow"
 		rows := database.Query(query)
 		return jsonify(readTVshowsFromResultset(rows))
 	})
 
-	var ge struct {
-		ShowID uint32
-	}
-	AddHandler("getEpisodes", TVShowNode, &ge, func() []byte {
-		query := fmt.Sprintf("SELECT id, name, season, episode FROM tvshow_episodes WHERE tvshow_id=%d", ge.ShowID)
+	AddHandler("getEpisodes", TVShowNode, func(info *HandlerInfo) []byte {
+		var args struct {
+			ShowID uint32
+		}
+		if err := FillStruct(&args, info.Data); err != nil {
+			fmt.Println(err.Error())
+			return nil
+		}
+
+		query := fmt.Sprintf("SELECT id, name, season, episode FROM tvshow_episodes WHERE tvshow_id=%d", args.ShowID)
 		rows := database.Query(query)
 
 		type Episode struct {
@@ -41,15 +46,20 @@ func AddTvshowHandlers() {
 		return jsonify(episodes)
 	})
 
-	var le struct {
-		ID uint32
-	}
-	AddHandler("loadEpisode", TVShowNode, &le, func() []byte {
+	AddHandler("loadEpisode", TVShowNode, func(info *HandlerInfo) []byte {
+		var args struct {
+			ID uint32
+		}
+		if err := FillStruct(&args, info.Data); err != nil {
+			fmt.Println(err.Error())
+			return nil
+		}
+
 		query := fmt.Sprintf(`
 SELECT tvshow_episodes.name, season, tvshow_id, episode, filename, t.foldername
 FROM tvshow_episodes 
 JOIN tvshow t on t.id = tvshow_episodes.tvshow_id
-WHERE tvshow_episodes.id=%d`, le.ID)
+WHERE tvshow_episodes.id=%d`, args.ID)
 		row := database.QueryRow(query)
 
 		var ret struct {
@@ -73,17 +83,22 @@ WHERE tvshow_episodes.id=%d`, le.ID)
 		return jsonify(ret)
 	})
 
-	var rtn struct {
-		Id int
-	}
-	AddHandler("readThumbnail", TVShowNode, &rtn, func() []byte {
+	AddHandler("readThumbnail", TVShowNode, func(info *HandlerInfo) []byte {
+		var args struct {
+			Id int
+		}
+		if err := FillStruct(&args, info.Data); err != nil {
+			fmt.Println(err.Error())
+			return nil
+		}
+
 		var pic []byte
 
-		query := fmt.Sprintf("SELECT thumbnail FROM tvshow WHERE id=%d", rtn.Id)
+		query := fmt.Sprintf("SELECT thumbnail FROM tvshow WHERE id=%d", args.Id)
 
 		err := database.QueryRow(query).Scan(&pic)
 		if err != nil {
-			fmt.Printf("the thumbnail of movie id %d couldn't be found", rtn.Id)
+			fmt.Printf("the thumbnail of movie id %d couldn't be found", args.Id)
 			return nil
 		}
 

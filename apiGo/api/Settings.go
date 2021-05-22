@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"openmediacenter/apiGo/api/types"
 	"openmediacenter/apiGo/database"
 	"openmediacenter/apiGo/database/settings"
@@ -17,11 +18,12 @@ func AddSettingsHandlers() {
 }
 
 func getSettingsFromDB() {
-	AddHandler("loadGeneralSettings", SettingsNode, nil, func() []byte {
+	AddHandler("loadGeneralSettings", SettingsNode, func(info *HandlerInfo) []byte {
 		result := database.GetSettings()
 		return jsonify(result)
 	})
-	AddHandler("loadInitialData", SettingsNode, nil, func() []byte {
+
+	AddHandler("loadInitialData", SettingsNode, func(info *HandlerInfo) []byte {
 		sett := settings.LoadSettings()
 
 		type InitialDataTypeResponse struct {
@@ -52,10 +54,15 @@ func getSettingsFromDB() {
 }
 
 func saveSettingsToDB() {
-	var sgs struct {
-		Settings types.SettingsType
-	}
-	AddHandler("saveGeneralSettings", SettingsNode, &sgs, func() []byte {
+	AddHandler("saveGeneralSettings", SettingsNode, func(info *HandlerInfo) []byte {
+		var args struct {
+			Settings types.SettingsType
+		}
+		if err := FillStruct(&args, info.Data); err != nil {
+			fmt.Println(err.Error())
+			return nil
+		}
+
 		query := `
 					UPDATE settings SET 
                         video_path=?,
@@ -66,24 +73,24 @@ func saveSettingsToDB() {
                         DarkMode=?
                     WHERE 1`
 		return database.SuccessQuery(query,
-			sgs.Settings.VideoPath, sgs.Settings.EpisodePath, sgs.Settings.Password,
-			sgs.Settings.MediacenterName, sgs.Settings.TMDBGrabbing, sgs.Settings.DarkMode)
+			args.Settings.VideoPath, args.Settings.EpisodePath, args.Settings.Password,
+			args.Settings.MediacenterName, args.Settings.TMDBGrabbing, args.Settings.DarkMode)
 	})
 }
 
 // methods for handling reindexing and cleanup of db gravity
 func reIndexHandling() {
-	AddHandler("startReindex", SettingsNode, nil, func() []byte {
+	AddHandler("startReindex", SettingsNode, func(info *HandlerInfo) []byte {
 		videoparser.StartReindex()
 		return database.ManualSuccessResponse(nil)
 	})
 
-	AddHandler("startTVShowReindex", SettingsNode, nil, func() []byte {
+	AddHandler("startTVShowReindex", SettingsNode, func(info *HandlerInfo) []byte {
 		videoparser.StartTVShowReindex()
 		return database.ManualSuccessResponse(nil)
 	})
 
-	AddHandler("cleanupGravity", SettingsNode, nil, func() []byte {
+	AddHandler("cleanupGravity", SettingsNode, func(info *HandlerInfo) []byte {
 		videoparser.StartCleanup()
 		return nil
 	})
