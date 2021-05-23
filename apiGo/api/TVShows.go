@@ -6,12 +6,36 @@ import (
 )
 
 func AddTvshowHandlers() {
+	/**
+	 * @api {post} /api/tvshow [getTVShows]
+	 * @apiDescription get all available tv shows
+	 * @apiName getTVShows
+	 * @apiGroup TVshow
+	 *
+	 * @apiSuccess {Object[]} .
+	 * @apiSuccess {uint32} .Id tvshow id
+	 * @apiSuccess {string} .Name tvshow name
+	 */
 	AddHandler("getTVShows", TVShowNode, func(info *HandlerInfo) []byte {
 		query := "SELECT id, name FROM tvshow"
 		rows := database.Query(query)
 		return jsonify(readTVshowsFromResultset(rows))
 	})
 
+	/**
+	 * @api {post} /api/tvshow [getEpisodes]
+	 * @apiDescription get all Episodes of a TVShow
+	 * @apiName getEpisodes
+	 * @apiGroup TVshow
+	 *
+	 * @apiParam {uint32} ShowID id of tvshow to get episodes from
+	 *
+	 * @apiSuccess {Object[]} .
+	 * @apiSuccess {uint32} .ID episode id
+	 * @apiSuccess {string} .Name episode name
+	 * @apiSuccess {uint8} .Season Season number
+	 * @apiSuccess {uint8} .Episode Episode number
+	 */
 	AddHandler("getEpisodes", TVShowNode, func(info *HandlerInfo) []byte {
 		var args struct {
 			ShowID uint32
@@ -46,6 +70,20 @@ func AddTvshowHandlers() {
 		return jsonify(episodes)
 	})
 
+	/**
+	 * @api {post} /api/tvshow [loadEpisode]
+	 * @apiDescription load all info of episode
+	 * @apiName loadEpisode
+	 * @apiGroup TVshow
+	 *
+	 * @apiParam {uint32} ID id of episode
+	 *
+	 * @apiSuccess {uint32} TVShowID episode id
+	 * @apiSuccess {string} Name episode name
+	 * @apiSuccess {uint8} Season Season number
+	 * @apiSuccess {uint8} Episode Episode number
+	 * @apiSuccess {string} Path webserver path of video file
+	 */
 	AddHandler("loadEpisode", TVShowNode, func(info *HandlerInfo) []byte {
 		var args struct {
 			ID uint32
@@ -83,6 +121,16 @@ WHERE tvshow_episodes.id=%d`, args.ID)
 		return jsonify(ret)
 	})
 
+	/**
+	 * @api {post} /api/tvshow [readThumbnail]
+	 * @apiDescription Load Thubnail of specific episode
+	 * @apiName readThumbnail
+	 * @apiGroup TVshow
+	 *
+	 * @apiParam {int} Id id of episode to load thumbnail
+	 *
+	 * @apiSuccess {string} . Base64 encoded Thubnail
+	 */
 	AddHandler("readThumbnail", TVShowNode, func(info *HandlerInfo) []byte {
 		var args struct {
 			Id int

@@ -79,5 +79,11 @@
     "prettier-config": "^1.0.0",
     "react-scripts": "4.0.3",
     "apidoc": "^0.28.1"
+  },
+  "apidoc":{
+    "name": "OpenMediaCenter",
+    "description": "API Documentation of OpenMediaCenter",
+    "title": "OpenMediaCenter Doc",
+    "sampleUrl": null
   }
 }

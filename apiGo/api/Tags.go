@@ -13,6 +13,17 @@ func AddTagHandlers() {
 }
 
 func deleteFromDB() {
+	/**
+	 * @api {post} /api/tags [deleteTag]
+	 * @apiDescription Start Database video reindex Job
+	 * @apiName deleteTag
+	 * @apiGroup Tags
+	 *
+	 * @apiParam {bool} [Force] force delete tag with its constraints
+	 * @apiParam {int} TagId id of tag to delete
+	 *
+	 * @apiSuccess {string} result 'success' if successfully or error message if not
+	 */
 	AddHandler("deleteTag", TagNode, func(info *HandlerInfo) []byte {
 		var args struct {
 			TagId int
@@ -44,7 +55,7 @@ func deleteFromDB() {
 			// check with regex if its the key constraint error
 			r := regexp.MustCompile("^.*a foreign key constraint fails.*$")
 			if r.MatchString(err.Error()) {
-				return []byte(`{"result":"not empty tag"}`)
+				return database.ManualSuccessResponse(fmt.Errorf("not empty tag"))
 			} else {
 				return database.ManualSuccessResponse(err)
 			}
@@ -53,6 +64,16 @@ func deleteFromDB() {
 }
 
 func getFromDB() {
+	/**
+	 * @api {post} /api/tags [getAllTags]
+	 * @apiDescription get all available Tags
+	 * @apiName getAllTags
+	 * @apiGroup Tags
+	 *
+	 * @apiSuccess {Object[]} array of tag objects
+	 * @apiSuccess {uint32} TagId
+	 * @apiSuccess {string} TagName name of the Tag
+	 */
 	AddHandler("getAllTags", TagNode, func(info *HandlerInfo) []byte {
 		query := "SELECT tag_id,tag_name from tags"
 		return jsonify(readTagsFromResultset(database.Query(query)))
@@ -60,6 +81,16 @@ func getFromDB() {
 }
 
 func addToDB() {
+	/**
+	 * @api {post} /api/tags [createTag]
+	 * @apiDescription create a new tag
+	 * @apiName createTag
+	 * @apiGroup Tags
+	 *
+	 * @apiParam {string} TagName name of the tag
+	 *
+	 * @apiSuccess {string} result 'success' if successfully or error message if not
+	 */
 	AddHandler("createTag", TagNode, func(info *HandlerInfo) []byte {
 		var args struct {
 			TagName string
@@ -73,6 +104,17 @@ func addToDB() {
 		return database.SuccessQuery(query, args.TagName)
 	})
 
+	/**
+	 * @api {post} /api/tags [addTag]
+	 * @apiDescription Add new tag to video
+	 * @apiName addTag
+	 * @apiGroup Tags
+	 *
+	 * @apiParam {int} TagId Tag id to add to video
+	 * @apiParam {int} MovieId Video Id of video to add tag to
+	 *
+	 * @apiSuccess {string} result 'success' if successfully or error message if not
+	 */
 	AddHandler("addTag", TagNode, func(info *HandlerInfo) []byte {
 		var args struct {
 			MovieId int
