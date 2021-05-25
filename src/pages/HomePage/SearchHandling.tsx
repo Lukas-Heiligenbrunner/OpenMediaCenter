@@ -57,7 +57,7 @@ export class SearchHandling extends React.Component<Props, state> {
      * @param keyword The keyword to search for
      */
     searchVideos(keyword: string): void {
-        callAPI(APINode.Video, {action: 'getSearchKeyWord', keyword: keyword}, (result: VideoTypes.VideoUnloadedType[]) => {
+        callAPI(APINode.Video, {action: 'getSearchKeyWord', KeyWord: keyword}, (result: VideoTypes.VideoUnloadedType[]) => {
             this.setState({
                 data: result
             });

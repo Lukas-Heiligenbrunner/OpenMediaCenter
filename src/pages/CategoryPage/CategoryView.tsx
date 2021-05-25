@@ -105,7 +105,7 @@ export class CategoryView extends React.Component<CategoryViewProps, CategoryVie
      * @param id tagid
      */
     private fetchVideoData(id: number): void {
-        callAPI<VideoTypes.VideoUnloadedType[]>(APINode.Video, {action: 'getMovies', tag: id}, (result) => {
+        callAPI<VideoTypes.VideoUnloadedType[]>(APINode.Video, {action: 'getMovies', Tag: id}, (result) => {
             this.videodata = result;
             this.setState({loaded: true});
         });

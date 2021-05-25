@@ -16,18 +16,35 @@ func AddVideoHandlers() {
 }
 
 func getVideoHandlers() {
-	var mrq struct {
-		Tag int
-	}
-	AddHandler("getMovies", VideoNode, &mrq, func() []byte {
+	/**
+	 * @api {post} /api/video [getMovies]
+	 * @apiDescription Request available Videos
+	 * @apiName GetMovies
+	 * @apiGroup video
+	 *
+	 * @apiParam {int} [Tag=all] id of VideoTag to get videos
+	 *
+	 * @apiSuccess {Object[]} . List of Videos
+	 * @apiSuccess {number} .MovieId Id of Video
+	 * @apiSuccess {String} .MovieName  Name of video
+	 */
+	AddHandler("getMovies", VideoNode, func(info *HandlerInfo) []byte {
+		var args struct {
+			Tag int
+		}
+		if err := FillStruct(&args, info.Data); err != nil {
+			fmt.Println(err.Error())
+			return nil
+		}
+
 		var query string
 		// 1 is the id of the ALL tag
-		if mrq.Tag != 1 {
+		if args.Tag != 1 {
 			query = fmt.Sprintf(`SELECT movie_id,movie_name FROM videos
 					INNER JOIN video_tags vt on videos.movie_id = vt.video_id
 					INNER JOIN tags t on vt.tag_id = t.tag_id
 					WHERE t.tag_id = '%d'
-					ORDER BY likes DESC, create_date, movie_name`, mrq.Tag)
+					ORDER BY likes DESC, create_date, movie_name`, args.Tag)
 		} else {
 			query = "SELECT movie_id,movie_name FROM videos ORDER BY create_date DESC, movie_name"
 		}
@@ -38,33 +55,69 @@ func getVideoHandlers() {
 		return str
 	})
 
-	var rtn struct {
-		Movieid int
-	}
-	AddHandler("readThumbnail", VideoNode, &rtn, func() []byte {
+	/**
+	 * @api {post} /api/video [readThumbnail]
+	 * @apiDescription Load Thubnail of specific Video
+	 * @apiName readThumbnail
+	 * @apiGroup video
+	 *
+	 * @apiParam {int} Movieid id of video to load thumbnail
+	 *
+	 * @apiSuccess {string} . Base64 encoded Thubnail
+	 */
+	AddHandler("readThumbnail", VideoNode, func(info *HandlerInfo) []byte {
+		var args struct {
+			Movieid int
+		}
+		if err := FillStruct(&args, info.Data); err != nil {
+			fmt.Println(err.Error())
+			return nil
+		}
+
 		var pic []byte
 
-		query := fmt.Sprintf("SELECT thumbnail FROM videos WHERE movie_id=%d", rtn.Movieid)
+		query := fmt.Sprintf("SELECT thumbnail FROM videos WHERE movie_id=%d", args.Movieid)
 
 		err := database.QueryRow(query).Scan(&pic)
 		if err != nil {
-			fmt.Printf("the thumbnail of movie id %d couldn't be found", rtn.Movieid)
+			fmt.Printf("the thumbnail of movie id %d couldn't be found", args.Movieid)
 			return nil
 		}
 
 		return pic
 	})
 
-	var grm struct {
-		Number int
-	}
-	AddHandler("getRandomMovies", VideoNode, &grm, func() []byte {
+	/**
+	 * @api {post} /api/video [getRandomMovies]
+	 * @apiDescription Load random videos
+	 * @apiName getRandomMovies
+	 * @apiGroup video
+	 *
+	 * @apiParam {int} Number number of random videos to load
+	 *
+	 * @apiSuccess {Object[]} Tags Array of tags occuring in selection
+	 * @apiSuccess {string} Tags.TagName Tagname
+	 * @apiSuccess {uint32} Tags.TagId Tag ID
+	 *
+	 * @apiSuccess {Object[]} Videos Array of the videos
+	 * @apiSuccess {string} Videos.MovieName Video Name
+	 * @apiSuccess {int} Videos.MovieId Video ID
+	 */
+	AddHandler("getRandomMovies", VideoNode, func(info *HandlerInfo) []byte {
+		var args struct {
+			Number int
+		}
+		if err := FillStruct(&args, info.Data); err != nil {
+			fmt.Println(err.Error())
+			return nil
+		}
+
 		var result struct {
 			Tags   []types.Tag
 			Videos []types.VideoUnloadedType
 		}
 
-		query := fmt.Sprintf("SELECT movie_id,movie_name FROM videos ORDER BY RAND() LIMIT %d", grm.Number)
+		query := fmt.Sprintf("SELECT movie_id,movie_name FROM videos ORDER BY RAND() LIMIT %d", args.Number)
 		result.Videos = readVideosFromResultset(database.Query(query))
 
 		var ids string
@@ -99,13 +152,30 @@ func getVideoHandlers() {
 		return str
 	})
 
-	var gsk struct {
-		KeyWord string
-	}
-	AddHandler("getSearchKeyWord", VideoNode, &gsk, func() []byte {
+	/**
+	 * @api {post} /api/video [getSearchKeyWord]
+	 * @apiDescription Get videos for search keyword
+	 * @apiName getSearchKeyWord
+	 * @apiGroup video
+	 *
+	 * @apiParam {string} KeyWord Keyword to search for
+	 *
+	 * @apiSuccess {Object[]} . List of Videos
+	 * @apiSuccess {number} .MovieId Id of Video
+	 * @apiSuccess {String} .MovieName  Name of video
+	 */
+	AddHandler("getSearchKeyWord", VideoNode, func(info *HandlerInfo) []byte {
+		var args struct {
+			KeyWord string
+		}
+		if err := FillStruct(&args, info.Data); err != nil {
+			fmt.Println(err.Error())
+			return nil
+		}
+
 		query := fmt.Sprintf(`SELECT movie_id,movie_name FROM videos 
 					WHERE movie_name LIKE '%%%s%%'
-					ORDER BY likes DESC, create_date DESC, movie_name`, gsk.KeyWord)
+					ORDER BY likes DESC, create_date DESC, movie_name`, args.KeyWord)
 
 		result := readVideosFromResultset(database.Query(query))
 		// jsonify results
@@ -116,12 +186,47 @@ func getVideoHandlers() {
 
 // function to handle stuff for loading specific videos and startdata
 func loadVideosHandlers() {
-	var lv struct {
-		MovieId int
-	}
-	AddHandler("loadVideo", VideoNode, &lv, func() []byte {
+	/**
+	 * @api {post} /api/video [loadVideo]
+	 * @apiDescription Load all data for a specific video
+	 * @apiName loadVideo
+	 * @apiGroup video
+	 *
+	 * @apiParam {int} MovieId ID of video
+	 *
+	 * @apiSuccess {string} MovieName Videoname
+	 * @apiSuccess {uint32} MovieId Video ID
+	 * @apiSuccess {string} MovieUrl Url to video file
+	 * @apiSuccess {string} Poster Base64 encoded Poster
+	 * @apiSuccess {uint64} Likes Number of likes
+	 * @apiSuccess {uint16} Quality Video FrameWidth
+	 * @apiSuccess {uint16} Length Video Length in seconds
+	 *
+	 *
+	 * @apiSuccess {Object[]} Tags Array of tags of video
+	 * @apiSuccess {string} Tags.TagName Tagname
+	 * @apiSuccess {uint32} Tags.TagId Tag ID
+	 *
+	 * @apiSuccess {Object[]} SuggestedTag Array of tags for quick add suggestions
+	 * @apiSuccess {string} SuggestedTag.TagName Tagname
+	 * @apiSuccess {uint32} SuggestedTag.TagId Tag ID
+	 *
+	 * @apiSuccess {Object[]} Actors Array of Actors playing in this video
+	 * @apiSuccess {uint32} Actors.ActorId Actor Id
+	 * @apiSuccess {string} Actors.Name Actor Name
+	 * @apiSuccess {string} Actors.Thumbnail Portrait Thumbnail
+	 */
+	AddHandler("loadVideo", VideoNode, func(info *HandlerInfo) []byte {
+		var args struct {
+			MovieId int
+		}
+		if err := FillStruct(&args, info.Data); err != nil {
+			fmt.Println(err.Error())
+			return nil
+		}
+
 		query := fmt.Sprintf(`SELECT movie_name,movie_url,movie_id,thumbnail,poster,likes,quality,length 
-										FROM videos WHERE movie_id=%d`, lv.MovieId)
+										FROM videos WHERE movie_id=%d`, args.MovieId)
 
 		var res types.FullVideoType
 		var poster []byte
@@ -129,7 +234,7 @@ func loadVideosHandlers() {
 
 		err := database.QueryRow(query).Scan(&res.MovieName, &res.MovieUrl, &res.MovieId, &thumbnail, &poster, &res.Likes, &res.Quality, &res.Length)
 		if err != nil {
-			fmt.Printf("error getting full data list of videoid - %d", lv.MovieId)
+			fmt.Printf("error getting full data list of videoid - %d", args.MovieId)
 			fmt.Println(err.Error())
 			return nil
 		}
@@ -149,7 +254,7 @@ func loadVideosHandlers() {
 		query = fmt.Sprintf(`SELECT t.tag_id, t.tag_name FROM video_tags 
 					INNER JOIN tags t on video_tags.tag_id = t.tag_id
 					WHERE video_tags.video_id=%d
-					GROUP BY t.tag_id`, lv.MovieId)
+					GROUP BY t.tag_id`, args.MovieId)
 
 		res.Tags = readTagsFromResultset(database.Query(query))
 
@@ -158,14 +263,14 @@ func loadVideosHandlers() {
 						SELECT video_tags.tag_id FROM video_tags
 					WHERE video_id=%d)
 					ORDER BY rand()
-					LIMIT 5`, lv.MovieId)
+					LIMIT 5`, args.MovieId)
 
 		res.SuggestedTag = readTagsFromResultset(database.Query(query))
 
 		// query the actors corresponding to video
 		query = fmt.Sprintf(`SELECT a.actor_id, name, thumbnail FROM actors_videos
 					JOIN actors a on actors_videos.actor_id = a.actor_id
-					WHERE actors_videos.video_id=%d`, lv.MovieId)
+					WHERE actors_videos.video_id=%d`, args.MovieId)
 
 		res.Actors = readActorsFromResultset(database.Query(query))
 
@@ -174,7 +279,20 @@ func loadVideosHandlers() {
 		return str
 	})
 
-	AddHandler("getStartData", VideoNode, nil, func() []byte {
+	/**
+	 * @api {post} /api/video [getStartData]
+	 * @apiDescription Get general video informations at start
+	 * @apiName getStartData
+	 * @apiGroup video
+	 *
+	 * @apiSuccess {uint32} VideoNr Total nr of videos
+	 * @apiSuccess {uint32} FullHdNr number of FullHD videos
+	 * @apiSuccess {uint32} HDNr number of HD videos
+	 * @apiSuccess {uint32} SDNr number of SD videos
+	 * @apiSuccess {uint32} DifferentTags number of different Tags available
+	 * @apiSuccess {uint32} Tagged number of different Tags assigned
+	 */
+	AddHandler("getStartData", VideoNode, func(info *HandlerInfo) []byte {
 		var result types.StartData
 		// query settings and infotile values
 		query := `
@@ -215,24 +333,54 @@ func loadVideosHandlers() {
 }
 
 func addToVideoHandlers() {
-	var al struct {
-		MovieId int
-	}
-	AddHandler("addLike", VideoNode, &al, func() []byte {
-		query := fmt.Sprintf("update videos set likes = likes + 1 where movie_id = %d", al.MovieId)
+	/**
+	 * @api {post} /api/video [addLike]
+	 * @apiDescription Add a like to a video
+	 * @apiName addLike
+	 * @apiGroup video
+	 *
+	 * @apiParam {int} MovieId ID of video
+	 *
+	 * @apiSuccess {string} result 'success' if successfully or error message if not
+	 */
+	AddHandler("addLike", VideoNode, func(info *HandlerInfo) []byte {
+		var args struct {
+			MovieId int
+		}
+		if err := FillStruct(&args, info.Data); err != nil {
+			fmt.Println(err.Error())
+			return nil
+		}
+
+		query := fmt.Sprintf("update videos set likes = likes + 1 where movie_id = %d", args.MovieId)
 		return database.SuccessQuery(query)
 	})
 
-	var dv struct {
-		MovieId int
-	}
-	AddHandler("deleteVideo", VideoNode, &dv, func() []byte {
+	/**
+	 * @api {post} /api/video [deleteVideo]
+	 * @apiDescription Delete a specific video from database
+	 * @apiName deleteVideo
+	 * @apiGroup video
+	 *
+	 * @apiParam {int} MovieId ID of video
+	 *
+	 * @apiSuccess {string} result 'success' if successfully or error message if not
+	 */
+	AddHandler("deleteVideo", VideoNode, func(info *HandlerInfo) []byte {
+		var args struct {
+			MovieId int
+		}
+		if err := FillStruct(&args, info.Data); err != nil {
+			fmt.Println(err.Error())
+			return nil
+		}
+
 		// delete tag constraints
-		query := fmt.Sprintf("DELETE FROM video_tags WHERE video_id=%d", dv.MovieId)
+		query := fmt.Sprintf("DELETE FROM video_tags WHERE video_id=%d", args.MovieId)
 		err := database.Edit(query)
 
 		// delete actor constraints
-		query = fmt.Sprintf("DELETE FROM actors_videos WHERE video_id=%d", dv.MovieId)
+		query = fmt.Sprintf("DELETE FROM actors_videos WHERE video_id=%d", args.MovieId)
 		err = database.Edit(query)
 
 		// respond only if result not successful
@@ -240,7 +388,7 @@ func addToVideoHandlers() {
 			return database.ManualSuccessResponse(err)
 		}
 
-		query = fmt.Sprintf("DELETE FROM videos WHERE movie_id=%d", dv.MovieId)
+		query = fmt.Sprintf("DELETE FROM videos WHERE movie_id=%d", args.MovieId)
 		return database.SuccessQuery(query)
 	})
 }

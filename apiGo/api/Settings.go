@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"openmediacenter/apiGo/api/types"
 	"openmediacenter/apiGo/database"
 	"openmediacenter/apiGo/database/settings"
@@ -17,11 +18,43 @@ func AddSettingsHandlers() {
 }
 
 func getSettingsFromDB() {
-	AddHandler("loadGeneralSettings", SettingsNode, nil, func() []byte {
+	/**
+	 * @api {post} /api/settings [loadGeneralSettings]
+	 * @apiDescription Get the settings object
+	 * @apiName loadGeneralSettings
+	 * @apiGroup Settings
+	 *
+	 * @apiSuccess {Object} Settings Settings object
+	 * @apiSuccess {string} Settings.VideoPath webserver path to the videos
+	 * @apiSuccess {string} Settings.EpisodePath webserver path to the tvshows
+	 * @apiSuccess {string} Settings.MediacenterName overall name of the mediacenter
+	 * @apiSuccess {string} Settings.Password new server password (-1 if no password set)
+	 * @apiSuccess {bool} Settings.TMDBGrabbing TMDB grabbing support to grab tag info and thumbnails
+	 * @apiSuccess {bool} Settings.DarkMode Darkmode enabled?
+	 * @apiSuccess {uint32} Settings.VideoNr total number of videos
+	 * @apiSuccess {float32} Settings.DBSize total size of database
+	 * @apiSuccess {uint32} Settings.DifferentTags number of different tags available
+	 * @apiSuccess {uint32} Settings.TagsAdded number of different tags added to videos
+	 * @apiSuccess {string} Settings.PathPrefix
+	 */
+	AddHandler("loadGeneralSettings", SettingsNode, func(info *HandlerInfo) []byte {
 		result := database.GetSettings()
 		return jsonify(result)
 	})
-	AddHandler("loadInitialData", SettingsNode, nil, func() []byte {
+
+	/**
+	 * @api {post} /api/settings [loadInitialData]
+	 * @apiDescription load startdata to display on homepage
+	 * @apiName loadInitialData
+	 * @apiGroup Settings
+	 *
+	 * @apiSuccess {string} VideoPath webserver path to the videos
+	 * @apiSuccess {string} EpisodePath webserver path to the tvshows
+	 * @apiSuccess {string} MediacenterName overall name of the mediacenter
+	 * @apiSuccess {string} Pasword new server password (-1 if no password set)
+	 * @apiSuccess {bool} DarkMode Darkmode enabled?
+	 */
+	AddHandler("loadInitialData", SettingsNode, func(info *HandlerInfo) []byte {
 		sett := settings.LoadSettings()
 
 		type InitialDataTypeResponse struct {
@@ -52,10 +85,32 @@ func getSettingsFromDB() {
 }
 
 func saveSettingsToDB() {
-	var sgs struct {
-		Settings types.SettingsType
-	}
-	AddHandler("saveGeneralSettings", SettingsNode, &sgs, func() []byte {
+	/**
+	 * @api {post} /api/settings [saveGeneralSettings]
+	 * @apiDescription Save the global settings provided
+	 * @apiName saveGeneralSettings
+	 * @apiGroup Settings
+	 *
+	 * @apiParam {Object} Settings Settings object
+	 * @apiParam {string} Settings.VideoPath webserver path to the videos
+	 * @apiParam {string} Settings.EpisodePath webserver path to the tvshows
+	 * @apiParam {string} Settings.MediacenterName overall name of the mediacenter
+	 * @apiParam {string} Settings.Password new server password (-1 if no password set)
+	 * @apiParam {bool} Settings.TMDBGrabbing TMDB grabbing support to grab tag info and thumbnails
+	 * @apiParam {bool} Settings.DarkMode Darkmode enabled?
+	 *
+	 * @apiSuccess {string} result 'success' if successfully or error message if not
+	 */
+	AddHandler("saveGeneralSettings", SettingsNode, func(info *HandlerInfo) []byte {
+		// todo correct type here!
+		var args struct {
+			Settings types.SettingsType
+		}
+		if err := FillStruct(&args, info.Data); err != nil {
+			fmt.Println(err.Error())
+			return nil
+		}
+
 		query := `
 					UPDATE settings SET 
                         video_path=?,
@@ -66,24 +121,46 @@ func saveSettingsToDB() {
                         DarkMode=?
                     WHERE 1`
 		return database.SuccessQuery(query,
-			sgs.Settings.VideoPath, sgs.Settings.EpisodePath, sgs.Settings.Password,
-			sgs.Settings.MediacenterName, sgs.Settings.TMDBGrabbing, sgs.Settings.DarkMode)
+			args.Settings.VideoPath, args.Settings.EpisodePath, args.Settings.Password,
+			args.Settings.MediacenterName, args.Settings.TMDBGrabbing, args.Settings.DarkMode)
 	})
 }
 
 // methods for handling reindexing and cleanup of db gravity
 func reIndexHandling() {
-	AddHandler("startReindex", SettingsNode, nil, func() []byte {
+	/**
+	 * @api {post} /api/settings [startReindex]
+	 * @apiDescription Start Database video reindex Job
+	 * @apiName startReindex
+	 * @apiGroup Settings
+	 *
+	 * @apiSuccess {string} result 'success' if successfully or error message if not
+	 */
+	AddHandler("startReindex", SettingsNode, func(info *HandlerInfo) []byte {
 		videoparser.StartReindex()
 		return database.ManualSuccessResponse(nil)
 	})
 
-	AddHandler("startTVShowReindex", SettingsNode, nil, func() []byte {
+	/**
+	 * @api {post} /api/settings [startTVShowReindex]
+	 * @apiDescription Start Database TVShow reindex job
+	 * @apiName startTVShowReindex
+	 * @apiGroup Settings
+	 *
+	 * @apiSuccess {string} result 'success' if successfully or error message if not
+	 */
+	AddHandler("startTVShowReindex", SettingsNode, func(info *HandlerInfo) []byte {
 		videoparser.StartTVShowReindex()
 		return database.ManualSuccessResponse(nil)
 	})
 
-	AddHandler("cleanupGravity", SettingsNode, nil, func() []byte {
+	/**
+	 * @api {post} /api/settings [cleanupGravity]
+	 * @apiDescription Start Database cleanup job
+	 * @apiName cleanupGravity
+	 * @apiGroup Settings
+	 */
+	AddHandler("cleanupGravity", SettingsNode, func(info *HandlerInfo) []byte {
 		videoparser.StartCleanup()
 		return nil
 	})
