@@ -21,6 +21,7 @@ import PlyrJS from 'plyr';
 import {Button} from '../../elements/GPElements/Button';
 import {VideoTypes} from '../../types/ApiTypes';
 import GlobalInfos from '../../utils/GlobalInfos';
+import KeyComponent from '../../utils/KeyComponent';
 
 interface Props extends RouteComponentProps<{id: string}> {}
 
@@ -42,7 +43,7 @@ interface mystate {
  * Player page loads when a video is selected to play and handles the video view
  * and actions such as tag adding and liking
  */
-export class Player extends React.Component<Props, mystate> {
+export class Player extends KeyComponent<Props, mystate> {
     constructor(props: Props) {
         super(props);
 
@@ -62,7 +63,19 @@ export class Player extends React.Component<Props, mystate> {
         this.quickAddTag = this.quickAddTag.bind(this);
     }
 
+    keyHandler(key: string): void {
+        switch (key) {
+            case 't':
+                this.setState({popupvisible: true});
+                break;
+            case 'a':
+                this.setState({actorpopupvisible: true});
+                break;
+        }
+    }
+
     componentDidMount(): void {
+        super.componentDidMount();
         // initial fetch of current movie data
         this.fetchMovieData();
     }
