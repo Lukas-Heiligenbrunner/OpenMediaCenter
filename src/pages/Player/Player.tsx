@@ -286,6 +286,10 @@ export class Player extends React.Component<Props, mystate> {
                     suggesttag: result.SuggestedTag,
                     actors: result.Actors
                 });
+            },
+            (_) => {
+                // if there is an load error redirect to home page
+                this.props.history.push('/');
             }
         );
     }
