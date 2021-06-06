@@ -28,27 +28,27 @@ type TVShowTMDB struct {
 }
 
 type tmdbVidResult struct {
-	PosterPath       string `json:"poster_path"`
-	Adult            bool   `json:"adult"`
-	Overview         string `json:"overview"`
-	ReleaseDate      string `json:"release_date"`
-	GenreIds         []int  `json:"genre_ids"`
-	Id               int    `json:"id"`
-	OriginalTitle    string `json:"original_title"`
-	OriginalLanguage string `json:"original_language"`
-	Title            string `json:"title"`
-	BackdropPath     string `json:"backdrop_path"`
-	Popularity       int    `json:"popularity"`
-	VoteCount        int    `json:"vote_count"`
-	Video            bool   `json:"video"`
-	VoteAverage      int    `json:"vote_average"`
+	PosterPath       *string `json:"poster_path"`
+	Adult            bool    `json:"adult"`
+	Overview         string  `json:"overview"`
+	ReleaseDate      string  `json:"release_date"`
+	GenreIds         []int   `json:"genre_ids"`
+	Id               int     `json:"id"`
+	OriginalTitle    string  `json:"original_title"`
+	OriginalLanguage string  `json:"original_language"`
+	Title            string  `json:"title"`
+	BackdropPath     *string `json:"backdrop_path"`
+	Popularity       int     `json:"popularity"`
+	VoteCount        int     `json:"vote_count"`
+	Video            bool    `json:"video"`
+	VoteAverage      int     `json:"vote_average"`
 }
 
 type tmdbTvResult struct {
-	PosterPath       string   `json:"poster_path"`
+	PosterPath       *string  `json:"poster_path"`
 	Popularity       int      `json:"popularity"`
 	Id               int      `json:"id"`
-	BackdropPath     string   `json:"backdrop_path"`
+	BackdropPath     *string  `json:"backdrop_path"`
 	VoteAverage      int      `json:"vote_average"`
 	Overview         string   `json:"overview"`
 	FirstAirDate     string   `json:"first_air_date"`
@@ -111,10 +111,16 @@ func SearchVideo(MovieName string, year int) *VideoTMDB {
 	// continue label
 cont:
 
-	thumbnail := fetchPoster(tmdbVid.PosterPath)
+	var thumbnail = ""
+	if tmdbVid.PosterPath != nil {
+		pic := fetchPoster(*tmdbVid.PosterPath)
+		if pic != nil {
+			thumbnail = *pic
+		}
+	}
 
 	result := VideoTMDB{
-		Thumbnail: *thumbnail,
+		Thumbnail: thumbnail,
 		Overview:  tmdbVid.Overview,
 		Title:     tmdbVid.Title,
 		GenreIds:  tmdbVid.GenreIds,
@@ -155,9 +161,11 @@ func SearchTVShow(Name string) *TVShowTMDB {
 		GenreIds:  t.Results[0].GenreIds,
 	}
 
-	thumbnail := fetchPoster(t.Results[0].PosterPath)
-	if thumbnail != nil {
-		res.Thumbnail = *thumbnail
+	if t.Results[0].PosterPath != nil {
+		pic := fetchPoster(*t.Results[0].PosterPath)
+		if pic != nil {
+			res.Thumbnail = *pic
+		}
 	}
 
 	return &res
