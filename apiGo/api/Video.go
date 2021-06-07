@@ -22,11 +22,12 @@ func getVideoHandlers() {
 	 * @apiName GetMovies
 	 * @apiGroup video
 	 *
-	 * @apiParam {int} [Tag=all] id of VideoTag to get videos
+	 * @apiParam {int} [Tag=1] id of VideoTag to get videos (1=all)
 	 *
-	 * @apiSuccess {Object[]} . List of Videos
-	 * @apiSuccess {number} .MovieId Id of Video
-	 * @apiSuccess {String} .MovieName  Name of video
+	 * @apiSuccess {Object[]} Videos List of Videos
+	 * @apiSuccess {number} Videos.MovieId Id of Video
+	 * @apiSuccess {String} Videos.MovieName  Name of video
+	 * @apiSuccess {String} TagName Name of the Tag returned
 	 */
 	AddHandler("getMovies", VideoNode, func(info *HandlerInfo) []byte {
 		var args struct {
@@ -40,16 +41,42 @@ func getVideoHandlers() {
 		var query string
 		// 1 is the id of the ALL tag
 		if args.Tag != 1 {
-			query = fmt.Sprintf(`SELECT movie_id,movie_name FROM videos
+			query = fmt.Sprintf(`SELECT movie_id,movie_name,t.tag_name FROM videos
 					INNER JOIN video_tags vt on videos.movie_id = vt.video_id
 					INNER JOIN tags t on vt.tag_id = t.tag_id
-					WHERE t.tag_id = '%d'
+					WHERE t.tag_id = %d
 					ORDER BY likes DESC, create_date, movie_name`, args.Tag)
 		} else {
-			query = "SELECT movie_id,movie_name FROM videos ORDER BY create_date DESC, movie_name"
+			query = "SELECT movie_id,movie_name, (SELECT 'All' as tag_name) FROM videos ORDER BY create_date DESC, movie_name"
 		}
 
-		result := readVideosFromResultset(database.Query(query))
+		var result struct {
+			Videos  []types.VideoUnloadedType
+			TagName string
+		}
+
+		rows := database.Query(query)
+		vids := []types.VideoUnloadedType{}
+		var name string
+		for rows.Next() {
+			var vid types.VideoUnloadedType
+			err := rows.Scan(&vid.MovieId, &vid.MovieName, &name)
+			if err != nil {
+				return nil
+			}
+			vids = append(vids, vid)
+		}
+		if rows.Close() != nil {
+			return nil
+		}
+
+		// if the tag id doesn't exist the query won't return a name
+		if name == "" {
+			return nil
+		}
+
+		result.Videos = vids
+		result.TagName = name
 		// jsonify results
 		str, _ := json.Marshal(result)
 		return str
