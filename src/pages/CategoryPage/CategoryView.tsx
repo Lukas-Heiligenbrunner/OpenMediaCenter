@@ -10,12 +10,14 @@ import Tag from '../../elements/Tag/Tag';
 import {DefaultTags, GeneralSuccess} from '../../types/GeneralTypes';
 import {Button} from '../../elements/GPElements/Button';
 import SubmitPopup from '../../elements/Popups/SubmitPopup/SubmitPopup';
+import {Spinner} from 'react-bootstrap';
 
 interface CategoryViewProps extends RouteComponentProps<{id: string}> {}
 
 interface CategoryViewState {
     loaded: boolean;
     submitForceDelete: boolean;
+    TagName: string;
 }
 
 /**
@@ -29,7 +31,8 @@ export class CategoryView extends React.Component<CategoryViewProps, CategoryVie
 
         this.state = {
             loaded: false,
-            submitForceDelete: false
+            submitForceDelete: false,
+            TagName: ''
         };
     }
 
@@ -50,9 +53,13 @@ export class CategoryView extends React.Component<CategoryViewProps, CategoryVie
     }
 
     render(): JSX.Element {
+        if (!this.state.loaded) {
+            return <Spinner animation='border' />;
+        }
+
         return (
             <>
-                <PageTitle title='Categories' subtitle={this.videodata.length + ' Videos'} />
+                <PageTitle title={this.state.TagName} subtitle={this.videodata.length + ' Videos'} />
 
                 <SideBar>
                     <SideBarTitle>Default Tags:</SideBarTitle>
@@ -105,10 +112,18 @@ export class CategoryView extends React.Component<CategoryViewProps, CategoryVie
      * @param id tagid
      */
     private fetchVideoData(id: number): void {
-        callAPI<VideoTypes.VideoUnloadedType[]>(APINode.Video, {action: 'getMovies', Tag: id}, (result) => {
-            this.videodata = result;
-            this.setState({loaded: true});
-        });
+        callAPI(
+            APINode.Video,
+            {action: 'getMovies', Tag: id},
+            (result: {Videos: VideoTypes.VideoUnloadedType[]; TagName: string}) => {
+                this.videodata = result.Videos;
+                this.setState({loaded: true, TagName: result.TagName});
+            },
+            (_) => {
+                // if there is an load error redirect to home page
+                this.props.history.push('/');
+            }
+        );
     }
 
     /**

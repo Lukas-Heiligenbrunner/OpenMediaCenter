@@ -59,15 +59,19 @@ export class HomePage extends React.Component<Props, state> {
      * @param tag tag to fetch videos
      */
     fetchVideoData(tag: number): void {
-        callAPI(APINode.Video, {action: 'getMovies', Tag: tag}, (result: VideoTypes.VideoUnloadedType[]) => {
-            this.setState({
-                data: []
-            });
-            this.setState({
-                data: result,
-                selectionnr: result.length
-            });
-        });
+        callAPI(
+            APINode.Video,
+            {action: 'getMovies', Tag: tag},
+            (result: {Videos: VideoTypes.VideoUnloadedType[]; TagName: string}) => {
+                this.setState({
+                    data: []
+                });
+                this.setState({
+                    data: result.Videos,
+                    selectionnr: result.Videos.length
+                });
+            }
+        );
     }
 
     /**
