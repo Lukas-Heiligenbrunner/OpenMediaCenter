@@ -72,6 +72,10 @@ export class ActorPage extends React.Component<Props, state> {
                     data: result.Videos ? result.Videos : [],
                     actor: result.Info
                 });
+            },
+            (_) => {
+                // if there is an load error redirect to home page
+                this.props.history.push('/');
             }
         );
     }

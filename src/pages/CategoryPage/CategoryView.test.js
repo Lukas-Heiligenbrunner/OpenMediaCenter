@@ -4,7 +4,9 @@ import {CategoryView} from './CategoryView';
 
 describe('<CategoryView/>', function () {
     function instance() {
-        return shallow(<CategoryView match={{params: {id: 10}}} history={{push: jest.fn()}}/>);
+        const inst = shallow(<CategoryView match={{params: {id: 10}}} history={{push: jest.fn()}}/>);
+        inst.setState({loaded: true});
+        return inst;
     }
 
     it('renders without crashing ', function () {

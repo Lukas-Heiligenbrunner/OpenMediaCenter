@@ -46,6 +46,10 @@ export class TVPlayer extends React.Component<Props, State> {
                 console.log(data);
                 this.data = data;
                 this.setState({loaded: true});
+            },
+            (_) => {
+                // if there is an load error redirect to home page
+                this.props.history.push('/');
             }
         );
     }

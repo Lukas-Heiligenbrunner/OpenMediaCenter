@@ -37,9 +37,12 @@ export function callAPI<T>(
             .then((response) => {
                 if (response.status === 200) {
                     // success
-                    response.json().then((result: T) => {
-                        callback(result);
-                    });
+                    response
+                        .json()
+                        .then((result: T) => {
+                            callback(result);
+                        })
+                        .catch((reason) => errorcallback(reason));
                 } else if (response.status === 400) {
                     // Bad Request --> invalid token
                     console.log('loading Password page.');
