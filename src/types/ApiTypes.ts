@@ -36,6 +36,7 @@ export namespace SettingsTypes {
         MediacenterName: string;
         VideoPath: string;
         TVShowPath: string;
+        TVShowEnabled: boolean;
     }
 
     export interface loadGeneralSettingsType {

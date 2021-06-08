@@ -9,6 +9,7 @@ class StaticInfos {
     private darktheme: boolean = true;
     private videopath: string = '';
     private tvshowpath: string = '';
+    private TVShowsEnabled: boolean = false;
 
     /**
      * check if the current theme is the dark theme
@@ -71,6 +72,14 @@ class StaticInfos {
      * load the Password page manually
      */
     loadPasswordPage: ((callback?: () => void) => void) | undefined = undefined;
+
+    setTVShowsEnabled(TVShowEnabled: boolean): void {
+        this.TVShowsEnabled = TVShowEnabled;
+    }
+
+    isTVShowEnabled(): boolean {
+        return this.TVShowsEnabled;
+    }
 }
 
 export default new StaticInfos();

@@ -22,9 +22,11 @@ class SettingsPage extends React.Component {
                     <NavLink to='/settings/movies'>
                         <div className={style.SettingSidebarElement}>Movies</div>
                     </NavLink>
-                    <NavLink to='/settings/tv'>
-                        <div className={style.SettingSidebarElement}>TV Shows</div>
-                    </NavLink>
+                    {GlobalInfos.isTVShowEnabled() ? (
+                        <NavLink to='/settings/tv'>
+                            <div className={style.SettingSidebarElement}>TV Shows</div>
+                        </NavLink>
+                    ) : null}
                 </div>
                 <div className={style.SettingsContent}>
                     <Switch>
@@ -34,9 +36,11 @@ class SettingsPage extends React.Component {
                         <Route path='/settings/movies'>
                             <MovieSettings />
                         </Route>
-                        <Route path='/settings/tv'>
-                            <span />
-                        </Route>
+                        {GlobalInfos.isTVShowEnabled() ? (
+                            <Route path='/settings/tv'>
+                                <span />
+                            </Route>
+                        ) : null}
                         <Route path='/settings'>
                             <Redirect to='/settings/general' />
                         </Route>

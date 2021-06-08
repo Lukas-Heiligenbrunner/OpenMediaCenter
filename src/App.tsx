@@ -86,6 +86,8 @@ class App extends React.Component<{}, state> {
 
             GlobalInfos.setVideoPaths(result.VideoPath, result.TVShowPath);
 
+            GlobalInfos.setTVShowsEnabled(result.TVShowEnabled);
+
             this.setState({
                 mediacentername: result.MediacenterName
             });
@@ -146,9 +148,13 @@ class App extends React.Component<{}, state> {
                 <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/categories'} activeStyle={{opacity: '0.85'}}>
                     Categories
                 </NavLink>
-                <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/tvshows'} activeStyle={{opacity: '0.85'}}>
-                    TV Shows
-                </NavLink>
+
+                {GlobalInfos.isTVShowEnabled() ? (
+                    <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/tvshows'} activeStyle={{opacity: '0.85'}}>
+                        TV Shows
+                    </NavLink>
+                ) : null}
+
                 <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/settings'} activeStyle={{opacity: '0.85'}}>
                     Settings
                 </NavLink>
@@ -168,17 +174,11 @@ class App extends React.Component<{}, state> {
                 <Route path='/categories'>
                     <CategoryPage />
                 </Route>
-                <Route path='/tvshows'>
-                    <TVShowPage />
-                </Route>
                 <Route path='/settings'>
                     <SettingsPage />
                 </Route>
                 <Route exact path='/player/:id'>
                     <Player />
-                </Route>
-                <Route exact path='/tvplayer/:id'>
-                    <TVPlayer />
                 </Route>
                 <Route exact path='/actors'>
                     <ActorOverviewPage />
@@ -186,6 +186,19 @@ class App extends React.Component<{}, state> {
                 <Route path='/actors/:id'>
                     <ActorPage />
                 </Route>
+
+                {GlobalInfos.isTVShowEnabled() ? (
+                    <Route path='/tvshows'>
+                        <TVShowPage />
+                    </Route>
+                ) : null}
+
+                {GlobalInfos.isTVShowEnabled() ? (
+                    <Route exact path='/tvplayer/:id'>
+                        <TVPlayer />
+                    </Route>
+                ) : null}
+
                 <Route path='/'>
                     <HomePage />
                 </Route>
