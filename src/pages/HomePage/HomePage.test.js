@@ -23,23 +23,6 @@ describe('<HomePage/>', function () {
         expect(wrapper.find('PageTitle').props().subtitle).toBe('testsubtitle - 42');
     });
 
-    it('test search field', done => {
-        global.fetch = global.prepareFetchApi([{}, {}]);
-
-        const wrapper = shallow(<HomePage/>);
-
-        wrapper.find('[data-testid="searchtextfield"]').simulate('change', {target: {value: 'testvalue'}});
-        wrapper.find('[data-testid="searchbtnsubmit"]').simulate('click');
-
-        process.nextTick(() => {
-            // state to be set correctly with response
-            expect(wrapper.state().selectionnr).toBe(2);
-
-            global.fetch.mockClear();
-            done();
-        });
-    });
-
     it('test form submit', () => {
         const func = jest.fn();
         const wrapper = shallow(<HomePage/>);
@@ -72,7 +55,7 @@ describe('<HomePage/>', function () {
     });
 
     it('test tag click', done => {
-        global.fetch = prepareFetchApi(['test1', 'test2']);
+        global.fetch = prepareFetchApi({Videos: ['test1', 'test2'], TagName: 'all'});
 
         const wrapper = shallow(<HomePage/>);
 
