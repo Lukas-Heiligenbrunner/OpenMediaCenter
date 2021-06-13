@@ -31,11 +31,35 @@ func getVideoHandlers() {
 	 */
 	AddHandler("getMovies", VideoNode, func(info *HandlerInfo) []byte {
 		var args struct {
-			Tag int
+			Tag  uint32
+			Sort uint8
 		}
 		if err := FillStruct(&args, info.Data); err != nil {
 			fmt.Println(err.Error())
 			return nil
+		}
+
+		const (
+			date   = iota
+			likes  = iota
+			random = iota
+			names  = iota
+		)
+
+		var SortClause string
+		switch args.Sort {
+		case date:
+			SortClause = "ORDER BY create_date DESC, movie_name"
+			break
+		case likes:
+			SortClause = "ORDER BY likes DESC"
+			break
+		case random:
+			SortClause = "ORDER BY RAND()"
+			break
+		case names:
+			SortClause = "ORDER BY movie_name"
+			break
 		}
 
 		var query string
@@ -44,10 +68,9 @@ func getVideoHandlers() {
 			query = fmt.Sprintf(`SELECT movie_id,movie_name,t.tag_name FROM videos
 					INNER JOIN video_tags vt on videos.movie_id = vt.video_id
 					INNER JOIN tags t on vt.tag_id = t.tag_id
-					WHERE t.tag_id = %d
-					ORDER BY likes DESC, create_date, movie_name`, args.Tag)
+					WHERE t.tag_id = %d %s`, args.Tag, SortClause)
 		} else {
-			query = "SELECT movie_id,movie_name, (SELECT 'All' as tag_name) FROM videos ORDER BY create_date DESC, movie_name"
+			query = fmt.Sprintf("SELECT movie_id,movie_name, (SELECT 'All' as tag_name) FROM videos %s", SortClause)
 		}
 
 		var result struct {
