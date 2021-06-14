@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"openmediacenter/apiGo/api"
 	"openmediacenter/apiGo/database"
+	settings2 "openmediacenter/apiGo/database/settings"
 	"openmediacenter/apiGo/static"
 	"openmediacenter/apiGo/videoparser"
 )
@@ -55,7 +56,11 @@ func handleCommandLineArguments() (*database.DatabaseConfig, bool, *string) {
 
 	pathPrefix := flag.String("ReindexPrefix", "/var/www/openmediacenter", "Prefix path for videos to reindex")
 
+	disableTVShowSupport := flag.Bool("DisableTVSupport", false, "Disable the TVShow support and pages")
+
 	flag.Parse()
+
+	settings2.SetTVShowEnabled(!*disableTVShowSupport)
 
 	return &database.DatabaseConfig{
 		DBHost:     *dbhostPtr,

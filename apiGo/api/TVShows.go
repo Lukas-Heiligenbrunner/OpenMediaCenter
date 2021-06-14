@@ -3,9 +3,15 @@ package api
 import (
 	"fmt"
 	"openmediacenter/apiGo/database"
+	"openmediacenter/apiGo/database/settings"
 )
 
 func AddTvshowHandlers() {
+	// do not add handlers if tvshows not enabled
+	if !settings.TVShowsEnabled() {
+		return
+	}
+
 	/**
 	 * @api {post} /api/tvshow [getTVShows]
 	 * @apiDescription get all available tv shows

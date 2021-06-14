@@ -18,6 +18,11 @@ describe('<App/>', function () {
     it('are navlinks correct', function () {
         const wrapper = shallow(<App/>);
         wrapper.setState({password: false});
+        expect(wrapper.find('.navitem')).toHaveLength(4);
+
+        GlobalInfos.setTVShowsEnabled(true);
+
+        wrapper.instance().forceUpdate();
         expect(wrapper.find('.navitem')).toHaveLength(5);
     });
 

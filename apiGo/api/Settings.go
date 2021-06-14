@@ -53,6 +53,7 @@ func getSettingsFromDB() {
 	 * @apiSuccess {string} MediacenterName overall name of the mediacenter
 	 * @apiSuccess {string} Pasword new server password (-1 if no password set)
 	 * @apiSuccess {bool} DarkMode Darkmode enabled?
+	 * @apiSuccess {bool} TVShowEnabled is are TVShows enabled
 	 */
 	AddHandler("loadInitialData", SettingsNode, func(info *HandlerInfo) []byte {
 		sett := settings.LoadSettings()
@@ -63,6 +64,7 @@ func getSettingsFromDB() {
 			MediacenterName string
 			VideoPath       string
 			TVShowPath      string
+			TVShowEnabled   bool
 		}
 
 		regexMatchUrl := regexp.MustCompile("^http(|s)://([0-9]){1,3}\\.([0-9]){1,3}\\.([0-9]){1,3}\\.([0-9]){1,3}:[0-9]{1,5}")
@@ -77,6 +79,7 @@ func getSettingsFromDB() {
 			MediacenterName: sett.MediacenterName,
 			VideoPath:       serverVideoPath,
 			TVShowPath:      serverTVShowPath,
+			TVShowEnabled:   settings.TVShowsEnabled(),
 		}
 
 		str, _ := json.Marshal(res)
