@@ -8,6 +8,11 @@
     margin-top: 25px;
 }
 
+.sortbyLabel {
+    color: grey;
+    margin-right: 5px;
+    margin-left: 25px;
+}
 
 /* Style The Dropdown Button */
 .dropbtn {

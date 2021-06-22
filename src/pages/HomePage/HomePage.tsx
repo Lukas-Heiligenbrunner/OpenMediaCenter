@@ -15,7 +15,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSortDown} from '@fortawesome/free-solid-svg-icons';
 
 // eslint-disable-next-line no-shadow
-enum SortBy {
+export enum SortBy {
     date,
     likes,
     random,
@@ -178,45 +178,17 @@ export class HomePage extends React.Component<Props, state> {
                             />
                         </SideBar>
                         <div>
-                            <span style={{color: 'grey', marginRight: 5}}>Sort By: </span>
+                            <span className={style.sortbyLabel}>Sort By: </span>
                             <div className={style.dropdown}>
                                 <span className={style.dropbtn}>
                                     <span>{this.state.sortby}</span>
                                     <FontAwesomeIcon style={{marginLeft: 3, paddingBottom: 3}} icon={faSortDown} size='1x' />
                                 </span>
                                 <div className={style.dropdownContent}>
-                                    <span
-                                        onClick={(): void => {
-                                            this.sortState = SortBy.date;
-                                            this.setState({sortby: 'Date Added '});
-                                            this.fetchVideoData();
-                                        }}>
-                                        Date Added
-                                    </span>
-                                    <span
-                                        onClick={(): void => {
-                                            this.sortState = SortBy.likes;
-                                            this.setState({sortby: 'Most likes'});
-                                            this.fetchVideoData();
-                                        }}>
-                                        Most likes
-                                    </span>
-                                    <span
-                                        onClick={(): void => {
-                                            this.sortState = SortBy.random;
-                                            this.setState({sortby: 'Random'});
-                                            this.fetchVideoData();
-                                        }}>
-                                        Random
-                                    </span>
-                                    <span
-                                        onClick={(): void => {
-                                            this.sortState = SortBy.name;
-                                            this.setState({sortby: 'Name'});
-                                            this.fetchVideoData();
-                                        }}>
-                                        Name
-                                    </span>
+                                    <span onClick={(): void => this.onDropDownItemClick(SortBy.date, 'Date Added')}>Date Added</span>
+                                    <span onClick={(): void => this.onDropDownItemClick(SortBy.likes, 'Most likes')}>Most likes</span>
+                                    <span onClick={(): void => this.onDropDownItemClick(SortBy.random, 'Random')}>Random</span>
+                                    <span onClick={(): void => this.onDropDownItemClick(SortBy.name, 'Name')}>Name</span>
                                 </div>
                             </div>
                         </div>
@@ -227,6 +199,17 @@ export class HomePage extends React.Component<Props, state> {
                 </Switch>
             </>
         );
+    }
+
+    /**
+     * click handler for sortby dropdown item click
+     * @param type type of sort action
+     * @param name new header title
+     */
+    onDropDownItemClick(type: SortBy, name: string): void {
+        this.sortState = type;
+        this.setState({sortby: name});
+        this.fetchVideoData();
     }
 }
 
