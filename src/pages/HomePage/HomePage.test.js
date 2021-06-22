@@ -1,8 +1,10 @@
 import {shallow} from 'enzyme';
 import React from 'react';
-import {HomePage} from './HomePage';
+import {HomePage, SortBy} from './HomePage';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 import {SearchHandling} from './SearchHandling';
+import exp from "constants";
+import {DefaultTags} from "../../types/GeneralTypes";
 
 describe('<HomePage/>', function () {
     it('renders without crashing ', function () {
@@ -82,6 +84,20 @@ describe('<HomePage/>', function () {
         }
 
         testBtn(tags.first());
+    });
+
+    it('test sortby type change', function () {
+        const wrapper = shallow(<HomePage/>);
+
+        // expect those default values
+        expect(wrapper.state().sortby).toBe('Date Added');
+        expect(wrapper.instance().sortState).toBe(SortBy.date);
+        expect(wrapper.instance().tagState).toBe(DefaultTags.all);
+
+        wrapper.instance().onDropDownItemClick(SortBy.name, 'namesort');
+
+        expect(wrapper.state().sortby).toBe('namesort');
+        expect(wrapper.instance().sortState).toBe(SortBy.name);
     });
 });
 

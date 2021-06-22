@@ -41,18 +41,24 @@ class DynamicContentContainer<T> extends React.Component<Props<T>, state<T>> {
 
     componentDidUpdate(prevProps: Props<T>): void {
         // when source props change force update!
-        if (prevProps.data.length !== this.props.data.length) {
-            this.clean();
-            this.loadPreviewBlock(this.InitialLoadNR);
+        if (
+            // diff the two arrays
+            this.props.data
+                .filter((x) => !prevProps.data.includes(x))
+                .concat(prevProps.data.filter((x) => !this.props.data.includes(x))).length !== 0
+        ) {
+            this.clean((): void => {
+                this.loadPreviewBlock(this.InitialLoadNR);
+            });
         }
     }
 
     /**
      * clear all elements rendered...
      */
-    clean(): void {
+    clean(callback: () => void): void {
         this.loadindex = 0;
-        this.setState({loadeditems: []});
+        this.setState({loadeditems: []}, callback);
     }
 
     render(): JSX.Element {

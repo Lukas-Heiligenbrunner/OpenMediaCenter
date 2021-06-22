@@ -11,6 +11,16 @@ import {RouteComponentProps} from 'react-router';
 import SearchHandling from './SearchHandling';
 import {VideoTypes} from '../../types/ApiTypes';
 import {DefaultTags} from '../../types/GeneralTypes';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faSortDown} from '@fortawesome/free-solid-svg-icons';
+
+// eslint-disable-next-line no-shadow
+export enum SortBy {
+    date,
+    likes,
+    random,
+    name
+}
 
 interface Props extends RouteComponentProps {}
 
@@ -19,6 +29,7 @@ interface state {
     subtitle: string;
     data: VideoTypes.VideoUnloadedType[];
     selectionnr: number;
+    sortby: string;
 }
 
 /**
@@ -42,13 +53,17 @@ export class HomePage extends React.Component<Props, state> {
             },
             subtitle: 'All Videos',
             data: [],
-            selectionnr: 0
+            selectionnr: 0,
+            sortby: 'Date Added'
         };
     }
 
+    sortState = SortBy.date;
+    tagState = DefaultTags.all;
+
     componentDidMount(): void {
         // initial get of all videos
-        this.fetchVideoData(DefaultTags.all.TagId);
+        this.fetchVideoData();
         this.fetchStartData();
     }
 
@@ -58,14 +73,11 @@ export class HomePage extends React.Component<Props, state> {
      *
      * @param tag tag to fetch videos
      */
-    fetchVideoData(tag: number): void {
+    fetchVideoData(): void {
         callAPI(
             APINode.Video,
-            {action: 'getMovies', Tag: tag},
+            {action: 'getMovies', Tag: this.tagState.TagId, Sort: this.sortState},
             (result: {Videos: VideoTypes.VideoUnloadedType[]; TagName: string}) => {
-                this.setState({
-                    data: []
-                });
                 this.setState({
                     data: result.Videos,
                     selectionnr: result.Videos.length
@@ -135,38 +147,69 @@ export class HomePage extends React.Component<Props, state> {
                             <Tag
                                 tagInfo={{TagName: 'All', TagId: DefaultTags.all.TagId}}
                                 onclick={(): void => {
-                                    this.fetchVideoData(DefaultTags.all.TagId);
+                                    this.tagState = DefaultTags.all;
+                                    this.fetchVideoData();
                                     this.setState({subtitle: 'All Videos'});
                                 }}
                             />
                             <Tag
                                 tagInfo={{TagName: 'Full Hd', TagId: DefaultTags.fullhd.TagId}}
                                 onclick={(): void => {
-                                    this.fetchVideoData(DefaultTags.fullhd.TagId);
+                                    this.tagState = DefaultTags.fullhd;
+                                    this.fetchVideoData();
                                     this.setState({subtitle: 'Full Hd Videos'});
                                 }}
                             />
                             <Tag
                                 tagInfo={{TagName: 'Low Quality', TagId: DefaultTags.lowq.TagId}}
                                 onclick={(): void => {
-                                    this.fetchVideoData(DefaultTags.lowq.TagId);
+                                    this.tagState = DefaultTags.lowq;
+                                    this.fetchVideoData();
                                     this.setState({subtitle: 'Low Quality Videos'});
                                 }}
                             />
                             <Tag
                                 tagInfo={{TagName: 'HD', TagId: DefaultTags.hd.TagId}}
                                 onclick={(): void => {
-                                    this.fetchVideoData(DefaultTags.hd.TagId);
+                                    this.tagState = DefaultTags.hd;
+                                    this.fetchVideoData();
                                     this.setState({subtitle: 'HD Videos'});
                                 }}
                             />
                         </SideBar>
+                        <div>
+                            <span className={style.sortbyLabel}>Sort By: </span>
+                            <div className={style.dropdown}>
+                                <span className={style.dropbtn}>
+                                    <span>{this.state.sortby}</span>
+                                    <FontAwesomeIcon style={{marginLeft: 3, paddingBottom: 3}} icon={faSortDown} size='1x' />
+                                </span>
+                                <div className={style.dropdownContent}>
+                                    <span onClick={(): void => this.onDropDownItemClick(SortBy.date, 'Date Added')}>Date Added</span>
+                                    <span onClick={(): void => this.onDropDownItemClick(SortBy.likes, 'Most likes')}>Most likes</span>
+                                    <span onClick={(): void => this.onDropDownItemClick(SortBy.random, 'Random')}>Random</span>
+                                    <span onClick={(): void => this.onDropDownItemClick(SortBy.name, 'Name')}>Name</span>
+                                </div>
+                            </div>
+                        </div>
+
                         <VideoContainer data={this.state.data} />
                         <div className={style.rightinfo} />
                     </Route>
                 </Switch>
             </>
         );
+    }
+
+    /**
+     * click handler for sortby dropdown item click
+     * @param type type of sort action
+     * @param name new header title
+     */
+    onDropDownItemClick(type: SortBy, name: string): void {
+        this.sortState = type;
+        this.setState({sortby: name});
+        this.fetchVideoData();
     }
 }
 
