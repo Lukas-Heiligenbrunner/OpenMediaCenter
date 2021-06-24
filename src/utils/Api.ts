@@ -26,37 +26,7 @@ export function callAPI<T>(
     errorcallback: (_: string) => void = (_: string): void => {}
 ): void {
     token.checkAPITokenValid((mytoken) => {
-        fetch(APIPREFIX + apinode, {
-            method: 'POST',
-            body: JSON.stringify(fd),
-            headers: new Headers({
-                'Content-Type': 'application/json',
-                Authorization: 'Bearer ' + mytoken
-            })
-        })
-            .then((response) => {
-                if (response.status === 200) {
-                    // success
-                    response
-                        .json()
-                        .then((result: T) => {
-                            callback(result);
-                        })
-                        .catch((reason) => errorcallback(reason));
-                } else if (response.status === 400) {
-                    // Bad Request --> invalid token
-                    console.log('loading Password page.');
-                    // load password page
-                    if (GlobalInfos.loadPasswordPage) {
-                        GlobalInfos.loadPasswordPage(() => {
-                            callAPI(apinode, fd, callback, errorcallback);
-                        });
-                    }
-                } else {
-                    console.log('Error: ' + response.statusText);
-                }
-            })
-            .catch((reason) => errorcallback(reason));
+        generalAPICall<T>(apinode, fd, callback, errorcallback, false, true, mytoken);
     });
 }
 
@@ -73,18 +43,7 @@ export function callApiUnsafe<T>(
     callback: (_: T) => void,
     errorcallback?: (_: string) => void
 ): void {
-    fetch(APIPREFIX + apinode, {method: 'POST', body: JSON.stringify(fd)})
-        .then((response) => {
-            if (response.status !== 200) {
-                console.log('Error: ' + response.statusText);
-                // todo place error popup here
-            } else {
-                response.json().then((result: T) => {
-                    callback(result);
-                });
-            }
-        })
-        .catch((reason) => (errorcallback ? errorcallback(reason) : {}));
+    generalAPICall(apinode, fd, callback, errorcallback, true, true, '');
 }
 
 /**
@@ -95,19 +54,54 @@ export function callApiUnsafe<T>(
  */
 export function callAPIPlain(apinode: APINode, fd: ApiBaseRequest, callback: (_: string) => void): void {
     token.checkAPITokenValid((mytoken) => {
-        fetch(APIPREFIX + apinode, {
+        generalAPICall(apinode, fd, callback, () => {}, false, false, mytoken);
+    });
+}
+
+function generalAPICall<T>(
+    apinode: APINode,
+    fd: ApiBaseRequest,
+    callback: (_: T) => void,
+    errorcallback: (_: string) => void = (_: string): void => {},
+    unsafe: boolean,
+    json: boolean,
+    mytoken: string
+): void {
+    (async function (): Promise<void> {
+        const response = await fetch(APIPREFIX + apinode, {
             method: 'POST',
             body: JSON.stringify(fd),
             headers: new Headers({
-                'Content-Type': 'application/json',
-                Authorization: 'Bearer ' + mytoken
+                'Content-Type': json ? 'application/json' : 'text/plain',
+                ...(!unsafe && {Authorization: 'Bearer ' + mytoken})
             })
-        }).then((response) =>
-            response.text().then((result) => {
-                callback(result);
-            })
-        );
-    });
+        });
+
+        if (response.status === 200) {
+            // success
+            try {
+                // decode json or text
+                const data = json ? await response.json() : await response.text();
+                callback(data);
+            } catch (e) {
+                errorcallback(e);
+            }
+        } else if (response.status === 400) {
+            // Bad Request --> invalid token
+            console.log('loading Password page.');
+            // load password page
+            if (GlobalInfos.loadPasswordPage) {
+                GlobalInfos.loadPasswordPage(() => {
+                    callAPI(apinode, fd, callback, errorcallback);
+                });
+            }
+        } else {
+            console.log('Error: ' + response.statusText);
+            if (errorcallback) {
+                errorcallback(response.statusText);
+            }
+        }
+    })();
 }
 
 /**
