@@ -46,13 +46,13 @@ type SettingsType struct {
 	PasswordEnabled bool
 	TMDBGrabbing    bool
 	DarkMode        bool
+}
 
+type SettingsSizeType struct {
 	VideoNr       uint32
 	DBSize        float32
 	DifferentTags uint32
 	TagsAdded     uint32
-
-	PathPrefix string
 }
 
 type TVShow struct {

@@ -19,9 +19,9 @@ func StartReindex() bool {
 	SendEvent("start")
 	AppendMessage("starting reindex..")
 
-	mSettings := database.GetSettings()
+	mSettings, PathPrefix, _ := database.GetSettings()
 	// add the path prefix to videopath
-	mSettings.VideoPath = mSettings.PathPrefix + mSettings.VideoPath
+	mSettings.VideoPath = PathPrefix + mSettings.VideoPath
 
 	// check if path even exists
 	if _, err := os.Stat(mSettings.VideoPath); os.IsNotExist(err) {
@@ -64,9 +64,9 @@ func StartTVShowReindex() {
 	SendEvent("start")
 	AppendMessage("starting tvshow reindex...")
 
-	mSettings := database.GetSettings()
+	mSettings, PathPrefix, _ := database.GetSettings()
 	// add the path prefix to videopath
-	mSettings.EpisodePath = mSettings.PathPrefix + mSettings.EpisodePath
+	mSettings.EpisodePath = PathPrefix + mSettings.EpisodePath
 
 	// add slash suffix if not existing
 	if !strings.HasSuffix(mSettings.EpisodePath, "/") {

@@ -31,15 +31,23 @@ func getSettingsFromDB() {
 	 * @apiSuccess {string} Settings.Password new server password (-1 if no password set)
 	 * @apiSuccess {bool} Settings.TMDBGrabbing TMDB grabbing support to grab tag info and thumbnails
 	 * @apiSuccess {bool} Settings.DarkMode Darkmode enabled?
-	 * @apiSuccess {uint32} Settings.VideoNr total number of videos
-	 * @apiSuccess {float32} Settings.DBSize total size of database
-	 * @apiSuccess {uint32} Settings.DifferentTags number of different tags available
-	 * @apiSuccess {uint32} Settings.TagsAdded number of different tags added to videos
-	 * @apiSuccess {string} Settings.PathPrefix
+	 * @apiSuccess {Object} Sizes Sizes object
+	 * @apiSuccess {uint32} Sizes.VideoNr total number of videos
+	 * @apiSuccess {float32} Sizes.DBSize total size of database
+	 * @apiSuccess {uint32} Sizes.DifferentTags number of different tags available
+	 * @apiSuccess {uint32} Sizes.TagsAdded number of different tags added to videos
 	 */
 	AddHandler("loadGeneralSettings", SettingsNode, func(info *HandlerInfo) []byte {
-		result := database.GetSettings()
-		return jsonify(result)
+		result, _, sizes := database.GetSettings()
+
+		var ret = struct {
+			Settings *types.SettingsType
+			Sizes    *types.SettingsSizeType
+		}{
+			Settings: &result,
+			Sizes:    &sizes,
+		}
+		return jsonify(ret)
 	})
 
 	/**
@@ -94,21 +102,17 @@ func saveSettingsToDB() {
 	 * @apiName saveGeneralSettings
 	 * @apiGroup Settings
 	 *
-	 * @apiParam {Object} Settings Settings object
-	 * @apiParam {string} Settings.VideoPath webserver path to the videos
-	 * @apiParam {string} Settings.EpisodePath webserver path to the tvshows
-	 * @apiParam {string} Settings.MediacenterName overall name of the mediacenter
-	 * @apiParam {string} Settings.Password new server password (-1 if no password set)
-	 * @apiParam {bool} Settings.TMDBGrabbing TMDB grabbing support to grab tag info and thumbnails
-	 * @apiParam {bool} Settings.DarkMode Darkmode enabled?
+	 * @apiParam {string} VideoPath webserver path to the videos
+	 * @apiParam {string} EpisodePath webserver path to the tvshows
+	 * @apiParam {string} MediacenterName overall name of the mediacenter
+	 * @apiParam {string} Password new server password (-1 if no password set)
+	 * @apiParam {bool} TMDBGrabbing TMDB grabbing support to grab tag info and thumbnails
+	 * @apiParam {bool} DarkMode Darkmode enabled?
 	 *
 	 * @apiSuccess {string} result 'success' if successfully or error message if not
 	 */
 	AddHandler("saveGeneralSettings", SettingsNode, func(info *HandlerInfo) []byte {
-		// todo correct type here!
-		var args struct {
-			Settings types.SettingsType
-		}
+		var args types.SettingsType
 		if err := FillStruct(&args, info.Data); err != nil {
 			fmt.Println(err.Error())
 			return nil
@@ -124,8 +128,8 @@ func saveSettingsToDB() {
                         DarkMode=?
                     WHERE 1`
 		return database.SuccessQuery(query,
-			args.Settings.VideoPath, args.Settings.EpisodePath, args.Settings.Password,
-			args.Settings.MediacenterName, args.Settings.TMDBGrabbing, args.Settings.DarkMode)
+			args.VideoPath, args.EpisodePath, args.Password,
+			args.MediacenterName, args.TMDBGrabbing, args.DarkMode)
 	})
 }
 
