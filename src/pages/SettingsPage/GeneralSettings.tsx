@@ -11,7 +11,8 @@ import {SettingsTypes} from '../../types/ApiTypes';
 import {GeneralSuccess} from '../../types/GeneralTypes';
 
 interface state {
-    generalSettings: SettingsTypes.loadGeneralSettingsType;
+    generalSettings: SettingsTypes.SettingsType;
+    sizes: SettingsTypes.SizesType;
 }
 
 interface Props {}
@@ -27,16 +28,18 @@ class GeneralSettings extends React.Component<Props, state> {
         this.state = {
             generalSettings: {
                 DarkMode: true,
-                DBSize: 0,
-                DifferentTags: 0,
                 EpisodePath: '',
                 MediacenterName: '',
                 Password: '',
                 PasswordEnabled: false,
-                TagsAdded: 0,
                 TMDBGrabbing: false,
-                VideoNr: 0,
                 VideoPath: ''
+            },
+            sizes: {
+                DBSize: 0,
+                DifferentTags: 0,
+                TagsAdded: 0,
+                VideoNr: 0
             }
         };
     }
@@ -52,25 +55,25 @@ class GeneralSettings extends React.Component<Props, state> {
                 <div className={style.infoheader}>
                     <InfoHeaderItem
                         backColor='lightblue'
-                        text={this.state.generalSettings.VideoNr}
+                        text={this.state.sizes.VideoNr}
                         subtext='Videos in Gravity'
                         icon={faArchive}
                     />
                     <InfoHeaderItem
                         backColor='yellow'
-                        text={this.state.generalSettings.DBSize + ' MB'}
+                        text={this.state.sizes.DBSize + ' MB'}
                         subtext='Database size'
                         icon={faRulerVertical}
                     />
                     <InfoHeaderItem
                         backColor='green'
-                        text={this.state.generalSettings.DifferentTags}
+                        text={this.state.sizes.DifferentTags}
                         subtext='different Tags'
                         icon={faAddressCard}
                     />
                     <InfoHeaderItem
                         backColor='orange'
-                        text={this.state.generalSettings.TagsAdded}
+                        text={this.state.sizes.TagsAdded}
                         subtext='tags added'
                         icon={faBalanceScaleLeft}
                     />
@@ -210,8 +213,16 @@ class GeneralSettings extends React.Component<Props, state> {
      * inital load of already specified settings from backend
      */
     loadSettings(): void {
-        callAPI(APINode.Settings, {action: 'loadGeneralSettings'}, (result: SettingsTypes.loadGeneralSettingsType) => {
-            this.setState({generalSettings: result});
+        interface SettingsResponseType {
+            Settings: SettingsTypes.SettingsType;
+            Sizes: SettingsTypes.SizesType;
+        }
+
+        callAPI(APINode.Settings, {action: 'loadGeneralSettings'}, (result: SettingsResponseType) => {
+            this.setState({
+                generalSettings: result.Settings,
+                sizes: result.Sizes
+            });
         });
     }
 
@@ -225,11 +236,12 @@ class GeneralSettings extends React.Component<Props, state> {
         }
         settings.DarkMode = GlobalInfos.isDarkTheme();
 
+        console.log(settings);
         callAPI(
             APINode.Settings,
             {
                 action: 'saveGeneralSettings',
-                Settings: settings
+                ...settings
             },
             (result: GeneralSuccess) => {
                 if (result.result) {

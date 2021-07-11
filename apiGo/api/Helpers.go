@@ -3,7 +3,6 @@ package api
 import (
 	"database/sql"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"openmediacenter/apiGo/api/types"
 	"reflect"
@@ -109,7 +108,7 @@ func setField(obj interface{}, name string, value interface{}) error {
 			// if type is convertible - convert and set
 			structFieldValue.Set(val.Convert(structFieldType))
 		} else {
-			return errors.New("provided value type didn't match obj field type and isn't convertible")
+			return fmt.Errorf("provided value %s type didn't match obj field type and isn't convertible", name)
 		}
 	} else {
 		// set value if type is the same

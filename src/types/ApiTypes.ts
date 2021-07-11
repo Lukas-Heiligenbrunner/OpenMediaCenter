@@ -39,7 +39,7 @@ export namespace SettingsTypes {
         TVShowEnabled: boolean;
     }
 
-    export interface loadGeneralSettingsType {
+    export interface SettingsType {
         VideoPath: string;
         EpisodePath: string;
         MediacenterName: string;
@@ -47,7 +47,9 @@ export namespace SettingsTypes {
         PasswordEnabled: boolean;
         TMDBGrabbing: boolean;
         DarkMode: boolean;
+    }
 
+    export interface SizesType {
         VideoNr: number;
         DBSize: number;
         DifferentTags: number;
