@@ -21,6 +21,7 @@ import TVShowPage from './pages/TVShowPage/TVShowPage';
 import TVPlayer from './pages/TVShowPage/TVPlayer';
 import {CookieTokenStore} from './utils/TokenStore/CookieTokenStore';
 import {token} from './utils/TokenHandler';
+import {PhotoPage} from './pages/PhotoPage/PhotoPage';
 
 interface state {
     password: boolean | null; // null if uninitialized - true if pwd needed false if not needed
@@ -155,6 +156,10 @@ class App extends React.Component<{}, state> {
                     </NavLink>
                 ) : null}
 
+                <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/photos'} activeStyle={{opacity: '0.85'}}>
+                    Photos
+                </NavLink>
+
                 <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/settings'} activeStyle={{opacity: '0.85'}}>
                     Settings
                 </NavLink>
@@ -198,6 +203,10 @@ class App extends React.Component<{}, state> {
                         <TVPlayer />
                     </Route>
                 ) : null}
+
+                <Route exact path='/photos'>
+                    <PhotoPage />
+                </Route>
 
                 <Route path='/'>
                     <HomePage />
