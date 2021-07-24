@@ -33,6 +33,7 @@ func main() {
 	api.AddTagHandlers()
 	api.AddActorsHandlers()
 	api.AddTvshowHandlers()
+	api.AddPhotoHandlers()
 
 	videoparser.SetupSettingsWebsocket()
 

@@ -38,19 +38,6 @@ export function PhotoPage(): JSX.Element {
                     target: '_blank'
                 }
             }
-        },
-        {
-            // HTML item:
-            itemId: 'htmlItem',
-            html: "<div style='width: 300px; height: 200px; background:pink;'>I am a text block</div>",
-            metadata: {
-                type: 'text',
-                height: 200,
-                width: 300,
-                title: 'sample-title',
-                description: 'sample-description',
-                backgroundColor: 'pink'
-            }
         }
     ];
 
@@ -73,16 +60,13 @@ export function PhotoPage(): JSX.Element {
     // The eventsListener will notify you anytime something has happened in the gallery.
     const eventsListener = (eventName: unknown, eventData: unknown): void => console.log({eventName, eventData});
 
-    // The scrollingElement is usually the window, if you are scrolling inside another element, suplly it here
-    const scrollingElement = window;
-
     return (
         <ExpandableProGallery
             items={items}
             options={options}
             container={container}
             eventsListener={eventsListener}
-            scrollingElement={scrollingElement}
+            scrollingElement={window}
             viewMode={1}
         />
     );

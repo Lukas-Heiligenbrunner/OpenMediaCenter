@@ -7,6 +7,7 @@ import (
 	"gopkg.in/oauth2.v3"
 	"net/http"
 	"openmediacenter/apiGo/api/oauth"
+	"openmediacenter/apiGo/database/settings"
 )
 
 const APIPREFIX = "/api"
@@ -17,6 +18,7 @@ const (
 	SettingsNode = iota
 	ActorNode    = iota
 	TVShowNode   = iota
+	PhotoNode    = iota
 )
 
 type HandlerInfo struct {
@@ -47,7 +49,13 @@ func ServerInit() {
 	http.Handle(APIPREFIX+"/tags", oauth.ValidateToken(handlefunc, TagNode))
 	http.Handle(APIPREFIX+"/settings", oauth.ValidateToken(handlefunc, SettingsNode))
 	http.Handle(APIPREFIX+"/actor", oauth.ValidateToken(handlefunc, ActorNode))
-	http.Handle(APIPREFIX+"/tvshow", oauth.ValidateToken(handlefunc, TVShowNode))
+
+	// add tvshow endpoint only if tvshows enabled
+	if settings.TVShowsEnabled() {
+		http.Handle(APIPREFIX+"/tvshow", oauth.ValidateToken(handlefunc, TVShowNode))
+	}
+
+	http.Handle(APIPREFIX+"/photos", oauth.ValidateToken(handlefunc, PhotoNode))
 
 	// initialize oauth service and add corresponding auth routes
 	oauth.InitOAuth()
