@@ -19,7 +19,8 @@ export enum SortBy {
     date,
     likes,
     random,
-    name
+    name,
+    length
 }
 
 interface Props extends RouteComponentProps {}
@@ -189,6 +190,7 @@ export class HomePage extends React.Component<Props, state> {
                                     <span onClick={(): void => this.onDropDownItemClick(SortBy.likes, 'Most likes')}>Most likes</span>
                                     <span onClick={(): void => this.onDropDownItemClick(SortBy.random, 'Random')}>Random</span>
                                     <span onClick={(): void => this.onDropDownItemClick(SortBy.name, 'Name')}>Name</span>
+                                    <span onClick={(): void => this.onDropDownItemClick(SortBy.length, 'Length')}>Length</span>
                                 </div>
                             </div>
                         </div>

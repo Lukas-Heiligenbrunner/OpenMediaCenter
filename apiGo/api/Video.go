@@ -44,9 +44,11 @@ func getVideoHandlers() {
 			likes  = iota
 			random = iota
 			names  = iota
+			length = iota
 		)
 
-		var SortClause string
+		// if wrong number passed no sorting is performed
+		var SortClause = ""
 		switch args.Sort {
 		case date:
 			SortClause = "ORDER BY create_date DESC, movie_name"
@@ -59,6 +61,9 @@ func getVideoHandlers() {
 			break
 		case names:
 			SortClause = "ORDER BY movie_name"
+			break
+		case length:
+			SortClause = "ORDER BY length DESC"
 			break
 		}
 
