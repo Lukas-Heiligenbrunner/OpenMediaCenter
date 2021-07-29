@@ -22,23 +22,27 @@ class SettingsPage extends React.Component {
                     <NavLink to='/settings/movies'>
                         <div className={style.SettingSidebarElement}>Movies</div>
                     </NavLink>
-                    <NavLink to='/settings/tv'>
-                        <div className={style.SettingSidebarElement}>TV Shows</div>
-                    </NavLink>
+                    {GlobalInfos.isTVShowEnabled() ? (
+                        <NavLink to='/settings/tv'>
+                            <div className={style.SettingSidebarElement}>TV Shows</div>
+                        </NavLink>
+                    ) : null}
                 </div>
                 <div className={style.SettingsContent}>
                     <Switch>
-                        <Route path="/settings/general">
-                            <GeneralSettings/>
+                        <Route path='/settings/general'>
+                            <GeneralSettings />
                         </Route>
-                        <Route path="/settings/movies">
-                            <MovieSettings/>
+                        <Route path='/settings/movies'>
+                            <MovieSettings />
                         </Route>
-                        <Route path="/settings/tv">
-                            <span/>
-                        </Route>
-                        <Route path="/settings">
-                            <Redirect to='/settings/general'/>
+                        {GlobalInfos.isTVShowEnabled() ? (
+                            <Route path='/settings/tv'>
+                                <span />
+                            </Route>
+                        ) : null}
+                        <Route path='/settings'>
+                            <Redirect to='/settings/general' />
                         </Route>
                     </Switch>
                 </div>

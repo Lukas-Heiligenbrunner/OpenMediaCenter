@@ -5,37 +5,29 @@ import Preview, {TagPreview} from './Preview';
 
 describe('<Preview/>', function () {
     it('renders without crashing ', function () {
-        const wrapper = shallow(<Preview movie_id={1}/>);
+        const wrapper = shallow(<Preview movieId={1} name='test' picLoader={callback => callback('')}/>);
         wrapper.unmount();
     });
 
-    it('picture rendered correctly', done => {
-        const mockSuccessResponse = 'testsrc';
-        const mockJsonPromise = Promise.resolve(mockSuccessResponse);
-        const mockFetchPromise = Promise.resolve({
-            text: () => mockJsonPromise
-        });
-        global.fetch = jest.fn().mockImplementation(() => mockFetchPromise);
+    it('picture rendered correctly', () => {
+        const func = jest.fn();
+        const wrapper = shallow(<Preview movieId={1} name='test' picLoader={callback => {
+            func();
+            callback('42');
+        }}/>);
 
-        const wrapper = shallow(<Preview name='test' movie_id={1}/>);
+        // expect picloader tobe called once
+        expect(func).toHaveBeenCalledTimes(1)
 
-        // now called 1 times
-        expect(global.fetch).toHaveBeenCalledTimes(1);
-
-        process.nextTick(() => {
-            // received picture should be rendered into wrapper
-            expect(wrapper.find('.previewimage').props().src).not.toBeNull();
-            // check if preview title renders correctly
-            expect(wrapper.find('.previewtitle').text()).toBe('test');
-
-            global.fetch.mockClear();
-            done();
-        });
-
+        // received picture should be rendered into wrapper
+        expect(wrapper.find('.previewimage').props().src).toBe('42');
+        // check if preview title renders correctly
+        expect(wrapper.find('.previewtitle').text()).toBe('test');
     });
 
     it('spinner loads correctly', function () {
-        const wrapper = shallow(<Preview movie_id={1}/>);
+        // if callback is never called --> infinite spinner
+        const wrapper = shallow(<Preview movieId={1} name='test' picLoader={callback => {}}/>);
 
         // expect load animation to be visible
         expect(wrapper.find('.loadAnimation')).toHaveLength(1);

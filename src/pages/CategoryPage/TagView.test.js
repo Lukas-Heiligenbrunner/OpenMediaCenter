@@ -8,13 +8,6 @@ describe('<TagView/>', function () {
         wrapper.unmount();
     });
 
-    it('test Tag insertion', function () {
-        const wrapper = shallow(<TagView/>);
-        wrapper.setState({loadedtags: [{tag_name: 'test', tag_id: 42}]});
-
-        expect(wrapper.find('TagPreview')).toHaveLength(1);
-    });
-
     it('test new tag popup', function () {
         const wrapper = shallow(<TagView/>);
 

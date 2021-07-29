@@ -6,53 +6,40 @@ import {NewActorPopupContent} from '../NewActorPopup/NewActorPopup';
 import {APINode, callAPI} from '../../../utils/Api';
 import {ActorType} from '../../../types/VideoTypes';
 import {GeneralSuccess} from '../../../types/GeneralTypes';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faFilter, faTimes} from '@fortawesome/free-solid-svg-icons';
-import {Button} from '../../GPElements/Button';
-import {addKeyHandler, removeKeyHandler} from '../../../utils/ShortkeyHandler';
+import FilterButton from '../../FilterButton/FilterButton';
 
-interface props {
+interface Props {
     onHide: () => void;
-    movie_id: number;
+    movieId: number;
 }
 
 interface state {
     contentDefault: boolean;
     actors: ActorType[];
     filter: string;
-    filtervisible: boolean;
 }
 
 /**
  * Popup for Adding a new Actor to a Video
  */
-class AddActorPopup extends React.Component<props, state> {
+class AddActorPopup extends React.Component<Props, state> {
     // filterfield anchor, needed to focus after filter btn click
     private filterfield: HTMLInputElement | null | undefined;
 
-    constructor(props: props) {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
             contentDefault: true,
             actors: [],
-            filter: '',
-            filtervisible: false
+            filter: ''
         };
 
         this.tileClickHandler = this.tileClickHandler.bind(this);
         this.filterSearch = this.filterSearch.bind(this);
         this.parentSubmit = this.parentSubmit.bind(this);
-        this.keypress = this.keypress.bind(this);
     }
-
-    componentWillUnmount(): void {
-        removeKeyHandler(this.keypress);
-    }
-
     componentDidMount(): void {
-        addKeyHandler(this.keypress);
-
         // fetch the available actors
         this.loadActors();
     }
@@ -61,12 +48,19 @@ class AddActorPopup extends React.Component<props, state> {
         return (
             <>
                 {/* todo render actor tiles here and add search field*/}
-                <PopupBase title='Add new Actor to Video' onHide={this.props.onHide} banner={
-                    <button
-                        className={style.newactorbutton}
-                        onClick={(): void => {
-                            this.setState({contentDefault: false});
-                        }}>Create new Actor</button>} ParentSubmit={this.parentSubmit}>
+                <PopupBase
+                    title='Add new Actor to Video'
+                    onHide={this.props.onHide}
+                    banner={
+                        <button
+                            className={style.newactorbutton}
+                            onClick={(): void => {
+                                this.setState({contentDefault: false});
+                            }}>
+                            Create new Actor
+                        </button>
+                    }
+                    ParentSubmit={this.parentSubmit}>
                     {this.resolvePage()}
                 </PopupBase>
             </>
@@ -78,11 +72,18 @@ class AddActorPopup extends React.Component<props, state> {
      * @returns {JSX.Element}
      */
     resolvePage(): JSX.Element {
-        if (this.state.contentDefault) return (this.getContent());
-        else return (<NewActorPopupContent onHide={(): void => {
-            this.loadActors();
-            this.setState({contentDefault: true});
-        }}/>);
+        if (this.state.contentDefault) {
+            return this.getContent();
+        } else {
+            return (
+                <NewActorPopupContent
+                    onHide={(): void => {
+                        this.loadActors();
+                        this.setState({contentDefault: true});
+                    }}
+                />
+            );
+        }
     }
 
     /**
@@ -94,36 +95,19 @@ class AddActorPopup extends React.Component<props, state> {
             return (
                 <>
                     <div className={style.searchbar}>
-                        {
-                            this.state.filtervisible ?
-                                <>
-                                    <input className={'form-control mr-sm-2 ' + style.searchinput}
-                                           type='text' placeholder='Filter' value={this.state.filter}
-                                           onChange={(e): void => {
-                                               this.setState({filter: e.target.value});
-                                           }}
-                                           ref={(input): void => {this.filterfield = input;}}/>
-                                    <Button title={<FontAwesomeIcon style={{
-                                        verticalAlign: 'middle',
-                                        lineHeight: '130px'
-                                    }} icon={faTimes} size='1x'/>} color={{backgroundColor: 'red'}} onClick={(): void => {
-                                        this.setState({filter: '', filtervisible: false});
-                                    }}/>
-                                </> :
-                                <Button
-                                    title={<span>Filter <FontAwesomeIcon style={{
-                                        verticalAlign: 'middle',
-                                        lineHeight: '130px'
-                                    }} icon={faFilter} size='1x'/></span>}
-                                    color={{backgroundColor: 'cornflowerblue', color: 'white'}}
-                                    onClick={(): void => this.enableFilterField()}/>
-                        }
+                        <FilterButton
+                            onFilterChange={(filter): void => {
+                                this.setState({filter: filter});
+                            }}
+                        />
                     </div>
-                    {this.state.actors.filter(this.filterSearch).map((el) => (<ActorTile actor={el} onClick={this.tileClickHandler}/>))}
+                    {this.state.actors.filter(this.filterSearch).map((el) => (
+                        <ActorTile actor={el} onClick={this.tileClickHandler} />
+                    ))}
                 </>
             );
         } else {
-            return (<div>somekind of loading</div>);
+            return <div>somekind of loading</div>;
         }
     }
 
@@ -132,36 +116,30 @@ class AddActorPopup extends React.Component<props, state> {
      */
     tileClickHandler(actor: ActorType): void {
         // fetch the available actors
-        callAPI<GeneralSuccess>(APINode.Actor, {
-            action: 'addActorToVideo',
-            ActorId: actor.ActorId,
-            MovieId: this.props.movie_id
-        }, result => {
-            if (result.result === 'success') {
-                // return back to player page
-                this.props.onHide();
-            } else {
-                console.error('an error occured while fetching actors: ' + result);
+        callAPI<GeneralSuccess>(
+            APINode.Actor,
+            {
+                action: 'addActorToVideo',
+                ActorId: actor.ActorId,
+                MovieId: this.props.movieId
+            },
+            (result) => {
+                if (result.result === 'success') {
+                    // return back to player page
+                    this.props.onHide();
+                } else {
+                    console.error('an error occured while fetching actors: ' + result);
+                }
             }
-        });
+        );
     }
 
     /**
      * load the actors from backend and set state
      */
     loadActors(): void {
-        callAPI<ActorType[]>(APINode.Actor, {action: 'getAllActors'}, result => {
+        callAPI<ActorType[]>(APINode.Actor, {action: 'getAllActors'}, (result) => {
             this.setState({actors: result});
-        });
-    }
-
-    /**
-     * enable filterfield and focus into searchbar
-     */
-    private enableFilterField(): void {
-        this.setState({filtervisible: true}, () => {
-            // focus filterfield after state update
-            this.filterfield?.focus();
         });
     }
 
@@ -183,17 +161,6 @@ class AddActorPopup extends React.Component<props, state> {
         if (filteredList.length === 1) {
             // simulate click if parent submit
             this.tileClickHandler(filteredList[0]);
-        }
-    }
-
-    /**
-     * key event handling
-     * @param event keyevent
-     */
-    private keypress(event: KeyboardEvent): void {
-        // hide if escape is pressed
-        if (event.key === 'f') {
-            this.enableFilterField();
         }
     }
 }

@@ -2,16 +2,16 @@ import {ActorType, TagType} from './VideoTypes';
 
 export namespace VideoTypes {
     export interface loadVideoType {
-        MovieUrl: string
-        Poster: string
-        MovieId: number
-        MovieName: string
-        Likes: number
-        Quality: number
-        Length: number
-        Tags: TagType[]
-        SuggestedTag: TagType[]
-        Actors: ActorType[]
+        MovieUrl: string;
+        Poster: string;
+        MovieId: number;
+        MovieName: string;
+        Likes: number;
+        Quality: number;
+        Length: number;
+        Tags: TagType[];
+        SuggestedTag: TagType[];
+        Actors: ActorType[];
     }
 
     export interface startDataType {
@@ -25,7 +25,7 @@ export namespace VideoTypes {
 
     export interface VideoUnloadedType {
         MovieId: number;
-        MovieName: string
+        MovieName: string;
     }
 }
 
@@ -33,28 +33,42 @@ export namespace SettingsTypes {
     export interface initialApiCallData {
         DarkMode: boolean;
         Password: boolean;
-        Mediacenter_name: string;
+        MediacenterName: string;
         VideoPath: string;
+        TVShowPath: string;
+        TVShowEnabled: boolean;
     }
 
-    export interface loadGeneralSettingsType {
-        VideoPath: string,
-        EpisodePath: string,
-        MediacenterName: string,
-        Password: string,
-        PasswordEnabled: boolean,
-        TMDBGrabbing: boolean,
-        DarkMode: boolean,
+    export interface SettingsType {
+        VideoPath: string;
+        EpisodePath: string;
+        MediacenterName: string;
+        Password: string;
+        PasswordEnabled: boolean;
+        TMDBGrabbing: boolean;
+        DarkMode: boolean;
+    }
 
-        VideoNr: number,
-        DBSize: number,
-        DifferentTags: number,
-        TagsAdded: number
+    export interface SizesType {
+        VideoNr: number;
+        DBSize: number;
+        DifferentTags: number;
+        TagsAdded: number;
     }
 
     export interface getStatusMessageType {
         ContentAvailable: boolean;
         Messages: string[];
+    }
+}
+
+export namespace TVShow {
+    /**
+     * result of actor fetch
+     */
+    export interface TVshowType {
+        Id: number;
+        Name: string;
     }
 }
 

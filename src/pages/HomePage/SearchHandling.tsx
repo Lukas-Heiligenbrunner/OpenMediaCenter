@@ -11,14 +11,14 @@ interface params {
     name: string;
 }
 
-interface props extends RouteComponentProps<params> {}
+interface Props extends RouteComponentProps<params> {}
 
 interface state {
     data: VideoTypes.VideoUnloadedType[];
 }
 
-export class SearchHandling extends React.Component<props, state> {
-    constructor(props: props) {
+export class SearchHandling extends React.Component<Props, state> {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
@@ -33,8 +33,8 @@ export class SearchHandling extends React.Component<props, state> {
     render(): JSX.Element {
         return (
             <>
-                <PageTitle title='Search' subtitle={this.props.match.params.name + ': ' + this.state.data.length}/>
-                <SideBar hiddenFrame/>
+                <PageTitle title='Search' subtitle={this.props.match.params.name + ': ' + this.state.data.length} />
+                <SideBar hiddenFrame />
                 {this.getVideoData()}
             </>
         );
@@ -45,11 +45,9 @@ export class SearchHandling extends React.Component<props, state> {
      */
     getVideoData(): JSX.Element {
         if (this.state.data.length !== 0) {
-            return (
-                <VideoContainer data={this.state.data}/>
-            );
+            return <VideoContainer data={this.state.data} />;
         } else {
-            return (<div>No Data found!</div>);
+            return <div>No Data found!</div>;
         }
     }
 
@@ -59,7 +57,7 @@ export class SearchHandling extends React.Component<props, state> {
      * @param keyword The keyword to search for
      */
     searchVideos(keyword: string): void {
-        callAPI(APINode.Video, {action: 'getSearchKeyWord', keyword: keyword}, (result: VideoTypes.VideoUnloadedType[]) => {
+        callAPI(APINode.Video, {action: 'getSearchKeyWord', KeyWord: keyword}, (result: VideoTypes.VideoUnloadedType[]) => {
             this.setState({
                 data: result
             });

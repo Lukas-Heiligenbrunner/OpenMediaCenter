@@ -6,7 +6,8 @@ import '@testing-library/jest-dom/extend-expect';
 
 import {configure} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import GlobalInfos from './utils/GlobalInfos';
+import {CookieTokenStore} from "./utils/TokenStore/CookieTokenStore";
+import {token} from "./utils/TokenHandler";
 
 configure({adapter: new Adapter()});
 
@@ -19,7 +20,8 @@ global.prepareFetchApi = (response) => {
     const mockJsonPromise = Promise.resolve(response);
     const mockFetchPromise = Promise.resolve({
         json: () => mockJsonPromise,
-        text: () => mockJsonPromise
+        text: () => mockJsonPromise,
+        status: 200
     });
     return (jest.fn().mockImplementation(() => mockFetchPromise));
 };
@@ -33,28 +35,17 @@ global.prepareFailingFetchApi = () => {
     return (jest.fn().mockImplementation(() => mockFetchPromise));
 };
 
-/**
- * prepares a viewbinding instance
- * @param func a mock function to be called
- */
-global.prepareViewBinding = (func) => {
-    GlobalInfos.getViewBinding = () => {
-        return {
-            changeRootElement: func,
-            returnToLastElement: func
-        };
-    };
-};
-
 global.callAPIMock = (resonse) => {
     const helpers = require('./utils/Api');
     helpers.callAPI = jest.fn().mockImplementation((_, __, func1) => {func1(resonse);});
+    helpers.callApiUnsafe = jest.fn().mockImplementation((_, __, func1) => {func1(resonse);});
 };
 
 // code to run before each test
 global.beforeEach(() => {
     // empty fetch response implementation for each test
     global.fetch = prepareFetchApi({});
+    token.init(new CookieTokenStore());
     // todo with callAPIMock
 });
 
@@ -62,4 +53,13 @@ global.afterEach(() => {
     // clear all mocks after each test
     jest.resetAllMocks();
 });
+
+
+global.mockKeyPress = () => {
+    let events = [];
+    document.addEventListener = jest.fn((event, cb) => {
+        events[event] = cb;
+    });
+    return events;
+}
 

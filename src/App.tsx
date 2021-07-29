@@ -10,19 +10,21 @@ import style from './App.module.css';
 import SettingsPage from './pages/SettingsPage/SettingsPage';
 import CategoryPage from './pages/CategoryPage/CategoryPage';
 import {APINode, callAPI} from './utils/Api';
-import {NoBackendConnectionPopup} from './elements/Popups/NoBackendConnectionPopup/NoBackendConnectionPopup';
 
 import {BrowserRouter as Router, NavLink, Route, Switch} from 'react-router-dom';
 import Player from './pages/Player/Player';
 import ActorOverviewPage from './pages/ActorOverviewPage/ActorOverviewPage';
 import ActorPage from './pages/ActorPage/ActorPage';
 import {SettingsTypes} from './types/ApiTypes';
+import AuthenticationPage from './pages/AuthenticationPage/AuthenticationPage';
+import TVShowPage from './pages/TVShowPage/TVShowPage';
+import TVPlayer from './pages/TVShowPage/TVPlayer';
+import {CookieTokenStore} from './utils/TokenStore/CookieTokenStore';
+import {token} from './utils/TokenHandler';
 
 interface state {
-    generalSettingsLoaded: boolean;
-    passwordsupport: boolean;
+    password: boolean | null; // null if uninitialized - true if pwd needed false if not needed
     mediacentername: string;
-    onapierror: boolean;
 }
 
 /**
@@ -31,11 +33,48 @@ interface state {
 class App extends React.Component<{}, state> {
     constructor(props: {}) {
         super(props);
+
+        token.init(new CookieTokenStore());
+
+        let pwdneeded: boolean | null = null;
+
+        if (token.apiTokenValid()) {
+            pwdneeded = false;
+        } else {
+            token.refreshAPIToken((err) => {
+                if (err === 'invalid_client') {
+                    this.setState({password: true});
+                } else if (err === '') {
+                    this.setState({password: false});
+                } else {
+                    console.log('unimplemented token error: ' + err);
+                }
+            });
+        }
+
         this.state = {
-            generalSettingsLoaded: false,
-            passwordsupport: false,
             mediacentername: 'OpenMediaCenter',
-            onapierror: false
+            password: pwdneeded
+        };
+
+        // force an update on theme change
+        GlobalInfos.onThemeChange(() => {
+            this.forceUpdate();
+        });
+
+        // set the hook to load passwordfield on global func call
+        GlobalInfos.loadPasswordPage = (callback?: () => void): void => {
+            // try refreshing the token
+            token.refreshAPIToken((err) => {
+                if (err !== '') {
+                    this.setState({password: true});
+                } else {
+                    // call callback if request was successful
+                    if (callback) {
+                        callback();
+                    }
+                }
+            }, true);
         };
     }
 
@@ -45,18 +84,15 @@ class App extends React.Component<{}, state> {
             // set theme
             GlobalInfos.enableDarkTheme(result.DarkMode);
 
-            GlobalInfos.setVideoPath(result.VideoPath);
+            GlobalInfos.setVideoPaths(result.VideoPath, result.TVShowPath);
+
+            GlobalInfos.setTVShowsEnabled(result.TVShowEnabled);
 
             this.setState({
-                generalSettingsLoaded: true,
-                passwordsupport: result.Password,
-                mediacentername: result.Mediacenter_name,
-                onapierror: false
+                mediacentername: result.MediacenterName
             });
             // set tab title to received mediacenter name
-            document.title = result.Mediacenter_name;
-        }, error => {
-            this.setState({onapierror: true});
+            document.title = result.MediacenterName;
         });
     }
 
@@ -64,62 +100,110 @@ class App extends React.Component<{}, state> {
         this.initialAPICall();
     }
 
-
     render(): JSX.Element {
-        const themeStyle = GlobalInfos.getThemeStyle();
         // add the main theme to the page body
-        document.body.className = themeStyle.backgroundcolor;
+        document.body.className = GlobalInfos.getThemeStyle().backgroundcolor;
+
+        if (this.state.password === true) {
+            // render authentication page if auth is neccessary
+            return (
+                <AuthenticationPage
+                    onSuccessLogin={(): void => {
+                        this.setState({password: false});
+                        // reinit general infos
+                        this.initialAPICall();
+                    }}
+                />
+            );
+        } else if (this.state.password === false) {
+            return (
+                <Router>
+                    <div className={style.app}>
+                        {this.navBar()}
+                        {this.routing()}
+                    </div>
+                </Router>
+            );
+        } else {
+            return <>still loading...</>;
+        }
+    }
+
+    /**
+     * render the top navigation bar
+     */
+    navBar(): JSX.Element {
+        const themeStyle = GlobalInfos.getThemeStyle();
 
         return (
-            <Router>
-                <div className={style.app}>
-                    <div className={[style.navcontainer, themeStyle.backgroundcolor, themeStyle.textcolor, themeStyle.hrcolor].join(' ')}>
-                        <div className={style.navbrand}>{this.state.mediacentername}</div>
-                        <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/'} activeStyle={{opacity: '0.85'}}>Home</NavLink>
-                        <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/random'} activeStyle={{opacity: '0.85'}}>Random
-                            Video</NavLink>
+            <div className={[style.navcontainer, themeStyle.backgroundcolor, themeStyle.textcolor, themeStyle.hrcolor].join(' ')}>
+                <div className={style.navbrand}>{this.state.mediacentername}</div>
+                <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/'} activeStyle={{opacity: '0.85'}}>
+                    Home
+                </NavLink>
+                <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/random'} activeStyle={{opacity: '0.85'}}>
+                    Random Video
+                </NavLink>
 
-                        <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/categories'} activeStyle={{opacity: '0.85'}}>Categories</NavLink>
-                        <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/settings'} activeStyle={{opacity: '0.85'}}>Settings</NavLink>
-                    </div>
-                    {this.routing()}
-                </div>
-                {this.state.onapierror ? this.ApiError() : null}
-            </Router>
+                <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/categories'} activeStyle={{opacity: '0.85'}}>
+                    Categories
+                </NavLink>
+
+                {GlobalInfos.isTVShowEnabled() ? (
+                    <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/tvshows'} activeStyle={{opacity: '0.85'}}>
+                        TV Shows
+                    </NavLink>
+                ) : null}
+
+                <NavLink className={[style.navitem, themeStyle.navitem].join(' ')} to={'/settings'} activeStyle={{opacity: '0.85'}}>
+                    Settings
+                </NavLink>
+            </div>
         );
     }
 
+    /**
+     * render the react router elements
+     */
     routing(): JSX.Element {
         return (
             <Switch>
-                <Route path="/random">
-                    <RandomPage/>
+                <Route path='/random'>
+                    <RandomPage />
                 </Route>
-                <Route path="/categories">
-                    <CategoryPage/>
+                <Route path='/categories'>
+                    <CategoryPage />
                 </Route>
-                <Route path="/settings">
-                    <SettingsPage/>
+                <Route path='/settings'>
+                    <SettingsPage />
                 </Route>
-                <Route exact path="/player/:id">
-                    <Player/>
+                <Route exact path='/player/:id'>
+                    <Player />
                 </Route>
-                <Route exact path="/actors">
-                    <ActorOverviewPage/>
+                <Route exact path='/actors'>
+                    <ActorOverviewPage />
                 </Route>
-                <Route path="/actors/:id">
-                    <ActorPage/>
+                <Route path='/actors/:id'>
+                    <ActorPage />
                 </Route>
-                <Route path="/">
-                    <HomePage/>
+
+                {GlobalInfos.isTVShowEnabled() ? (
+                    <Route path='/tvshows'>
+                        <TVShowPage />
+                    </Route>
+                ) : null}
+
+                {GlobalInfos.isTVShowEnabled() ? (
+                    <Route exact path='/tvplayer/:id'>
+                        <TVPlayer />
+                    </Route>
+                ) : null}
+
+                <Route path='/'>
+                    <HomePage />
                 </Route>
             </Switch>
         );
-    }
-
-    ApiError(): JSX.Element {
-        // on api error show popup and retry and show again if failing..
-        return (<NoBackendConnectionPopup onHide={(): void => this.initialAPICall()}/>);
     }
 }
 

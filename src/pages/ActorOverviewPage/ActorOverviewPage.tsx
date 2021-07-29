@@ -4,20 +4,20 @@ import {ActorType} from '../../types/VideoTypes';
 import ActorTile from '../../elements/ActorTile/ActorTile';
 import PageTitle from '../../elements/PageTitle/PageTitle';
 import SideBar from '../../elements/SideBar/SideBar';
-import style from './ActorOverviewPage.module.css';
+// import style from './ActorOverviewPage.module.css';
 import {Button} from '../../elements/GPElements/Button';
 import NewActorPopup from '../../elements/Popups/NewActorPopup/NewActorPopup';
+import DynamicContentContainer from '../../elements/DynamicContentContainer/DynamicContentContainer';
 
-interface props {
-}
+interface Props {}
 
 interface state {
     actors: ActorType[];
-    NActorPopupVisible: boolean
+    NActorPopupVisible: boolean;
 }
 
-class ActorOverviewPage extends React.Component<props, state> {
-    constructor(props: props) {
+class ActorOverviewPage extends React.Component<Props, state> {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
@@ -33,24 +33,30 @@ class ActorOverviewPage extends React.Component<props, state> {
     render(): JSX.Element {
         return (
             <>
-                <PageTitle title='Actors' subtitle={this.state.actors.length + ' Actors'}/>
+                <PageTitle title='Actors' subtitle={this.state.actors.length + ' Actors'} />
                 <SideBar>
-                    <Button title='Add Actor' onClick={(): void => this.setState({NActorPopupVisible: true})}/>
+                    <Button title='Add Actor' onClick={(): void => this.setState({NActorPopupVisible: true})} />
                 </SideBar>
-                <div className={style.container}>
-                    {this.state.actors.map((el) => (<ActorTile key={el.ActorId} actor={el}/>))}
-                </div>
-                {this.state.NActorPopupVisible ?
-                    <NewActorPopup onHide={(): void => {
-                        this.setState({NActorPopupVisible: false});
-                        this.fetchAvailableActors(); // refetch actors
-                    }}/> : null}
+                <DynamicContentContainer
+                    renderElement={(el): JSX.Element => <ActorTile key={el.ActorId} actor={el} />}
+                    data={this.state.actors}
+                    initialLoadNr={36}
+                />
+
+                {this.state.NActorPopupVisible ? (
+                    <NewActorPopup
+                        onHide={(): void => {
+                            this.setState({NActorPopupVisible: false});
+                            this.fetchAvailableActors(); // refetch actors
+                        }}
+                    />
+                ) : null}
             </>
         );
     }
 
     fetchAvailableActors(): void {
-        callAPI<ActorType[]>(APINode.Actor, {action: 'getAllActors'}, result => {
+        callAPI<ActorType[]>(APINode.Actor, {action: 'getAllActors'}, (result) => {
             this.setState({actors: result});
         });
     }

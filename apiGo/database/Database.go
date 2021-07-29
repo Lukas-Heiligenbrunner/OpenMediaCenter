@@ -90,9 +90,7 @@ func Close() {
 	db.Close()
 }
 
-func GetSettings() types.SettingsType {
-	var result types.SettingsType
-
+func GetSettings() (result types.SettingsType, PathPrefix string, sizes types.SettingsSizeType) {
 	// query settings and infotile values
 	query := fmt.Sprintf(`
                 SELECT (
@@ -120,7 +118,7 @@ func GetSettings() types.SettingsType {
 	var DarkMode int
 	var TMDBGrabbing int
 
-	err := QueryRow(query).Scan(&result.VideoNr, &result.DBSize, &result.DifferentTags, &result.TagsAdded,
+	err := QueryRow(query).Scan(&sizes.VideoNr, &sizes.DBSize, &sizes.DifferentTags, &sizes.TagsAdded,
 		&result.VideoPath, &result.EpisodePath, &result.Password, &result.MediacenterName, &TMDBGrabbing, &DarkMode)
 
 	if err != nil {
@@ -130,7 +128,6 @@ func GetSettings() types.SettingsType {
 	result.TMDBGrabbing = TMDBGrabbing != 0
 	result.PasswordEnabled = result.Password != "-1"
 	result.DarkMode = DarkMode != 0
-	result.PathPrefix = SettingsVideoPrefix
-
-	return result
+	PathPrefix = SettingsVideoPrefix
+	return
 }

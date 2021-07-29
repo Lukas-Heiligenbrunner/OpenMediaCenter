@@ -2,15 +2,13 @@ package videoparser
 
 import (
 	"database/sql"
-	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"openmediacenter/apiGo/api/types"
 	"openmediacenter/apiGo/database"
 	"openmediacenter/apiGo/videoparser/tmdb"
-	"os/exec"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 var mSettings types.SettingsType
@@ -41,35 +39,71 @@ func ReIndexVideos(path []string, sett types.SettingsType) {
 	fmt.Printf("FFMPEG support: %t\n", mExtDepsAvailable.FFMpeg)
 	fmt.Printf("MediaInfo support: %t\n", mExtDepsAvailable.MediaInfo)
 
-	for _, s := range path {
+	// filter out those urls which are already existing in db
+	nonExisting := filterExisting(path)
+
+	fmt.Printf("There are %d videos not existing in db.\n", len(*nonExisting))
+
+	for _, s := range *nonExisting {
 		processVideo(s)
 	}
 
-	AppendMessageBuffer("reindex finished successfully!")
-
-	contentAvailable = false
+	AppendMessage("reindex finished successfully!")
+	SendEvent("stop")
 	fmt.Println("Reindexing finished!")
+}
+
+// filter those entries from array which are already existing!
+func filterExisting(paths []string) *[]string {
+	var nameStr string
+
+	// build the query string with files on disk
+	for i, s := range paths {
+		// escape ' in url name
+		s = strings.Replace(s, "'", "\\'", -1)
+		nameStr += "SELECT '" + s + "' "
+
+		// if first index add as url
+		if i == 0 {
+			nameStr += "AS url "
+		}
+
+		// if not last index add union all
+		if i != len(paths)-1 {
+			nameStr += "UNION ALL "
+		}
+	}
+
+	query := fmt.Sprintf("SELECT * FROM (%s) urls WHERE urls.url NOT IN(SELECT movie_url FROM videos)", nameStr)
+	rows := database.Query(query)
+
+	var resultarr []string
+	// parse the result rows into a array
+	for rows.Next() {
+		var url string
+		err := rows.Scan(&url)
+		if err != nil {
+			continue
+		}
+		resultarr = append(resultarr, url)
+	}
+	rows.Close()
+
+	return &resultarr
 }
 
 func processVideo(fileNameOrig string) {
 	fmt.Printf("Processing %s video-", fileNameOrig)
 
 	// match the file extension
-	r, _ := regexp.Compile(`\.[a-zA-Z0-9]+$`)
+	r := regexp.MustCompile(`\.[a-zA-Z0-9]+$`)
 	fileName := r.ReplaceAllString(fileNameOrig, "")
 
+	// match the year and cut year from name
 	year, fileName := matchYear(fileName)
 
-	// now we should look if this video already exists in db
-	query := "SELECT * FROM videos WHERE movie_name = ?"
-	err := database.QueryRow(query, fileName).Scan()
-	if err == sql.ErrNoRows {
-		fmt.Printf("The Video %s does't exist! Adding it to database.\n", fileName)
-
-		addVideo(fileName, fileNameOrig, year)
-	} else {
-		fmt.Println(" :existing!")
-	}
+	fmt.Printf("The Video %s doesn't exist! Adding it to database.\n", fileName)
+	addVideo(fileName, fileNameOrig, year)
 }
 
 // add a video to the database
@@ -87,7 +121,7 @@ func addVideo(videoName string, fileName string, year int) {
 	}
 
 	if mExtDepsAvailable.FFMpeg {
-		ppic, err = parseFFmpegPic(fileName)
+		ppic, err = parseFFmpegPic(mSettings.VideoPath + fileName)
 		if err != nil {
 			fmt.Printf("FFmpeg error occured: %s\n", err.Error())
 		} else {
@@ -96,7 +130,7 @@ func addVideo(videoName string, fileName string, year int) {
 	}
 
 	if mExtDepsAvailable.MediaInfo {
-		atr := getVideoAttributes(fileName)
+		atr := getVideoAttributes(mSettings.VideoPath + fileName)
 		if atr != nil {
 			vidAtr = atr
 		}
@@ -130,17 +164,18 @@ func addVideo(videoName string, fileName string, year int) {
 		insertTMDBTags(tmdbData.GenreIds, insertId)
 	}
 
-	AppendMessageBuffer(fmt.Sprintf("%s - added!", videoName))
+	AppendMessage(fmt.Sprintf("%s - added!", videoName))
 }
 
 func matchYear(fileName string) (int, string) {
-	r, _ := regexp.Compile(`\([0-9]{4}?\)`)
+	r := regexp.MustCompile(`\([0-9]{4}?\)`)
 	years := r.FindAllString(fileName, -1)
 	if len(years) == 0 {
 		return -1, fileName
 	}
-
-	year, err := strconv.Atoi(years[len(years)-1])
+	yearStr := years[len(years)-1]
+	// get last year occurance and cut first and last char
+	year, err := strconv.Atoi(yearStr[1 : len(yearStr)-1])
 
 	if err != nil {
 		return -1, fileName
@@ -148,91 +183,6 @@ func matchYear(fileName string) (int, string) {
 
 	// cut out year from filename
 	return year, r.ReplaceAllString(fileName, "")
-}
-
-// parse the thumbail picture from video file
-func parseFFmpegPic(fileName string) (*string, error) {
-	app := "ffmpeg"
-
-	cmd := exec.Command(app,
-		"-hide_banner",
-		"-loglevel", "panic",
-		"-ss", "00:04:00",
-		"-i", mSettings.VideoPath+fileName,
-		"-vframes", "1",
-		"-q:v", "2",
-		"-f", "singlejpeg",
-		"pipe:1")
-
-	stdout, err := cmd.Output()
-
-	if err != nil {
-		fmt.Println(err.Error())
-		fmt.Println(string(err.(*exec.ExitError).Stderr))
-		return nil, err
-	}
-
-	backpic64 := "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(stdout)
-
-	return &backpic64, nil
-}
-
-func getVideoAttributes(fileName string) *VideoAttributes {
-	app := "mediainfo"
-
-	arg0 := mSettings.VideoPath + fileName
-	arg1 := "--Output=JSON"
-
-	cmd := exec.Command(app, arg1, "-f", arg0)
-	stdout, err := cmd.Output()
-
-	var t struct {
-		Media struct {
-			Track []struct {
-				Duration string
-				FileSize string
-				Width    string
-			}
-		}
-	}
-	err = json.Unmarshal(stdout, &t)
-
-	if err != nil {
-		fmt.Println(err.Error())
-		return nil
-	}
-
-	duration, err := strconv.ParseFloat(t.Media.Track[0].Duration, 32)
-	filesize, err := strconv.Atoi(t.Media.Track[0].FileSize)
-	width, err := strconv.Atoi(t.Media.Track[1].Width)
-
-	ret := VideoAttributes{
-		Duration: float32(duration),
-		FileSize: uint(filesize),
-		Width:    uint(width),
-	}
-
-	return &ret
-}
-
-func AppendMessageBuffer(message string) {
-	messageBuffer = append(messageBuffer, message)
-}
-
-// ext dependency support check
-func checkExtDependencySupport() *ExtDependencySupport {
-	var extDepsAvailable ExtDependencySupport
-
-	extDepsAvailable.FFMpeg = commandExists("ffmpeg")
-	extDepsAvailable.MediaInfo = commandExists("mediainfo")
-
-	return &extDepsAvailable
-}
-
-// check if a specific system command is available
-func commandExists(cmd string) bool {
-	_, err := exec.LookPath(cmd)
-	return err == nil
 }
 
 // insert the default size tags to corresponding video

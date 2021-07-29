@@ -1,23 +1,19 @@
 image: node:14
 
 stages:
-  - build
+  - build_frontend
+  - build_backend
   - test
   - packaging
   - deploy
 
-include:
-  - template: Code-Quality.gitlab-ci.yml
-
-variables:
-  SAST_DISABLE_DIND: "true"
-
 Minimize_Frontend:
-  stage: build
+  stage: build_frontend
   before_script:
     - yarn install --cache-folder .yarn
   script:
     - yarn run build
+    - rm build/*/*/*.map
   artifacts:
     expire_in: 2 days
     paths:
@@ -30,11 +26,15 @@ Minimize_Frontend:
 
 Build_Backend:
   image: golang:latest
-  stage: build
+  stage: build_backend
   script:
     - cd apiGo
     - go build -v -o openmediacenter
-    - env GOOS=windows GOARCH=amd64 go build -v -o openmediacenter.exe
+    - cp -r ../build/ ./static/
+    - go build -v -tags static -o openmediacenter_full
+    - env GOOS=windows GOARCH=amd64 go build -v -tags static -o openmediacenter.exe
+  needs:
+    - Minimize_Frontend
   artifacts:
     expire_in: 2 days
     paths:
@@ -46,6 +46,7 @@ Frontend_Tests:
     - yarn install --cache-folder .yarn
   script:
     - yarn run test
+  needs: []
   artifacts:
     reports:
       junit:
@@ -63,14 +64,27 @@ Backend_Tests:
     - cd apiGo
     - go get -u github.com/jstemmer/go-junit-report
     - go test -v ./... 2>&1 | go-junit-report -set-exit-code > report.xml
+  needs: []
   artifacts:
     when: always
     reports:
       junit: ./apiGo/report.xml
 
-code_quality:
-  tags:
-    - dind
+lint:
+  stage: test
+  before_script:
+    - yarn install --cache-folder .yarn
+  script:
+    - yarn run lint
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .yarn/
+      - ./node_modules/
+  artifacts:
+    reports:
+      codequality: gl-codequality.json
+  needs: []
 
 Debian_Server:
   stage: packaging
@@ -98,7 +112,7 @@ Debian_Server:
 
 Test_Server:
   stage: deploy
-  image: luki42/alpineopenssh:latest
+  image: luki42/ssh:latest
   needs:
     - Frontend_Tests
     - Backend_Tests
@@ -107,7 +121,7 @@ Test_Server:
     - master
   script:
     - eval $(ssh-agent -s)
-    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - echo "$SSH_PRIVATE_KEY" | ssh-add -
     - mkdir -p ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
     - scp deb/OpenMediaCenter-*.deb root@192.168.0.42:/tmp/

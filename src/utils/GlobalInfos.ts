@@ -7,7 +7,9 @@ import lighttheme from '../AppLightTheme.module.css';
  */
 class StaticInfos {
     private darktheme: boolean = true;
-    private videopath: string = ""
+    private videopath: string = '';
+    private tvshowpath: string = '';
+    private TVShowsEnabled: boolean = false;
 
     /**
      * check if the current theme is the dark theme
@@ -15,7 +17,7 @@ class StaticInfos {
      */
     isDarkTheme(): boolean {
         return this.darktheme;
-    };
+    }
 
     /**
      * setter to enable or disable the dark or light theme
@@ -23,22 +25,33 @@ class StaticInfos {
      */
     enableDarkTheme(enable = true): void {
         this.darktheme = enable;
+
+        // trigger onThemeChange handlers
+        this.handlers.map((func) => {
+            func();
+        });
     }
 
     /**
      * get the currently selected theme stylesheet
      * @returns {*} the style object of the current active theme
      */
-    getThemeStyle(): { [_: string]: string } {
+    getThemeStyle(): {[_: string]: string} {
         return this.isDarkTheme() ? darktheme : lighttheme;
+    }
+
+    handlers: (() => void)[] = [];
+    onThemeChange(func: () => void): void {
+        this.handlers.push(func);
     }
 
     /**
      * set the current videopath
      * @param vidpath videopath with beginning and ending slash
      */
-    setVideoPath(vidpath: string): void {
+    setVideoPaths(vidpath: string, tvshowpath: string): void {
         this.videopath = vidpath;
+        this.tvshowpath = tvshowpath;
     }
 
     /**
@@ -47,7 +60,26 @@ class StaticInfos {
     getVideoPath(): string {
         return this.videopath;
     }
+
+    /**
+     * return the current tvshow path
+     */
+    getTVShowPath(): string {
+        return this.tvshowpath;
+    }
+
+    /**
+     * load the Password page manually
+     */
+    loadPasswordPage: ((callback?: () => void) => void) | undefined = undefined;
+
+    setTVShowsEnabled(TVShowEnabled: boolean): void {
+        this.TVShowsEnabled = TVShowEnabled;
+    }
+
+    isTVShowEnabled(): boolean {
+        return this.TVShowsEnabled;
+    }
 }
 
-const GlobalInfos = new StaticInfos();
-export default GlobalInfos;
+export default new StaticInfos();

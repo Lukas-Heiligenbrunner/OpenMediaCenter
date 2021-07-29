@@ -1,8 +1,7 @@
 {
   "name": "openmediacenter",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": true,
-  "main": "public/electron.js",
   "author": {
     "email": "lukas.heiligenbrunner@gmail.com",
     "name": "Lukas Heiligenbrunner",
@@ -13,19 +12,21 @@
     "@fortawesome/free-regular-svg-icons": "^5.15.1",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@fortawesome/react-fontawesome": "^0.1.13",
-    "bootstrap": "^4.5.3",
+    "bootstrap": "^5.0.2",
     "plyr-react": "^3.0.7",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.0",
     "react-dom": "^17.0.1",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
-    "typescript": "^4.1.3"
+    "typescript": "^4.3.5"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "CI=true react-scripts test --reporters=jest-junit --verbose --silent --coverage --reporters=default"
+    "build": "CI=false react-scripts build",
+    "test": "CI=true react-scripts test --reporters=jest-junit --verbose --silent --coverage --reporters=default",
+    "lint": "eslint --format gitlab src/",
+    "apidoc": "apidoc -i apiGo/ -o doc/"
   },
   "jest": {
     "collectCoverageFrom": [
@@ -39,23 +40,6 @@
   },
   "proxy": "http://127.0.0.1:8081",
   "homepage": "/",
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ],
-    "overrides": [
-      {
-        "files": [
-          "**/*.ts?(x)"
-        ],
-        "rules": {
-          "@typescript-eslint/no-explicit-any": "error",
-          "@typescript-eslint/explicit-function-return-type": "error"
-        }
-      }
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -69,18 +53,37 @@
     ]
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.11.6",
-    "@testing-library/react": "^11.2.2",
-    "@testing-library/user-event": "^12.6.0",
-    "@types/jest": "^26.0.19",
-    "@types/node": "^12.19.9",
-    "@types/react": "^16.14.2",
-    "@types/react-dom": "^16.9.10",
-    "@types/react-router": "5.1.8",
-    "@types/react-router-dom": "^5.1.6",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^12.0.0",
+    "@testing-library/user-event": "^13.2.1",
+    "@types/jest": "^26.0.24",
+    "@types/node": "^16.4.7",
+    "@types/react": "^17.0.15",
+    "@types/react-dom": "^17.0.9",
+    "@types/react-router": "5.1.16",
+    "@types/react-router-dom": "^5.1.8",
+    "@typescript-eslint/eslint-plugin": "^4.28.5",
+    "@typescript-eslint/parser": "^4.28.5",
+    "apidoc": "^0.28.1",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.5",
+    "eslint": "^7.31.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-formatter-gitlab": "^2.2.0",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-jest": "^24.4.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "jest-junit": "^12.0.0",
-    "react-scripts": "4.0.1"
+    "prettier": "^2.3.2",
+    "prettier-config": "^1.0.0",
+    "react-scripts": "4.0.3"
+  },
+  "apidoc": {
+    "name": "OpenMediaCenter",
+    "description": "API Documentation of OpenMediaCenter",
+    "title": "OpenMediaCenter Doc",
+    "sampleUrl": null
   }
 }

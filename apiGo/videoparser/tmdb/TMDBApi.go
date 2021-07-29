@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"regexp"
 )
 
@@ -20,21 +21,43 @@ type VideoTMDB struct {
 	GenreIds  []int
 }
 
+type TVShowTMDB struct {
+	Thumbnail string
+	Overview  string
+	GenreIds  []int
+}
+
 type tmdbVidResult struct {
-	Poster_path       string
-	Adult             bool
-	Overview          string
-	Release_date      string
-	Genre_ids         []int
-	Id                int
-	Original_title    string
-	Original_language string
-	Title             string
-	Backdrop_path     string
-	Popularity        int
-	Vote_count        int
-	Video             bool
-	Vote_average      int
+	PosterPath       *string `json:"poster_path"`
+	Adult            bool    `json:"adult"`
+	Overview         string  `json:"overview"`
+	ReleaseDate      string  `json:"release_date"`
+	GenreIds         []int   `json:"genre_ids"`
+	Id               int     `json:"id"`
+	OriginalTitle    string  `json:"original_title"`
+	OriginalLanguage string  `json:"original_language"`
+	Title            string  `json:"title"`
+	BackdropPath     *string `json:"backdrop_path"`
+	Popularity       int     `json:"popularity"`
+	VoteCount        int     `json:"vote_count"`
+	Video            bool    `json:"video"`
+	VoteAverage      int     `json:"vote_average"`
+}
+
+type tmdbTvResult struct {
+	PosterPath       *string  `json:"poster_path"`
+	Popularity       int      `json:"popularity"`
+	Id               int      `json:"id"`
+	BackdropPath     *string  `json:"backdrop_path"`
+	VoteAverage      int      `json:"vote_average"`
+	Overview         string   `json:"overview"`
+	FirstAirDate     string   `json:"first_air_date"`
+	OriginCountry    []string `json:"origin_country"`
+	GenreIds         []int    `json:"genre_ids"`
+	OriginalLanguage string   `json:"original_language"`
+	VoteCount        int      `json:"vote_count"`
+	Name             string   `json:"name"`
+	OriginalName     string   `json:"original_name"`
 }
 
 type TMDBGenre struct {
@@ -43,8 +66,9 @@ type TMDBGenre struct {
 }
 
 func SearchVideo(MovieName string, year int) *VideoTMDB {
-	url := fmt.Sprintf("%ssearch/movie?api_key=%s&query=%s", baseUrl, apiKey, MovieName)
-	resp, err := http.Get(url)
+	fmt.Printf("Searching TMDB for: Moviename: %s, year:%d \n", MovieName, year)
+	queryURL := fmt.Sprintf("%ssearch/movie?api_key=%s&query=%s", baseUrl, apiKey, url.QueryEscape(MovieName))
+	resp, err := http.Get(queryURL)
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil
@@ -63,11 +87,16 @@ func SearchVideo(MovieName string, year int) *VideoTMDB {
 
 	fmt.Println(len(t.Results))
 
+	// if there was no match with tmdb return 0
+	if len(t.Results) == 0 {
+		return nil
+	}
+
 	var tmdbVid tmdbVidResult
 	if year != -1 {
 		for _, result := range t.Results {
 			r, _ := regexp.Compile(fmt.Sprintf(`^%d-[0-9]{2}?-[0-9]{2}?$`, year))
-			if r.MatchString(result.Release_date) {
+			if r.MatchString(result.ReleaseDate) {
 				tmdbVid = result
 				// continue parsing
 				goto cont
@@ -82,22 +111,69 @@ func SearchVideo(MovieName string, year int) *VideoTMDB {
 	// continue label
 cont:
 
-	thumbnail := fetchPoster(tmdbVid)
+	var thumbnail = ""
+	if tmdbVid.PosterPath != nil {
+		pic := fetchPoster(*tmdbVid.PosterPath)
+		if pic != nil {
+			thumbnail = *pic
+		}
+	}
 
 	result := VideoTMDB{
-		Thumbnail: *thumbnail,
+		Thumbnail: thumbnail,
 		Overview:  tmdbVid.Overview,
 		Title:     tmdbVid.Title,
-		GenreIds:  tmdbVid.Genre_ids,
+		GenreIds:  tmdbVid.GenreIds,
 	}
 
 	return &result
 }
 
-func fetchPoster(vid tmdbVidResult) *string {
-	url := fmt.Sprintf("%s%s", pictureBase, vid.Poster_path)
+func SearchTVShow(Name string) *TVShowTMDB {
+	fmt.Printf("Searching TMDB for: TVShow: %s\n", Name)
+	queryURL := fmt.Sprintf("%ssearch/tv?api_key=%s&query=%s", baseUrl, apiKey, url.QueryEscape(Name))
+	resp, err := http.Get(queryURL)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil
+	}
 
-	resp, err := http.Get(url)
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil
+	}
+
+	var t struct {
+		Results []tmdbTvResult `json:"results"`
+	}
+	err = json.Unmarshal(body, &t)
+
+	fmt.Println(len(t.Results))
+
+	if len(t.Results) == 0 {
+		return nil
+	}
+
+	res := TVShowTMDB{
+		Thumbnail: "",
+		Overview:  t.Results[0].Overview,
+		GenreIds:  t.Results[0].GenreIds,
+	}
+
+	if t.Results[0].PosterPath != nil {
+		pic := fetchPoster(*t.Results[0].PosterPath)
+		if pic != nil {
+			res.Thumbnail = *pic
+		}
+	}
+
+	return &res
+}
+
+func fetchPoster(posterPath string) *string {
+	posterURL := fmt.Sprintf("%s%s", pictureBase, posterPath)
+	resp, err := http.Get(posterURL)
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil
@@ -116,8 +192,8 @@ func fetchPoster(vid tmdbVidResult) *string {
 var tmdbGenres *[]TMDBGenre
 
 func fetchGenres() *[]TMDBGenre {
-	url := fmt.Sprintf("%sgenre/movie/list?api_key=%s", baseUrl, apiKey)
-	resp, err := http.Get(url)
+	posterURL := fmt.Sprintf("%sgenre/movie/list?api_key=%s", baseUrl, apiKey)
+	resp, err := http.Get(posterURL)
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil

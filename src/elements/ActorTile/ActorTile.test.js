@@ -12,12 +12,8 @@ describe('<ActorTile/>', function () {
         const func = jest.fn((_) => {});
         const wrapper = shallow(<ActorTile actor={{Thumbnail: '-1', Name: 'testname', id: 3}} onClick={() => func()}/>);
 
-        const func1 = jest.fn();
-        prepareViewBinding(func1);
-
         wrapper.simulate('click');
 
-        expect(func1).toBeCalledTimes(0);
         expect(func).toBeCalledTimes(1);
     });
 });

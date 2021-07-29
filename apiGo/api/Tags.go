@@ -13,14 +13,30 @@ func AddTagHandlers() {
 }
 
 func deleteFromDB() {
-	var dT struct {
-		TagId int
-		Force bool
-	}
-	AddHandler("deleteTag", TagNode, &dT, func() []byte {
+	/**
+	 * @api {post} /api/tags [deleteTag]
+	 * @apiDescription Start Database video reindex Job
+	 * @apiName deleteTag
+	 * @apiGroup Tags
+	 *
+	 * @apiParam {bool} [Force] force delete tag with its constraints
+	 * @apiParam {int} TagId id of tag to delete
+	 *
+	 * @apiSuccess {string} result 'success' if successfully or error message if not
+	 */
+	AddHandler("deleteTag", TagNode, func(info *HandlerInfo) []byte {
+		var args struct {
+			TagId int
+			Force bool
+		}
+		if err := FillStruct(&args, info.Data); err != nil {
+			fmt.Println(err.Error())
+			return nil
+		}
+
 		// delete key constraints first
-		if dT.Force {
-			query := fmt.Sprintf("DELETE FROM video_tags WHERE tag_id=%d", dT.TagId)
+		if args.Force {
+			query := fmt.Sprintf("DELETE FROM video_tags WHERE tag_id=%d", args.TagId)
 			err := database.Edit(query)
 
 			// respond only if result not successful
@@ -29,7 +45,7 @@ func deleteFromDB() {
 			}
 		}
 
-		query := fmt.Sprintf("DELETE FROM tags WHERE tag_id=%d", dT.TagId)
+		query := fmt.Sprintf("DELETE FROM tags WHERE tag_id=%d", args.TagId)
 		err := database.Edit(query)
 
 		if err == nil {
@@ -37,9 +53,9 @@ func deleteFromDB() {
 			return database.ManualSuccessResponse(err)
 		} else {
 			// check with regex if its the key constraint error
-			r, _ := regexp.Compile("^.*a foreign key constraint fails.*$")
+			r := regexp.MustCompile("^.*a foreign key constraint fails.*$")
 			if r.MatchString(err.Error()) {
-				return []byte(`{"result":"not empty tag"}`)
+				return database.ManualSuccessResponse(fmt.Errorf("not empty tag"))
 			} else {
 				return database.ManualSuccessResponse(err)
 			}
@@ -48,27 +64,68 @@ func deleteFromDB() {
 }
 
 func getFromDB() {
-	AddHandler("getAllTags", TagNode, nil, func() []byte {
+	/**
+	 * @api {post} /api/tags [getAllTags]
+	 * @apiDescription get all available Tags
+	 * @apiName getAllTags
+	 * @apiGroup Tags
+	 *
+	 * @apiSuccess {Object[]} array of tag objects
+	 * @apiSuccess {uint32} TagId
+	 * @apiSuccess {string} TagName name of the Tag
+	 */
+	AddHandler("getAllTags", TagNode, func(info *HandlerInfo) []byte {
 		query := "SELECT tag_id,tag_name from tags"
 		return jsonify(readTagsFromResultset(database.Query(query)))
 	})
 }
 
 func addToDB() {
-	var ct struct {
-		TagName string
-	}
-	AddHandler("createTag", TagNode, &ct, func() []byte {
+	/**
+	 * @api {post} /api/tags [createTag]
+	 * @apiDescription create a new tag
+	 * @apiName createTag
+	 * @apiGroup Tags
+	 *
+	 * @apiParam {string} TagName name of the tag
+	 *
+	 * @apiSuccess {string} result 'success' if successfully or error message if not
+	 */
+	AddHandler("createTag", TagNode, func(info *HandlerInfo) []byte {
+		var args struct {
+			TagName string
+		}
+		if err := FillStruct(&args, info.Data); err != nil {
+			fmt.Println(err.Error())
+			return nil
+		}
+
 		query := "INSERT IGNORE INTO tags (tag_name) VALUES (?)"
-		return database.SuccessQuery(query, ct.TagName)
+		return database.SuccessQuery(query, args.TagName)
 	})
 
-	var at struct {
-		MovieId int
-		TagId   int
-	}
-	AddHandler("addTag", TagNode, &at, func() []byte {
+	/**
+	 * @api {post} /api/tags [addTag]
+	 * @apiDescription Add new tag to video
+	 * @apiName addTag
+	 * @apiGroup Tags
+	 *
+	 * @apiParam {int} TagId Tag id to add to video
+	 * @apiParam {int} MovieId Video Id of video to add tag to
+	 *
+	 * @apiSuccess {string} result 'success' if successfully or error message if not
+	 */
+	AddHandler("addTag", TagNode, func(info *HandlerInfo) []byte {
+		var args struct {
+			MovieId int
+			TagId   int
+		}
+		if err := FillStruct(&args, info.Data); err != nil {
+			fmt.Println(err.Error())
+			return nil
+		}
+
 		query := "INSERT IGNORE INTO video_tags(tag_id, video_id) VALUES (?,?)"
-		return database.SuccessQuery(query, at.TagId, at.MovieId)
+		return database.SuccessQuery(query, args.TagId, args.MovieId)
 	})
 }

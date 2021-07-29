@@ -4,7 +4,7 @@ import {Line} from '../PageTitle/PageTitle';
 import React, {RefObject} from 'react';
 import {addKeyHandler, removeKeyHandler} from '../../utils/ShortkeyHandler';
 
-interface props {
+interface Props {
     width?: string;
     height?: string;
     banner?: JSX.Element;
@@ -16,11 +16,11 @@ interface props {
 /**
  * wrapper class for generic types of popups
  */
-class PopupBase extends React.Component<props> {
+class PopupBase extends React.Component<Props> {
     private wrapperRef: RefObject<HTMLDivElement>;
-    private framedimensions: { minHeight: string | undefined; width: string | undefined; height: string | undefined };
+    private framedimensions: {minHeight: string | undefined; width: string | undefined; height: string | undefined};
 
-    constructor(props: props) {
+    constructor(props: Props) {
         super(props);
 
         this.state = {items: []};
@@ -32,9 +32,9 @@ class PopupBase extends React.Component<props> {
 
         // parse style props
         this.framedimensions = {
-            width: (this.props.width ? this.props.width : undefined),
-            height: (this.props.height ? this.props.height : undefined),
-            minHeight: (this.props.height ? this.props.height : undefined)
+            width: this.props.width ? this.props.width : undefined,
+            height: this.props.height ? this.props.height : undefined,
+            minHeight: this.props.height ? this.props.height : undefined
         };
     }
 
@@ -63,10 +63,8 @@ class PopupBase extends React.Component<props> {
                     <div className={style.banner}>{this.props.banner}</div>
                 </div>
 
-                <Line/>
-                <div className={style.content}>
-                    {this.props.children}
-                </div>
+                <Line />
+                <div className={style.content}>{this.props.children}</div>
             </div>
         );
     }
@@ -90,7 +88,9 @@ class PopupBase extends React.Component<props> {
             this.props.onHide();
         } else if (event.key === 'Enter') {
             // call a parentsubmit if defined
-            if (this.props.ParentSubmit) this.props.ParentSubmit();
+            if (this.props.ParentSubmit) {
+                this.props.ParentSubmit();
+            }
         }
     }
 
@@ -98,14 +98,18 @@ class PopupBase extends React.Component<props> {
      * make the element drag and droppable
      */
     dragElement(): void {
-        let xOld = 0, yOld = 0;
+        let xOld = 0,
+            yOld = 0;
 
         const elmnt = this.wrapperRef.current;
-        if (elmnt === null) return;
-        if (elmnt.firstChild === null) return;
+        if (elmnt === null) {
+            return;
+        }
+        if (elmnt.firstChild === null) {
+            return;
+        }
 
         (elmnt.firstChild as HTMLDivElement).onmousedown = dragMouseDown;
-
 
         function dragMouseDown(e: MouseEvent): void {
             e.preventDefault();
@@ -125,9 +129,11 @@ class PopupBase extends React.Component<props> {
             xOld = e.clientX;
             yOld = e.clientY;
             // set the element's new position:
-            if (elmnt === null) return;
-            elmnt.style.top = (elmnt.offsetTop - dy) + 'px';
-            elmnt.style.left = (elmnt.offsetLeft - dx) + 'px';
+            if (elmnt === null) {
+                return;
+            }
+            elmnt.style.top = elmnt.offsetTop - dy + 'px';
+            elmnt.style.left = elmnt.offsetLeft - dx + 'px';
         }
 
         function closeDragElement(): void {

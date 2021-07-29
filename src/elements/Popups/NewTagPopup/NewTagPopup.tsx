@@ -5,7 +5,7 @@ import {APINode, callAPI} from '../../../utils/Api';
 import {GeneralSuccess} from '../../../types/GeneralTypes';
 
 interface props {
-    onHide: () => void
+    onHide: () => void;
 }
 
 /**
@@ -16,11 +16,24 @@ class NewTagPopup extends React.Component<props> {
 
     render(): JSX.Element {
         return (
-            <PopupBase title='Add new Tag' onHide={this.props.onHide} height='200px' width='400px' ParentSubmit={(): void => this.storeselection()}>
-                <div><input type='text' placeholder='Tagname' onChange={(v): void => {
-                    this.value = v.target.value;
-                }}/></div>
-                <button className={style.savebtn} onClick={(): void => this.storeselection()}>Save</button>
+            <PopupBase
+                title='Add new Tag'
+                onHide={this.props.onHide}
+                height='200px'
+                width='400px'
+                ParentSubmit={(): void => this.storeselection()}>
+                <div>
+                    <input
+                        type='text'
+                        placeholder='Tagname'
+                        onChange={(v): void => {
+                            this.value = v.target.value;
+                        }}
+                    />
+                </div>
+                <button className={style.savebtn} onClick={(): void => this.storeselection()}>
+                    Save
+                </button>
             </PopupBase>
         );
     }

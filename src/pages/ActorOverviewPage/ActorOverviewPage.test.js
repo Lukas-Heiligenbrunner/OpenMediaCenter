@@ -8,20 +8,6 @@ describe('<ActorOverviewPage/>', function () {
         wrapper.unmount();
     });
 
-    it('test inerstion of actor tiles', function () {
-        const wrapper = shallow(<ActorOverviewPage/>);
-
-        wrapper.setState({
-            actors: [{
-                thumbnail: '',
-                name: 'testname',
-                actor_id: 42
-            }]
-        });
-
-        expect(wrapper.find('ActorTile')).toHaveLength(1);
-    });
-
     it('test newtagpopup visibility', function () {
         const wrapper = shallow(<ActorOverviewPage/>);
 

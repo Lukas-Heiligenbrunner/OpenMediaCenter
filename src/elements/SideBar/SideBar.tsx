@@ -13,11 +13,16 @@ interface SideBarProps {
 class SideBar extends React.Component<SideBarProps> {
     render(): JSX.Element {
         const themeStyle = GlobalInfos.getThemeStyle();
-        const classnn = style.sideinfogeometry + ' ' + (this.props.hiddenFrame === undefined ? style.sideinfo + ' ' + themeStyle.secbackground : '');
+        const classnn =
+            style.sideinfogeometry +
+            ' ' +
+            (this.props.hiddenFrame === undefined ? style.sideinfo + ' ' + themeStyle.secbackground : '');
 
-        return (<div className={classnn} style={{width: this.props.width}}>
-            {this.props.children}
-        </div>);
+        return (
+            <div className={classnn} style={{width: this.props.width}}>
+                {this.props.children}
+            </div>
+        );
     }
 }
 
@@ -27,9 +32,7 @@ class SideBar extends React.Component<SideBarProps> {
 export class SideBarTitle extends React.Component {
     render(): JSX.Element {
         const themeStyle = GlobalInfos.getThemeStyle();
-        return (
-            <div className={style.sidebartitle + ' ' + themeStyle.subtextcolor}>{this.props.children}</div>
-        );
+        return <div className={style.sidebartitle + ' ' + themeStyle.subtextcolor}>{this.props.children}</div>;
     }
 }
 
@@ -40,8 +43,9 @@ export class SideBarItem extends React.Component {
     render(): JSX.Element {
         const themeStyle = GlobalInfos.getThemeStyle();
         return (
-            <div
-                className={style.sidebarinfo + ' ' + themeStyle.thirdbackground + ' ' + themeStyle.lighttextcolor}>{this.props.children}</div>
+            <div className={style.sidebarinfo + ' ' + themeStyle.thirdbackground + ' ' + themeStyle.lighttextcolor}>
+                {this.props.children}
+            </div>
         );
     }
 }

@@ -1,0 +1,15 @@
+.tile {
+    margin: 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    width: 50%;
+    padding-left: 15px;
+}
+
+.tile:hover {
+    opacity: 0.7;
+}
+
+.tile:hover svg {
+    color: dodgerblue;
+}

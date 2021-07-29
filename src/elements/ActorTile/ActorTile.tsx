@@ -5,13 +5,13 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import {ActorType} from '../../types/VideoTypes';
 
-interface props {
+interface Props {
     actor: ActorType;
-    onClick?: (actor: ActorType) => void
+    onClick?: (actor: ActorType) => void;
 }
 
-class ActorTile extends React.Component<props> {
-    constructor(props: props) {
+class ActorTile extends React.Component<Props> {
+    constructor(props: Props) {
         super(props);
 
         this.state = {};
@@ -21,12 +21,7 @@ class ActorTile extends React.Component<props> {
         if (this.props.onClick) {
             return this.renderActorTile(this.props.onClick);
         } else {
-            return (
-                <Link to={{pathname: '/actors/' + this.props.actor.ActorId}}>
-                    {this.renderActorTile(() => {
-                    })}
-                </Link>
-            );
+            return <Link to={{pathname: '/actors/' + this.props.actor.ActorId}}>{this.renderActorTile(() => {})}</Link>;
         }
     }
 
@@ -38,9 +33,19 @@ class ActorTile extends React.Component<props> {
         return (
             <div className={style.actortile} onClick={(): void => customclickhandler(this.props.actor)}>
                 <div className={style.actortile_thumbnail}>
-                    {this.props.actor.Thumbnail === '' ? <FontAwesomeIcon style={{
-                        lineHeight: '130px'
-                    }} icon={faUser} size='5x'/> : 'dfdf' /* todo render picture provided here! */}
+                    {
+                        this.props.actor.Thumbnail === '' ? (
+                            <FontAwesomeIcon
+                                style={{
+                                    lineHeight: '130px'
+                                }}
+                                icon={faUser}
+                                size='5x'
+                            />
+                        ) : (
+                            'dfdf'
+                        ) /* todo render picture provided here! */
+                    }
                 </div>
                 <div className={style.actortile_name}>{this.props.actor.Name}</div>
             </div>

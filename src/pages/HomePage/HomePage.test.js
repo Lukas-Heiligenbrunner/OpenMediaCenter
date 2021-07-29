@@ -1,28 +1,15 @@
 import {shallow} from 'enzyme';
 import React from 'react';
-import {HomePage} from './HomePage';
+import {HomePage, SortBy} from './HomePage';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 import {SearchHandling} from './SearchHandling';
+import exp from "constants";
+import {DefaultTags} from "../../types/GeneralTypes";
 
 describe('<HomePage/>', function () {
     it('renders without crashing ', function () {
         const wrapper = shallow(<HomePage/>);
         wrapper.unmount();
-    });
-
-    it('test data insertion', function () {
-        const wrapper = shallow(<HomePage/>);
-
-        expect(wrapper.find('VideoContainer')).toHaveLength(0);
-
-        wrapper.setState({
-            data: [
-                {}, {}
-            ]
-        });
-
-        // there shoud be loaded the Videocontainer element into dom after fetching videos correctly
-        expect(wrapper.find('VideoContainer')).toHaveLength(1);
     });
 
     it('test title and nr insertions', function () {
@@ -36,23 +23,6 @@ describe('<HomePage/>', function () {
         });
 
         expect(wrapper.find('PageTitle').props().subtitle).toBe('testsubtitle - 42');
-    });
-
-    it('test search field', done => {
-        global.fetch = global.prepareFetchApi([{}, {}]);
-
-        const wrapper = shallow(<HomePage/>);
-
-        wrapper.find('[data-testid="searchtextfield"]').simulate('change', {target: {value: 'testvalue'}});
-        wrapper.find('[data-testid="searchbtnsubmit"]').simulate('click');
-
-        process.nextTick(() => {
-            // state to be set correctly with response
-            expect(wrapper.state().selectionnr).toBe(2);
-
-            global.fetch.mockClear();
-            done();
-        });
     });
 
     it('test form submit', () => {
@@ -87,7 +57,7 @@ describe('<HomePage/>', function () {
     });
 
     it('test tag click', done => {
-        global.fetch = prepareFetchApi(['test1', 'test2']);
+        global.fetch = prepareFetchApi({Videos: ['test1', 'test2'], TagName: 'all'});
 
         const wrapper = shallow(<HomePage/>);
 
@@ -114,6 +84,20 @@ describe('<HomePage/>', function () {
         }
 
         testBtn(tags.first());
+    });
+
+    it('test sortby type change', function () {
+        const wrapper = shallow(<HomePage/>);
+
+        // expect those default values
+        expect(wrapper.state().sortby).toBe('Date Added');
+        expect(wrapper.instance().sortState).toBe(SortBy.date);
+        expect(wrapper.instance().tagState).toBe(DefaultTags.all);
+
+        wrapper.instance().onDropDownItemClick(SortBy.name, 'namesort');
+
+        expect(wrapper.state().sortby).toBe('namesort');
+        expect(wrapper.instance().sortState).toBe(SortBy.name);
     });
 });
 
