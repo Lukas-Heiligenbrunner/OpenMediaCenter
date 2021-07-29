@@ -20,7 +20,6 @@ import {ActorType, TagType} from '../../types/VideoTypes';
 import PlyrJS from 'plyr';
 import {Button} from '../../elements/GPElements/Button';
 import {VideoTypes} from '../../types/ApiTypes';
-import GlobalInfos from "../../utils/GlobalInfos";
 import QuickActionPop, {ContextItem} from '../../elements/QuickActionPop/QuickActionPop';
 import GlobalInfos from '../../utils/GlobalInfos';
 
@@ -140,10 +139,14 @@ export class Player extends React.Component<Props, mystate> {
                 <Line />
                 <SideBarTitle>Tags:</SideBarTitle>
                 {this.state.tags.map((m: TagType) => (
-                    <Tag key={m.TagId} tagInfo={m} onContextMenu={(pos): void => {
-                        this.setState({tagContextMenu: true});
-                        this.contextpos = {...pos, tagid: m.TagId};
-                    }}/>
+                    <Tag
+                        key={m.TagId}
+                        tagInfo={m}
+                        onContextMenu={(pos): void => {
+                            this.setState({tagContextMenu: true});
+                            this.contextpos = {...pos, tagid: m.TagId};
+                        }}
+                    />
                 ))}
                 <Line />
                 <SideBarTitle>Tag Quickadd:</SideBarTitle>
@@ -305,7 +308,6 @@ export class Player extends React.Component<Props, mystate> {
         );
     }
 
-
     /**
      * click handler for the like btn
      */
@@ -374,10 +376,10 @@ export class Player extends React.Component<Props, mystate> {
     private renderContextMenu(): JSX.Element {
         if (this.state.tagContextMenu) {
             return (
-                <QuickActionPop onHide={(): void => this.setState({tagContextMenu: false})}
-                                position={this.contextpos}>
-                    <ContextItem title='Delete' onClick={(): void => this.deleteTag(this.contextpos.tagid)}/>
-                </QuickActionPop>);
+                <QuickActionPop onHide={(): void => this.setState({tagContextMenu: false})} position={this.contextpos}>
+                    <ContextItem title='Delete' onClick={(): void => this.deleteTag(this.contextpos.tagid)} />
+                </QuickActionPop>
+            );
         } else {
             return <></>;
         }
@@ -387,19 +389,21 @@ export class Player extends React.Component<Props, mystate> {
      * delete a tag from the current video
      */
     private deleteTag(tag_id: number): void {
-        callAPI<GeneralSuccess>(APINode.Tags,
+        callAPI<GeneralSuccess>(
+            APINode.Tags,
             {action: 'deleteVideoTag', video_id: this.props.match.params.id, tag_id: tag_id},
             (res) => {
                 if (res.result !== 'success') {
-                    console.log("deletion errored!");
+                    console.log('deletion errored!');
 
                     this.setState({tagContextMenu: false});
-                }else{
+                } else {
                     // check if tag has already been added
-                    const tagIndex = this.state.tags.map(function (e: TagType) {
-                        return e.TagId;
-                    }).indexOf(tag_id);
-
+                    const tagIndex = this.state.tags
+                        .map(function (e: TagType) {
+                            return e.TagId;
+                        })
+                        .indexOf(tag_id);
 
                     // delete tag from array
                     const newTagArray = this.state.tags;
@@ -407,9 +411,9 @@ export class Player extends React.Component<Props, mystate> {
 
                     this.setState({tags: newTagArray, tagContextMenu: false});
                 }
-            });
+            }
+        );
     }
 }
 
 export default withRouter(Player);
-

@@ -3,10 +3,10 @@ import style from './QuickActionPopup.module.css';
 
 interface props {
     position: {
-        x: number,
-        y: number
-    },
-    onHide: () => void
+        x: number;
+        y: number;
+    };
+    onHide: () => void;
 }
 
 class QuickActionPop extends React.Component<props> {
@@ -19,7 +19,6 @@ class QuickActionPop extends React.Component<props> {
 
         this.handleClickOutside = this.handleClickOutside.bind(this);
     }
-
 
     componentDidMount(): void {
         document.addEventListener('mousedown', this.handleClickOutside);
@@ -49,11 +48,18 @@ class QuickActionPop extends React.Component<props> {
 
 interface Itemprops {
     title: string;
-    onClick: () => void
+    onClick: () => void;
 }
 
 export const ContextItem = (props: Itemprops): JSX.Element => (
-    <div onClick={props.onClick} className={style.ContextItem}>{props.title}</div>
+    <div
+        onClick={(e): void => {
+            e.preventDefault();
+            props.onClick();
+        }}
+        className={style.ContextItem}>
+        {props.title}
+    </div>
 );
 
 export default QuickActionPop;

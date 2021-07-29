@@ -6,9 +6,7 @@ import GlobalInfos from '../../utils/GlobalInfos';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faPhotoVideo} from '@fortawesome/free-solid-svg-icons';
 import {faEllipsisV} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import QuickActionPop from '../QuickActionPop/QuickActionPop';
-import {APINode, callAPIPlain} from '../../utils/Api';
+import QuickActionPop, {ContextItem} from '../QuickActionPop/QuickActionPop';
 
 interface PreviewProps {
     name: string;
@@ -62,11 +60,21 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
             <div
                 className={style.videopreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview}
                 onClick={this.props.onClick}>
-                <div className={style.quickactions} onClick={(): void => this.setState({optionsvisible: true})}>
-                    <FontAwesomeIcon style={{
-                        verticalAlign: 'middle',
-                        fontSize: '25px'
-                    }} icon={faEllipsisV} size='1x'/>
+                <div
+                    className={style.quickactions}
+                    onClick={(e): void => {
+                        this.setState({optionsvisible: true});
+                        e.stopPropagation();
+                        e.preventDefault();
+                    }}>
+                    <FontAwesomeIcon
+                        style={{
+                            verticalAlign: 'middle',
+                            fontSize: '25px'
+                        }}
+                        icon={faEllipsisV}
+                        size='1x'
+                    />
                 </div>
                 {this.popupvisible()}
                 <div className={style.previewtitle + ' ' + themeStyle.lighttextcolor}>{this.props.name}</div>
@@ -94,10 +102,16 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
     }
 
     popupvisible(): JSX.Element {
-        if (this.state.optionsvisible)
-            return (<QuickActionPop position={{x: 50, y: 50}} onHide={(): void => this.setState({optionsvisible: false})}>heeyyho</QuickActionPop>);
-        else
+        if (this.state.optionsvisible) {
+            return (
+                <QuickActionPop position={{x: 350, y: 45}} onHide={(): void => this.setState({optionsvisible: false})}>
+                    <ContextItem title='Delete' onClick={(): void => {}} />
+                    <ContextItem title='Delete' onClick={(): void => {}} />
+                </QuickActionPop>
+            );
+        } else {
             return <></>;
+        }
     }
 }
 

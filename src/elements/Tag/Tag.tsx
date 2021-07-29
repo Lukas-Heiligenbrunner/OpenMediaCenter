@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {SyntheticEvent, PointerEvent} from 'react';
 
 import styles from './Tag.module.css';
 import {Link} from 'react-router-dom';
@@ -7,7 +7,7 @@ import {TagType} from '../../types/VideoTypes';
 interface props {
     onclick?: (_: string) => void;
     tagInfo: TagType;
-    onContextMenu?: (pos: {x: number, y: number}) => void;
+    onContextMenu?: (pos: {x: number; y: number}) => void;
 }
 
 interface state {
@@ -38,7 +38,11 @@ class Tag extends React.Component<props, state> {
 
     renderButton(): JSX.Element {
         return (
-            <button className={styles.tagbtn} onClick={(): void => this.TagClick()} data-testid='Test-Tag' onContextMenu={this.contextmenu}>
+            <button
+                className={styles.tagbtn}
+                onClick={(): void => this.TagClick()}
+                data-testid='Test-Tag'
+                onContextMenu={this.contextmenu}>
                 {this.props.tagInfo.TagName}
             </button>
         );
@@ -61,7 +65,9 @@ class Tag extends React.Component<props, state> {
      * @private
      */
     private contextmenu(e: SyntheticEvent): void {
-        if (!this.props.onContextMenu) return;
+        if (!this.props.onContextMenu) {
+            return;
+        }
 
         const event = e as unknown as PointerEvent;
         event.preventDefault();
