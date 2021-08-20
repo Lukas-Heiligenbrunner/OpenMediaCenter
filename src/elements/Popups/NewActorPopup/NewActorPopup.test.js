@@ -3,7 +3,7 @@ import React from 'react';
 import {shallow} from 'enzyme';
 import '@testing-library/jest-dom';
 import NewActorPopup, {NewActorPopupContent} from './NewActorPopup';
-import {callAPI} from '../../../utils/Api';
+import {callAPI} from 'gowebsecure';
 
 describe('<NewActorPopup/>', function () {
     it('renders without crashing ', function () {

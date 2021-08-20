@@ -6,8 +6,8 @@ import '@testing-library/jest-dom/extend-expect';
 
 import {configure} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import {CookieTokenStore} from "./utils/TokenStore/CookieTokenStore";
-import {token} from "./utils/TokenHandler";
+import {CookieTokenStore} from "gowebsecure";
+import {token} from "gowebsecure";
 
 configure({adapter: new Adapter()});
 
@@ -36,7 +36,7 @@ global.prepareFailingFetchApi = () => {
 };
 
 global.callAPIMock = (resonse) => {
-    const helpers = require('./utils/Api');
+    const helpers = require('gowebsecure');
     helpers.callAPI = jest.fn().mockImplementation((_, __, func1) => {func1(resonse);});
     helpers.callApiUnsafe = jest.fn().mockImplementation((_, __, func1) => {func1(resonse);});
 };

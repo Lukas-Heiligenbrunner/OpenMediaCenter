@@ -4,9 +4,8 @@ import SideBar, {SideBarTitle} from '../../elements/SideBar/SideBar';
 import Tag from '../../elements/Tag/Tag';
 import PageTitle from '../../elements/PageTitle/PageTitle';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
-import {APINode} from '../../utils/Api';
 import {TagType} from '../../types/VideoTypes';
-import {VideoTypes} from '../../types/ApiTypes';
+import {APINode, VideoTypes} from '../../types/ApiTypes';
 import APIComponent from '../../elements/APIComponent';
 import KeyComponent from '../../elements/KeyComponent';
 

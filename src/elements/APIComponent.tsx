@@ -1,10 +1,10 @@
 import React from 'react';
-import {APINode, callAPI} from '../utils/Api';
+import {callAPI} from 'gowebsecure';
 
 interface Props<T> {
     onLoad?: JSX.Element;
     render: (data: T, actions: {refresh: () => void}) => JSX.Element;
-    node: APINode;
+    node: string;
     action: string;
     params?: {[_: string]: string | number | boolean | object};
 }

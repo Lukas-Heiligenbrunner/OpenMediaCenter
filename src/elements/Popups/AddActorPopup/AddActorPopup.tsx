@@ -3,10 +3,11 @@ import React from 'react';
 import ActorTile from '../../ActorTile/ActorTile';
 import style from './AddActorPopup.module.css';
 import {NewActorPopupContent} from '../NewActorPopup/NewActorPopup';
-import {APINode, callAPI} from '../../../utils/Api';
 import {ActorType} from '../../../types/VideoTypes';
 import {GeneralSuccess} from '../../../types/GeneralTypes';
 import FilterButton from '../../FilterButton/FilterButton';
+import {callAPI} from 'gowebsecure';
+import {APINode} from '../../../types/ApiTypes';
 
 interface Props {
     onHide: () => void;

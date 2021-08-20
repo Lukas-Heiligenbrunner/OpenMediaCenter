@@ -9,18 +9,17 @@ import style from './App.module.css';
 
 import SettingsPage from './pages/SettingsPage/SettingsPage';
 import CategoryPage from './pages/CategoryPage/CategoryPage';
-import {APINode, callAPI} from './utils/Api';
 
 import {BrowserRouter as Router, NavLink, Route, Switch} from 'react-router-dom';
 import Player from './pages/Player/Player';
 import ActorOverviewPage from './pages/ActorOverviewPage/ActorOverviewPage';
 import ActorPage from './pages/ActorPage/ActorPage';
-import {SettingsTypes} from './types/ApiTypes';
+import {APINode, SettingsTypes} from './types/ApiTypes';
 import AuthenticationPage from './pages/AuthenticationPage/AuthenticationPage';
 import TVShowPage from './pages/TVShowPage/TVShowPage';
 import TVPlayer from './pages/TVShowPage/TVPlayer';
-import {CookieTokenStore} from './utils/TokenStore/CookieTokenStore';
-import {token} from './utils/TokenHandler';
+import {CookieTokenStore, token} from 'gowebsecure';
+import {callAPI} from 'gowebsecure';
 
 interface state {
     password: boolean | null; // null if uninitialized - true if pwd needed false if not needed
@@ -41,15 +40,20 @@ class App extends React.Component<{}, state> {
         if (token.apiTokenValid()) {
             pwdneeded = false;
         } else {
-            token.refreshAPIToken((err) => {
-                if (err === 'invalid_client') {
-                    this.setState({password: true});
-                } else if (err === '') {
-                    this.setState({password: false});
-                } else {
-                    console.log('unimplemented token error: ' + err);
-                }
-            });
+            token.refreshAPIToken(
+                (err) => {
+                    if (err === 'invalid_client') {
+                        this.setState({password: true});
+                    } else if (err === '') {
+                        this.setState({password: false});
+                    } else {
+                        console.log('unimplemented token error: ' + err);
+                    }
+                },
+                true,
+                'openmediacenter',
+                '0'
+            );
         }
 
         this.state = {

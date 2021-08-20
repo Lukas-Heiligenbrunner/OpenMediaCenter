@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	gws "github.com/gowebsecure/goWebSecure-go"
 	"openmediacenter/apiGo/api/types"
 	"openmediacenter/apiGo/database"
 	"openmediacenter/apiGo/database/settings"
@@ -37,7 +38,7 @@ func getSettingsFromDB() {
 	 * @apiSuccess {uint32} Sizes.DifferentTags number of different tags available
 	 * @apiSuccess {uint32} Sizes.TagsAdded number of different tags added to videos
 	 */
-	AddHandler("loadGeneralSettings", SettingsNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("loadGeneralSettings", SettingsNode, func(info *gws.HandlerInfo) []byte {
 		result, _, sizes := database.GetSettings()
 
 		var ret = struct {
@@ -63,7 +64,7 @@ func getSettingsFromDB() {
 	 * @apiSuccess {bool} DarkMode Darkmode enabled?
 	 * @apiSuccess {bool} TVShowEnabled is are TVShows enabled
 	 */
-	AddHandler("loadInitialData", SettingsNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("loadInitialData", SettingsNode, func(info *gws.HandlerInfo) []byte {
 		sett := settings.LoadSettings()
 
 		type InitialDataTypeResponse struct {
@@ -111,7 +112,7 @@ func saveSettingsToDB() {
 	 *
 	 * @apiSuccess {string} result 'success' if successfully or error message if not
 	 */
-	AddHandler("saveGeneralSettings", SettingsNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("saveGeneralSettings", SettingsNode, func(info *gws.HandlerInfo) []byte {
 		var args types.SettingsType
 		if err := FillStruct(&args, info.Data); err != nil {
 			fmt.Println(err.Error())
@@ -143,7 +144,7 @@ func reIndexHandling() {
 	 *
 	 * @apiSuccess {string} result 'success' if successfully or error message if not
 	 */
-	AddHandler("startReindex", SettingsNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("startReindex", SettingsNode, func(info *gws.HandlerInfo) []byte {
 		videoparser.StartReindex()
 		return database.ManualSuccessResponse(nil)
 	})
@@ -156,7 +157,7 @@ func reIndexHandling() {
 	 *
 	 * @apiSuccess {string} result 'success' if successfully or error message if not
 	 */
-	AddHandler("startTVShowReindex", SettingsNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("startTVShowReindex", SettingsNode, func(info *gws.HandlerInfo) []byte {
 		videoparser.StartTVShowReindex()
 		return database.ManualSuccessResponse(nil)
 	})
@@ -167,7 +168,7 @@ func reIndexHandling() {
 	 * @apiName cleanupGravity
 	 * @apiGroup Settings
 	 */
-	AddHandler("cleanupGravity", SettingsNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("cleanupGravity", SettingsNode, func(info *gws.HandlerInfo) []byte {
 		videoparser.StartCleanup()
 		return nil
 	})

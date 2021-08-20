@@ -5,11 +5,10 @@ import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 
 import style from './HomePage.module.css';
 import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
-import {APINode} from '../../utils/Api';
 import {Route, Switch, withRouter} from 'react-router-dom';
 import {RouteComponentProps} from 'react-router';
 import SearchHandling from './SearchHandling';
-import {VideoTypes} from '../../types/ApiTypes';
+import {APINode, VideoTypes} from '../../types/ApiTypes';
 import {DefaultTags} from '../../types/GeneralTypes';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSortDown} from '@fortawesome/free-solid-svg-icons';

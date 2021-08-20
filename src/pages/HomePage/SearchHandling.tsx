@@ -1,11 +1,11 @@
 import {RouteComponentProps} from 'react-router';
 import React from 'react';
 import {withRouter} from 'react-router-dom';
-import {APINode, callAPI} from '../../utils/Api';
+import {callAPI} from 'gowebsecure';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 import PageTitle from '../../elements/PageTitle/PageTitle';
 import SideBar from '../../elements/SideBar/SideBar';
-import {VideoTypes} from '../../types/ApiTypes';
+import {APINode, VideoTypes} from '../../types/ApiTypes';
 
 interface params {
     name: string;

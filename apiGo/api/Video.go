@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	gws "github.com/gowebsecure/goWebSecure-go"
 	"net/url"
 	"openmediacenter/apiGo/api/types"
 	"openmediacenter/apiGo/database"
@@ -29,7 +30,7 @@ func getVideoHandlers() {
 	 * @apiSuccess {String} Videos.MovieName  Name of video
 	 * @apiSuccess {String} TagName Name of the Tag returned
 	 */
-	AddHandler("getMovies", VideoNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("getMovies", VideoNode, func(info *gws.HandlerInfo) []byte {
 		var args struct {
 			Tag  uint32
 			Sort uint8
@@ -120,7 +121,7 @@ func getVideoHandlers() {
 	 *
 	 * @apiSuccess {string} . Base64 encoded Thubnail
 	 */
-	AddHandler("readThumbnail", VideoNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("readThumbnail", VideoNode, func(info *gws.HandlerInfo) []byte {
 		var args struct {
 			Movieid int
 		}
@@ -158,7 +159,7 @@ func getVideoHandlers() {
 	 * @apiSuccess {string} Videos.MovieName Video Name
 	 * @apiSuccess {int} Videos.MovieId Video ID
 	 */
-	AddHandler("getRandomMovies", VideoNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("getRandomMovies", VideoNode, func(info *gws.HandlerInfo) []byte {
 		var args struct {
 			Number int
 		}
@@ -219,7 +220,7 @@ func getVideoHandlers() {
 	 * @apiSuccess {number} .MovieId Id of Video
 	 * @apiSuccess {String} .MovieName  Name of video
 	 */
-	AddHandler("getSearchKeyWord", VideoNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("getSearchKeyWord", VideoNode, func(info *gws.HandlerInfo) []byte {
 		var args struct {
 			KeyWord string
 		}
@@ -271,7 +272,7 @@ func loadVideosHandlers() {
 	 * @apiSuccess {string} Actors.Name Actor Name
 	 * @apiSuccess {string} Actors.Thumbnail Portrait Thumbnail
 	 */
-	AddHandler("loadVideo", VideoNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("loadVideo", VideoNode, func(info *gws.HandlerInfo) []byte {
 		var args struct {
 			MovieId int
 		}
@@ -347,7 +348,7 @@ func loadVideosHandlers() {
 	 * @apiSuccess {uint32} DifferentTags number of different Tags available
 	 * @apiSuccess {uint32} Tagged number of different Tags assigned
 	 */
-	AddHandler("getStartData", VideoNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("getStartData", VideoNode, func(info *gws.HandlerInfo) []byte {
 		var result types.StartData
 		// query settings and infotile values
 		query := `
@@ -398,7 +399,7 @@ func addToVideoHandlers() {
 	 *
 	 * @apiSuccess {string} result 'success' if successfully or error message if not
 	 */
-	AddHandler("addLike", VideoNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("addLike", VideoNode, func(info *gws.HandlerInfo) []byte {
 		var args struct {
 			MovieId int
 		}
@@ -421,7 +422,7 @@ func addToVideoHandlers() {
 	 *
 	 * @apiSuccess {string} result 'success' if successfully or error message if not
 	 */
-	AddHandler("deleteVideo", VideoNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("deleteVideo", VideoNode, func(info *gws.HandlerInfo) []byte {
 		var args struct {
 			MovieId int
 		}

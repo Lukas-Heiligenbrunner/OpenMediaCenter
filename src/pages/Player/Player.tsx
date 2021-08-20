@@ -13,13 +13,13 @@ import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import AddActorPopup from '../../elements/Popups/AddActorPopup/AddActorPopup';
 import ActorTile from '../../elements/ActorTile/ActorTile';
 import {withRouter} from 'react-router-dom';
-import {APINode, callAPI} from '../../utils/Api';
+import {callAPI} from 'gowebsecure';
 import {RouteComponentProps} from 'react-router';
 import {DefaultPlyrOptions, GeneralSuccess} from '../../types/GeneralTypes';
 import {ActorType, TagType} from '../../types/VideoTypes';
 import PlyrJS from 'plyr';
 import {Button} from '../../elements/GPElements/Button';
-import {VideoTypes} from '../../types/ApiTypes';
+import {APINode, VideoTypes} from '../../types/ApiTypes';
 import GlobalInfos from '../../utils/GlobalInfos';
 
 interface Props extends RouteComponentProps<{id: string}> {}

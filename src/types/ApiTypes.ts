@@ -1,5 +1,14 @@
 import {ActorType, TagType} from './VideoTypes';
 
+// eslint-disable-next-line no-shadow
+export enum APINode {
+    Settings = 'settings',
+    Tags = 'tags',
+    Actor = 'actor',
+    Video = 'video',
+    TVShow = 'tvshow'
+}
+
 export namespace VideoTypes {
     export interface loadVideoType {
         MovieUrl: string;

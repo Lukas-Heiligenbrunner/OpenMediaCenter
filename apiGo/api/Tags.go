@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	gws "github.com/gowebsecure/goWebSecure-go"
 	"openmediacenter/apiGo/database"
 	"regexp"
 )
@@ -24,7 +25,7 @@ func deleteFromDB() {
 	 *
 	 * @apiSuccess {string} result 'success' if successfully or error message if not
 	 */
-	AddHandler("deleteTag", TagNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("deleteTag", TagNode, func(info *gws.HandlerInfo) []byte {
 		var args struct {
 			TagId int
 			Force bool
@@ -74,7 +75,7 @@ func getFromDB() {
 	 * @apiSuccess {uint32} TagId
 	 * @apiSuccess {string} TagName name of the Tag
 	 */
-	AddHandler("getAllTags", TagNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("getAllTags", TagNode, func(info *gws.HandlerInfo) []byte {
 		query := "SELECT tag_id,tag_name from tags"
 		return jsonify(readTagsFromResultset(database.Query(query)))
 	})
@@ -91,7 +92,7 @@ func addToDB() {
 	 *
 	 * @apiSuccess {string} result 'success' if successfully or error message if not
 	 */
-	AddHandler("createTag", TagNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("createTag", TagNode, func(info *gws.HandlerInfo) []byte {
 		var args struct {
 			TagName string
 		}
@@ -115,7 +116,7 @@ func addToDB() {
 	 *
 	 * @apiSuccess {string} result 'success' if successfully or error message if not
 	 */
-	AddHandler("addTag", TagNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("addTag", TagNode, func(info *gws.HandlerInfo) []byte {
 		var args struct {
 			MovieId int
 			TagId   int

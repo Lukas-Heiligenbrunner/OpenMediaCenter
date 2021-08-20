@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {RouteComponentProps} from 'react-router';
 import {withRouter} from 'react-router-dom';
-import {APINode, callAPI} from '../../utils/Api';
+import {callAPI} from 'gowebsecure';
 import {Link} from 'react-router-dom';
 import DynamicContentContainer from '../../elements/DynamicContentContainer/DynamicContentContainer';
 import tileStyle from './EpisodeTile.module.css';
@@ -10,6 +10,7 @@ import {faPlay} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
 import SideBar, {SideBarItem, SideBarTitle} from '../../elements/SideBar/SideBar';
+import {APINode} from '../../types/ApiTypes';
 
 interface Props extends RouteComponentProps<{id: string}> {}
 

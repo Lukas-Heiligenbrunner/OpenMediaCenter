@@ -5,12 +5,12 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faUser} from '@fortawesome/free-solid-svg-icons';
 import style from './ActorPage.module.css';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
-import {APINode, callAPI} from '../../utils/Api';
+import {callAPI} from 'gowebsecure';
 import {ActorType} from '../../types/VideoTypes';
 import {Link, withRouter} from 'react-router-dom';
 import {RouteComponentProps} from 'react-router';
 import {Button} from '../../elements/GPElements/Button';
-import {ActorTypes, VideoTypes} from '../../types/ApiTypes';
+import {ActorTypes, APINode, VideoTypes} from '../../types/ApiTypes';
 
 interface state {
     data: VideoTypes.VideoUnloadedType[];

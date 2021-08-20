@@ -1,7 +1,7 @@
 import React from 'react';
 import Preview from '../../elements/Preview/Preview';
-import {APINode, callAPI, callAPIPlain} from '../../utils/Api';
-import {TVShow} from '../../types/ApiTypes';
+import {callAPI, callAPIPlain} from 'gowebsecure';
+import {APINode, TVShow} from '../../types/ApiTypes';
 import DynamicContentContainer from '../../elements/DynamicContentContainer/DynamicContentContainer';
 import {Route, Switch, useRouteMatch} from 'react-router-dom';
 import EpisodePage from './EpisodePage';

@@ -1,8 +1,9 @@
 import React from 'react';
 import PopupBase from '../PopupBase';
 import style from './NewActorPopup.module.css';
-import {APINode, callAPI} from '../../../utils/Api';
+import {callAPI} from 'gowebsecure';
 import {GeneralSuccess} from '../../../types/GeneralTypes';
+import {APINode} from '../../../types/ApiTypes';
 
 interface NewActorPopupProps {
     onHide: () => void;

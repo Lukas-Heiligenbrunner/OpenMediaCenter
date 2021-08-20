@@ -1,7 +1,7 @@
 import {shallow} from 'enzyme';
 import React from 'react';
 import MovieSettings from './MovieSettings';
-import {callAPI} from '../../utils/Api';
+import {callAPI} from 'gowebsecure';
 
 describe('<MovieSettings/>', function () {
     it('renders without crashing ', function () {

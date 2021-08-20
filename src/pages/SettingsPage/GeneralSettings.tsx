@@ -6,8 +6,8 @@ import InfoHeaderItem from '../../elements/InfoHeaderItem/InfoHeaderItem';
 import {faArchive, faBalanceScaleLeft, faRulerVertical} from '@fortawesome/free-solid-svg-icons';
 import {faAddressCard} from '@fortawesome/free-regular-svg-icons';
 import {version} from '../../../package.json';
-import {APINode, callAPI} from '../../utils/Api';
-import {SettingsTypes} from '../../types/ApiTypes';
+import {callAPI} from 'gowebsecure';
+import {APINode, SettingsTypes} from '../../types/ApiTypes';
 import {GeneralSuccess} from '../../types/GeneralTypes';
 
 interface state {

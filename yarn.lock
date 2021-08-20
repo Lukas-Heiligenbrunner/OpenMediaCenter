@@ -6049,6 +6049,13 @@ got@^9.6.0:
     to-readable-stream "^1.0.0"
     url-parse-lax "^3.0.0"
 
+gowebsecure@0.1.1-beta.2:
+  version "0.1.1-beta.2"
+  resolved "https://registry.yarnpkg.com/gowebsecure/-/gowebsecure-0.1.1-beta.2.tgz#3b9aaa1f83af9a7c2423da8e0ee605dc018d463b"
+  integrity sha512-8QpoBYfmUGAcKrPkyTl6e+WNzJ/NPRk1NxY3+J0K/z7z4w/dG/3Njie+J3IS0L+u8Dpp9pYXZHONbv/W11DUqA==
+  dependencies:
+    typescript "^4.1.2"
+
 graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.4:
   version "4.2.6"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.6.tgz#ff040b2b0853b23c3d31027523706f1885d76bee"
@@ -11968,7 +11975,7 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@^4.3.5:
+typescript@^4.1.2, typescript@^4.3.5:
   version "4.3.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.3.5.tgz#4d1c37cc16e893973c45a06886b7113234f119f4"
   integrity sha512-DqQgihaQ9cUrskJo9kIyW/+g0Vxsk8cDtZ52a3NGh0YNTfpUSArXSohyUGnvbPazEPLu398C0UxmKSOrPumUzA==

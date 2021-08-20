@@ -1,8 +1,9 @@
 import React from 'react';
 import PopupBase from '../PopupBase';
 import style from './NewTagPopup.module.css';
-import {APINode, callAPI} from '../../../utils/Api';
 import {GeneralSuccess} from '../../../types/GeneralTypes';
+import {callAPI} from 'gowebsecure';
+import {APINode} from '../../../types/ApiTypes';
 
 interface props {
     onHide: () => void;

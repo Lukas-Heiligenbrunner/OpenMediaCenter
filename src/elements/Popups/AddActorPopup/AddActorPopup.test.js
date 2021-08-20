@@ -1,7 +1,7 @@
 import {shallow} from 'enzyme';
 import React from 'react';
 import AddActorPopup from './AddActorPopup';
-import {callAPI} from '../../../utils/Api';
+import {callAPI} from 'gowebsecure';
 
 describe('<AddActorPopup/>', function () {
     it('renders without crashing ', function () {

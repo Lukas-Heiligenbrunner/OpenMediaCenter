@@ -1,5 +1,5 @@
 import React from 'react';
-import {APINode, callAPI} from '../../utils/Api';
+import {callAPI} from 'gowebsecure';
 import {ActorType} from '../../types/VideoTypes';
 import ActorTile from '../../elements/ActorTile/ActorTile';
 import PageTitle from '../../elements/PageTitle/PageTitle';
@@ -8,6 +8,7 @@ import SideBar from '../../elements/SideBar/SideBar';
 import {Button} from '../../elements/GPElements/Button';
 import NewActorPopup from '../../elements/Popups/NewActorPopup/NewActorPopup';
 import DynamicContentContainer from '../../elements/DynamicContentContainer/DynamicContentContainer';
+import {APINode} from '../../types/ApiTypes';
 
 interface Props {}
 

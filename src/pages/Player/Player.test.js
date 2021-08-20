@@ -1,7 +1,7 @@
 import {shallow} from 'enzyme';
 import React from 'react';
 import {Player} from './Player';
-import {callAPI} from '../../utils/Api';
+import {callAPI} from 'gowebsecure';
 
 describe('<Player/>', function () {
 

@@ -1,7 +1,8 @@
 import React from 'react';
 import style from './MovieSettings.module.css';
-import {APINode, callAPI} from '../../utils/Api';
+import {callAPI} from 'gowebsecure';
 import {GeneralSuccess} from '../../types/GeneralTypes';
+import {APINode} from '../../types/ApiTypes';
 
 interface state {
     text: string[];

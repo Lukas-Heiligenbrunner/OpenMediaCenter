@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	gws "github.com/gowebsecure/goWebSecure-go"
 	"openmediacenter/apiGo/api/types"
 	"openmediacenter/apiGo/database"
 )
@@ -23,7 +24,7 @@ func getActorsFromDB() {
 	 * @apiSuccess {string} .Name Actor Name
 	 * @apiSuccess {string} .Thumbnail Portrait Thumbnail
 	 */
-	AddHandler("getAllActors", ActorNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("getAllActors", ActorNode, func(info *gws.HandlerInfo) []byte {
 		query := "SELECT actor_id, name, thumbnail FROM actors"
 		return jsonify(readActorsFromResultset(database.Query(query)))
 	})
@@ -41,7 +42,7 @@ func getActorsFromDB() {
 	 * @apiSuccess {string} .Name Actor Name
 	 * @apiSuccess {string} .Thumbnail Portrait Thumbnail
 	 */
-	AddHandler("getActorsOfVideo", ActorNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("getActorsOfVideo", ActorNode, func(info *gws.HandlerInfo) []byte {
 		var args struct {
 			MovieId int
 		}
@@ -74,7 +75,7 @@ func getActorsFromDB() {
 	 * @apiSuccess {string} Info.Name Actor Name
 	 * @apiSuccess {string} Info.Thumbnail Actor Thumbnail
 	 */
-	AddHandler("getActorInfo", ActorNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("getActorInfo", ActorNode, func(info *gws.HandlerInfo) []byte {
 		var args struct {
 			ActorId int
 		}
@@ -114,7 +115,7 @@ func saveActorsToDB() {
 	 *
 	 * @apiSuccess {string} result 'success' if successfully or error message if not
 	 */
-	AddHandler("createActor", ActorNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("createActor", ActorNode, func(info *gws.HandlerInfo) []byte {
 		var args struct {
 			ActorName string
 		}
@@ -138,7 +139,7 @@ func saveActorsToDB() {
 	 *
 	 * @apiSuccess {string} result 'success' if successfully or error message if not
 	 */
-	AddHandler("addActorToVideo", ActorNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("addActorToVideo", ActorNode, func(info *gws.HandlerInfo) []byte {
 		var args struct {
 			ActorId int
 			MovieId int

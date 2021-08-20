@@ -2,7 +2,7 @@ import React from 'react';
 import {Button} from '../../elements/GPElements/Button';
 import style from './AuthenticationPage.module.css';
 import {addKeyHandler, removeKeyHandler} from '../../utils/ShortkeyHandler';
-import {token} from '../../utils/TokenHandler';
+import {token} from 'gowebsecure';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
@@ -90,7 +90,8 @@ class AuthenticationPage extends React.Component<Props, state> {
                 }
             },
             true,
-            this.state.pwdText
+            this.state.pwdText,
+            'openmediacenter'
         );
     }
 

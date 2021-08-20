@@ -1,10 +1,11 @@
 import React from 'react';
 import Tag from '../../Tag/Tag';
 import PopupBase from '../PopupBase';
-import {APINode, callAPI} from '../../../utils/Api';
 import {TagType} from '../../../types/VideoTypes';
 import FilterButton from '../../FilterButton/FilterButton';
 import styles from './AddTagPopup.module.css';
+import {callAPI} from 'gowebsecure/lib/Api';
+import {APINode} from '../../../types/ApiTypes';
 
 interface Props {
     onHide: () => void;

@@ -28,18 +28,12 @@ func main() {
 	database.InitDB(db)
 	defer database.Close()
 
-	api.AddVideoHandlers()
-	api.AddSettingsHandlers()
-	api.AddTagHandlers()
-	api.AddActorsHandlers()
-	api.AddTvshowHandlers()
-
 	videoparser.SetupSettingsWebsocket()
 
 	// add the static files
 	static.ServeStaticFiles()
 
-	api.ServerInit()
+	api.Init()
 
 	fmt.Printf("OpenMediacenter server up and running on port %d\n", port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))

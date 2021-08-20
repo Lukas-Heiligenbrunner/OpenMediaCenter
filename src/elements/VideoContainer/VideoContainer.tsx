@@ -1,8 +1,8 @@
 import React from 'react';
 import Preview from '../Preview/Preview';
-import {VideoTypes} from '../../types/ApiTypes';
+import {APINode, VideoTypes} from '../../types/ApiTypes';
 import DynamicContentContainer from '../DynamicContentContainer/DynamicContentContainer';
-import {APINode, callAPIPlain} from '../../utils/Api';
+import {callAPIPlain} from 'gowebsecure';
 
 interface Props {
     data: VideoTypes.VideoUnloadedType[];

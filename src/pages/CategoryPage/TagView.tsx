@@ -2,13 +2,14 @@ import {TagType} from '../../types/VideoTypes';
 import React from 'react';
 import {Link} from 'react-router-dom';
 import {TagPreview} from '../../elements/Preview/Preview';
-import {APINode, callAPI} from '../../utils/Api';
+import {callAPI} from 'gowebsecure';
 import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
 import SideBar, {SideBarTitle} from '../../elements/SideBar/SideBar';
 import Tag from '../../elements/Tag/Tag';
 import {DefaultTags} from '../../types/GeneralTypes';
 import NewTagPopup from '../../elements/Popups/NewTagPopup/NewTagPopup';
 import DynamicContentContainer from '../../elements/DynamicContentContainer/DynamicContentContainer';
+import {APINode} from '../../types/ApiTypes';
 
 interface TagViewState {
     loadedtags: TagType[];

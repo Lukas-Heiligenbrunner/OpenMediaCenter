@@ -1,9 +1,9 @@
 import {RouteComponentProps} from 'react-router';
 import React from 'react';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
-import {APINode, callAPI} from '../../utils/Api';
+import {callAPI} from 'gowebsecure';
 import {withRouter} from 'react-router-dom';
-import {VideoTypes} from '../../types/ApiTypes';
+import {APINode, VideoTypes} from '../../types/ApiTypes';
 import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
 import SideBar, {SideBarTitle} from '../../elements/SideBar/SideBar';
 import Tag from '../../elements/Tag/Tag';

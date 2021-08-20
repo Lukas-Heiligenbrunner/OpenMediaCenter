@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	gws "github.com/gowebsecure/goWebSecure-go"
 	"openmediacenter/apiGo/database"
 	"openmediacenter/apiGo/database/settings"
 )
@@ -22,7 +23,7 @@ func AddTvshowHandlers() {
 	 * @apiSuccess {uint32} .Id tvshow id
 	 * @apiSuccess {string} .Name tvshow name
 	 */
-	AddHandler("getTVShows", TVShowNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("getTVShows", TVShowNode, func(info *gws.HandlerInfo) []byte {
 		query := "SELECT id, name FROM tvshow"
 		rows := database.Query(query)
 		return jsonify(readTVshowsFromResultset(rows))
@@ -42,7 +43,7 @@ func AddTvshowHandlers() {
 	 * @apiSuccess {uint8} .Season Season number
 	 * @apiSuccess {uint8} .Episode Episode number
 	 */
-	AddHandler("getEpisodes", TVShowNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("getEpisodes", TVShowNode, func(info *gws.HandlerInfo) []byte {
 		var args struct {
 			ShowID uint32
 		}
@@ -90,7 +91,7 @@ func AddTvshowHandlers() {
 	 * @apiSuccess {uint8} Episode Episode number
 	 * @apiSuccess {string} Path webserver path of video file
 	 */
-	AddHandler("loadEpisode", TVShowNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("loadEpisode", TVShowNode, func(info *gws.HandlerInfo) []byte {
 		var args struct {
 			ID uint32
 		}
@@ -137,7 +138,7 @@ WHERE tvshow_episodes.id=%d`, args.ID)
 	 *
 	 * @apiSuccess {string} . Base64 encoded Thubnail
 	 */
-	AddHandler("readThumbnail", TVShowNode, func(info *HandlerInfo) []byte {
+	gws.AddHandler("readThumbnail", TVShowNode, func(info *gws.HandlerInfo) []byte {
 		var args struct {
 			Id int
 		}

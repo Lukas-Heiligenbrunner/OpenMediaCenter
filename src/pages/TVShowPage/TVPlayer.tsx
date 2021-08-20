@@ -6,9 +6,10 @@ import style from '../Player/Player.module.css';
 import {Plyr} from 'plyr-react';
 import plyrstyle from 'plyr-react/dist/plyr.css';
 import {DefaultPlyrOptions} from '../../types/GeneralTypes';
-import {APINode, callAPI} from '../../utils/Api';
+import {callAPI} from 'gowebsecure';
 import GlobalInfos from '../../utils/GlobalInfos';
 import PlyrJS from 'plyr';
+import {APINode} from '../../types/ApiTypes';
 
 interface Props extends RouteComponentProps<{id: string}> {}
 
