@@ -6,8 +6,8 @@ import PageTitle from '../../elements/PageTitle/PageTitle';
 import VideoContainer from '../../elements/VideoContainer/VideoContainer';
 import {TagType} from '../../types/VideoTypes';
 import {APINode, VideoTypes} from '../../types/ApiTypes';
-import APIComponent from '../../elements/APIComponent';
 import KeyComponent from '../../elements/KeyComponent';
+import {APILoader} from 'gowebsecure-react';
 
 interface GetRandomMoviesType {
     Videos: VideoTypes.VideoUnloadedType[];
@@ -24,7 +24,7 @@ class RandomPage extends React.Component {
         return (
             <div>
                 <PageTitle title='Random Videos' subtitle={this.LoadNR + 'pcs'} />
-                <APIComponent
+                <APILoader
                     render={(data: GetRandomMoviesType, actions): JSX.Element => (
                         <KeyComponent listenKey='s' onKey={actions.refresh}>
                             <SideBar>

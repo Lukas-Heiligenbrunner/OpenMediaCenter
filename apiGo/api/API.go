@@ -21,11 +21,11 @@ func Init() {
 	AddActorsHandlers()
 	AddTvshowHandlers()
 
-	gws.AddAPINode("video", VideoNode)
-	gws.AddAPINode("tags", TagNode)
-	gws.AddAPINode("settings", SettingsNode)
-	gws.AddAPINode("actor", ActorNode)
-	gws.AddAPINode("tvshow", TVShowNode)
+	gws.AddAPINode("video", VideoNode, true)
+	gws.AddAPINode("tags", TagNode, true)
+	gws.AddAPINode("settings", SettingsNode, true)
+	gws.AddAPINode("actor", ActorNode, true)
+	gws.AddAPINode("tvshow", TVShowNode, true)
 
 	// serverinit is blocking
 	gws.ServerInit(func(id string) (oauth.CustomClientInfo, error) {

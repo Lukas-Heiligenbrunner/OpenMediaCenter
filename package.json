@@ -20,7 +20,8 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "typescript": "^4.3.5",
-    "gowebsecure": "0.1.1-beta.2"
+    "gowebsecure": "0.1.1-beta.2",
+    "gowebsecure-react": "0.1.0-beta.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -39,7 +40,7 @@
       "text-summary"
     ]
   },
-  "proxy": "http://127.0.0.1:8081",
+  "proxy": "http://127.0.0.1:8080",
   "homepage": "/",
   "browserslist": {
     "production": [

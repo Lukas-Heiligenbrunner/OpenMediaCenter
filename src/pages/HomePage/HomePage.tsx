@@ -12,8 +12,8 @@ import {APINode, VideoTypes} from '../../types/ApiTypes';
 import {DefaultTags} from '../../types/GeneralTypes';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSortDown} from '@fortawesome/free-solid-svg-icons';
-import APIComponent from '../../elements/APIComponent';
 import {TagType} from '../../types/VideoTypes';
+import {APILoader} from 'gowebsecure-react';
 
 // eslint-disable-next-line no-shadow
 export enum SortBy {
@@ -54,7 +54,7 @@ export class HomePage extends React.Component<Props, state> {
                     <SearchHandling />
                 </Route>
                 <Route path='/'>
-                    <APIComponent
+                    <APILoader
                         render={(data: {Videos: VideoTypes.VideoUnloadedType[]; TagName: string}): JSX.Element => (
                             <>
                                 <PageTitle title='Home Page' subtitle={this.state.subtitle + ' - ' + data.Videos.length}>
@@ -79,7 +79,7 @@ export class HomePage extends React.Component<Props, state> {
                                     </form>
                                 </PageTitle>
                                 <SideBar>
-                                    <APIComponent
+                                    <APILoader
                                         render={(sidebardata: VideoTypes.startDataType): JSX.Element => (
                                             <>
                                                 <SideBarTitle>Infos:</SideBarTitle>
