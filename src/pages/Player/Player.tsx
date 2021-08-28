@@ -316,7 +316,7 @@ export class Player extends React.Component<Props, mystate> {
     closebtn(): void {
         const hist = this.props.history;
         if (hist.length > 1) {
-            this.props.history.goBack();
+            hist.goBack();
         } else {
             hist.push('/');
         }

@@ -109,7 +109,20 @@ describe('<Player/>', function () {
 
         const func = jest.fn();
 
-        wrapper.setProps({history: {goBack: func}});
+        wrapper.setProps({history: {push: func}});
+
+        expect(func).toHaveBeenCalledTimes(0);
+        wrapper.find('.closebutton').simulate('click');
+        // there shouldn't be a backstack available
+        expect(func).toHaveBeenCalledTimes(1);
+    });
+
+    it('hide click with stack available', function () {
+        const wrapper = instance();
+
+        const func = jest.fn();
+
+        wrapper.setProps({history: {goBack: func, length: 5}});
 
         expect(func).toHaveBeenCalledTimes(0);
         wrapper.find('.closebutton').simulate('click');

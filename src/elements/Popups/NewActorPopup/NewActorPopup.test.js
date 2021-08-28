@@ -25,7 +25,7 @@ describe('<NewActorPopupContent/>', () => {
         const wrapper = shallow(<NewActorPopupContent onHide={() => {func();}}/>);
 
         // manually set typed in actorname
-        wrapper.instance().value = 'testactorname';
+        wrapper.instance().nameValue = 'testactorname';
 
         global.fetch = prepareFetchApi({});
 
@@ -55,6 +55,6 @@ describe('<NewActorPopupContent/>', () => {
 
         wrapper.find('input').simulate('change', {target: {value: 'testinput'}});
 
-        expect(wrapper.instance().value).toBe('testinput');
+        expect(wrapper.instance().nameValue).toBe('testinput');
     });
 });
