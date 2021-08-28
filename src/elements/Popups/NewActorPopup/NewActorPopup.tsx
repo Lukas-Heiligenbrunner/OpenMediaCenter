@@ -22,7 +22,7 @@ class NewActorPopup extends React.Component<NewActorPopupProps> {
 }
 
 export class NewActorPopupContent extends React.Component<NewActorPopupProps> {
-    value: string | undefined;
+    nameValue: string | undefined;
 
     render(): JSX.Element {
         return (
@@ -32,7 +32,7 @@ export class NewActorPopupContent extends React.Component<NewActorPopupProps> {
                         type='text'
                         placeholder='Actor Name'
                         onChange={(v): void => {
-                            this.value = v.target.value;
+                            this.nameValue = v.target.value;
                         }}
                     />
                 </div>
@@ -48,11 +48,11 @@ export class NewActorPopupContent extends React.Component<NewActorPopupProps> {
      */
     storeselection(): void {
         // check if user typed in name
-        if (this.value === '' || this.value === undefined) {
+        if (this.nameValue === '' || this.nameValue === undefined) {
             return;
         }
 
-        callAPI(APINode.Actor, {action: 'createActor', actorname: this.value}, (result: GeneralSuccess) => {
+        callAPI(APINode.Actor, {action: 'createActor', ActorName: this.nameValue}, (result: GeneralSuccess) => {
             if (result.result !== 'success') {
                 console.log('error occured while writing to db -- todo error handling');
                 console.log(result.result);

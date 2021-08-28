@@ -314,7 +314,12 @@ export class Player extends React.Component<Props, mystate> {
      * calls callback to viewbinding to show previous page agains
      */
     closebtn(): void {
-        this.props.history.goBack();
+        const hist = this.props.history;
+        if (hist.length > 1) {
+            this.props.history.goBack();
+        } else {
+            hist.push('/');
+        }
     }
 
     /**
