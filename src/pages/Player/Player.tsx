@@ -21,6 +21,7 @@ import PlyrJS from 'plyr';
 import {Button} from '../../elements/GPElements/Button';
 import {VideoTypes} from '../../types/ApiTypes';
 import GlobalInfos from '../../utils/GlobalInfos';
+import {FullyDeletePopup} from '../../elements/Popups/FullyDeletePopup/FullyDeletePopup';
 
 interface Props extends RouteComponentProps<{id: string}> {}
 
@@ -35,6 +36,7 @@ interface mystate {
     suggesttag: TagType[];
     popupvisible: boolean;
     actorpopupvisible: boolean;
+    deletepopupvisible: boolean;
     actors: ActorType[];
 }
 
@@ -56,6 +58,7 @@ export class Player extends React.Component<Props, mystate> {
             suggesttag: [],
             popupvisible: false,
             actorpopupvisible: false,
+            deletepopupvisible: false,
             actors: []
         };
 
@@ -91,7 +94,7 @@ export class Player extends React.Component<Props, mystate> {
                         <Button
                             title='Delete Video'
                             onClick={(): void => {
-                                this.deleteVideo();
+                                this.setState({deletepopupvisible: true});
                             }}
                             color={{backgroundColor: 'red'}}
                         />
@@ -194,6 +197,19 @@ export class Player extends React.Component<Props, mystate> {
                             this.setState({actorpopupvisible: false});
                         }}
                         movieId={this.state.movieId}
+                    />
+                ) : null}
+                {this.state.deletepopupvisible ? (
+                    <FullyDeletePopup
+                        onDiscard={(): void => this.setState({deletepopupvisible: false})}
+                        onSubmit={(): void => {
+                            this.setState({deletepopupvisible: false});
+                            this.deleteVideo(true);
+                        }}
+                        onDeny={(): void => {
+                            this.setState({deletepopupvisible: false});
+                            this.deleteVideo(false);
+                        }}
                     />
                 ) : null}
             </>
@@ -325,10 +341,10 @@ export class Player extends React.Component<Props, mystate> {
     /**
      * delete the current video and return to last page
      */
-    deleteVideo(): void {
+    deleteVideo(fullyDelete: boolean): void {
         callAPI(
             APINode.Video,
-            {action: 'deleteVideo', MovieId: parseInt(this.props.match.params.id, 10)},
+            {action: 'deleteVideo', MovieId: parseInt(this.props.match.params.id, 10), FullyDelete: fullyDelete},
             (result: GeneralSuccess) => {
                 if (result.result === 'success') {
                     // return to last element if successful

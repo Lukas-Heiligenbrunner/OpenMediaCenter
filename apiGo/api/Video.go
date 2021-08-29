@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"openmediacenter/apiGo/api/types"
 	"openmediacenter/apiGo/database"
+	"openmediacenter/apiGo/database/settings"
+	"os"
 	"strconv"
 )
 
@@ -423,7 +425,8 @@ func addToVideoHandlers() {
 	 */
 	AddHandler("deleteVideo", VideoNode, func(info *HandlerInfo) []byte {
 		var args struct {
-			MovieId int
+			MovieId     int
+			FullyDelete bool
 		}
 		if err := FillStruct(&args, info.Data); err != nil {
 			fmt.Println(err.Error())
@@ -443,6 +446,22 @@ func addToVideoHandlers() {
 			return database.ManualSuccessResponse(err)
 		}
 
+		if settings.VideosDeletable() && args.FullyDelete {
+			// get physical path of video to delete
+			query = fmt.Sprintf("SELECT movie_url FROM videos WHERE movie_id=%d", args.MovieId)
+			var vidpath string
+			err := database.QueryRow(query).Scan(&vidpath)
+			if err != nil {
+				return database.ManualSuccessResponse(err)
+			}
+
+			err = os.Remove(vidpath)
+			if err != nil {
+				fmt.Printf("unable to delete file: %s\n", vidpath)
+			}
+		}
+
+		// delete video row from db
 		query = fmt.Sprintf("DELETE FROM videos WHERE movie_id=%d", args.MovieId)
 		return database.SuccessQuery(query)
 	})
