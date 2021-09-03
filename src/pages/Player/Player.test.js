@@ -90,16 +90,21 @@ describe('<Player/>', function () {
 
         wrapper.setProps({history: {goBack: jest.fn()}});
 
-        global.fetch = prepareFetchApi({result: 'success'});
+        // global.fetch = prepareFetchApi({result: 'success'});
 
+        callAPIMock({result: 'success'})
+
+        // request the popup to pop
         wrapper.find('.videoactions').find('Button').at(2).simulate('click');
+
+        // click the first submit button
+        wrapper.find('ButtonPopup').dive().find('Button').at(0).simulate('click')
 
         process.nextTick(() => {
             // refetch is called so fetch called 3 times
-            expect(global.fetch).toHaveBeenCalledTimes(1);
+            expect(callAPI).toHaveBeenCalledTimes(1);
             expect(wrapper.instance().props.history.goBack).toHaveBeenCalledTimes(1);
 
-            global.fetch.mockClear();
             done();
         });
     });
@@ -152,16 +157,14 @@ describe('<Player/>', function () {
     it('test click of quickadd tag btn', done => {
         const wrapper = generatetag();
 
-        global.fetch = prepareFetchApi({result: 'success'});
+        callAPIMock({result: 'success'})
 
         // render tag subcomponent
         const tag = wrapper.find('Tag').first().dive();
         tag.simulate('click');
 
         process.nextTick(() => {
-            expect(global.fetch).toHaveBeenCalledTimes(1);
-
-            global.fetch.mockClear();
+            expect(callAPI).toHaveBeenCalledTimes(1);
             done();
         });
     });
@@ -169,7 +172,7 @@ describe('<Player/>', function () {
     it('test failing quickadd', done => {
         const wrapper = generatetag();
 
-        global.fetch = prepareFetchApi({result: 'nonsuccess'});
+        callAPIMock({result: 'nonsuccess'});
         global.console.error = jest.fn();
 
         // render tag subcomponent
@@ -178,8 +181,6 @@ describe('<Player/>', function () {
 
         process.nextTick(() => {
             expect(global.console.error).toHaveBeenCalledTimes(2);
-
-            global.fetch.mockClear();
             done();
         });
     });

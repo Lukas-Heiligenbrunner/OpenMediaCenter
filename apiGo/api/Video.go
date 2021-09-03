@@ -420,6 +420,7 @@ func addToVideoHandlers() {
 	 * @apiGroup video
 	 *
 	 * @apiParam {int} MovieId ID of video
+	 * @apiParam {bool} FullyDelete Delete video from disk?
 	 *
 	 * @apiSuccess {string} result 'success' if successfully or error message if not
 	 */
@@ -446,6 +447,7 @@ func addToVideoHandlers() {
 			return database.ManualSuccessResponse(err)
 		}
 
+		// only allow deletion of video if cli flag is set, independent of passed api arg
 		if settings.VideosDeletable() && args.FullyDelete {
 			// get physical path of video to delete
 			query = fmt.Sprintf("SELECT movie_url FROM videos WHERE movie_id=%d", args.MovieId)
@@ -457,7 +459,8 @@ func addToVideoHandlers() {
 
 			err = os.Remove(vidpath)
 			if err != nil {
-				fmt.Printf("unable to delete file: %s\n", vidpath)
+				fmt.Printf("unable to delete file: %s -- %s\n", vidpath, err.Error())
+				return database.ManualSuccessResponse(err)
 			}
 		}
 

@@ -87,6 +87,7 @@ class App extends React.Component<{}, state> {
             GlobalInfos.setVideoPaths(result.VideoPath, result.TVShowPath);
 
             GlobalInfos.setTVShowsEnabled(result.TVShowEnabled);
+            GlobalInfos.setFullDeleteEnabled(result.FullDeleteEnabled);
 
             this.setState({
                 mediacentername: result.MediacenterName

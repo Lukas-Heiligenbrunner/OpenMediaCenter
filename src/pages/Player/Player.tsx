@@ -21,7 +21,7 @@ import PlyrJS from 'plyr';
 import {Button} from '../../elements/GPElements/Button';
 import {VideoTypes} from '../../types/ApiTypes';
 import GlobalInfos from '../../utils/GlobalInfos';
-import {FullyDeletePopup} from '../../elements/Popups/FullyDeletePopup/FullyDeletePopup';
+import {ButtonPopup} from '../../elements/Popups/ButtonPopup/ButtonPopup';
 
 interface Props extends RouteComponentProps<{id: string}> {}
 
@@ -199,21 +199,44 @@ export class Player extends React.Component<Props, mystate> {
                         movieId={this.state.movieId}
                     />
                 ) : null}
-                {this.state.deletepopupvisible ? (
-                    <FullyDeletePopup
-                        onDiscard={(): void => this.setState({deletepopupvisible: false})}
-                        onSubmit={(): void => {
-                            this.setState({deletepopupvisible: false});
-                            this.deleteVideo(true);
-                        }}
-                        onDeny={(): void => {
-                            this.setState({deletepopupvisible: false});
-                            this.deleteVideo(false);
-                        }}
-                    />
-                ) : null}
+                {this.state.deletepopupvisible ? this.renderDeletePopup() : null}
             </>
         );
+    }
+
+    renderDeletePopup(): JSX.Element {
+        if (GlobalInfos.isVideoFulldeleteable()) {
+            return (
+                <ButtonPopup
+                    onDeny={(): void => this.setState({deletepopupvisible: false})}
+                    onSubmit={(): void => {
+                        this.setState({deletepopupvisible: false});
+                        this.deleteVideo(true);
+                    }}
+                    onAlternativeButton={(): void => {
+                        this.setState({deletepopupvisible: false});
+                        this.deleteVideo(false);
+                    }}
+                    DenyButtonTitle='Cancel'
+                    SubmitButtonTitle='Fully Delete!'
+                    Title='Fully Delete Video?'
+                    AlternativeButtonTitle='Reference Only'
+                />
+            );
+        } else {
+            return (
+                <ButtonPopup
+                    onDeny={(): void => this.setState({deletepopupvisible: false})}
+                    onSubmit={(): void => {
+                        this.setState({deletepopupvisible: false});
+                        this.deleteVideo(false);
+                    }}
+                    DenyButtonTitle='Cancel'
+                    SubmitButtonTitle='Delete Video Reference!'
+                    Title='Delete Video?'
+                />
+            );
+        }
     }
 
     /**
