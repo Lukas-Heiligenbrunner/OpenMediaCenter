@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"openmediacenter/apiGo/api/types"
 	"openmediacenter/apiGo/database"
+	"openmediacenter/apiGo/database/settings"
+	"os"
 	"strconv"
 )
 
@@ -418,12 +420,14 @@ func addToVideoHandlers() {
 	 * @apiGroup video
 	 *
 	 * @apiParam {int} MovieId ID of video
+	 * @apiParam {bool} FullyDelete Delete video from disk?
 	 *
 	 * @apiSuccess {string} result 'success' if successfully or error message if not
 	 */
 	AddHandler("deleteVideo", VideoNode, func(info *HandlerInfo) []byte {
 		var args struct {
-			MovieId int
+			MovieId     int
+			FullyDelete bool
 		}
 		if err := FillStruct(&args, info.Data); err != nil {
 			fmt.Println(err.Error())
@@ -443,6 +447,26 @@ func addToVideoHandlers() {
 			return database.ManualSuccessResponse(err)
 		}
 
+		// only allow deletion of video if cli flag is set, independent of passed api arg
+		if settings.VideosDeletable() && args.FullyDelete {
+			// get physical path of video to delete
+			query = fmt.Sprintf("SELECT movie_url FROM videos WHERE movie_id=%d", args.MovieId)
+			var vidpath string
+			err := database.QueryRow(query).Scan(&vidpath)
+			if err != nil {
+				return database.ManualSuccessResponse(err)
+			}
+
+			assembledPath := database.SettingsVideoPrefix + "/" + vidpath
+
+			err = os.Remove(assembledPath)
+			if err != nil {
+				fmt.Printf("unable to delete file: %s -- %s\n", assembledPath, err.Error())
+				return database.ManualSuccessResponse(err)
+			}
+		}
+
+		// delete video row from db
 		query = fmt.Sprintf("DELETE FROM videos WHERE movie_id=%d", args.MovieId)
 		return database.SuccessQuery(query)
 	})

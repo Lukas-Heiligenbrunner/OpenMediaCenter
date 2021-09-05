@@ -67,12 +67,13 @@ func getSettingsFromDB() {
 		sett := settings.LoadSettings()
 
 		type InitialDataTypeResponse struct {
-			DarkMode        bool
-			Pasword         bool
-			MediacenterName string
-			VideoPath       string
-			TVShowPath      string
-			TVShowEnabled   bool
+			DarkMode          bool
+			Pasword           bool
+			MediacenterName   string
+			VideoPath         string
+			TVShowPath        string
+			TVShowEnabled     bool
+			FullDeleteEnabled bool
 		}
 
 		regexMatchUrl := regexp.MustCompile("^http(|s)://([0-9]){1,3}\\.([0-9]){1,3}\\.([0-9]){1,3}\\.([0-9]){1,3}:[0-9]{1,5}")
@@ -82,12 +83,13 @@ func getSettingsFromDB() {
 		serverTVShowPath := strings.TrimPrefix(sett.TVShowPath, tvshowurl)
 
 		res := InitialDataTypeResponse{
-			DarkMode:        sett.DarkMode,
-			Pasword:         sett.Pasword != "-1",
-			MediacenterName: sett.MediacenterName,
-			VideoPath:       serverVideoPath,
-			TVShowPath:      serverTVShowPath,
-			TVShowEnabled:   settings.TVShowsEnabled(),
+			DarkMode:          sett.DarkMode,
+			Pasword:           sett.Pasword != "-1",
+			MediacenterName:   sett.MediacenterName,
+			VideoPath:         serverVideoPath,
+			TVShowPath:        serverTVShowPath,
+			TVShowEnabled:     settings.TVShowsEnabled(),
+			FullDeleteEnabled: settings.VideosDeletable(),
 		}
 
 		str, _ := json.Marshal(res)

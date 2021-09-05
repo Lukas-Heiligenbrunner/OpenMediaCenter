@@ -37,6 +37,7 @@ export namespace SettingsTypes {
         VideoPath: string;
         TVShowPath: string;
         TVShowEnabled: boolean;
+        FullDeleteEnabled: boolean;
     }
 
     export interface SettingsType {

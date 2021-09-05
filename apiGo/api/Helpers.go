@@ -15,7 +15,8 @@ func readVideosFromResultset(rows *sql.Rows) []types.VideoUnloadedType {
 		var vid types.VideoUnloadedType
 		err := rows.Scan(&vid.MovieId, &vid.MovieName)
 		if err != nil {
-			panic(err.Error()) // proper error handling instead of panic in your app
+			fmt.Println(err.Error())
+			return nil
 		}
 		result = append(result, vid)
 	}

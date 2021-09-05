@@ -2,6 +2,7 @@ import {shallow} from 'enzyme';
 import React from 'react';
 import {Player} from './Player';
 import {callAPI} from '../../utils/Api';
+import GlobalInfos from "../../utils/GlobalInfos";
 
 describe('<Player/>', function () {
 
@@ -84,23 +85,54 @@ describe('<Player/>', function () {
         expect(wrapper.find('AddTagPopup')).toHaveLength(1);
     });
 
-    it('test delete button', done => {
+    it('test fully delete popup rendering', function () {
         const wrapper = instance();
 
+        // allow videos to be fully deletable
+        GlobalInfos.setFullDeleteEnabled(true);
 
-        wrapper.setProps({history: {goBack: jest.fn()}});
+        wrapper.setState({deletepopupvisible: true});
 
-        global.fetch = prepareFetchApi({result: 'success'});
+        expect(wrapper.find('ButtonPopup')).toHaveLength(1)
+    });
 
+    it('test delete popup rendering', function () {
+        const wrapper = instance();
+
+        GlobalInfos.setFullDeleteEnabled(false);
+        wrapper.setState({deletepopupvisible: true});
+
+        expect(wrapper.find('ButtonPopup')).toHaveLength(1)
+    });
+
+    it('test delete button', () => {
+        const wrapper = instance();
+        const callback = jest.fn();
+
+        wrapper.setProps({history: {goBack: callback}});
+
+        callAPIMock({result: 'success'})
+        GlobalInfos.setFullDeleteEnabled(false);
+
+        // request the popup to pop
         wrapper.find('.videoactions').find('Button').at(2).simulate('click');
 
-        process.nextTick(() => {
-            // refetch is called so fetch called 3 times
-            expect(global.fetch).toHaveBeenCalledTimes(1);
-            expect(wrapper.instance().props.history.goBack).toHaveBeenCalledTimes(1);
+        // click the first submit button
+        wrapper.find('ButtonPopup').dive().find('Button').at(0).simulate('click')
 
-            global.fetch.mockClear();
-            done();
+        // refetch is called so fetch called 3 times
+        expect(callAPI).toHaveBeenCalledTimes(1);
+        expect(callback).toHaveBeenCalledTimes(1);
+
+        // now lets test if this works also with the fullydeletepopup
+        GlobalInfos.setFullDeleteEnabled(true);
+        // request the popup to pop
+        wrapper.setState({deletepopupvisible: true}, () => {
+            // click the first submit button
+            wrapper.find('ButtonPopup').dive().find('Button').at(0).simulate('click')
+
+            expect(callAPI).toHaveBeenCalledTimes(2);
+            expect(callback).toHaveBeenCalledTimes(2);
         });
     });
 
@@ -152,16 +184,14 @@ describe('<Player/>', function () {
     it('test click of quickadd tag btn', done => {
         const wrapper = generatetag();
 
-        global.fetch = prepareFetchApi({result: 'success'});
+        callAPIMock({result: 'success'})
 
         // render tag subcomponent
         const tag = wrapper.find('Tag').first().dive();
         tag.simulate('click');
 
         process.nextTick(() => {
-            expect(global.fetch).toHaveBeenCalledTimes(1);
-
-            global.fetch.mockClear();
+            expect(callAPI).toHaveBeenCalledTimes(1);
             done();
         });
     });
@@ -169,7 +199,7 @@ describe('<Player/>', function () {
     it('test failing quickadd', done => {
         const wrapper = generatetag();
 
-        global.fetch = prepareFetchApi({result: 'nonsuccess'});
+        callAPIMock({result: 'nonsuccess'});
         global.console.error = jest.fn();
 
         // render tag subcomponent
@@ -178,8 +208,6 @@ describe('<Player/>', function () {
 
         process.nextTick(() => {
             expect(global.console.error).toHaveBeenCalledTimes(2);
-
-            global.fetch.mockClear();
             done();
         });
     });

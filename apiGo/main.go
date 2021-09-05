@@ -57,10 +57,12 @@ func handleCommandLineArguments() (*database.DatabaseConfig, bool, *string) {
 	pathPrefix := flag.String("ReindexPrefix", "/var/www/openmediacenter", "Prefix path for videos to reindex")
 
 	disableTVShowSupport := flag.Bool("DisableTVSupport", false, "Disable the TVShow support and pages")
+	videosFullyDeletable := flag.Bool("FullyDeletableVideos", false, "Allow deletion from harddisk")
 
 	flag.Parse()
 
 	settings2.SetTVShowEnabled(!*disableTVShowSupport)
+	settings2.SetVideosDeletable(*videosFullyDeletable)
 
 	return &database.DatabaseConfig{
 		DBHost:     *dbhostPtr,

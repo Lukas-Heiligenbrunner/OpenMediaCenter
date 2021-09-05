@@ -26,7 +26,7 @@
     "build": "CI=false react-scripts build",
     "test": "CI=true react-scripts test --reporters=jest-junit --verbose --silent --coverage --reporters=default",
     "lint": "eslint --format gitlab src/",
-    "apidoc": "apidoc -i apiGo/ -o doc/"
+    "apidoc": "apidoc --single -i apiGo/ -o doc/"
   },
   "jest": {
     "collectCoverageFrom": [

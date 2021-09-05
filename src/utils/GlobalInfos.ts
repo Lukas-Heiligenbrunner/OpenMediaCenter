@@ -10,6 +10,7 @@ class StaticInfos {
     private videopath: string = '';
     private tvshowpath: string = '';
     private TVShowsEnabled: boolean = false;
+    private fullDeleteable: boolean = false;
 
     /**
      * check if the current theme is the dark theme
@@ -79,6 +80,14 @@ class StaticInfos {
 
     isTVShowEnabled(): boolean {
         return this.TVShowsEnabled;
+    }
+
+    setFullDeleteEnabled(FullDeleteEnabled: boolean): void {
+        this.fullDeleteable = FullDeleteEnabled;
+    }
+
+    isVideoFulldeleteable(): boolean {
+        return this.fullDeleteable;
     }
 }
 
