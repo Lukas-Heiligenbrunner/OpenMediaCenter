@@ -457,7 +457,8 @@ func addToVideoHandlers() {
 				return database.ManualSuccessResponse(err)
 			}
 
-			assembledPath := database.SettingsVideoPrefix + "/" + vidpath
+			sett, videoprefix, _ := database.GetSettings()
+			assembledPath := videoprefix + sett.VideoPath + vidpath
 
 			err = os.Remove(assembledPath)
 			if err != nil {
