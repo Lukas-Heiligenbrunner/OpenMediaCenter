@@ -373,8 +373,7 @@ export class Player extends React.Component<Props, mystate> {
                     // return to last element if successful
                     this.props.history.goBack();
                 } else {
-                    console.error('an error occured while liking');
-                    console.error(result);
+                    console.error('an error occured while deleting the video: ' + JSON.stringify(result));
                 }
             }
         );

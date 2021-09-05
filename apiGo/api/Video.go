@@ -457,9 +457,11 @@ func addToVideoHandlers() {
 				return database.ManualSuccessResponse(err)
 			}
 
-			err = os.Remove(vidpath)
+			assembledPath := database.SettingsVideoPrefix + "/" + vidpath
+
+			err = os.Remove(assembledPath)
 			if err != nil {
-				fmt.Printf("unable to delete file: %s -- %s\n", vidpath, err.Error())
+				fmt.Printf("unable to delete file: %s -- %s\n", assembledPath, err.Error())
 				return database.ManualSuccessResponse(err)
 			}
 		}
