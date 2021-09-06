@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"openmediacenter/apiGo/api"
+	"openmediacenter/apiGo/config"
 	"openmediacenter/apiGo/database"
 	settings2 "openmediacenter/apiGo/database/settings"
 	"openmediacenter/apiGo/static"
@@ -18,6 +19,8 @@ func main() {
 
 	db, verbose, pathPrefix := handleCommandLineArguments()
 	// todo some verbosity logger or sth
+
+	config.Init()
 
 	fmt.Printf("Use verbose output: %t\n", verbose)
 	fmt.Printf("Videopath prefix: %s\n", *pathPrefix)
