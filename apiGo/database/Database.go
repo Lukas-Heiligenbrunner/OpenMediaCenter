@@ -5,23 +5,14 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"openmediacenter/apiGo/api/types"
+	"openmediacenter/apiGo/config"
 )
 
 var db *sql.DB
 var DBName string
 
-// store the command line parameter for Videoprefix
-var SettingsVideoPrefix = ""
-
-type DatabaseConfig struct {
-	DBHost     string
-	DBPort     int
-	DBUser     string
-	DBPassword string
-	DBName     string
-}
-
-func InitDB(dbconf *DatabaseConfig) {
+func InitDB() {
+	dbconf := config.GetConfig().Database
 	DBName = dbconf.DBName
 
 	// Open up our database connection.
@@ -128,6 +119,6 @@ func GetSettings() (result types.SettingsType, PathPrefix string, sizes types.Se
 	result.TMDBGrabbing = TMDBGrabbing != 0
 	result.PasswordEnabled = result.Password != "-1"
 	result.DarkMode = DarkMode != 0
-	PathPrefix = SettingsVideoPrefix
+	PathPrefix = config.GetConfig().General.ReindexPrefix
 	return
 }

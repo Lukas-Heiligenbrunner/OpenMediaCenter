@@ -2,13 +2,13 @@ package api
 
 import (
 	"fmt"
+	"openmediacenter/apiGo/config"
 	"openmediacenter/apiGo/database"
-	"openmediacenter/apiGo/database/settings"
 )
 
 func AddTvshowHandlers() {
 	// do not add handlers if tvshows not enabled
-	if !settings.TVShowsEnabled() {
+	if config.GetConfig().Features.DisableTVSupport {
 		return
 	}
 

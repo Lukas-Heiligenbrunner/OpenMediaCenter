@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/url"
 	"openmediacenter/apiGo/api/types"
+	"openmediacenter/apiGo/config"
 	"openmediacenter/apiGo/database"
-	"openmediacenter/apiGo/database/settings"
 	"os"
 	"strconv"
 )
@@ -448,7 +448,7 @@ func addToVideoHandlers() {
 		}
 
 		// only allow deletion of video if cli flag is set, independent of passed api arg
-		if settings.VideosDeletable() && args.FullyDelete {
+		if config.GetConfig().Features.FullyDeletableVideos && args.FullyDelete {
 			// get physical path of video to delete
 			query = fmt.Sprintf("SELECT movie_url FROM videos WHERE movie_id=%d", args.MovieId)
 			var vidpath string
