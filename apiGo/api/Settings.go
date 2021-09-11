@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"openmediacenter/apiGo/api/types"
+	"openmediacenter/apiGo/config"
 	"openmediacenter/apiGo/database"
 	"openmediacenter/apiGo/database/settings"
 	"openmediacenter/apiGo/videoparser"
@@ -88,8 +89,8 @@ func getSettingsFromDB() {
 			MediacenterName:   sett.MediacenterName,
 			VideoPath:         serverVideoPath,
 			TVShowPath:        serverTVShowPath,
-			TVShowEnabled:     settings.TVShowsEnabled(),
-			FullDeleteEnabled: settings.VideosDeletable(),
+			TVShowEnabled:     !config.GetConfig().Features.DisableTVSupport,
+			FullDeleteEnabled: config.GetConfig().Features.FullyDeletableVideos,
 		}
 
 		str, _ := json.Marshal(res)
