@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"openmediacenter/apiGo/api/api"
 	"openmediacenter/apiGo/api/types"
 	"openmediacenter/apiGo/database"
 )
@@ -23,9 +24,9 @@ func getActorsFromDB() {
 	 * @apiSuccess {string} .Name Actor Name
 	 * @apiSuccess {string} .Thumbnail Portrait Thumbnail
 	 */
-	AddHandler("getAllActors", ActorNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("getAllActors", api.ActorNode, api.PermUser, func(context api.Context) {
 		query := "SELECT actor_id, name, thumbnail FROM actors"
-		return jsonify(readActorsFromResultset(database.Query(query)))
+		context.Json(readActorsFromResultset(database.Query(query)))
 	})
 
 	/**
@@ -41,20 +42,21 @@ func getActorsFromDB() {
 	 * @apiSuccess {string} .Name Actor Name
 	 * @apiSuccess {string} .Thumbnail Portrait Thumbnail
 	 */
-	AddHandler("getActorsOfVideo", ActorNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("getActorsOfVideo", api.ActorNode, api.PermUser, func(context api.Context) {
 		var args struct {
 			MovieId int
 		}
-		if err := FillStruct(&args, info.Data); err != nil {
-			fmt.Println(err.Error())
-			return nil
+		err := api.DecodeRequest(context.GetRequest(), &args)
+		if err != nil {
+			context.Text("failed to decode request")
+			return
 		}
 
 		query := fmt.Sprintf(`SELECT a.actor_id, name, thumbnail FROM actors_videos
 									JOIN actors a on actors_videos.actor_id = a.actor_id
 									WHERE actors_videos.video_id=%d`, args.MovieId)
 
-		return jsonify(readActorsFromResultset(database.Query(query)))
+		context.Json(readActorsFromResultset(database.Query(query)))
 	})
 
 	/**
@@ -74,13 +76,15 @@ func getActorsFromDB() {
 	 * @apiSuccess {string} Info.Name Actor Name
 	 * @apiSuccess {string} Info.Thumbnail Actor Thumbnail
 	 */
-	AddHandler("getActorInfo", ActorNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("getActorInfo", api.ActorNode, api.PermUser, func(context api.Context) {
 		var args struct {
 			ActorId int
 		}
-		if err := FillStruct(&args, info.Data); err != nil {
-			fmt.Println(err.Error())
-			return nil
+
+		err := api.DecodeRequest(context.GetRequest(), &args)
+		if err != nil {
+			context.Error("unable to decode request")
+			return
 		}
 
 		query := fmt.Sprintf(`SELECT movie_id, movie_name FROM actors_videos
@@ -99,7 +103,7 @@ func getActorsFromDB() {
 			Info:   actor,
 		}
 
-		return jsonify(result)
+		context.Json(result)
 	})
 }
 
@@ -112,19 +116,17 @@ func saveActorsToDB() {
 	 *
 	 * @apiParam {string} ActorName Name of new Actor
 	 *
-	 * @apiSuccess {string} result 'success' if successfully or error message if not
+	 * @apiSuccess {string} result 'success' if successfully or Error message if not
 	 */
-	AddHandler("createActor", ActorNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("createActor", api.ActorNode, api.PermUser, func(context api.Context) {
 		var args struct {
 			ActorName string
 		}
-		if err := FillStruct(&args, info.Data); err != nil {
-			fmt.Println(err.Error())
-			return nil
-		}
+		api.DecodeRequest(context.GetRequest(), &args)
 
 		query := "INSERT IGNORE INTO actors (name) VALUES (?)"
-		return database.SuccessQuery(query, args.ActorName)
+		// todo bit ugly
+		context.Text(string(database.SuccessQuery(query, args.ActorName)))
 	})
 
 	/**
@@ -136,19 +138,20 @@ func saveActorsToDB() {
 	 * @apiParam {int} ActorId Id of Actor
 	 * @apiParam {int} MovieId Id of Movie to add to
 	 *
-	 * @apiSuccess {string} result 'success' if successfully or error message if not
+	 * @apiSuccess {string} result 'success' if successfully or Error message if not
 	 */
-	AddHandler("addActorToVideo", ActorNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("addActorToVideo", api.ActorNode, api.PermUser, func(context api.Context) {
 		var args struct {
 			ActorId int
 			MovieId int
 		}
-		if err := FillStruct(&args, info.Data); err != nil {
-			fmt.Println(err.Error())
-			return nil
+		err := api.DecodeRequest(context.GetRequest(), &args)
+		if err != nil {
+			context.Error("unable to decode request")
+			return
 		}
 
 		query := fmt.Sprintf("INSERT IGNORE INTO actors_videos (actor_id, video_id) VALUES (%d,%d)", args.ActorId, args.MovieId)
-		return database.SuccessQuery(query)
+		context.Text(string(database.SuccessQuery(query)))
 	})
 }

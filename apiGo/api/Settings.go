@@ -1,8 +1,7 @@
 package api
 
 import (
-	"encoding/json"
-	"fmt"
+	"openmediacenter/apiGo/api/api"
 	"openmediacenter/apiGo/api/types"
 	"openmediacenter/apiGo/config"
 	"openmediacenter/apiGo/database"
@@ -38,7 +37,7 @@ func getSettingsFromDB() {
 	 * @apiSuccess {uint32} Sizes.DifferentTags number of different tags available
 	 * @apiSuccess {uint32} Sizes.TagsAdded number of different tags added to videos
 	 */
-	AddHandler("loadGeneralSettings", SettingsNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("loadGeneralSettings", api.SettingsNode, api.PermUser, func(context api.Context) {
 		result, _, sizes := database.GetSettings()
 
 		var ret = struct {
@@ -48,7 +47,7 @@ func getSettingsFromDB() {
 			Settings: &result,
 			Sizes:    &sizes,
 		}
-		return jsonify(ret)
+		context.Json(ret)
 	})
 
 	/**
@@ -64,7 +63,7 @@ func getSettingsFromDB() {
 	 * @apiSuccess {bool} DarkMode Darkmode enabled?
 	 * @apiSuccess {bool} TVShowEnabled is are TVShows enabled
 	 */
-	AddHandler("loadInitialData", SettingsNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("loadInitialData", api.SettingsNode, api.PermUser, func(context api.Context) {
 		sett := settings.LoadSettings()
 
 		type InitialDataTypeResponse struct {
@@ -93,8 +92,7 @@ func getSettingsFromDB() {
 			FullDeleteEnabled: config.GetConfig().Features.FullyDeletableVideos,
 		}
 
-		str, _ := json.Marshal(res)
-		return str
+		context.Json(res)
 	})
 }
 
@@ -112,13 +110,14 @@ func saveSettingsToDB() {
 	 * @apiParam {bool} TMDBGrabbing TMDB grabbing support to grab tag info and thumbnails
 	 * @apiParam {bool} DarkMode Darkmode enabled?
 	 *
-	 * @apiSuccess {string} result 'success' if successfully or error message if not
+	 * @apiSuccess {string} result 'success' if successfully or Error message if not
 	 */
-	AddHandler("saveGeneralSettings", SettingsNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("saveGeneralSettings", api.SettingsNode, api.PermUser, func(context api.Context) {
 		var args types.SettingsType
-		if err := FillStruct(&args, info.Data); err != nil {
-			fmt.Println(err.Error())
-			return nil
+		err := api.DecodeRequest(context.GetRequest(), &args)
+		if err != nil {
+			context.Error("unable to decode arguments")
+			return
 		}
 
 		query := `
@@ -130,9 +129,10 @@ func saveSettingsToDB() {
                         TMDB_grabbing=?, 
                         DarkMode=?
                     WHERE 1`
-		return database.SuccessQuery(query,
+		// todo avoid conversion
+		context.Text(string(database.SuccessQuery(query,
 			args.VideoPath, args.EpisodePath, args.Password,
-			args.MediacenterName, args.TMDBGrabbing, args.DarkMode)
+			args.MediacenterName, args.TMDBGrabbing, args.DarkMode)))
 	})
 }
 
@@ -144,11 +144,11 @@ func reIndexHandling() {
 	 * @apiName startReindex
 	 * @apiGroup Settings
 	 *
-	 * @apiSuccess {string} result 'success' if successfully or error message if not
+	 * @apiSuccess {string} result 'success' if successfully or Error message if not
 	 */
-	AddHandler("startReindex", SettingsNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("startReindex", api.SettingsNode, api.PermUser, func(context api.Context) {
 		videoparser.StartReindex()
-		return database.ManualSuccessResponse(nil)
+		context.Text(string(database.ManualSuccessResponse(nil)))
 	})
 
 	/**
@@ -157,11 +157,11 @@ func reIndexHandling() {
 	 * @apiName startTVShowReindex
 	 * @apiGroup Settings
 	 *
-	 * @apiSuccess {string} result 'success' if successfully or error message if not
+	 * @apiSuccess {string} result 'success' if successfully or Error message if not
 	 */
-	AddHandler("startTVShowReindex", SettingsNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("startTVShowReindex", api.SettingsNode, api.PermUser, func(context api.Context) {
 		videoparser.StartTVShowReindex()
-		return database.ManualSuccessResponse(nil)
+		context.Text(string(database.ManualSuccessResponse(nil)))
 	})
 
 	/**
@@ -170,8 +170,7 @@ func reIndexHandling() {
 	 * @apiName cleanupGravity
 	 * @apiGroup Settings
 	 */
-	AddHandler("cleanupGravity", SettingsNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("cleanupGravity", api.SettingsNode, api.PermUser, func(context api.Context) {
 		videoparser.StartCleanup()
-		return nil
 	})
 }

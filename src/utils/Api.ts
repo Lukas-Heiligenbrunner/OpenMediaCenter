@@ -68,7 +68,7 @@ function generalAPICall<T>(
     mytoken: string
 ): void {
     (async function (): Promise<void> {
-        const response = await fetch(APIPREFIX + apinode, {
+        const response = await fetch(APIPREFIX + apinode + '/' + fd.action, {
             method: 'POST',
             body: JSON.stringify(fd),
             headers: new Headers({

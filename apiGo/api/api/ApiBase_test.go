@@ -11,7 +11,7 @@ func cleanUp() {
 func TestAddHandler(t *testing.T) {
 	cleanUp()
 
-	AddHandler("test", ActorNode, func(info *HandlerInfo) []byte {
+	AddHandler("test", ActorNode, api.PermUser, func(context api.Context) {
 		return nil
 	})
 	if len(handlers) != 1 {
@@ -23,7 +23,7 @@ func TestCallOfHandler(t *testing.T) {
 	cleanUp()
 
 	i := 0
-	AddHandler("test", ActorNode, func(info *HandlerInfo) []byte {
+	AddHandler("test", ActorNode, api.PermUser, func(context api.Context) {
 		i++
 		return nil
 	})
@@ -39,7 +39,7 @@ func TestCallOfHandler(t *testing.T) {
 func TestDecodingOfArguments(t *testing.T) {
 	cleanUp()
 
-	AddHandler("test", ActorNode, func(info *HandlerInfo) []byte {
+	AddHandler("test", ActorNode, api.PermUser, func(context api.Context) {
 		var args struct {
 			Test    string
 			TestInt int

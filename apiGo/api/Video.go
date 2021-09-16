@@ -1,9 +1,9 @@
 package api
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/url"
+	"openmediacenter/apiGo/api/api"
 	"openmediacenter/apiGo/api/types"
 	"openmediacenter/apiGo/config"
 	"openmediacenter/apiGo/database"
@@ -31,14 +31,15 @@ func getVideoHandlers() {
 	 * @apiSuccess {String} Videos.MovieName  Name of video
 	 * @apiSuccess {String} TagName Name of the Tag returned
 	 */
-	AddHandler("getMovies", VideoNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("getMovies", api.VideoNode, api.PermUser, func(context api.Context) {
 		var args struct {
 			Tag  uint32
 			Sort uint8
 		}
-		if err := FillStruct(&args, info.Data); err != nil {
-			fmt.Println(err.Error())
-			return nil
+		err := api.DecodeRequest(context.GetRequest(), &args)
+		if err != nil {
+			context.Text("unable to decode request")
+			return
 		}
 
 		const (
@@ -92,24 +93,22 @@ func getVideoHandlers() {
 			var vid types.VideoUnloadedType
 			err := rows.Scan(&vid.MovieId, &vid.MovieName, &name)
 			if err != nil {
-				return nil
+				return
 			}
 			vids = append(vids, vid)
 		}
 		if rows.Close() != nil {
-			return nil
+			return
 		}
 
 		// if the tag id doesn't exist the query won't return a name
 		if name == "" {
-			return nil
+			return
 		}
 
 		result.Videos = vids
 		result.TagName = name
-		// jsonify results
-		str, _ := json.Marshal(result)
-		return str
+		context.Json(result)
 	})
 
 	/**
@@ -122,26 +121,27 @@ func getVideoHandlers() {
 	 *
 	 * @apiSuccess {string} . Base64 encoded Thubnail
 	 */
-	AddHandler("readThumbnail", VideoNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("readThumbnail", api.VideoNode, api.PermUser, func(context api.Context) {
 		var args struct {
 			Movieid int
 		}
-		if err := FillStruct(&args, info.Data); err != nil {
-			fmt.Println(err.Error())
-			return nil
+		err := api.DecodeRequest(context.GetRequest(), &args)
+		if err != nil {
+			context.Text("unable to decode request")
+			return
 		}
 
 		var pic []byte
 
 		query := fmt.Sprintf("SELECT thumbnail FROM videos WHERE movie_id=%d", args.Movieid)
 
-		err := database.QueryRow(query).Scan(&pic)
+		err = database.QueryRow(query).Scan(&pic)
 		if err != nil {
 			fmt.Printf("the thumbnail of movie id %d couldn't be found", args.Movieid)
-			return nil
+			return
 		}
 
-		return pic
+		context.Text(string(pic))
 	})
 
 	/**
@@ -160,13 +160,13 @@ func getVideoHandlers() {
 	 * @apiSuccess {string} Videos.MovieName Video Name
 	 * @apiSuccess {int} Videos.MovieId Video ID
 	 */
-	AddHandler("getRandomMovies", VideoNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("getRandomMovies", api.VideoNode, api.PermUser, func(context api.Context) {
 		var args struct {
 			Number int
 		}
-		if err := FillStruct(&args, info.Data); err != nil {
-			fmt.Println(err.Error())
-			return nil
+		if api.DecodeRequest(context.GetRequest(), &args) != nil {
+			context.Text("unable to decode request")
+			return
 		}
 
 		var result struct {
@@ -198,15 +198,13 @@ func getVideoHandlers() {
 			var tag types.Tag
 			err := rows.Scan(&tag.TagName, &tag.TagId)
 			if err != nil {
-				panic(err.Error()) // proper error handling instead of panic in your app
+				panic(err.Error()) // proper Error handling instead of panic in your app
 			}
 			// append to final array
 			result.Tags = append(result.Tags, tag)
 		}
 
-		// jsonify results
-		str, _ := json.Marshal(result)
-		return str
+		context.Json(result)
 	})
 
 	/**
@@ -221,23 +219,19 @@ func getVideoHandlers() {
 	 * @apiSuccess {number} .MovieId Id of Video
 	 * @apiSuccess {String} .MovieName  Name of video
 	 */
-	AddHandler("getSearchKeyWord", VideoNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("getSearchKeyWord", api.VideoNode, api.PermUser, func(context api.Context) {
 		var args struct {
 			KeyWord string
 		}
-		if err := FillStruct(&args, info.Data); err != nil {
-			fmt.Println(err.Error())
-			return nil
+		if api.DecodeRequest(context.GetRequest(), &args) != nil {
+			context.Text("unable to decode request")
+			return
 		}
 
 		query := fmt.Sprintf(`SELECT movie_id,movie_name FROM videos 
 					WHERE movie_name LIKE '%%%s%%'
 					ORDER BY likes DESC, create_date DESC, movie_name`, args.KeyWord)
-
-		result := readVideosFromResultset(database.Query(query))
-		// jsonify results
-		str, _ := json.Marshal(result)
-		return str
+		context.Json(readVideosFromResultset(database.Query(query)))
 	})
 }
 
@@ -273,13 +267,13 @@ func loadVideosHandlers() {
 	 * @apiSuccess {string} Actors.Name Actor Name
 	 * @apiSuccess {string} Actors.Thumbnail Portrait Thumbnail
 	 */
-	AddHandler("loadVideo", VideoNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("loadVideo", api.VideoNode, api.PermUser, func(context api.Context) {
 		var args struct {
 			MovieId int
 		}
-		if err := FillStruct(&args, info.Data); err != nil {
-			fmt.Println(err.Error())
-			return nil
+		if api.DecodeRequest(context.GetRequest(), &args) != nil {
+			context.Text("unable to decode request")
+			return
 		}
 
 		query := fmt.Sprintf(`SELECT movie_name,movie_url,movie_id,thumbnail,poster,likes,quality,length 
@@ -291,9 +285,9 @@ func loadVideosHandlers() {
 
 		err := database.QueryRow(query).Scan(&res.MovieName, &res.MovieUrl, &res.MovieId, &thumbnail, &poster, &res.Likes, &res.Quality, &res.Length)
 		if err != nil {
-			fmt.Printf("error getting full data list of videoid - %d", args.MovieId)
+			fmt.Printf("Error getting full data list of videoid - %d", args.MovieId)
 			fmt.Println(err.Error())
-			return nil
+			return
 		}
 
 		// we ned to urlencode the movieurl
@@ -331,9 +325,7 @@ func loadVideosHandlers() {
 
 		res.Actors = readActorsFromResultset(database.Query(query))
 
-		// jsonify results
-		str, _ := json.Marshal(res)
-		return str
+		context.Json(res)
 	})
 
 	/**
@@ -349,7 +341,7 @@ func loadVideosHandlers() {
 	 * @apiSuccess {uint32} DifferentTags number of different Tags available
 	 * @apiSuccess {uint32} Tagged number of different Tags assigned
 	 */
-	AddHandler("getStartData", VideoNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("getStartData", api.VideoNode, api.PermUser, func(context api.Context) {
 		var result types.StartData
 		// query settings and infotile values
 		query := `
@@ -383,9 +375,7 @@ func loadVideosHandlers() {
 
 		_ = database.QueryRow(query).Scan(&result.VideoNr, &result.Tagged, &result.HDNr, &result.FullHdNr, &result.SDNr, &result.DifferentTags)
 
-		// jsonify results
-		str, _ := json.Marshal(result)
-		return str
+		context.Json(result)
 	})
 }
 
@@ -398,19 +388,19 @@ func addToVideoHandlers() {
 	 *
 	 * @apiParam {int} MovieId ID of video
 	 *
-	 * @apiSuccess {string} result 'success' if successfully or error message if not
+	 * @apiSuccess {string} result 'success' if successfully or Error message if not
 	 */
-	AddHandler("addLike", VideoNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("addLike", api.VideoNode, api.PermUser, func(context api.Context) {
 		var args struct {
 			MovieId int
 		}
-		if err := FillStruct(&args, info.Data); err != nil {
-			fmt.Println(err.Error())
-			return nil
+		if api.DecodeRequest(context.GetRequest(), &args) != nil {
+			context.Text("unable to decode request")
+			return
 		}
 
 		query := fmt.Sprintf("update videos set likes = likes + 1 where movie_id = %d", args.MovieId)
-		return database.SuccessQuery(query)
+		context.Text(string(database.SuccessQuery(query)))
 	})
 
 	/**
@@ -422,16 +412,16 @@ func addToVideoHandlers() {
 	 * @apiParam {int} MovieId ID of video
 	 * @apiParam {bool} FullyDelete Delete video from disk?
 	 *
-	 * @apiSuccess {string} result 'success' if successfully or error message if not
+	 * @apiSuccess {string} result 'success' if successfully or Error message if not
 	 */
-	AddHandler("deleteVideo", VideoNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("deleteVideo", api.VideoNode, api.PermUser, func(context api.Context) {
 		var args struct {
 			MovieId     int
 			FullyDelete bool
 		}
-		if err := FillStruct(&args, info.Data); err != nil {
-			fmt.Println(err.Error())
-			return nil
+		if api.DecodeRequest(context.GetRequest(), &args) != nil {
+			context.Text("unable to decode request")
+			return
 		}
 
 		// delete tag constraints
@@ -444,7 +434,7 @@ func addToVideoHandlers() {
 
 		// respond only if result not successful
 		if err != nil {
-			return database.ManualSuccessResponse(err)
+			context.Text(string(database.ManualSuccessResponse(err)))
 		}
 
 		// only allow deletion of video if cli flag is set, independent of passed api arg
@@ -454,7 +444,7 @@ func addToVideoHandlers() {
 			var vidpath string
 			err := database.QueryRow(query).Scan(&vidpath)
 			if err != nil {
-				return database.ManualSuccessResponse(err)
+				context.Text(string(database.ManualSuccessResponse(err)))
 			}
 
 			sett, videoprefix, _ := database.GetSettings()
@@ -463,12 +453,12 @@ func addToVideoHandlers() {
 			err = os.Remove(assembledPath)
 			if err != nil {
 				fmt.Printf("unable to delete file: %s -- %s\n", assembledPath, err.Error())
-				return database.ManualSuccessResponse(err)
+				context.Text(string(database.ManualSuccessResponse(err)))
 			}
 		}
 
 		// delete video row from db
 		query = fmt.Sprintf("DELETE FROM videos WHERE movie_id=%d", args.MovieId)
-		return database.SuccessQuery(query)
+		context.Text(string(database.SuccessQuery(query)))
 	})
 }
