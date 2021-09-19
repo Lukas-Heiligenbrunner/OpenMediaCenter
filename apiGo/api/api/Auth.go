@@ -48,7 +48,6 @@ func TokenValid(token string) (int, uint8) {
 func InitOAuth() {
 	AddHandler("login", LoginNode, PermUnauthorized, func(ctx Context) {
 		var t struct {
-			Username string
 			Password string
 		}
 
@@ -57,28 +56,27 @@ func InitOAuth() {
 		}
 
 		// empty check
-		if t.Password == "" || t.Username == "" {
-			ctx.Error("empty username or password")
+		if t.Password == "" {
+			ctx.Error("empty password")
 			return
 		}
 
 		// generate Argon2 Hash of passed pwd
-		pwd := HashPassword(t.Password)
+		HashPassword(t.Password)
+		// todo use hashed password
 
-		var id uint
-		var name string
-		var rightid uint8
+		var password string
 
-		err := database.QueryRow("SELECT userId,userName,rightId FROM User WHERE userName=? AND password=?", t.Username, *pwd).Scan(&id, &name, &rightid)
-		if err != nil {
+		err := database.QueryRow("SELECT password FROM settings WHERE 1").Scan(&password)
+		if err != nil || t.Password != password {
 			ctx.Error("unauthorized")
 			return
 		}
 
 		expires := time.Now().Add(time.Hour * TokenExpireHours).Unix()
 		claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-			Issuer:    strconv.Itoa(int(id)),
-			Subject:   strconv.Itoa(int(rightid)),
+			Issuer:    strconv.Itoa(int(0)),
+			Subject:   strconv.Itoa(int(PermUser)),
 			ExpiresAt: expires,
 		})
 
@@ -90,18 +88,12 @@ func InitOAuth() {
 		}
 
 		type ResponseType struct {
-			Token    Token
-			Username string
-			UserPerm uint8
+			Token Token
 		}
 
-		ctx.Json(ResponseType{
-			Token: Token{
-				Token:     token,
-				ExpiresAt: expires,
-			},
-			Username: t.Username,
-			UserPerm: rightid,
+		ctx.Json(Token{
+			Token:     token,
+			ExpiresAt: expires,
 		})
 	})
 }

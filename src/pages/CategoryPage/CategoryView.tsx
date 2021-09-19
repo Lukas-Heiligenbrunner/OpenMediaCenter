@@ -119,9 +119,10 @@ export class CategoryView extends React.Component<CategoryViewProps, CategoryVie
                 this.videodata = result.Videos;
                 this.setState({loaded: true, TagName: result.TagName});
             },
-            (_) => {
+            (e) => {
+                console.log(e);
                 // if there is an load error redirect to home page
-                this.props.history.push('/');
+                // this.props.history.push('/');
             }
         );
     }

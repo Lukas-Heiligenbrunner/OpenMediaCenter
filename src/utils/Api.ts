@@ -1,5 +1,5 @@
 import GlobalInfos from './GlobalInfos';
-import {token} from './TokenHandler';
+import {cookie} from './context/Cookie';
 
 const APIPREFIX: string = '/api/';
 
@@ -25,9 +25,7 @@ export function callAPI<T>(
     callback: (_: T) => void,
     errorcallback: (_: string) => void = (_: string): void => {}
 ): void {
-    token.checkAPITokenValid((mytoken) => {
-        generalAPICall<T>(apinode, fd, callback, errorcallback, false, true, mytoken);
-    });
+    generalAPICall<T>(apinode, fd, callback, errorcallback, false, true);
 }
 
 /**
@@ -43,7 +41,7 @@ export function callApiUnsafe<T>(
     callback: (_: T) => void,
     errorcallback?: (_: string) => void
 ): void {
-    generalAPICall(apinode, fd, callback, errorcallback, true, true, '');
+    generalAPICall(apinode, fd, callback, errorcallback, true, true);
 }
 
 /**
@@ -53,9 +51,7 @@ export function callApiUnsafe<T>(
  * @param callback the callback with PLAIN text reply from backend
  */
 export function callAPIPlain(apinode: APINode, fd: ApiBaseRequest, callback: (_: string) => void): void {
-    token.checkAPITokenValid((mytoken) => {
-        generalAPICall(apinode, fd, callback, () => {}, false, false, mytoken);
-    });
+    generalAPICall(apinode, fd, callback, () => {}, false, false);
 }
 
 function generalAPICall<T>(
@@ -64,16 +60,16 @@ function generalAPICall<T>(
     callback: (_: T) => void,
     errorcallback: (_: string) => void = (_: string): void => {},
     unsafe: boolean,
-    json: boolean,
-    mytoken: string
+    json: boolean
 ): void {
     (async function (): Promise<void> {
+        const tkn = cookie.Load();
         const response = await fetch(APIPREFIX + apinode + '/' + fd.action, {
             method: 'POST',
             body: JSON.stringify(fd),
             headers: new Headers({
                 'Content-Type': json ? 'application/json' : 'text/plain',
-                ...(!unsafe && {Authorization: 'Bearer ' + mytoken})
+                ...(!unsafe && tkn !== null && {Token: tkn.Token})
             })
         });
 
@@ -110,6 +106,7 @@ function generalAPICall<T>(
 
 // eslint-disable-next-line no-shadow
 export enum APINode {
+    Login = 'login',
     Settings = 'settings',
     Tags = 'tags',
     Actor = 'actor',

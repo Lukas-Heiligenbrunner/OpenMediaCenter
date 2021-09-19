@@ -26,7 +26,7 @@ const VideoContainer = (props: Props): JSX.Element => {
                         );
                     }}
                     name={el.MovieName}
-                    linkPath={'/player/' + el.MovieId}
+                    linkPath={'/media/player/' + el.MovieId}
                 />
             )}
             data={props.data}>

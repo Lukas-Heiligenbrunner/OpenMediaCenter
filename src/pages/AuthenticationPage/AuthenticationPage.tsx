@@ -2,9 +2,11 @@ import React from 'react';
 import {Button} from '../../elements/GPElements/Button';
 import style from './AuthenticationPage.module.css';
 import {addKeyHandler, removeKeyHandler} from '../../utils/ShortkeyHandler';
-import {token} from '../../utils/TokenHandler';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {LoginContext, LoginState} from '../../utils/context/LoginContext';
+import {APINode, callApiUnsafe} from '../../utils/Api';
+import {cookie, Token} from '../../utils/context/Cookie';
 
 interface state {
     pwdText: string;
@@ -35,6 +37,8 @@ class AuthenticationPage extends React.Component<Props, state> {
     componentWillUnmount(): void {
         removeKeyHandler(this.keypress);
     }
+
+    static contextType = LoginContext;
 
     render(): JSX.Element {
         return (
@@ -76,21 +80,17 @@ class AuthenticationPage extends React.Component<Props, state> {
      * request a new token and check if pwd was valid
      */
     authenticate(): void {
-        token.refreshAPIToken(
-            (error) => {
-                if (error !== '') {
-                    this.setState({wrongPWDInfo: true});
+        callApiUnsafe(
+            APINode.Login,
+            {action: 'login', Password: this.state.pwdText},
+            (r: Token) => {
+                cookie.Store(r);
 
-                    // set timeout to make the info auto-disappearing
-                    setTimeout(() => {
-                        this.setState({wrongPWDInfo: false});
-                    }, 2000);
-                } else {
-                    this.props.onSuccessLogin();
-                }
+                this.context.setLoginState(LoginState.LoggedIn);
             },
-            true,
-            this.state.pwdText
+            (e) => {
+                console.log(e);
+            }
         );
     }
 
