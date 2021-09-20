@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import MovieSettings from './MovieSettings';
 import GeneralSettings from './GeneralSettings';
 import style from './SettingsPage.module.css';
 import GlobalInfos from '../../utils/GlobalInfos';
 import {NavLink, Redirect, Route, Switch, useRouteMatch} from 'react-router-dom';
+import {FeatureContext} from '../../utils/context/FeatureContext';
 
 /**
  * The Settingspage handles all kinds of settings for the mediacenter
@@ -12,6 +13,7 @@ import {NavLink, Redirect, Route, Switch, useRouteMatch} from 'react-router-dom'
 const SettingsPage = (): JSX.Element => {
     const themestyle = GlobalInfos.getThemeStyle();
     const match = useRouteMatch();
+    const features = useContext(FeatureContext);
 
     return (
         <div>
@@ -23,7 +25,7 @@ const SettingsPage = (): JSX.Element => {
                 <NavLink to='/media/settings/movies'>
                     <div className={style.SettingSidebarElement}>Movies</div>
                 </NavLink>
-                {GlobalInfos.isTVShowEnabled() ? (
+                {features.TVShowEnabled ? (
                     <NavLink to='/media/settings/tv'>
                         <div className={style.SettingSidebarElement}>TV Shows</div>
                     </NavLink>
@@ -37,7 +39,7 @@ const SettingsPage = (): JSX.Element => {
                     <Route path={`${match.url}/movies`}>
                         <MovieSettings />
                     </Route>
-                    {GlobalInfos.isTVShowEnabled() ? (
+                    {features.TVShowEnabled ? (
                         <Route path={`${match.url}/tv`}>
                             <span />
                         </Route>

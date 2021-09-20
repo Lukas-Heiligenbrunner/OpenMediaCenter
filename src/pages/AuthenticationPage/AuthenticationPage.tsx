@@ -13,9 +13,7 @@ interface state {
     wrongPWDInfo: boolean;
 }
 
-interface Props {
-    onSuccessLogin: () => void;
-}
+interface Props {}
 
 class AuthenticationPage extends React.Component<Props, state> {
     constructor(props: Props) {

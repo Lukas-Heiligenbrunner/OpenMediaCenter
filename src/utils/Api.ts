@@ -1,4 +1,3 @@
-import GlobalInfos from './GlobalInfos';
 import {cookie} from './context/Cookie';
 
 const APIPREFIX: string = '/api/';
@@ -84,13 +83,7 @@ function generalAPICall<T>(
             }
         } else if (response.status === 400) {
             // Bad Request --> invalid token
-            console.log('loading Password page.');
-            // load password page
-            if (GlobalInfos.loadPasswordPage) {
-                GlobalInfos.loadPasswordPage(() => {
-                    callAPI(apinode, fd, callback, errorcallback);
-                });
-            }
+            console.log('bad request todo sth here');
         } else {
             console.log('Error: ' + response.statusText);
             if (errorcallback) {

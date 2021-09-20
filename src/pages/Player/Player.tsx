@@ -22,6 +22,7 @@ import {Button} from '../../elements/GPElements/Button';
 import {VideoTypes} from '../../types/ApiTypes';
 import GlobalInfos from '../../utils/GlobalInfos';
 import {ButtonPopup} from '../../elements/Popups/ButtonPopup/ButtonPopup';
+import {FeatureContext} from '../../utils/context/FeatureContext';
 
 interface Props extends RouteComponentProps<{id: string}> {}
 
@@ -64,6 +65,8 @@ export class Player extends React.Component<Props, mystate> {
 
         this.quickAddTag = this.quickAddTag.bind(this);
     }
+
+    static contextType = FeatureContext;
 
     componentDidMount(): void {
         // initial fetch of current movie data
@@ -205,7 +208,7 @@ export class Player extends React.Component<Props, mystate> {
     }
 
     renderDeletePopup(): JSX.Element {
-        if (GlobalInfos.isVideoFulldeleteable()) {
+        if (this.context.VideosFullyDeleteable) {
             return (
                 <ButtonPopup
                     onDeny={(): void => this.setState({deletepopupvisible: false})}

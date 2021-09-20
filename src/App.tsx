@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import HomePage from './pages/HomePage/HomePage';
 import RandomPage from './pages/RandomPage/RandomPage';
 import GlobalInfos from './utils/GlobalInfos';
@@ -18,6 +18,7 @@ import AuthenticationPage from './pages/AuthenticationPage/AuthenticationPage';
 import TVShowPage from './pages/TVShowPage/TVShowPage';
 import TVPlayer from './pages/TVShowPage/TVPlayer';
 import {LoginContextProvider} from './utils/context/LoginContextProvider';
+import {FeatureContext} from './utils/context/FeatureContext';
 
 interface state {
     mediacentername: string;
@@ -48,13 +49,7 @@ class App extends React.Component<{}, state> {
             <LoginContextProvider>
                 <Switch>
                     <Route path='/login'>
-                        <AuthenticationPage
-                            onSuccessLogin={(): void => {
-                                // this.setState({password: false});
-                                // reinit general infos
-                                // this.initialAPICall();
-                            }}
-                        />
+                        <AuthenticationPage />
                     </Route>
                     <Route path='/media'>
                         {this.navBar()}
@@ -63,31 +58,9 @@ class App extends React.Component<{}, state> {
                 </Switch>
             </LoginContextProvider>
         );
-
-        // if (this.state.password === true) {
-        //     // render authentication page if auth is neccessary
-        //     return (
-        //         <AuthenticationPage
-        //             onSuccessLogin={(): void => {
-        //                 this.setState({password: false});
-        //                 // reinit general infos
-        //                 this.initialAPICall();
-        //             }}
-        //         />
-        //     );
-        // } else if (this.state.password === false) {
-        //     return (
-        //         <Router>
-        //             <div className={style.app}>
-        //                 {this.navBar()}
-        //                 {this.routing()}
-        //             </div>
-        //         </Router>
-        //     );
-        // } else {
-        //     return <>still loading...</>;
-        // }
     }
+
+    static contextType = FeatureContext;
 
     /**
      * render the top navigation bar
@@ -115,7 +88,7 @@ class App extends React.Component<{}, state> {
                     Categories
                 </NavLink>
 
-                {GlobalInfos.isTVShowEnabled() ? (
+                {this.context.TVShowEnabled ? (
                     <NavLink
                         className={[style.navitem, themeStyle.navitem].join(' ')}
                         to={'/media/tvshows'}
@@ -137,6 +110,7 @@ class App extends React.Component<{}, state> {
 
 const MyRouter = (): JSX.Element => {
     const match = useRouteMatch();
+    const features = useContext(FeatureContext);
 
     return (
         <Switch>
@@ -159,13 +133,13 @@ const MyRouter = (): JSX.Element => {
                 <ActorPage />
             </Route>
 
-            {GlobalInfos.isTVShowEnabled() ? (
-                <Route exact path={`${match.url}/tvshows`}>
+            {features.TVShowEnabled ? (
+                <Route path={`${match.url}/tvshows`}>
                     <TVShowPage />
                 </Route>
             ) : null}
 
-            {GlobalInfos.isTVShowEnabled() ? (
+            {features.TVShowEnabled ? (
                 <Route exact path={`${match.url}/tvplayer/:id`}>
                     <TVPlayer />
                 </Route>

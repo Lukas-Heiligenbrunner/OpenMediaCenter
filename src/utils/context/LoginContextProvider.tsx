@@ -5,10 +5,13 @@ import {cookie} from './Cookie';
 import {APINode, callAPI} from '../Api';
 import {SettingsTypes} from '../../types/ApiTypes';
 import GlobalInfos from '../GlobalInfos';
+import {FeatureContext} from './FeatureContext';
 
 export const LoginContextProvider: FunctionComponent = (props): JSX.Element => {
     let initialLoginState = LoginState.LoggedIn;
     let initialUserPerm = LoginPerm.User;
+
+    const features = useContext(FeatureContext);
 
     const t = cookie.Load();
     // we are already logged in so we can set the token and redirect to dashboard
@@ -16,7 +19,7 @@ export const LoginContextProvider: FunctionComponent = (props): JSX.Element => {
         initialLoginState = LoginState.LoggedIn;
     }
 
-    const initialAPICall = (): void => {
+    useEffect(() => {
         // this is the first api call so if it fails we know there is no connection to backend
         callAPI(
             APINode.Settings,
@@ -27,9 +30,9 @@ export const LoginContextProvider: FunctionComponent = (props): JSX.Element => {
 
                 GlobalInfos.setVideoPaths(result.VideoPath, result.TVShowPath);
 
-                GlobalInfos.setTVShowsEnabled(result.TVShowEnabled);
-                GlobalInfos.setFullDeleteEnabled(result.FullDeleteEnabled);
-                //
+                features.setTVShowEnabled(result.TVShowEnabled);
+                features.setVideosFullyDeleteable(result.FullDeleteEnabled);
+
                 // this.setState({
                 //     mediacentername: result.MediacenterName
                 // });
@@ -42,11 +45,7 @@ export const LoginContextProvider: FunctionComponent = (props): JSX.Element => {
                 setLoginState(LoginState.LoggedOut);
             }
         );
-    };
-
-    useEffect(() => {
-        initialAPICall();
-    }, []);
+    }, [features]);
 
     const [loginState, setLoginState] = useState<LoginState>(initialLoginState);
     const [permission, setPermission] = useState<LoginPerm>(initialUserPerm);
