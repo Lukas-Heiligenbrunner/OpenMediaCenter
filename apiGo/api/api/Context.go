@@ -56,5 +56,5 @@ func (r *apicontext) Error(msg string) {
 }
 
 func (r *apicontext) Errorf(msg string, args ...interface{}) {
-	r.Error(fmt.Sprintf(msg, args))
+	r.Error(fmt.Sprintf(msg, &args))
 }
