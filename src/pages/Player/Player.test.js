@@ -3,12 +3,13 @@ import React from 'react';
 import {Player} from './Player';
 import {callAPI} from '../../utils/Api';
 import GlobalInfos from "../../utils/GlobalInfos";
+import {LoginContext} from '../../utils/context/LoginContext';
 
 describe('<Player/>', function () {
 
     // help simulating id passed by url
     function instance() {
-        return shallow(<Player match={{params: {id: 10}}}/>);
+        return shallow(<Player match={{params: {id: 10}}}/>, {context: LoginContext});
     }
 
     it('renders without crashing ', function () {
@@ -88,18 +89,8 @@ describe('<Player/>', function () {
     it('test fully delete popup rendering', function () {
         const wrapper = instance();
 
-        // allow videos to be fully deletable
-        GlobalInfos.setFullDeleteEnabled(true);
+        wrapper.setContext({VideosFullyDeleteable: true})
 
-        wrapper.setState({deletepopupvisible: true});
-
-        expect(wrapper.find('ButtonPopup')).toHaveLength(1)
-    });
-
-    it('test delete popup rendering', function () {
-        const wrapper = instance();
-
-        GlobalInfos.setFullDeleteEnabled(false);
         wrapper.setState({deletepopupvisible: true});
 
         expect(wrapper.find('ButtonPopup')).toHaveLength(1)
@@ -112,7 +103,7 @@ describe('<Player/>', function () {
         wrapper.setProps({history: {goBack: callback}});
 
         callAPIMock({result: 'success'})
-        GlobalInfos.setFullDeleteEnabled(false);
+        wrapper.setContext({VideosFullyDeleteable: false})
 
         // request the popup to pop
         wrapper.find('.videoactions').find('Button').at(2).simulate('click');
@@ -125,7 +116,7 @@ describe('<Player/>', function () {
         expect(callback).toHaveBeenCalledTimes(1);
 
         // now lets test if this works also with the fullydeletepopup
-        GlobalInfos.setFullDeleteEnabled(true);
+        wrapper.setContext({VideosFullyDeleteable: true})
         // request the popup to pop
         wrapper.setState({deletepopupvisible: true}, () => {
             // click the first submit button

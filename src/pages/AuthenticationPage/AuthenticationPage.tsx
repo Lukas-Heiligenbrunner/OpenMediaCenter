@@ -86,8 +86,9 @@ class AuthenticationPage extends React.Component<Props, state> {
 
                 this.context.setLoginState(LoginState.LoggedIn);
             },
-            (e) => {
-                console.log(e);
+            () => {
+                this.setState({wrongPWDInfo: true});
+                setTimeout(() => this.setState({wrongPWDInfo: false}), 2000);
             }
         );
     }
