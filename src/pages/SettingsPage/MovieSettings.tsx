@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {BaseSyntheticEvent, useState} from 'react';
 import style from './MovieSettings.module.css';
 import {APINode, callAPI} from '../../utils/Api';
 import {GeneralSuccess} from '../../types/GeneralTypes';
@@ -123,6 +123,7 @@ class MovieSettings extends React.Component<Props, state> {
                         </div>
                     ))}
                 </div>
+                <FileHandler />
             </>
         );
     }
@@ -162,3 +163,47 @@ class MovieSettings extends React.Component<Props, state> {
 }
 
 export default MovieSettings;
+
+const FileHandler = (): JSX.Element => {
+    const [file, setfile] = useState<File | null>(null);
+
+    const uploadFile = (): void => {
+        let xhr = new XMLHttpRequest(); // create XMLHttpRequest
+        let data = new FormData(); // create formData object
+        if (!file) {
+            return;
+        }
+        data.append('file', file);
+
+        xhr.onload = function (): void {
+            console.log(this.responseText); // whatever the server returns
+        };
+
+        xhr.upload.onprogress = function (e): void {
+            console.log(e.loaded / e.total);
+        };
+
+        xhr.open('post', '/api/video/fileupload'); // open connection
+        xhr.setRequestHeader('Accept', 'multipart/form-data');
+
+        xhr.send(data); // send data
+    };
+
+    return (
+        <div style={{backgroundColor: 'white'}}>
+            <input
+                onChange={(e: BaseSyntheticEvent): void => {
+                    console.log(e);
+                    if (e.target) {
+                        console.log(e.target.files[0]);
+                        setfile(e.target.files[0]);
+                        // setfile(e.target.files[0]);
+                    }
+                }}
+                type='file'
+                name='Select file to upload'
+            />
+            <button onClick={(): void => uploadFile()}>upload</button>
+        </div>
+    );
+};
