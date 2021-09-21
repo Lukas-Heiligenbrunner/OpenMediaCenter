@@ -15,7 +15,7 @@ const (
 	LoginNode    = "login"
 )
 
-func AddHandler(action string, apiNode string, perm uint8, handler func(ctx Context)) {
+func AddHandler(action string, apiNode string, perm Perm, handler func(ctx Context)) {
 	http.Handle(fmt.Sprintf("/api/%s/%s", apiNode, action), http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		srvPwd := settings.GetPassword()
 		if srvPwd == nil {

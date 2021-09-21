@@ -13,11 +13,17 @@ import (
 
 var srv *server.Server
 
+type Perm uint8
+
 const (
-	PermAdmin        uint8 = iota
-	PermUser         uint8 = iota
-	PermUnauthorized uint8 = iota
+	PermAdmin Perm = iota
+	PermUser
+	PermUnauthorized
 )
+
+func (p Perm) String() string {
+	return [...]string{"PermAdmin", "PermUser", "PermUnauthorized"}[p]
+}
 
 const SignKey = "89013f1753a6890c6090b09e3c23ff43"
 const TokenExpireHours = 24
@@ -27,7 +33,7 @@ type Token struct {
 	ExpiresAt int64
 }
 
-func TokenValid(token string) (int, uint8) {
+func TokenValid(token string) (int, Perm) {
 	t, err := jwt.ParseWithClaims(token, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(SignKey), nil
 	})
@@ -42,7 +48,7 @@ func TokenValid(token string) (int, uint8) {
 	if err != nil {
 		return -1, PermUnauthorized
 	}
-	return id, uint8(permid)
+	return id, Perm(permid)
 }
 
 func InitOAuth() {

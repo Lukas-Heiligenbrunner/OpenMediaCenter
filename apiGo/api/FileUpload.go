@@ -10,6 +10,7 @@ import (
 func addUploadHandler() {
 	api.AddHandler("fileupload", api.VideoNode, api.PermUser, func(ctx api.Context) {
 		fmt.Println("we are in file upload handler")
+		fmt.Printf("permission: %s\n", ctx.PermID().String())
 
 		req := ctx.GetRequest()
 
@@ -30,6 +31,7 @@ func addUploadHandler() {
 
 			var read int64
 			var p float32
+			// todo check where we want to place this file
 			dst, err := os.OpenFile(part.FileName(), os.O_WRONLY|os.O_CREATE, 0644)
 			if err != nil {
 				return
@@ -41,7 +43,6 @@ func addUploadHandler() {
 				cBytes, err := part.Read(buffer)
 				if cBytes > 0 {
 					read = read + int64(cBytes)
-					//fmt.Printf("read: %v \n",read )
 					p = float32(read) / float32(length) * 100
 					fmt.Printf("progress: %v \n", p)
 					dst.Write(buffer[0:cBytes])
@@ -53,6 +54,8 @@ func addUploadHandler() {
 					break
 				}
 			}
+
+			_ = dst.Close()
 		}
 
 		ctx.Text("finished")

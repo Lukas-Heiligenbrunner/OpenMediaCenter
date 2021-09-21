@@ -2,6 +2,7 @@ import React, {BaseSyntheticEvent, useState} from 'react';
 import style from './MovieSettings.module.css';
 import {APINode, callAPI} from '../../utils/Api';
 import {GeneralSuccess} from '../../types/GeneralTypes';
+import {cookie} from '../../utils/context/Cookie';
 
 interface state {
     text: string[];
@@ -166,6 +167,7 @@ export default MovieSettings;
 
 const FileHandler = (): JSX.Element => {
     const [file, setfile] = useState<File | null>(null);
+    const [percent, setpercent] = useState(0.0);
 
     const uploadFile = (): void => {
         let xhr = new XMLHttpRequest(); // create XMLHttpRequest
@@ -181,10 +183,16 @@ const FileHandler = (): JSX.Element => {
 
         xhr.upload.onprogress = function (e): void {
             console.log(e.loaded / e.total);
+            setpercent((e.loaded * 100.0) / e.total);
         };
 
         xhr.open('post', '/api/video/fileupload'); // open connection
         xhr.setRequestHeader('Accept', 'multipart/form-data');
+
+        const tkn = cookie.Load();
+        if (tkn) {
+            xhr.setRequestHeader('Token', tkn.Token);
+        }
 
         xhr.send(data); // send data
     };
@@ -204,6 +212,9 @@ const FileHandler = (): JSX.Element => {
                 name='Select file to upload'
             />
             <button onClick={(): void => uploadFile()}>upload</button>
+            <div style={{width: '100%', height: 5, marginTop: 3}}>
+                <div style={{width: percent + '%', backgroundColor: 'green', height: 5}} />
+            </div>
         </div>
     );
 };
