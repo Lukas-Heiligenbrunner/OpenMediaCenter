@@ -97,7 +97,6 @@ function generalAPICall<T>(
  * API nodes definitions
  */
 
-// eslint-disable-next-line no-shadow
 export enum APINode {
     Login = 'login',
     Settings = 'settings',

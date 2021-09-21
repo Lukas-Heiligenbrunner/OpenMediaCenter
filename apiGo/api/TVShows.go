@@ -7,7 +7,7 @@ import (
 	"openmediacenter/apiGo/database"
 )
 
-func AddTvshowHandlers() {
+func addTvshowHandlers() {
 	// do not add handlers if tvshows not enabled
 	if config.GetConfig().Features.DisableTVSupport {
 		return

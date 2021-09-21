@@ -11,7 +11,7 @@ import (
 	"strconv"
 )
 
-func AddVideoHandlers() {
+func addVideoHandlers() {
 	getVideoHandlers()
 	loadVideosHandlers()
 	addToVideoHandlers()

@@ -7,7 +7,7 @@ import (
 	"openmediacenter/apiGo/database"
 )
 
-func AddActorsHandlers() {
+func addActorsHandlers() {
 	saveActorsToDB()
 	getActorsFromDB()
 }

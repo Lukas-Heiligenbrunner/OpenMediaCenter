@@ -14,7 +14,6 @@ import {DefaultTags} from '../../types/GeneralTypes';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSortDown} from '@fortawesome/free-solid-svg-icons';
 
-// eslint-disable-next-line no-shadow
 export enum SortBy {
     date,
     likes,

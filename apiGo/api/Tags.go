@@ -7,7 +7,7 @@ import (
 	"regexp"
 )
 
-func AddTagHandlers() {
+func addTagHandlers() {
 	getFromDB()
 	addToDB()
 	deleteFromDB()

@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-func AddSettingsHandlers() {
+func addSettingsHandlers() {
 	saveSettingsToDB()
 	getSettingsFromDB()
 	reIndexHandling()

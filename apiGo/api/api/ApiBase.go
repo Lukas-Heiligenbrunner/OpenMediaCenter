@@ -55,7 +55,10 @@ func callHandler(ctx *apicontext, handler func(ctx Context), writer http.Respons
 	}
 }
 
-func ServerInit() {
+func ServerInit(port uint16) error {
 	// initialize auth service and add corresponding auth routes
 	InitOAuth()
+
+	fmt.Printf("OpenMediacenter server up and running on port %d\n", port)
+	return http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
 }
