@@ -2,11 +2,12 @@ package api
 
 import (
 	"fmt"
+	"openmediacenter/apiGo/api/api"
 	"openmediacenter/apiGo/config"
 	"openmediacenter/apiGo/database"
 )
 
-func AddTvshowHandlers() {
+func addTvshowHandlers() {
 	// do not add handlers if tvshows not enabled
 	if config.GetConfig().Features.DisableTVSupport {
 		return
@@ -22,10 +23,10 @@ func AddTvshowHandlers() {
 	 * @apiSuccess {uint32} .Id tvshow id
 	 * @apiSuccess {string} .Name tvshow name
 	 */
-	AddHandler("getTVShows", TVShowNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("getTVShows", api.TVShowNode, api.PermUser, func(context api.Context) {
 		query := "SELECT id, name FROM tvshow"
 		rows := database.Query(query)
-		return jsonify(readTVshowsFromResultset(rows))
+		context.Json(readTVshowsFromResultset(rows))
 	})
 
 	/**
@@ -42,13 +43,14 @@ func AddTvshowHandlers() {
 	 * @apiSuccess {uint8} .Season Season number
 	 * @apiSuccess {uint8} .Episode Episode number
 	 */
-	AddHandler("getEpisodes", TVShowNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("getEpisodes", api.TVShowNode, api.PermUser, func(context api.Context) {
 		var args struct {
 			ShowID uint32
 		}
-		if err := FillStruct(&args, info.Data); err != nil {
-			fmt.Println(err.Error())
-			return nil
+		err := api.DecodeRequest(context.GetRequest(), &args)
+		if err != nil {
+			context.Text("unable to decode request")
+			return
 		}
 
 		query := fmt.Sprintf("SELECT id, name, season, episode FROM tvshow_episodes WHERE tvshow_id=%d", args.ShowID)
@@ -73,7 +75,7 @@ func AddTvshowHandlers() {
 			episodes = append(episodes, ep)
 		}
 
-		return jsonify(episodes)
+		context.Json(episodes)
 	})
 
 	/**
@@ -90,13 +92,14 @@ func AddTvshowHandlers() {
 	 * @apiSuccess {uint8} Episode Episode number
 	 * @apiSuccess {string} Path webserver path of video file
 	 */
-	AddHandler("loadEpisode", TVShowNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("loadEpisode", api.TVShowNode, api.PermUser, func(context api.Context) {
 		var args struct {
 			ID uint32
 		}
-		if err := FillStruct(&args, info.Data); err != nil {
-			fmt.Println(err.Error())
-			return nil
+		err := api.DecodeRequest(context.GetRequest(), &args)
+		if err != nil {
+			context.Text("unable to decode argument")
+			return
 		}
 
 		query := fmt.Sprintf(`
@@ -116,15 +119,16 @@ WHERE tvshow_episodes.id=%d`, args.ID)
 		var filename string
 		var foldername string
 
-		err := row.Scan(&ret.Name, &ret.Season, &ret.TVShowID, &ret.Episode, &filename, &foldername)
+		err = row.Scan(&ret.Name, &ret.Season, &ret.TVShowID, &ret.Episode, &filename, &foldername)
 		if err != nil {
 			fmt.Println(err.Error())
-			return nil
+			context.Error(err.Error())
+			return
 		}
 
 		ret.Path = foldername + "/" + filename
 
-		return jsonify(ret)
+		context.Json(ret)
 	})
 
 	/**
@@ -137,25 +141,26 @@ WHERE tvshow_episodes.id=%d`, args.ID)
 	 *
 	 * @apiSuccess {string} . Base64 encoded Thubnail
 	 */
-	AddHandler("readThumbnail", TVShowNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("readThumbnail", api.TVShowNode, api.PermUser, func(context api.Context) {
 		var args struct {
 			Id int
 		}
-		if err := FillStruct(&args, info.Data); err != nil {
-			fmt.Println(err.Error())
-			return nil
+		err := api.DecodeRequest(context.GetRequest(), &args)
+		if err != nil {
+			context.Text("unable to decode request")
+			return
 		}
 
 		var pic []byte
 
 		query := fmt.Sprintf("SELECT thumbnail FROM tvshow WHERE id=%d", args.Id)
 
-		err := database.QueryRow(query).Scan(&pic)
+		err = database.QueryRow(query).Scan(&pic)
 		if err != nil {
 			fmt.Printf("the thumbnail of movie id %d couldn't be found", args.Id)
-			return nil
+			return
 		}
 
-		return pic
+		context.Text(string(pic))
 	})
 }

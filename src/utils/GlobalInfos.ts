@@ -49,6 +49,7 @@ class StaticInfos {
     /**
      * set the current videopath
      * @param vidpath videopath with beginning and ending slash
+     * @param tvshowpath
      */
     setVideoPaths(vidpath: string, tvshowpath: string): void {
         this.videopath = vidpath;
@@ -67,27 +68,6 @@ class StaticInfos {
      */
     getTVShowPath(): string {
         return this.tvshowpath;
-    }
-
-    /**
-     * load the Password page manually
-     */
-    loadPasswordPage: ((callback?: () => void) => void) | undefined = undefined;
-
-    setTVShowsEnabled(TVShowEnabled: boolean): void {
-        this.TVShowsEnabled = TVShowEnabled;
-    }
-
-    isTVShowEnabled(): boolean {
-        return this.TVShowsEnabled;
-    }
-
-    setFullDeleteEnabled(FullDeleteEnabled: boolean): void {
-        this.fullDeleteable = FullDeleteEnabled;
-    }
-
-    isVideoFulldeleteable(): boolean {
-        return this.fullDeleteable;
     }
 }
 

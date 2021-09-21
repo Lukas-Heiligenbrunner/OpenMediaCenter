@@ -72,7 +72,7 @@ export default function (): JSX.Element {
 
     return (
         <Switch>
-            <Route path={`${match.path}/:id`}>
+            <Route exact path={`${match.path}/:id`}>
                 <EpisodePage />
             </Route>
             <Route path={match.path}>

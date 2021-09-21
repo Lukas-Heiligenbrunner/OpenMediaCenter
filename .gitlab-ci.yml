@@ -62,7 +62,7 @@ Backend_Tests:
   stage: test
   script:
     - cd apiGo
-    - go get -u github.com/jstemmer/go-junit-report
+    - go install github.com/jstemmer/go-junit-report@v0.9.1
     - go test -v ./... 2>&1 | go-junit-report -set-exit-code > report.xml
   needs: []
   artifacts:

@@ -21,7 +21,7 @@ class ActorTile extends React.Component<Props> {
         if (this.props.onClick) {
             return this.renderActorTile(this.props.onClick);
         } else {
-            return <Link to={{pathname: '/actors/' + this.props.actor.ActorId}}>{this.renderActorTile(() => {})}</Link>;
+            return <Link to={{pathname: '/media/actors/' + this.props.actor.ActorId}}>{this.renderActorTile(() => {})}</Link>;
         }
     }
 

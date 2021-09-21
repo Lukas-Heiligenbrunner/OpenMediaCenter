@@ -2,11 +2,12 @@ package api
 
 import (
 	"fmt"
+	"openmediacenter/apiGo/api/api"
 	"openmediacenter/apiGo/database"
 	"regexp"
 )
 
-func AddTagHandlers() {
+func addTagHandlers() {
 	getFromDB()
 	addToDB()
 	deleteFromDB()
@@ -22,16 +23,17 @@ func deleteFromDB() {
 	 * @apiParam {bool} [Force] force delete tag with its constraints
 	 * @apiParam {int} TagId id of tag to delete
 	 *
-	 * @apiSuccess {string} result 'success' if successfully or error message if not
+	 * @apiSuccess {string} result 'success' if successfully or Error message if not
 	 */
-	AddHandler("deleteTag", TagNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("deleteTag", api.TagNode, api.PermUser, func(context api.Context) {
 		var args struct {
 			TagId int
 			Force bool
 		}
-		if err := FillStruct(&args, info.Data); err != nil {
-			fmt.Println(err.Error())
-			return nil
+		err := api.DecodeRequest(context.GetRequest(), &args)
+		if err != nil {
+			context.Text("unable to decode request")
+			return
 		}
 
 		// delete key constraints first
@@ -41,23 +43,24 @@ func deleteFromDB() {
 
 			// respond only if result not successful
 			if err != nil {
-				return database.ManualSuccessResponse(err)
+				context.Text(string(database.ManualSuccessResponse(err)))
+				return
 			}
 		}
 
 		query := fmt.Sprintf("DELETE FROM tags WHERE tag_id=%d", args.TagId)
-		err := database.Edit(query)
+		err = database.Edit(query)
 
 		if err == nil {
 			// return if successful
-			return database.ManualSuccessResponse(err)
+			context.Text(string(database.ManualSuccessResponse(err)))
 		} else {
-			// check with regex if its the key constraint error
+			// check with regex if its the key constraint Error
 			r := regexp.MustCompile("^.*a foreign key constraint fails.*$")
 			if r.MatchString(err.Error()) {
-				return database.ManualSuccessResponse(fmt.Errorf("not empty tag"))
+				context.Text(string(database.ManualSuccessResponse(fmt.Errorf("not empty tag"))))
 			} else {
-				return database.ManualSuccessResponse(err)
+				context.Text(string(database.ManualSuccessResponse(err)))
 			}
 		}
 	})
@@ -74,9 +77,9 @@ func getFromDB() {
 	 * @apiSuccess {uint32} TagId
 	 * @apiSuccess {string} TagName name of the Tag
 	 */
-	AddHandler("getAllTags", TagNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("getAllTags", api.TagNode, api.PermUser, func(context api.Context) {
 		query := "SELECT tag_id,tag_name from tags"
-		return jsonify(readTagsFromResultset(database.Query(query)))
+		context.Json(readTagsFromResultset(database.Query(query)))
 	})
 }
 
@@ -89,19 +92,20 @@ func addToDB() {
 	 *
 	 * @apiParam {string} TagName name of the tag
 	 *
-	 * @apiSuccess {string} result 'success' if successfully or error message if not
+	 * @apiSuccess {string} result 'success' if successfully or Error message if not
 	 */
-	AddHandler("createTag", TagNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("createTag", api.TagNode, api.PermUser, func(context api.Context) {
 		var args struct {
 			TagName string
 		}
-		if err := FillStruct(&args, info.Data); err != nil {
-			fmt.Println(err.Error())
-			return nil
+		err := api.DecodeRequest(context.GetRequest(), &args)
+		if err != nil {
+			context.Text("unable to decode request")
+			return
 		}
 
 		query := "INSERT IGNORE INTO tags (tag_name) VALUES (?)"
-		return database.SuccessQuery(query, args.TagName)
+		context.Text(string(database.SuccessQuery(query, args.TagName)))
 	})
 
 	/**
@@ -113,19 +117,20 @@ func addToDB() {
 	 * @apiParam {int} TagId Tag id to add to video
 	 * @apiParam {int} MovieId Video Id of video to add tag to
 	 *
-	 * @apiSuccess {string} result 'success' if successfully or error message if not
+	 * @apiSuccess {string} result 'success' if successfully or Error message if not
 	 */
-	AddHandler("addTag", TagNode, func(info *HandlerInfo) []byte {
+	api.AddHandler("addTag", api.TagNode, api.PermUser, func(context api.Context) {
 		var args struct {
 			MovieId int
 			TagId   int
 		}
-		if err := FillStruct(&args, info.Data); err != nil {
-			fmt.Println(err.Error())
-			return nil
+		err := api.DecodeRequest(context.GetRequest(), &args)
+		if err != nil {
+			context.Text("unable to decode request")
+			return
 		}
 
 		query := "INSERT IGNORE INTO video_tags(tag_id, video_id) VALUES (?,?)"
-		return database.SuccessQuery(query, args.TagId, args.MovieId)
+		context.Text(string(database.SuccessQuery(query, args.TagId, args.MovieId)))
 	})
 }

@@ -56,7 +56,7 @@ class TagView extends React.Component<Props, TagViewState> {
                 <DynamicContentContainer
                     data={this.state.loadedtags}
                     renderElement={(m): JSX.Element => (
-                        <Link to={'/categories/' + m.TagId} key={m.TagId}>
+                        <Link to={'/media/categories/' + m.TagId} key={m.TagId}>
                             <TagPreview name={m.TagName} />
                         </Link>
                     )}
