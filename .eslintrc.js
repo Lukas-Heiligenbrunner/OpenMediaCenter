@@ -46,6 +46,7 @@ module.exports = {
     // Map from global var to bool specifying if it can be redefined
     globals: {
         File: true,
+        FileList: true,
         jest: true,
         __DEV__: true,
         __dirname: false,

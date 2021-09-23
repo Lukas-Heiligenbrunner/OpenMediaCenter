@@ -3,6 +3,7 @@ package videoparser
 import (
 	"fmt"
 	"io/ioutil"
+	"openmediacenter/apiGo/config"
 	"openmediacenter/apiGo/database"
 	"os"
 	"path/filepath"
@@ -19,20 +20,21 @@ func StartReindex() bool {
 	SendEvent("start")
 	AppendMessage("starting reindex..")
 
-	mSettings, PathPrefix, _ := database.GetSettings()
+	mSettings, _, _ := database.GetSettings()
+
 	// add the path prefix to videopath
-	mSettings.VideoPath = PathPrefix + mSettings.VideoPath
+	vidFolder := config.GetConfig().General.ReindexPrefix + mSettings.VideoPath
 
 	// check if path even exists
-	if _, err := os.Stat(mSettings.VideoPath); os.IsNotExist(err) {
+	if _, err := os.Stat(vidFolder); os.IsNotExist(err) {
 		fmt.Println("Reindex path doesn't exist!")
-		AppendMessage(fmt.Sprintf("Reindex path doesn't exist! :%s", mSettings.VideoPath))
+		AppendMessage(fmt.Sprintf("Reindex path doesn't exist! :%s", vidFolder))
 		SendEvent("stop")
 		return false
 	}
 
 	var files []string
-	err := filepath.Walk(mSettings.VideoPath, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(vidFolder, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			fmt.Println(err.Error())
 			return err

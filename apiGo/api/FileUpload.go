@@ -54,7 +54,6 @@ func addUploadHandler() {
 
 				if err == io.EOF {
 					fmt.Printf("Finished uploading file %s\n", part.FileName())
-
 					videoparser.InitDeps(&mSettings)
 					videoparser.ProcessVideo(part.FileName())
 					break

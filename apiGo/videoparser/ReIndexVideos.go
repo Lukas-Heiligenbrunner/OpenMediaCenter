@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"openmediacenter/apiGo/api/types"
+	"openmediacenter/apiGo/config"
 	"openmediacenter/apiGo/database"
 	"openmediacenter/apiGo/videoparser/tmdb"
 	"regexp"
@@ -122,8 +123,10 @@ func addVideo(videoName string, fileName string, year int) {
 		Width:    0,
 	}
 
+	vidFolder := config.GetConfig().General.ReindexPrefix + mSettings.VideoPath
+
 	if mExtDepsAvailable.FFMpeg {
-		ppic, err = parseFFmpegPic(mSettings.VideoPath + fileName)
+		ppic, err = parseFFmpegPic(vidFolder + fileName)
 		if err != nil {
 			fmt.Printf("FFmpeg error occured: %s\n", err.Error())
 		} else {
@@ -132,7 +135,7 @@ func addVideo(videoName string, fileName string, year int) {
 	}
 
 	if mExtDepsAvailable.MediaInfo {
-		atr := getVideoAttributes(mSettings.VideoPath + fileName)
+		atr := getVideoAttributes(vidFolder + fileName)
 		if atr != nil {
 			vidAtr = atr
 		}
