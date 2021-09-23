@@ -49,7 +49,8 @@ func StartReindex() bool {
 	}
 	// start reindex process
 	AppendMessage("Starting Reindexing!")
-	go ReIndexVideos(files, mSettings)
+	InitDeps(&mSettings)
+	go ReIndexVideos(files)
 	return true
 }
 
