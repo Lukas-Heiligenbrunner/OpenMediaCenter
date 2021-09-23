@@ -3,6 +3,7 @@ import style from './MovieSettings.module.css';
 import {APINode, callAPI} from '../../utils/Api';
 import {GeneralSuccess} from '../../types/GeneralTypes';
 import {DropZone} from '../../elements/DropZone/DropZone';
+import GlobalInfos from '../../utils/GlobalInfos';
 
 interface state {
     text: string[];
@@ -100,6 +101,8 @@ class MovieSettings extends React.Component<Props, state> {
     }
 
     render(): JSX.Element {
+        const theme = GlobalInfos.getThemeStyle();
+
         return (
             <>
                 <button
@@ -124,7 +127,10 @@ class MovieSettings extends React.Component<Props, state> {
                         </div>
                     ))}
                 </div>
-                <DropZone />
+                <div className={theme.textcolor}>
+                    <div className={style.uploadtext}>Video Upload:</div>
+                    <DropZone />
+                </div>
             </>
         );
     }

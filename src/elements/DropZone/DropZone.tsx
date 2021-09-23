@@ -1,10 +1,13 @@
 import style from './DropZone.module.css';
 import React, {useState} from 'react';
 import {cookie} from '../../utils/context/Cookie';
+import GlobalInfos from '../../utils/GlobalInfos';
 
 export const DropZone = (): JSX.Element => {
     const [ondrag, setDrag] = useState(0);
     const [percent, setpercent] = useState(0.0);
+
+    const theme = GlobalInfos.getThemeStyle();
 
     const uploadFile = (f: FileList): void => {
         let xhr = new XMLHttpRequest(); // create XMLHttpRequest
@@ -39,7 +42,7 @@ export const DropZone = (): JSX.Element => {
 
     return (
         <div
-            className={style.dropArea + (ondrag > 0 ? ' ' + style.highlight : '')}
+            className={style.dropArea + (ondrag > 0 ? ' ' + style.highlight : '') + ' ' + theme.secbackground}
             onDragEnter={(e): void => {
                 e.preventDefault();
                 e.stopPropagation();
