@@ -10,8 +10,8 @@ export const DropZone = (): JSX.Element => {
     const theme = GlobalInfos.getThemeStyle();
 
     const uploadFile = (f: FileList): void => {
-        let xhr = new XMLHttpRequest(); // create XMLHttpRequest
-        let data = new FormData(); // create formData object
+        const xhr = new XMLHttpRequest(); // create XMLHttpRequest
+        const data = new FormData(); // create formData object
 
         for (let i = 0; i < f.length; i++) {
             const file = f.item(i);
@@ -22,6 +22,8 @@ export const DropZone = (): JSX.Element => {
 
         xhr.onload = function (): void {
             console.log(this.responseText); // whatever the server returns
+
+            setpercent(0);
         };
 
         xhr.upload.onprogress = function (e): void {
@@ -70,7 +72,6 @@ export const DropZone = (): JSX.Element => {
                 input.multiple = true;
                 input.onchange = function (): void {
                     if (input.files) {
-                        console.log(input.files);
                         uploadFile(input.files);
                     }
                 };

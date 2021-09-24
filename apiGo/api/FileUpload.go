@@ -7,6 +7,7 @@ import (
 	"openmediacenter/apiGo/database"
 	"openmediacenter/apiGo/videoparser"
 	"os"
+	"path/filepath"
 )
 
 func addUploadHandler() {
@@ -21,8 +22,12 @@ func addUploadHandler() {
 
 		mr, err := req.MultipartReader()
 		if err != nil {
+			ctx.Errorf("incorrect request!")
 			return
 		}
+
+		videoparser.InitDeps(&mSettings)
+
 		//length := req.ContentLength
 		for {
 			part, err := mr.NextPart()
@@ -30,9 +35,11 @@ func addUploadHandler() {
 				break
 			}
 
-			//var read int64
-			//var p float32
-			// todo check where we want to place this file
+			// todo allow more video formats than mp4
+			// only allow valid extensions
+			if filepath.Ext(part.FileName()) != ".mp4" {
+				continue
+			}
 			vidpath := PathPrefix + mSettings.VideoPath + part.FileName()
 			dst, err := os.OpenFile(vidpath, os.O_WRONLY|os.O_CREATE, 0644)
 			if err != nil {
@@ -54,8 +61,7 @@ func addUploadHandler() {
 
 				if err == io.EOF {
 					fmt.Printf("Finished uploading file %s\n", part.FileName())
-					videoparser.InitDeps(&mSettings)
-					videoparser.ProcessVideo(part.FileName())
+					go videoparser.ProcessVideo(part.FileName())
 					break
 				}
 			}
