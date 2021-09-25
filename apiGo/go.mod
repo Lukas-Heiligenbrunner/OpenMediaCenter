@@ -3,7 +3,7 @@ module openmediacenter/apiGo
 go 1.16
 
 require (
-	github.com/3d0c/gmf v0.0.0-20210830084021-7b27911659a2 // indirect
+	github.com/3d0c/gmf v0.0.0-20210925211039-e278e6e53b16
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/pelletier/go-toml/v2 v2.0.0-beta.3

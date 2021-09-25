@@ -2,17 +2,6 @@
 
 package thumbnail
 
-/*
-
-#cgo pkg-config: libavcodec
-
-#include <stdlib.h>
-#include "libavcodec/avcodec.h"
-#include "libavutil/pixfmt.h"
-
-*/
-import "C"
-
 import (
 	"github.com/3d0c/gmf"
 	"io"
@@ -68,12 +57,7 @@ func decodePic(srcFileName string, decodeExtension string, time uint64) (pic *[]
 
 	cc.SetTimeBase(gmf.AVR{Num: 1, Den: 1})
 
-	// add missing codecs in lib
-	var (
-		AV_PIX_FMT_YUVJ444P int32 = C.AV_PIX_FMT_YUVJ444P
-	)
-
-	cc.SetPixFmt(AV_PIX_FMT_YUVJ444P).SetWidth(srcVideoStream.CodecPar().Width()).SetHeight(srcVideoStream.CodecPar().Height())
+	cc.SetPixFmt(gmf.AV_PIX_FMT_YUVJ444P).SetWidth(srcVideoStream.CodecPar().Width()).SetHeight(srcVideoStream.CodecPar().Height())
 	if codec.IsExperimental() {
 		cc.SetStrictCompliance(gmf.FF_COMPLIANCE_EXPERIMENTAL)
 	}
