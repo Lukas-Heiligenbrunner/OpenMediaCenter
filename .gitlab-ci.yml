@@ -28,6 +28,8 @@ Build_Backend:
   image: golang:latest
   stage: build_backend
   script:
+    - apt update
+    - apt install libffmpeg-ocaml-dev
     - cd apiGo
     - go build -v -tags sharedffmpeg -o openmediacenter
     - cp -r ../build/ ./static/

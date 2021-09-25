@@ -2,6 +2,17 @@
 
 package thumbnail
 
+/*
+
+#cgo pkg-config: libavcodec
+
+#include <stdlib.h>
+#include "libavcodec/avcodec.h"
+#include "libavutil/pixfmt.h"
+
+*/
+import "C"
+
 import (
 	"github.com/3d0c/gmf"
 	"io"
@@ -10,10 +21,10 @@ import (
 )
 
 func Parse(filename string, time uint64) (*string, *VidInfo, error) {
-	dta, inf, err := decodePic(filename, "png", time)
-	if len(dta) > 0 && err == nil {
+	dta, inf, err := decodePic(filename, "mjpeg", time)
+	if err == nil && dta != nil {
 		// base64 encode picture
-		enc := EncodeBase64(dta, "image/png")
+		enc := EncodeBase64(dta, "image/jpeg")
 		return enc, inf, nil
 	} else {
 		return nil, nil, err
@@ -22,6 +33,8 @@ func Parse(filename string, time uint64) (*string, *VidInfo, error) {
 
 func decodePic(srcFileName string, decodeExtension string, time uint64) (pic *[]byte, info *VidInfo, err error) {
 	var swsctx *gmf.SwsCtx
+
+	gmf.LogSetLevel(gmf.AV_LOG_ERROR)
 
 	stat, err := os.Stat(srcFileName)
 	if err != nil {
@@ -55,7 +68,12 @@ func decodePic(srcFileName string, decodeExtension string, time uint64) (pic *[]
 
 	cc.SetTimeBase(gmf.AVR{Num: 1, Den: 1})
 
-	cc.SetPixFmt(gmf.AV_PIX_FMT_RGBA).SetWidth(srcVideoStream.CodecPar().Width()).SetHeight(srcVideoStream.CodecPar().Height())
+	// add missing codecs in lib
+	var (
+		AV_PIX_FMT_YUVJ444P int32 = C.AV_PIX_FMT_YUVJ444P
+	)
+
+	cc.SetPixFmt(AV_PIX_FMT_YUVJ444P).SetWidth(srcVideoStream.CodecPar().Width()).SetHeight(srcVideoStream.CodecPar().Height())
 	if codec.IsExperimental() {
 		cc.SetStrictCompliance(gmf.FF_COMPLIANCE_EXPERIMENTAL)
 	}
