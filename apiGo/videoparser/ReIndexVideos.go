@@ -6,6 +6,7 @@ import (
 	"openmediacenter/apiGo/api/types"
 	"openmediacenter/apiGo/config"
 	"openmediacenter/apiGo/database"
+	"openmediacenter/apiGo/videoparser/thumbnail"
 	"openmediacenter/apiGo/videoparser/tmdb"
 	"regexp"
 	"strconv"
@@ -13,7 +14,6 @@ import (
 )
 
 var mSettings *types.SettingsType
-var mExtDepsAvailable *ExtDependencySupport
 
 // default Tag ids
 const (
@@ -21,11 +21,6 @@ const (
 	Hd         = 4
 	LowQuality = 3
 )
-
-type ExtDependencySupport struct {
-	FFMpeg    bool
-	MediaInfo bool
-}
 
 type VideoAttributes struct {
 	Duration float32
@@ -35,10 +30,6 @@ type VideoAttributes struct {
 
 func InitDeps(sett *types.SettingsType) {
 	mSettings = sett
-	// check if the extern dependencies are available
-	mExtDepsAvailable = checkExtDependencySupport()
-	fmt.Printf("FFMPEG support: %t\n", mExtDepsAvailable.FFMpeg)
-	fmt.Printf("MediaInfo support: %t\n", mExtDepsAvailable.MediaInfo)
 }
 
 func ReIndexVideos(path []string) {
@@ -115,58 +106,50 @@ func addVideo(videoName string, fileName string, year int) {
 	var poster *string
 	var tmdbData *tmdb.VideoTMDB
 	var err error
-
-	// initialize defaults
-	vidAtr := &VideoAttributes{
-		Duration: 0,
-		FileSize: 0,
-		Width:    0,
-	}
+	var insertid int64
 
 	vidFolder := config.GetConfig().General.ReindexPrefix + mSettings.VideoPath
-
-	if mExtDepsAvailable.FFMpeg {
-		ppic, err = parseFFmpegPic(vidFolder + fileName)
-		if err != nil {
-			fmt.Printf("FFmpeg error occured: %s\n", err.Error())
-		} else {
-			fmt.Println("successfully extracted thumbnail!!")
-		}
-	}
-
-	if mExtDepsAvailable.MediaInfo {
-		atr := getVideoAttributes(vidFolder + fileName)
-		if atr != nil {
-			vidAtr = atr
-		}
-	}
 
 	// if TMDB grabbing is enabled serach in api for video...
 	if mSettings.TMDBGrabbing {
 		tmdbData = tmdb.SearchVideo(videoName, year)
 		if tmdbData != nil {
-			// reassign parsed pic as poster
-			poster = ppic
 			// and tmdb pic as thumbnail
-			ppic = &tmdbData.Thumbnail
+			poster = &tmdbData.Thumbnail
 		}
 	}
 
-	query := `INSERT INTO videos(movie_name,movie_url,poster,thumbnail,quality,length) VALUES (?,?,?,?,?,?)`
-	err, insertId := database.Insert(query, videoName, fileName, poster, ppic, vidAtr.Width, vidAtr.Duration)
+	// parse pic from 4min frame
+	ppic, vinfo, err := thumbnail.Parse(vidFolder+fileName, 240)
+	// use parsed pic also for poster pic
+	if poster == nil {
+		poster = ppic
+	}
+
+	if err != nil {
+		fmt.Printf("FFmpeg error occured: %s\n", err.Error())
+
+		query := `INSERT INTO videos(movie_name,movie_url) VALUES (?,?)`
+		err, insertid = database.Insert(query, videoName, fileName)
+
+	} else {
+		query := `INSERT INTO videos(movie_name,movie_url,poster,thumbnail,quality,length) VALUES (?,?,?,?,?,?)`
+		err, insertid = database.Insert(query, videoName, fileName, ppic, poster, vinfo.Width, vinfo.Length)
+
+		// add default tags
+		if vinfo.Width != 0 && err == nil {
+			insertSizeTag(uint(vinfo.Width), uint(insertid))
+		}
+	}
+
 	if err != nil {
 		fmt.Printf("Failed to insert video into db: %s\n", err.Error())
 		return
 	}
 
-	// add default tags
-	if vidAtr.Width != 0 {
-		insertSizeTag(vidAtr.Width, uint(insertId))
-	}
-
 	// add tmdb tags
 	if mSettings.TMDBGrabbing && tmdbData != nil {
-		insertTMDBTags(tmdbData.GenreIds, insertId)
+		insertTMDBTags(tmdbData.GenreIds, insertid)
 	}
 
 	AppendMessage(fmt.Sprintf("%s - added!", videoName))

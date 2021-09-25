@@ -29,7 +29,7 @@ Build_Backend:
   stage: build_backend
   script:
     - cd apiGo
-    - go build -v -o openmediacenter
+    - go build -v -tags sharedffmpeg -o openmediacenter
     - cp -r ../build/ ./static/
     - go build -v -tags static -o openmediacenter_full
     - env GOOS=windows GOARCH=amd64 go build -v -tags static -o openmediacenter.exe
