@@ -1,5 +1,5 @@
 Package: OpenMediaCenter
-Depends: nginx, mariadb-server, mediainfo
+Depends: nginx, mariadb-server, libffmpeg-ocaml
 Section: web
 Priority: optional
 Architecture: all
