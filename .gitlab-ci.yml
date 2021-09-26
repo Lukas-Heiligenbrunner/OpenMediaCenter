@@ -25,7 +25,7 @@ Minimize_Frontend:
       - node_modules/
 
 Build_Backend:
-  image: golang:latest
+  image: luki42/go-ffmpeg:latest
   stage: build_backend
   script:
     - cd apiGo
