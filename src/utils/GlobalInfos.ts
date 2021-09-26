@@ -25,12 +25,14 @@ class StaticInfos {
      * @param enable enable the dark theme?
      */
     enableDarkTheme(enable = true): void {
-        this.darktheme = enable;
+        if (this.darktheme !== enable) {
+            this.darktheme = enable;
 
-        // trigger onThemeChange handlers
-        this.handlers.map((func) => {
-            func();
-        });
+            // trigger onThemeChange handlers
+            this.handlers.map((func) => {
+                func();
+            });
+        }
     }
 
     /**
