@@ -117,8 +117,8 @@ class MovieSettings extends React.Component<Props, state> {
                     TVShow Reindex
                 </button>
                 <div className={style.indextextarea}>
-                    {this.state.text.map((m) => (
-                        <div key={m} className='textarea-element'>
+                    {this.state.text.map((m, i) => (
+                        <div key={i} className='textarea-element'>
                             {m}
                         </div>
                     ))}

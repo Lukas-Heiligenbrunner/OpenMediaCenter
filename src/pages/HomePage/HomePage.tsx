@@ -67,6 +67,17 @@ export class HomePage extends React.Component<Props, state> {
         this.fetchStartData();
     }
 
+    render(): JSX.Element {
+        return (
+            <Switch>
+                <Route path='/media/search/:name'>
+                    <SearchHandling />
+                </Route>
+                <Route path='/media/'>{this.homepageContent()}</Route>
+            </Switch>
+        );
+    }
+
     /**
      * fetch available videos for specified tag
      * this function clears all preview elements an reloads gravity with tag
@@ -95,109 +106,105 @@ export class HomePage extends React.Component<Props, state> {
         });
     }
 
-    render(): JSX.Element {
+    /**
+     * main content of homepage
+     */
+    homepageContent(): JSX.Element {
         return (
             <>
-                <Switch>
-                    <Route path='/search/:name'>
-                        <SearchHandling />
-                    </Route>
-                    <Route path='/'>
-                        <PageTitle title='Home Page' subtitle={this.state.subtitle + ' - ' + this.state.selectionnr}>
-                            <form
-                                className={'form-inline ' + style.searchform}
-                                onSubmit={(e): void => {
-                                    e.preventDefault();
-                                    this.props.history.push('/search/' + this.keyword);
-                                }}>
-                                <input
-                                    data-testid='searchtextfield'
-                                    className='form-control mr-sm-2'
-                                    type='text'
-                                    placeholder='Search'
-                                    onChange={(e): void => {
-                                        this.keyword = e.target.value;
-                                    }}
-                                />
-                                <button data-testid='searchbtnsubmit' className='btn btn-success' type='submit'>
-                                    Search
-                                </button>
-                            </form>
-                        </PageTitle>
-                        <SideBar>
-                            <SideBarTitle>Infos:</SideBarTitle>
-                            <Line />
-                            <SideBarItem>
-                                <b>{this.state.sideinfo.VideoNr}</b> Videos Total!
-                            </SideBarItem>
-                            <SideBarItem>
-                                <b>{this.state.sideinfo.FullHdNr}</b> FULL-HD Videos!
-                            </SideBarItem>
-                            <SideBarItem>
-                                <b>{this.state.sideinfo.HDNr}</b> HD Videos!
-                            </SideBarItem>
-                            <SideBarItem>
-                                <b>{this.state.sideinfo.SDNr}</b> SD Videos!
-                            </SideBarItem>
-                            <SideBarItem>
-                                <b>{this.state.sideinfo.DifferentTags}</b> different Tags!
-                            </SideBarItem>
-                            <Line />
-                            <SideBarTitle>Default Tags:</SideBarTitle>
-                            <Tag
-                                tagInfo={{TagName: 'All', TagId: DefaultTags.all.TagId}}
-                                onclick={(): void => {
-                                    this.tagState = DefaultTags.all;
-                                    this.fetchVideoData();
-                                    this.setState({subtitle: 'All Videos'});
-                                }}
-                            />
-                            <Tag
-                                tagInfo={{TagName: 'Full Hd', TagId: DefaultTags.fullhd.TagId}}
-                                onclick={(): void => {
-                                    this.tagState = DefaultTags.fullhd;
-                                    this.fetchVideoData();
-                                    this.setState({subtitle: 'Full Hd Videos'});
-                                }}
-                            />
-                            <Tag
-                                tagInfo={{TagName: 'Low Quality', TagId: DefaultTags.lowq.TagId}}
-                                onclick={(): void => {
-                                    this.tagState = DefaultTags.lowq;
-                                    this.fetchVideoData();
-                                    this.setState({subtitle: 'Low Quality Videos'});
-                                }}
-                            />
-                            <Tag
-                                tagInfo={{TagName: 'HD', TagId: DefaultTags.hd.TagId}}
-                                onclick={(): void => {
-                                    this.tagState = DefaultTags.hd;
-                                    this.fetchVideoData();
-                                    this.setState({subtitle: 'HD Videos'});
-                                }}
-                            />
-                        </SideBar>
-                        <div>
-                            <span className={style.sortbyLabel}>Sort By: </span>
-                            <div className={style.dropdown}>
-                                <span className={style.dropbtn}>
-                                    <span>{this.state.sortby}</span>
-                                    <FontAwesomeIcon style={{marginLeft: 3, paddingBottom: 3}} icon={faSortDown} size='1x' />
-                                </span>
-                                <div className={style.dropdownContent}>
-                                    <span onClick={(): void => this.onDropDownItemClick(SortBy.date, 'Date Added')}>Date Added</span>
-                                    <span onClick={(): void => this.onDropDownItemClick(SortBy.likes, 'Most likes')}>Most likes</span>
-                                    <span onClick={(): void => this.onDropDownItemClick(SortBy.random, 'Random')}>Random</span>
-                                    <span onClick={(): void => this.onDropDownItemClick(SortBy.name, 'Name')}>Name</span>
-                                    <span onClick={(): void => this.onDropDownItemClick(SortBy.length, 'Length')}>Length</span>
-                                </div>
-                            </div>
+                <PageTitle title='Home Page' subtitle={this.state.subtitle + ' - ' + this.state.selectionnr}>
+                    <form
+                        className={'form-inline ' + style.searchform}
+                        onSubmit={(e): void => {
+                            e.preventDefault();
+                            this.props.history.push('/media/search/' + this.keyword);
+                        }}>
+                        <input
+                            data-testid='searchtextfield'
+                            className='form-control mr-sm-2'
+                            type='text'
+                            placeholder='Search'
+                            onChange={(e): void => {
+                                this.keyword = e.target.value;
+                            }}
+                        />
+                        <button data-testid='searchbtnsubmit' className='btn btn-success' type='submit'>
+                            Search
+                        </button>
+                    </form>
+                </PageTitle>
+                <SideBar>
+                    <SideBarTitle>Infos:</SideBarTitle>
+                    <Line />
+                    <SideBarItem>
+                        <b>{this.state.sideinfo.VideoNr}</b> Videos Total!
+                    </SideBarItem>
+                    <SideBarItem>
+                        <b>{this.state.sideinfo.FullHdNr}</b> FULL-HD Videos!
+                    </SideBarItem>
+                    <SideBarItem>
+                        <b>{this.state.sideinfo.HDNr}</b> HD Videos!
+                    </SideBarItem>
+                    <SideBarItem>
+                        <b>{this.state.sideinfo.SDNr}</b> SD Videos!
+                    </SideBarItem>
+                    <SideBarItem>
+                        <b>{this.state.sideinfo.DifferentTags}</b> different Tags!
+                    </SideBarItem>
+                    <Line />
+                    <SideBarTitle>Default Tags:</SideBarTitle>
+                    <Tag
+                        tagInfo={{TagName: 'All', TagId: DefaultTags.all.TagId}}
+                        onclick={(): void => {
+                            this.tagState = DefaultTags.all;
+                            this.fetchVideoData();
+                            this.setState({subtitle: 'All Videos'});
+                        }}
+                    />
+                    <Tag
+                        tagInfo={{TagName: 'Full Hd', TagId: DefaultTags.fullhd.TagId}}
+                        onclick={(): void => {
+                            this.tagState = DefaultTags.fullhd;
+                            this.fetchVideoData();
+                            this.setState({subtitle: 'Full Hd Videos'});
+                        }}
+                    />
+                    <Tag
+                        tagInfo={{TagName: 'Low Quality', TagId: DefaultTags.lowq.TagId}}
+                        onclick={(): void => {
+                            this.tagState = DefaultTags.lowq;
+                            this.fetchVideoData();
+                            this.setState({subtitle: 'Low Quality Videos'});
+                        }}
+                    />
+                    <Tag
+                        tagInfo={{TagName: 'HD', TagId: DefaultTags.hd.TagId}}
+                        onclick={(): void => {
+                            this.tagState = DefaultTags.hd;
+                            this.fetchVideoData();
+                            this.setState({subtitle: 'HD Videos'});
+                        }}
+                    />
+                </SideBar>
+                <div>
+                    <span className={style.sortbyLabel}>Sort By: </span>
+                    <div className={style.dropdown}>
+                        <span className={style.dropbtn}>
+                            <span>{this.state.sortby}</span>
+                            <FontAwesomeIcon style={{marginLeft: 3, paddingBottom: 3}} icon={faSortDown} size='1x' />
+                        </span>
+                        <div className={style.dropdownContent}>
+                            <span onClick={(): void => this.onDropDownItemClick(SortBy.date, 'Date Added')}>Date Added</span>
+                            <span onClick={(): void => this.onDropDownItemClick(SortBy.likes, 'Most likes')}>Most likes</span>
+                            <span onClick={(): void => this.onDropDownItemClick(SortBy.random, 'Random')}>Random</span>
+                            <span onClick={(): void => this.onDropDownItemClick(SortBy.name, 'Name')}>Name</span>
+                            <span onClick={(): void => this.onDropDownItemClick(SortBy.length, 'Length')}>Length</span>
                         </div>
+                    </div>
+                </div>
 
-                        <VideoContainer data={this.state.data} />
-                        <div className={style.rightinfo} />
-                    </Route>
-                </Switch>
+                <VideoContainer data={this.state.data} />
+                <div className={style.rightinfo} />
             </>
         );
     }
