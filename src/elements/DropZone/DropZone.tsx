@@ -6,6 +6,7 @@ import GlobalInfos from '../../utils/GlobalInfos';
 export const DropZone = (): JSX.Element => {
     const [ondrag, setDrag] = useState(0);
     const [percent, setpercent] = useState(0.0);
+    const [finished, setfinished] = useState<string | null>(null);
 
     const theme = GlobalInfos.getThemeStyle();
 
@@ -23,7 +24,17 @@ export const DropZone = (): JSX.Element => {
         xhr.onload = function (): void {
             console.log(this.responseText); // whatever the server returns
 
-            setpercent(0);
+            const resp = JSON.parse(this.responseText);
+            if (resp.Message === 'finished all files') {
+                setfinished('');
+            } else {
+                setfinished(resp.Message);
+            }
+
+            setTimeout(() => {
+                setpercent(0);
+                setfinished(null);
+            }, 2000);
         };
 
         xhr.upload.onprogress = function (e): void {
@@ -79,9 +90,18 @@ export const DropZone = (): JSX.Element => {
             }}>
             <div className={style.myForm}>
                 <p>To upload new Videos darg and drop them here or click to select some...</p>
-                <div style={{width: '100%', height: 5, marginTop: 3}}>
+                <div className={style.progresswrapper}>
                     <div style={{width: percent + '%', backgroundColor: 'green', height: 5}} />
                 </div>
+                {finished !== null ? (
+                    finished === '' ? (
+                        <div className={style.finished}>Finished uploading</div>
+                    ) : (
+                        <div className={style.finished}>Upload failed: {finished}</div>
+                    )
+                ) : (
+                    <></>
+                )}
             </div>
         </div>
     );

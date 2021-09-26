@@ -12,9 +12,6 @@ import (
 
 func addUploadHandler() {
 	api.AddHandler("fileupload", api.VideoNode, api.PermUser, func(ctx api.Context) {
-		fmt.Println("we are in file upload handler")
-		fmt.Printf("permission: %s\n", ctx.PermID().String())
-
 		// get path where to store videos to
 		mSettings, PathPrefix, _ := database.GetSettings()
 
@@ -28,7 +25,6 @@ func addUploadHandler() {
 
 		videoparser.InitDeps(&mSettings)
 
-		//length := req.ContentLength
 		for {
 			part, err := mr.NextPart()
 			if err == io.EOF {
@@ -43,6 +39,7 @@ func addUploadHandler() {
 			vidpath := PathPrefix + mSettings.VideoPath + part.FileName()
 			dst, err := os.OpenFile(vidpath, os.O_WRONLY|os.O_CREATE, 0644)
 			if err != nil {
+				ctx.Error("error opening file")
 				return
 			}
 
@@ -53,9 +50,6 @@ func addUploadHandler() {
 			for {
 				cBytes, err := part.Read(buffer)
 				if cBytes > 0 {
-					//read = read + int64(cBytes)
-					//p = float32(read) / float32(length) * 100
-					//fmt.Printf("progress: %v \n", p)
 					dst.Write(buffer[0:cBytes])
 				}
 
@@ -69,6 +63,8 @@ func addUploadHandler() {
 			_ = dst.Close()
 		}
 
-		ctx.Text("finished all files")
+		ctx.Json(struct {
+			Message string
+		}{Message: "finished all files"})
 	})
 }
