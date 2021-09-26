@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"openmediacenter/apiGo/api/types"
+	"openmediacenter/apiGo/config"
 	"openmediacenter/apiGo/database"
 	"openmediacenter/apiGo/videoparser/tmdb"
 	"regexp"
@@ -11,7 +12,7 @@ import (
 	"strings"
 )
 
-var mSettings types.SettingsType
+var mSettings *types.SettingsType
 var mExtDepsAvailable *ExtDependencySupport
 
 // default Tag ids
@@ -32,20 +33,22 @@ type VideoAttributes struct {
 	Width    uint
 }
 
-func ReIndexVideos(path []string, sett types.SettingsType) {
+func InitDeps(sett *types.SettingsType) {
 	mSettings = sett
 	// check if the extern dependencies are available
 	mExtDepsAvailable = checkExtDependencySupport()
 	fmt.Printf("FFMPEG support: %t\n", mExtDepsAvailable.FFMpeg)
 	fmt.Printf("MediaInfo support: %t\n", mExtDepsAvailable.MediaInfo)
+}
 
+func ReIndexVideos(path []string) {
 	// filter out those urls which are already existing in db
 	nonExisting := filterExisting(path)
 
 	fmt.Printf("There are %d videos not existing in db.\n", len(*nonExisting))
 
 	for _, s := range *nonExisting {
-		processVideo(s)
+		ProcessVideo(s)
 	}
 
 	AppendMessage("reindex finished successfully!")
@@ -92,8 +95,8 @@ func filterExisting(paths []string) *[]string {
 	return &resultarr
 }
 
-func processVideo(fileNameOrig string) {
-	fmt.Printf("Processing %s video-", fileNameOrig)
+func ProcessVideo(fileNameOrig string) {
+	fmt.Printf("Processing %s video\n", fileNameOrig)
 
 	// match the file extension
 	r := regexp.MustCompile(`\.[a-zA-Z0-9]+$`)
@@ -120,8 +123,10 @@ func addVideo(videoName string, fileName string, year int) {
 		Width:    0,
 	}
 
+	vidFolder := config.GetConfig().General.ReindexPrefix + mSettings.VideoPath
+
 	if mExtDepsAvailable.FFMpeg {
-		ppic, err = parseFFmpegPic(mSettings.VideoPath + fileName)
+		ppic, err = parseFFmpegPic(vidFolder + fileName)
 		if err != nil {
 			fmt.Printf("FFmpeg error occured: %s\n", err.Error())
 		} else {
@@ -130,7 +135,7 @@ func addVideo(videoName string, fileName string, year int) {
 	}
 
 	if mExtDepsAvailable.MediaInfo {
-		atr := getVideoAttributes(mSettings.VideoPath + fileName)
+		atr := getVideoAttributes(vidFolder + fileName)
 		if atr != nil {
 			vidAtr = atr
 		}

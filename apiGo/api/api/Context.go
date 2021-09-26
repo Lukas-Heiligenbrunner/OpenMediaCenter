@@ -13,6 +13,7 @@ type Context interface {
 	GetRequest() *http.Request
 	GetWriter() http.ResponseWriter
 	UserID() int
+	PermID() Perm
 }
 
 type apicontext struct {
@@ -20,7 +21,7 @@ type apicontext struct {
 	request         *http.Request
 	responseWritten bool
 	userid          int
-	permid          uint8
+	permid          Perm
 }
 
 func (r *apicontext) GetRequest() *http.Request {
@@ -57,4 +58,8 @@ func (r *apicontext) Error(msg string) {
 
 func (r *apicontext) Errorf(msg string, args ...interface{}) {
 	r.Error(fmt.Sprintf(msg, &args))
+}
+
+func (r *apicontext) PermID() Perm {
+	return r.permid
 }

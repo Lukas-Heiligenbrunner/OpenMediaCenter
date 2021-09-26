@@ -6,4 +6,5 @@ func AddHandlers() {
 	addTagHandlers()
 	addActorsHandlers()
 	addTvshowHandlers()
+	addUploadHandler()
 }

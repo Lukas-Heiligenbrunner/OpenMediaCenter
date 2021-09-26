@@ -1,0 +1,30 @@
+.dropArea {
+    border: 2px dashed #ccc;
+    border-radius: 20px;
+    width: 480px;
+    font-family: sans-serif;
+    padding: 20px;
+}
+
+.dropArea:hover {
+    cursor: pointer;
+}
+
+.dropArea.highlight {
+    border-color: purple;
+}
+
+.myForm {
+    margin-bottom: 10px;
+}
+
+.progresswrapper {
+    width: 100%;
+    height: 5px;
+    margin-top: 3px;
+}
+
+.finished {
+    margin-top: 10px;
+    text-align: center;
+}
