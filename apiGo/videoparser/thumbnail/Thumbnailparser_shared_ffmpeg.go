@@ -177,9 +177,11 @@ func decodePic(srcFileName string, decodeExtension string, time uint64) (pic *[]
 	}
 
 	for i := 0; i < inputCtx.StreamsCnt(); i++ {
-		st, _ := inputCtx.GetStream(i)
-		st.CodecCtx().Free()
-		st.Free()
+		st, err := inputCtx.GetStream(i)
+		if err == nil && st != nil {
+			st.CodecCtx().Free()
+			st.Free()
+		}
 	}
 	return
 }
