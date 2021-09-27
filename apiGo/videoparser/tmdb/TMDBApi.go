@@ -205,10 +205,14 @@ func fetchGenres() *[]TMDBGenre {
 		return nil
 	}
 
-	var t []TMDBGenre
+	type RespType struct {
+		Genres []TMDBGenre
+	}
+
+	var t RespType
 	err = json.Unmarshal(body, &t)
 
-	return &t
+	return &t.Genres
 }
 
 func GetGenres() *[]TMDBGenre {

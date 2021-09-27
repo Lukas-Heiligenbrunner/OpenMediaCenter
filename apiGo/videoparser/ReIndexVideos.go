@@ -129,9 +129,9 @@ func addVideo(videoName string, fileName string, year int) {
 	if err != nil {
 		fmt.Printf("FFmpeg error occured: %s\n", err.Error())
 
-		query := `INSERT INTO videos(movie_name,movie_url) VALUES (?,?)`
-		err, insertid = database.Insert(query, videoName, fileName)
-
+		// we insert the poster here also because it might not be nil when tmdb index is enabled.
+		query := `INSERT INTO videos(movie_name,movie_url,thumbnail) VALUES (?,?,?)`
+		err, insertid = database.Insert(query, videoName, fileName, poster)
 	} else {
 		query := `INSERT INTO videos(movie_name,movie_url,poster,thumbnail,quality,length) VALUES (?,?,?,?,?,?)`
 		err, insertid = database.Insert(query, videoName, fileName, ppic, poster, vinfo.Width, vinfo.Length)
@@ -211,22 +211,30 @@ func insertTMDBTags(ids []int, videoId int64) {
 
 		// now we check if the tag we want to add already exists
 		tagId := createTagToDB(idGenre.Name)
-
-		// now we add the tag
-		query := fmt.Sprintf("INSERT INTO video_tags(video_id,tag_id) VALUES (%d,%d)", videoId, tagId)
-		_ = database.Edit(query)
+		if tagId != -1 {
+			// now we add the tag
+			query := fmt.Sprintf("INSERT INTO video_tags(video_id,tag_id) VALUES (%d,%d)", videoId, tagId)
+			_ = database.Edit(query)
+		}
 	}
 }
 
 // returns id of tag or creates it if not existing
 func createTagToDB(tagName string) int64 {
-	query := fmt.Sprintf("SELECT tag_id FROM tags WHERE tag_name = %s", tagName)
-	var id int64
-	err := database.QueryRow(query).Scan(&id)
+	query := "SELECT tag_id FROM tags WHERE tag_name = ?"
+	var id int64 = -1
+	err := database.QueryRow(query, tagName).Scan(&id)
 	if err == sql.ErrNoRows {
 		// tag doesn't exist -- add it
-		query = fmt.Sprintf("INSERT INTO tags (tag_name) VALUES (%s)", tagName)
-		err, id = database.Insert(query)
+		query = "INSERT INTO tags (tag_name) VALUES (?)"
+		err, id = database.Insert(query, tagName)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+	} else if err != nil {
+		if err != nil {
+			fmt.Println(err.Error())
+		}
 	}
 	return id
 }

@@ -56,8 +56,8 @@ create table if not exists videos
     thumbnail   mediumblob                           null,
     poster      mediumblob                           null,
     likes       int      default 0                   null,
-    quality     int                                  null,
-    length      int                                  null comment 'in seconds',
+    quality     int      default 0                   null,
+    length      int      default 0                   null comment 'in seconds',
     create_date datetime default current_timestamp() null
 );
 

@@ -23,7 +23,7 @@ func Parse(filename string, time uint64) (*string, *VidInfo, error) {
 func decodePic(srcFileName string, decodeExtension string, time uint64) (pic *[]byte, info *VidInfo, err error) {
 	var swsctx *gmf.SwsCtx
 
-	gmf.LogSetLevel(gmf.AV_LOG_ERROR)
+	gmf.LogSetLevel(gmf.AV_LOG_PANIC)
 
 	stat, err := os.Stat(srcFileName)
 	if err != nil {
