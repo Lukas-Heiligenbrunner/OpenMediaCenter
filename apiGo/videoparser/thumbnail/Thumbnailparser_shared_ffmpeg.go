@@ -3,6 +3,7 @@
 package thumbnail
 
 import (
+	"fmt"
 	"github.com/3d0c/gmf"
 	"io"
 	"log"
@@ -20,7 +21,7 @@ func Parse(filename string, time uint64) (*string, *VidInfo, error) {
 	}
 }
 
-func decodePic(srcFileName string, decodeExtension string, time uint64) (pic *[]byte, info *VidInfo, err error) {
+func decodePic(srcFileName string, encodeExtension string, time uint64) (pic *[]byte, info *VidInfo, err error) {
 	var swsctx *gmf.SwsCtx
 
 	gmf.LogSetLevel(gmf.AV_LOG_PANIC)
@@ -46,19 +47,19 @@ func decodePic(srcFileName string, decodeExtension string, time uint64) (pic *[]
 		return nil, nil, err
 	}
 
-	codec, err := gmf.FindEncoder(decodeExtension)
+	encodeCodec, err := gmf.FindEncoder(encodeExtension)
 	if err != nil {
 		log.Printf("%s\n", err)
 		return nil, nil, err
 	}
 
-	cc := gmf.NewCodecCtx(codec)
+	cc := gmf.NewCodecCtx(encodeCodec)
 	defer gmf.Release(cc)
 
 	cc.SetTimeBase(gmf.AVR{Num: 1, Den: 1})
 
 	cc.SetPixFmt(gmf.AV_PIX_FMT_YUVJ444P).SetWidth(srcVideoStream.CodecPar().Width()).SetHeight(srcVideoStream.CodecPar().Height())
-	if codec.IsExperimental() {
+	if encodeCodec.IsExperimental() {
 		cc.SetStrictCompliance(gmf.FF_COMPLIANCE_EXPERIMENTAL)
 	}
 
@@ -68,28 +69,35 @@ func decodePic(srcFileName string, decodeExtension string, time uint64) (pic *[]
 	}
 	defer cc.Free()
 
-	ist, err := inputCtx.GetStream(srcVideoStream.Index())
-	if err != nil {
-		log.Printf("Error getting stream - %s\n", err)
-		return nil, nil, err
-	}
-	defer ist.Free()
-
-	err = inputCtx.SeekFrameAt(int64(time), 0)
+	err = inputCtx.SeekFrameAt(int64(time), srcVideoStream.Index())
 	if err != nil {
 		log.Printf("Error while seeking file: %s\n", err.Error())
-		return
+		return nil, nil, err
+	}
+
+	// find encodeCodec to decode video
+	decodeCodec, err := gmf.FindDecoder(srcVideoStream.CodecPar().CodecId())
+	if err != nil {
+		fmt.Println(err)
+		return nil, nil, err
+	}
+
+	icc := gmf.NewCodecCtx(decodeCodec)
+	defer gmf.Release(icc)
+
+	// copy stream parameters in codeccontext
+	err = srcVideoStream.CodecPar().ToContext(icc)
+	if err != nil {
+		fmt.Println(err.Error())
 	}
 
 	// convert source pix_fmt into AV_PIX_FMT_RGBA
-	// which is set up by codec context above
-	icc := srcVideoStream.CodecCtx()
 	if swsctx, err = gmf.NewSwsCtx(icc.Width(), icc.Height(), icc.PixFmt(), cc.Width(), cc.Height(), cc.PixFmt(), gmf.SWS_BICUBIC); err != nil {
 		panic(err)
 	}
 	defer swsctx.Free()
 
-	frameRate := float32(ist.GetRFrameRate().AVR().Num) / float32(ist.GetRFrameRate().AVR().Den)
+	frameRate := float32(srcVideoStream.GetRFrameRate().AVR().Num) / float32(srcVideoStream.GetRFrameRate().AVR().Den)
 	inf := VidInfo{
 		Width:     uint32(icc.Width()),
 		Height:    uint32(icc.Height()),
@@ -127,7 +135,7 @@ func decodePic(srcFileName string, decodeExtension string, time uint64) (pic *[]
 			continue
 		}
 
-		frames, err = ist.CodecCtx().Decode(pkt)
+		frames, err = srcVideoStream.CodecCtx().Decode(pkt)
 
 		if err != nil {
 			log.Printf("Fatal error during decoding - %s\n", err)
@@ -162,7 +170,7 @@ func decodePic(srcFileName string, decodeExtension string, time uint64) (pic *[]
 			p.Free()
 		}
 
-		for i, _ := range frames {
+		for i := range frames {
 			frames[i].Free()
 			frameCount++
 		}
@@ -179,9 +187,12 @@ func decodePic(srcFileName string, decodeExtension string, time uint64) (pic *[]
 	for i := 0; i < inputCtx.StreamsCnt(); i++ {
 		st, err := inputCtx.GetStream(i)
 		if err == nil && st != nil {
-			st.CodecCtx().Free()
 			st.Free()
 		}
 	}
+
+	icc.Free()
+	srcVideoStream.Free()
+
 	return
 }
