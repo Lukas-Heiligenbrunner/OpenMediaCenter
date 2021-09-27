@@ -7,7 +7,6 @@ import (
 	"openmediacenter/apiGo/database"
 	"openmediacenter/apiGo/videoparser"
 	"os"
-	"path/filepath"
 )
 
 func addUploadHandler() {
@@ -31,11 +30,11 @@ func addUploadHandler() {
 				break
 			}
 
-			// todo allow more video formats than mp4
 			// only allow valid extensions
-			if filepath.Ext(part.FileName()) != ".mp4" {
+			if !videoparser.ValidVideoSuffix(part.FileName()) {
 				continue
 			}
+
 			vidpath := PathPrefix + mSettings.VideoPath + part.FileName()
 			dst, err := os.OpenFile(vidpath, os.O_WRONLY|os.O_CREATE, 0644)
 			if err != nil {

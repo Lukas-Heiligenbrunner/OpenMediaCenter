@@ -15,6 +15,20 @@ type StatusMessage struct {
 	ContentAvailable bool
 }
 
+func getVideoTypes() []string {
+	return []string{".mp4", ".mov", ".mkv", ".flv", ".avi", ".mpeg", ".m4v"}
+}
+
+func ValidVideoSuffix(filename string) bool {
+	validExts := getVideoTypes()
+	for _, validExt := range validExts {
+		if strings.HasSuffix(filename, validExt) {
+			return true
+		}
+	}
+	return false
+}
+
 func StartReindex() bool {
 	fmt.Println("starting reindex..")
 	SendEvent("start")
@@ -40,7 +54,7 @@ func StartReindex() bool {
 			return err
 		}
 
-		if !info.IsDir() && strings.HasSuffix(info.Name(), ".mp4") {
+		if !info.IsDir() && ValidVideoSuffix(info.Name()) {
 			files = append(files, info.Name())
 		}
 		return nil
@@ -107,7 +121,7 @@ func StartTVShowReindex() {
 			}
 
 			for _, epfile := range episodefiles {
-				if strings.HasSuffix(epfile.Name(), ".mp4") {
+				if ValidVideoSuffix(epfile.Name()) {
 					elem.files = append(elem.files, epfile.Name())
 				}
 			}

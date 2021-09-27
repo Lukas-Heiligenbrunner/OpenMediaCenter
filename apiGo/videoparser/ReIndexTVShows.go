@@ -38,6 +38,7 @@ func insertEpisodesIfNotExisting(show Show) {
 			fmt.Println(err.Error())
 		}
 
+		// todo no fixed mp4 extension here!
 		dbepisodes = append(dbepisodes, fmt.Sprintf("%s S%02dE%02d.mp4", epname, season, episode))
 	}
 
