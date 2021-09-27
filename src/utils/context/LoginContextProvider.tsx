@@ -19,6 +19,9 @@ export const LoginContextProvider: FunctionComponent = (props): JSX.Element => {
         initialLoginState = LoginState.LoggedIn;
     }
 
+    const [loginState, setLoginState] = useState<LoginState>(initialLoginState);
+    const [permission, setPermission] = useState<LoginPerm>(initialUserPerm);
+
     useEffect(() => {
         // this is the first api call so if it fails we know there is no connection to backend
         callAPI(
@@ -45,10 +48,7 @@ export const LoginContextProvider: FunctionComponent = (props): JSX.Element => {
                 setLoginState(LoginState.LoggedOut);
             }
         );
-    }, [features]);
-
-    const [loginState, setLoginState] = useState<LoginState>(initialLoginState);
-    const [permission, setPermission] = useState<LoginPerm>(initialUserPerm);
+    }, [features, loginState]);
 
     const hist = useHistory();
     const loc = useLocation();
