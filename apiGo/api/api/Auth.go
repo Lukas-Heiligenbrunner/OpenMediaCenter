@@ -3,15 +3,10 @@ package api
 import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	"gopkg.in/oauth2.v3"
-	"gopkg.in/oauth2.v3/server"
-	"net/http"
 	"openmediacenter/apiGo/database"
 	"strconv"
 	"time"
 )
-
-var srv *server.Server
 
 type Perm uint8
 
@@ -102,16 +97,4 @@ func InitOAuth() {
 			ExpiresAt: expires,
 		})
 	})
-}
-
-func ValidateToken(f func(rw http.ResponseWriter, req *http.Request, node int, tokenInfo *oauth2.TokenInfo), node int) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		tokeninfo, err := srv.ValidationBearerToken(r)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		f(w, r, node, &tokeninfo)
-	}
 }

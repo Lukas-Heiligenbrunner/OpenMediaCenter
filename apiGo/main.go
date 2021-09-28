@@ -15,6 +15,7 @@ import (
 func main() {
 	fmt.Println("init OpenMediaCenter server")
 	const port uint16 = 8081
+	errc := make(chan error, 1)
 
 	config.Init()
 
@@ -22,7 +23,10 @@ func main() {
 	fmt.Printf("Use verbose output: %t\n", config.GetConfig().General.VerboseLogging)
 	fmt.Printf("Videopath prefix: %s\n", config.GetConfig().General.ReindexPrefix)
 
-	database.InitDB()
+	err := database.InitDB()
+	if err != nil {
+		errc <- err
+	}
 	defer database.Close()
 
 	api.AddHandlers()
@@ -33,7 +37,6 @@ func main() {
 	static.ServeStaticFiles()
 
 	// init api
-	errc := make(chan error, 1)
 	go func() {
 		errc <- api2.ServerInit(port)
 	}()

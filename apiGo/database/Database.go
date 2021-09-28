@@ -2,16 +2,23 @@ package database
 
 import (
 	"database/sql"
+	"embed"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/pressly/goose/v3"
+	"log"
 	"openmediacenter/apiGo/api/types"
 	"openmediacenter/apiGo/config"
+	"os"
 )
 
 var db *sql.DB
 var DBName string
 
-func InitDB() {
+//go:embed migrations/*.sql
+var embedMigrations embed.FS
+
+func InitDB() error {
 	dbconf := config.GetConfig().Database
 	DBName = dbconf.DBName
 
@@ -21,15 +28,32 @@ func InitDB() {
 
 	// if there is an error opening the connection, handle it
 	if err != nil {
-		fmt.Printf("Error while connecting to database! - %s\n", err.Error())
+		return fmt.Errorf("Error while connecting to database! - %s\n", err.Error())
 	}
 
 	if db != nil {
 		ping := db.Ping()
 		if ping != nil {
-			fmt.Printf("Error while connecting to database! - %s\n", ping.Error())
+			return fmt.Errorf("Error while connecting to database! - %s\n", ping.Error())
 		}
 	}
+
+	fmt.Println("Running Database migrations!")
+	// perform database migrations
+	goose.SetBaseFS(embedMigrations)
+	goose.SetLogger(log.New(os.Stdout, "", 0))
+
+	// set mysql dialect
+	err = goose.SetDialect("mysql")
+	if err != nil {
+		return err
+	}
+
+	if err := goose.Up(db, "migrations"); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func Query(query string, args ...interface{}) *sql.Rows {

@@ -103,7 +103,6 @@ func ProcessVideo(fileNameOrig string) {
 // add a video to the database
 func addVideo(videoName string, fileName string, year int) {
 	var ppic *string
-	var poster *string
 	var tmdbData *tmdb.VideoTMDB
 	var err error
 	var insertid int64
@@ -113,38 +112,42 @@ func addVideo(videoName string, fileName string, year int) {
 	// if TMDB grabbing is enabled serach in api for video...
 	if mSettings.TMDBGrabbing {
 		tmdbData = tmdb.SearchVideo(videoName, year)
-		if tmdbData != nil {
-			// and tmdb pic as thumbnail
-			poster = &tmdbData.Thumbnail
-		}
 	}
 
 	// parse pic from 4min frame
-	ppic, vinfo, err := thumbnail.Parse(vidFolder+fileName, 240)
-	// use parsed pic also for poster pic
-	if poster == nil {
-		poster = ppic
-	}
+	ppic, vinfo, ffmpegErr := thumbnail.Parse(vidFolder+fileName, 240)
 
-	if err != nil {
-		fmt.Printf("FFmpeg error occured: %s\n", err.Error())
-
-		// we insert the poster here also because it might not be nil when tmdb index is enabled.
-		query := `INSERT INTO videos(movie_name,movie_url,thumbnail) VALUES (?,?,?)`
-		err, insertid = database.Insert(query, videoName, fileName, poster)
+	if ffmpegErr == nil {
+		if mSettings.TMDBGrabbing && tmdbData != nil {
+			query := `INSERT INTO videos(movie_name,movie_url,poster,thumbnail,quality,length,release_date) VALUES (?,?,?,?,?,?,?)`
+			err, insertid = database.Insert(query, videoName, fileName, ppic, tmdbData.Thumbnail, vinfo.Width, vinfo.Length, tmdbData.ReleaseDate)
+		} else {
+			// insert without tmdb info
+			query := `INSERT INTO videos(movie_name,movie_url,poster,thumbnail,quality,length) VALUES (?,?,?,?,?,?)`
+			err, insertid = database.Insert(query, videoName, fileName, ppic, ppic, vinfo.Width, vinfo.Length)
+		}
 	} else {
-		query := `INSERT INTO videos(movie_name,movie_url,poster,thumbnail,quality,length) VALUES (?,?,?,?,?,?)`
-		err, insertid = database.Insert(query, videoName, fileName, ppic, poster, vinfo.Width, vinfo.Length)
+		fmt.Printf("FFmpeg error occured: %s\n", ffmpegErr.Error())
 
-		// add default tags
-		if vinfo.Width != 0 && err == nil {
-			insertSizeTag(uint(vinfo.Width), uint(insertid))
+		if mSettings.TMDBGrabbing && tmdbData != nil {
+			query := `INSERT INTO videos(movie_name,movie_url,thumbnail,release_date) VALUES (?,?,?,?)`
+			err, insertid = database.Insert(query, videoName, fileName, tmdbData.Thumbnail, tmdbData.ReleaseDate)
+		} else {
+			query := `INSERT INTO videos(movie_name,movie_url) VALUES (?,?)`
+			err, insertid = database.Insert(query, videoName, fileName)
 		}
 	}
 
 	if err != nil {
 		fmt.Printf("Failed to insert video into db: %s\n", err.Error())
 		return
+	}
+
+	if ffmpegErr == nil {
+		// add default tags
+		if vinfo.Width != 0 {
+			insertSizeTag(uint(vinfo.Width), uint(insertid))
+		}
 	}
 
 	// add tmdb tags

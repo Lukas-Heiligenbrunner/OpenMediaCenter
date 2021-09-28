@@ -32,6 +32,7 @@ interface mystate {
     movieName: string;
     likes: number;
     quality: number;
+    releaseDate: string | null;
     length: number;
     tags: TagType[];
     suggesttag: TagType[];
@@ -54,6 +55,7 @@ export class Player extends React.Component<Props, mystate> {
             movieName: '',
             likes: 0,
             quality: 0,
+            releaseDate: null,
             length: 0,
             tags: [],
             suggesttag: [],
@@ -129,6 +131,11 @@ export class Player extends React.Component<Props, mystate> {
                 {this.state.quality !== 0 ? (
                     <SideBarItem>
                         <b>{this.state.quality}p</b> Quality!
+                    </SideBarItem>
+                ) : null}
+                {this.state.releaseDate !== null ? (
+                    <SideBarItem>
+                        <b>{this.state.releaseDate}</b> released!
                     </SideBarItem>
                 ) : null}
                 {this.state.length !== 0 ? (
@@ -323,6 +330,7 @@ export class Player extends React.Component<Props, mystate> {
                     movieName: result.MovieName,
                     likes: result.Likes,
                     quality: result.Quality,
+                    releaseDate: result.ReleaseDate,
                     length: result.Length,
                     tags: result.Tags,
                     suggesttag: result.SuggestedTag,

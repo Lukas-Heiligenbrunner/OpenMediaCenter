@@ -15,10 +15,11 @@ const baseUrl = "https://api.themoviedb.org/3/"
 const pictureBase = "https://image.tmdb.org/t/p/w500"
 
 type VideoTMDB struct {
-	Thumbnail string
-	Overview  string
-	Title     string
-	GenreIds  []int
+	Thumbnail   string
+	Overview    string
+	Title       string
+	ReleaseDate string
+	GenreIds    []int
 }
 
 type TVShowTMDB struct {
@@ -120,10 +121,11 @@ cont:
 	}
 
 	result := VideoTMDB{
-		Thumbnail: thumbnail,
-		Overview:  tmdbVid.Overview,
-		Title:     tmdbVid.Title,
-		GenreIds:  tmdbVid.GenreIds,
+		Thumbnail:   thumbnail,
+		Overview:    tmdbVid.Overview,
+		Title:       tmdbVid.Title,
+		ReleaseDate: tmdbVid.ReleaseDate,
+		GenreIds:    tmdbVid.GenreIds,
 	}
 
 	return &result
