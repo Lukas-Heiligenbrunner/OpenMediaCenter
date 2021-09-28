@@ -10,6 +10,7 @@ type FullVideoType struct {
 	MovieId      uint32
 	MovieUrl     string
 	Poster       string
+	ReleaseDate  *string
 	Likes        uint64
 	Quality      uint16
 	Length       uint16

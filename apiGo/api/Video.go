@@ -276,14 +276,14 @@ func loadVideosHandlers() {
 			return
 		}
 
-		query := fmt.Sprintf(`SELECT movie_name,movie_url,movie_id,thumbnail,poster,likes,quality,length 
+		query := fmt.Sprintf(`SELECT movie_name,movie_url,movie_id,thumbnail,poster,likes,quality,length,release_date 
 										FROM videos WHERE movie_id=%d`, args.MovieId)
 
 		var res types.FullVideoType
 		var poster []byte
 		var thumbnail []byte
 
-		err := database.QueryRow(query).Scan(&res.MovieName, &res.MovieUrl, &res.MovieId, &thumbnail, &poster, &res.Likes, &res.Quality, &res.Length)
+		err := database.QueryRow(query).Scan(&res.MovieName, &res.MovieUrl, &res.MovieId, &thumbnail, &poster, &res.Likes, &res.Quality, &res.Length, &res.ReleaseDate)
 		if err != nil {
 			fmt.Printf("Error getting full data list of videoid - %d", args.MovieId)
 			fmt.Println(err.Error())

@@ -8,6 +8,7 @@ export namespace VideoTypes {
         MovieName: string;
         Likes: number;
         Quality: number;
+        ReleaseDate: string | null;
         Length: number;
         Tags: TagType[];
         SuggestedTag: TagType[];

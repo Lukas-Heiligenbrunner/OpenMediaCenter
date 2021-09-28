@@ -9,6 +9,7 @@ import (
 	"log"
 	"openmediacenter/apiGo/api/types"
 	"openmediacenter/apiGo/config"
+	"os"
 )
 
 var db *sql.DB
@@ -37,9 +38,10 @@ func InitDB() error {
 		}
 	}
 
-	log.Printf("Running Database migrations!")
+	fmt.Println("Running Database migrations!")
 	// perform database migrations
 	goose.SetBaseFS(embedMigrations)
+	goose.SetLogger(log.New(os.Stdout, "", 0))
 
 	// set mysql dialect
 	err = goose.SetDialect("mysql")
