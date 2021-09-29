@@ -38,7 +38,7 @@ describe('<Player/>', function () {
 
         // initial fetch for getting movie data
         expect(global.fetch).toHaveBeenCalledTimes(1);
-        wrapper.find('.videoactions').find('Button').first().simulate('click');
+        wrapper.find('.videoactions').find('IconButton').first().simulate('click');
         // fetch for liking
         expect(global.fetch).toHaveBeenCalledTimes(2);
 
@@ -81,7 +81,7 @@ describe('<Player/>', function () {
         const wrapper = instance();
         expect(wrapper.find('AddTagPopup')).toHaveLength(0);
         // todo dynamic button find without index
-        wrapper.find('.videoactions').find('Button').at(1).simulate('click');
+        wrapper.find('.videoactions').find('IconButton').at(1).simulate('click');
         // addtagpopup should be showing now
         expect(wrapper.find('AddTagPopup')).toHaveLength(1);
     });
@@ -106,7 +106,7 @@ describe('<Player/>', function () {
         wrapper.setContext({VideosFullyDeleteable: false})
 
         // request the popup to pop
-        wrapper.find('.videoactions').find('Button').at(2).simulate('click');
+        wrapper.find('.videoactions').find('IconButton').at(2).simulate('click');
 
         // click the first submit button
         wrapper.find('ButtonPopup').dive().find('Button').at(0).simulate('click')

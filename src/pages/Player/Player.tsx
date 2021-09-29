@@ -9,7 +9,7 @@ import Tag from '../../elements/Tag/Tag';
 import AddTagPopup from '../../elements/Popups/AddTagPopup/AddTagPopup';
 import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
+import {faPlusCircle, faTag, faThumbsUp, faTrash} from '@fortawesome/free-solid-svg-icons';
 import AddActorPopup from '../../elements/Popups/AddActorPopup/AddActorPopup';
 import ActorTile from '../../elements/ActorTile/ActorTile';
 import {withRouter} from 'react-router-dom';
@@ -18,7 +18,7 @@ import {RouteComponentProps} from 'react-router';
 import {DefaultPlyrOptions, GeneralSuccess} from '../../types/GeneralTypes';
 import {ActorType, TagType} from '../../types/VideoTypes';
 import PlyrJS from 'plyr';
-import {Button} from '../../elements/GPElements/Button';
+import {IconButton} from '../../elements/GPElements/Button';
 import {VideoTypes} from '../../types/ApiTypes';
 import GlobalInfos from '../../utils/GlobalInfos';
 import {ButtonPopup} from '../../elements/Popups/ButtonPopup/ButtonPopup';
@@ -90,18 +90,12 @@ export class Player extends React.Component<Props, mystate> {
                         <div>not loaded yet</div>
                     )}
                     <div className={style.videoactions}>
-                        <Button onClick={(): void => this.likebtn()} title='Like this Video!' color={{backgroundColor: 'green'}} />
-                        <Button
-                            onClick={(): void => this.setState({popupvisible: true})}
-                            title='Give this Video a Tag'
-                            color={{backgroundColor: '#3574fe'}}
-                        />
-                        <Button
-                            title='Delete Video'
-                            onClick={(): void => {
-                                this.setState({deletepopupvisible: true});
-                            }}
-                            color={{backgroundColor: 'red'}}
+                        <IconButton icon={faThumbsUp} onClick={(): void => this.likebtn()} title='Like!' />
+                        <IconButton icon={faTag} onClick={(): void => this.setState({popupvisible: true})} title='Add Tag!' />
+                        <IconButton
+                            icon={faTrash}
+                            onClick={(): void => this.setState({deletepopupvisible: true})}
+                            title='Delete Video!'
                         />
                     </div>
                     {this.assembleActorTiles()}
