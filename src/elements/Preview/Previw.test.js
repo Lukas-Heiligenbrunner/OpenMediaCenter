@@ -20,7 +20,7 @@ describe('<Preview/>', function () {
         expect(func).toHaveBeenCalledTimes(1)
 
         // received picture should be rendered into wrapper
-        expect(wrapper.find('.previewimage').props().src).toBe('42');
+        expect(wrapper.find('img').props().src).toBe('42');
         // check if preview title renders correctly
         expect(wrapper.find('.previewtitle').text()).toBe('test');
     });

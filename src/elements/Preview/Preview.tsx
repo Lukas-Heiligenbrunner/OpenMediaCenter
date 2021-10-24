@@ -11,6 +11,7 @@ interface PreviewProps {
     picLoader: (callback: (pic: string) => void) => void;
     linkPath?: string;
     onClick?: () => void;
+    aspectRatio?: number;
 }
 
 interface PreviewState {
@@ -24,6 +25,11 @@ interface PreviewState {
 class Preview extends React.Component<PreviewProps, PreviewState> {
     // store the picture to display
     pic?: string;
+
+    static readonly DefMinWidth = 266;
+    static readonly DefMaxWidth = 410;
+    static readonly DefMinHeight = 150;
+    static readonly DefMaxHeight = 400;
 
     constructor(props: PreviewProps) {
         super(props);
@@ -43,7 +49,7 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
     }
 
     render(): JSX.Element {
-        if (this.props.linkPath !== undefined) {
+        if (this.props.linkPath != null) {
             return <Link to={this.props.linkPath}>{this.content()}</Link>;
         } else {
             return this.content();
@@ -52,12 +58,31 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
 
     content(): JSX.Element {
         const themeStyle = GlobalInfos.getThemeStyle();
+        const ratio = this.props.aspectRatio;
+        let dimstyle = null;
+
+        // check if aspect ratio is passed
+        if (ratio != null) {
+            // if ratio is <1 we need to calc height
+            if (ratio < 1) {
+                const height = Preview.DefMaxWidth * ratio;
+                dimstyle = {height: height, width: Preview.DefMaxWidth};
+            } else {
+                const width = Preview.DefMaxHeight * ratio;
+                dimstyle = {width: width, height: Preview.DefMaxHeight};
+            }
+        }
+
         return (
             <div
                 className={style.videopreview + ' ' + themeStyle.secbackground + ' ' + themeStyle.preview}
                 onClick={this.props.onClick}>
-                <div className={style.previewtitle + ' ' + themeStyle.lighttextcolor}>{this.props.name}</div>
-                <div className={style.previewpic}>
+                <div
+                    style={{maxWidth: dimstyle !== null ? dimstyle.width : Preview.DefMaxWidth}}
+                    className={style.previewtitle + ' ' + themeStyle.lighttextcolor}>
+                    {this.props.name}
+                </div>
+                <div style={dimstyle !== null ? dimstyle : undefined} className={style.previewpic}>
                     {this.state.picLoaded === false ? (
                         <FontAwesomeIcon
                             style={{
@@ -72,7 +97,20 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
                             <Spinner animation='border' />
                         </span>
                     ) : (
-                        <img className={style.previewimage} src={this.pic} alt='Pic loading.' />
+                        <img
+                            style={
+                                dimstyle !== null
+                                    ? dimstyle
+                                    : {
+                                          minWidth: Preview.DefMinWidth,
+                                          maxWidth: Preview.DefMaxWidth,
+                                          minHeight: Preview.DefMinHeight,
+                                          maxHeight: Preview.DefMaxHeight
+                                      }
+                            }
+                            src={this.pic}
+                            alt='Pic loading.'
+                        />
                     )}
                 </div>
                 <div className={style.previewbottom} />

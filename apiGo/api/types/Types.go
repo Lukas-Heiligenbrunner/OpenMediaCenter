@@ -3,6 +3,7 @@ package types
 type VideoUnloadedType struct {
 	MovieId   int
 	MovieName string
+	Ratio     float32
 }
 
 type FullVideoType struct {

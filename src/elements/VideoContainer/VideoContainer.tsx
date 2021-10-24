@@ -15,6 +15,7 @@ const VideoContainer = (props: Props): JSX.Element => {
             renderElement={(el): JSX.Element => (
                 <Preview
                     key={el.MovieId}
+                    aspectRatio={el.Ratio > 0 ? el.Ratio : undefined}
                     picLoader={(callback: (pic: string) => void): void => {
                         callAPIPlain(
                             APINode.Video,

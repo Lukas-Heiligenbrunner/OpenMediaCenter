@@ -27,6 +27,7 @@ export namespace VideoTypes {
     export interface VideoUnloadedType {
         MovieId: number;
         MovieName: string;
+        Ratio: number;
     }
 }
 
