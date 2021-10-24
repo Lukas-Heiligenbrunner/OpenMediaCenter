@@ -2,7 +2,6 @@
     font-size: smaller;
     font-weight: bold;
     height: 20px;
-    max-width: 266px;
     text-align: center;
 }
 
@@ -18,13 +17,6 @@
     display: inline-block;
     line-height: 150px;
     vertical-align: middle;
-}
-
-.previewimage {
-    max-height: 400px;
-    max-width: 410px;
-    min-height: 150px;
-    min-width: 266px;
 }
 
 .previewbottom {

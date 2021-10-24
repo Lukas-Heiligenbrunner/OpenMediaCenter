@@ -73,12 +73,12 @@ func getVideoHandlers() {
 		var query string
 		// 1 is the id of the ALL tag
 		if args.Tag != 1 {
-			query = fmt.Sprintf(`SELECT movie_id,movie_name,t.tag_name FROM videos
+			query = fmt.Sprintf(`SELECT movie_id,movie_name,previewratio,t.tag_name FROM videos
 					INNER JOIN video_tags vt on videos.movie_id = vt.video_id
 					INNER JOIN tags t on vt.tag_id = t.tag_id
 					WHERE t.tag_id = %d %s`, args.Tag, SortClause)
 		} else {
-			query = fmt.Sprintf("SELECT movie_id,movie_name, (SELECT 'All' as tag_name) FROM videos %s", SortClause)
+			query = fmt.Sprintf("SELECT movie_id,movie_name,previewratio, (SELECT 'All' as tag_name) FROM videos %s", SortClause)
 		}
 
 		var result struct {
@@ -91,7 +91,7 @@ func getVideoHandlers() {
 		var name string
 		for rows.Next() {
 			var vid types.VideoUnloadedType
-			err := rows.Scan(&vid.MovieId, &vid.MovieName, &name)
+			err := rows.Scan(&vid.MovieId, &vid.MovieName, &vid.Ratio, &name)
 			if err != nil {
 				return
 			}

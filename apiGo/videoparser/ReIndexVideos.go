@@ -119,12 +119,15 @@ func addVideo(videoName string, fileName string, year int) {
 
 	if ffmpegErr == nil {
 		if mSettings.TMDBGrabbing && tmdbData != nil {
-			query := `INSERT INTO videos(movie_name,movie_url,poster,thumbnail,quality,length,release_date) VALUES (?,?,?,?,?,?,?)`
-			err, insertid = database.Insert(query, videoName, fileName, ppic, tmdbData.Thumbnail, vinfo.Width, vinfo.Length, tmdbData.ReleaseDate)
+			// inesert fixed pic ratio what we get from tmdb
+			previewRatio := 2 / 3
+			query := `INSERT INTO videos(movie_name,movie_url,poster,thumbnail,quality,previewratio,length,release_date) VALUES (?,?,?,?,?,?,?,?)`
+			err, insertid = database.Insert(query, videoName, fileName, ppic, tmdbData.Thumbnail, vinfo.Width, previewRatio, vinfo.Length, tmdbData.ReleaseDate)
 		} else {
+			previewRatio := float32(vinfo.Height) / float32(vinfo.Width)
 			// insert without tmdb info
-			query := `INSERT INTO videos(movie_name,movie_url,poster,thumbnail,quality,length) VALUES (?,?,?,?,?,?)`
-			err, insertid = database.Insert(query, videoName, fileName, ppic, ppic, vinfo.Width, vinfo.Length)
+			query := `INSERT INTO videos(movie_name,movie_url,poster,thumbnail,quality,previewratio,length) VALUES (?,?,?,?,?,?,?)`
+			err, insertid = database.Insert(query, videoName, fileName, ppic, ppic, vinfo.Width, previewRatio, vinfo.Length)
 		}
 	} else {
 		fmt.Printf("FFmpeg error occured: %s\n", ffmpegErr.Error())
