@@ -17,7 +17,7 @@ class Tag extends React.Component<props> {
         if (this.props.onclick) {
             return this.renderButton();
         } else {
-            return <Link to={'/categories/' + this.props.tagInfo.TagId}>{this.renderButton()}</Link>;
+            return <Link to={'/media/categories/' + this.props.tagInfo.TagId}>{this.renderButton()}</Link>;
         }
     }
 
