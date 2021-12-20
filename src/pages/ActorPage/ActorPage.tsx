@@ -37,7 +37,7 @@ export class ActorPage extends React.Component<Props, state> {
             <>
                 <PageTitle title={this.state.actor.Name} subtitle={this.state.data ? this.state.data.length + ' videos' : null}>
                     <span className={style.overviewbutton}>
-                        <Link to='/actors'>
+                        <Link to='/media/actors'>
                             <Button onClick={(): void => {}} title='Go to Actor overview' />
                         </Link>
                     </span>

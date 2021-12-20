@@ -88,6 +88,13 @@ class App extends React.Component<{}, state> {
                     Categories
                 </NavLink>
 
+                <NavLink
+                    className={[style.navitem, themeStyle.navitem].join(' ')}
+                    to={'/media/actors'}
+                    activeStyle={{opacity: '0.85'}}>
+                    Actors
+                </NavLink>
+
                 {this.context.TVShowEnabled ? (
                     <NavLink
                         className={[style.navitem, themeStyle.navitem].join(' ')}
