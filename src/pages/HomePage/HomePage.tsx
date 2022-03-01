@@ -29,7 +29,7 @@ interface state {
     subtitle: string;
     data: VideoTypes.VideoUnloadedType[];
     selectionnr: number;
-    sortby: string;
+    sortby: SortBy;
 }
 
 /**
@@ -39,8 +39,32 @@ export class HomePage extends React.Component<Props, state> {
     /** keyword variable needed temporary store search keyword */
     keyword = '';
 
+    /**
+     * get text label from sort type
+     * @param type SortBy type
+     */
+    getLabelFromSortType(type: SortBy): String {
+        switch (type) {
+            case SortBy.date:
+                return 'Date Added';
+            case SortBy.length:
+                return 'Length';
+            case SortBy.likes:
+                return 'Most likes';
+            case SortBy.name:
+                return 'Name';
+            case SortBy.random:
+                return 'Random';
+            default:
+                return '';
+        }
+    }
+
     constructor(props: Props) {
         super(props);
+
+        // get previously stored location from localstorage
+        const storedSelection = global.localStorage.getItem('sortby');
 
         this.state = {
             sideinfo: {
@@ -54,11 +78,10 @@ export class HomePage extends React.Component<Props, state> {
             subtitle: 'All Videos',
             data: [],
             selectionnr: 0,
-            sortby: 'Date Added'
+            sortby: storedSelection == null ? SortBy.date : parseInt(storedSelection, 10)
         };
     }
 
-    sortState = SortBy.date;
     tagState = DefaultTags.all;
 
     componentDidMount(): void {
@@ -87,7 +110,7 @@ export class HomePage extends React.Component<Props, state> {
     fetchVideoData(): void {
         callAPI(
             APINode.Video,
-            {action: 'getMovies', Tag: this.tagState.TagId, Sort: this.sortState},
+            {action: 'getMovies', Tag: this.tagState.TagId, Sort: this.state.sortby},
             (result: {Videos: VideoTypes.VideoUnloadedType[]; TagName: string}) => {
                 this.setState({
                     data: result.Videos,
@@ -190,15 +213,25 @@ export class HomePage extends React.Component<Props, state> {
                     <span className={style.sortbyLabel}>Sort By: </span>
                     <div className={style.dropdown}>
                         <span className={style.dropbtn}>
-                            <span>{this.state.sortby}</span>
+                            <span>{this.getLabelFromSortType(this.state.sortby)}</span>
                             <FontAwesomeIcon style={{marginLeft: 3, paddingBottom: 3}} icon={faSortDown} size='1x' />
                         </span>
                         <div className={style.dropdownContent}>
-                            <span onClick={(): void => this.onDropDownItemClick(SortBy.date, 'Date Added')}>Date Added</span>
-                            <span onClick={(): void => this.onDropDownItemClick(SortBy.likes, 'Most likes')}>Most likes</span>
-                            <span onClick={(): void => this.onDropDownItemClick(SortBy.random, 'Random')}>Random</span>
-                            <span onClick={(): void => this.onDropDownItemClick(SortBy.name, 'Name')}>Name</span>
-                            <span onClick={(): void => this.onDropDownItemClick(SortBy.length, 'Length')}>Length</span>
+                            <span onClick={(): void => this.onDropDownItemClick(SortBy.date)}>
+                                {this.getLabelFromSortType(SortBy.date)}
+                            </span>
+                            <span onClick={(): void => this.onDropDownItemClick(SortBy.likes)}>
+                                {this.getLabelFromSortType(SortBy.likes)}
+                            </span>
+                            <span onClick={(): void => this.onDropDownItemClick(SortBy.random)}>
+                                {this.getLabelFromSortType(SortBy.random)}
+                            </span>
+                            <span onClick={(): void => this.onDropDownItemClick(SortBy.name)}>
+                                {this.getLabelFromSortType(SortBy.name)}
+                            </span>
+                            <span onClick={(): void => this.onDropDownItemClick(SortBy.length)}>
+                                {this.getLabelFromSortType(SortBy.length)}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -214,10 +247,12 @@ export class HomePage extends React.Component<Props, state> {
      * @param type type of sort action
      * @param name new header title
      */
-    onDropDownItemClick(type: SortBy, name: string): void {
-        this.sortState = type;
-        this.setState({sortby: name});
-        this.fetchVideoData();
+    onDropDownItemClick(type: SortBy): void {
+        this.setState({sortby: type}, (): void => {
+            global.localStorage.setItem('sortby', type.toString());
+
+            this.fetchVideoData();
+        });
     }
 }
 
