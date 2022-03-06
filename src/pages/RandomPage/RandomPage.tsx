@@ -25,8 +25,17 @@ interface GetRandomMoviesType {
 class RandomPage extends React.Component<{}, state> {
     readonly LoadNR = 3;
 
+    // random seed to load videos, remains page reload.
+    seed = this.genRandInt();
+
     constructor(props: {}) {
         super(props);
+
+        // get previously stored location from localstorage
+        const storedseed = global.localStorage.getItem('randpageseed');
+        if (storedseed != null) {
+            this.seed = parseInt(storedseed, 10);
+        }
 
         this.state = {
             videos: [],
@@ -34,6 +43,10 @@ class RandomPage extends React.Component<{}, state> {
         };
 
         this.keypress = this.keypress.bind(this);
+    }
+
+    genRandInt(): number {
+        return Math.floor(Math.random() * 2147483647) + 1;
     }
 
     componentDidMount(): void {
@@ -77,7 +90,13 @@ class RandomPage extends React.Component<{}, state> {
      * click handler for shuffle btn
      */
     shuffleclick(): void {
+        this.genSeed();
         this.loadShuffledvideos(this.LoadNR);
+    }
+
+    genSeed(): void {
+        this.seed = this.genRandInt();
+        global.localStorage.setItem('randpageseed', this.seed.toString());
     }
 
     /**
@@ -85,7 +104,7 @@ class RandomPage extends React.Component<{}, state> {
      * @param nr number of videos to load
      */
     loadShuffledvideos(nr: number): void {
-        callAPI<GetRandomMoviesType>(APINode.Video, {action: 'getRandomMovies', Number: nr}, (result) => {
+        callAPI<GetRandomMoviesType>(APINode.Video, {action: 'getRandomMovies', Number: nr, Seed: this.seed}, (result) => {
             this.setState({videos: []}); // needed to trigger rerender of main videoview
             this.setState({
                 videos: result.Videos,
@@ -101,7 +120,8 @@ class RandomPage extends React.Component<{}, state> {
     private keypress(event: KeyboardEvent): void {
         // bind s to shuffle
         if (event.key === 's') {
-            this.loadShuffledvideos(4);
+            this.genSeed();
+            this.loadShuffledvideos(this.LoadNR);
         }
     }
 }

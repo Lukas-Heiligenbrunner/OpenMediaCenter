@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"math/rand"
 	"net/url"
 	"openmediacenter/apiGo/api/api"
 	"openmediacenter/apiGo/api/types"
@@ -163,10 +164,17 @@ func getVideoHandlers() {
 	api.AddHandler("getRandomMovies", api.VideoNode, api.PermUser, func(context api.Context) {
 		var args struct {
 			Number int
+			Seed   *int
 		}
 		if api.DecodeRequest(context.GetRequest(), &args) != nil {
 			context.Text("unable to decode request")
 			return
+		}
+
+		// if Seed argument not passed generate random seed
+		if args.Seed == nil {
+			r := rand.Int()
+			args.Seed = &r
 		}
 
 		var result struct {
@@ -174,7 +182,7 @@ func getVideoHandlers() {
 			Videos []types.VideoUnloadedType
 		}
 
-		query := fmt.Sprintf("SELECT movie_id,movie_name FROM videos ORDER BY RAND() LIMIT %d", args.Number)
+		query := fmt.Sprintf("SELECT movie_id,movie_name FROM videos ORDER BY RAND(%d) LIMIT %d", *args.Seed, args.Number)
 		result.Videos = readVideosFromResultset(database.Query(query))
 
 		var ids string

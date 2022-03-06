@@ -90,14 +90,12 @@ describe('<HomePage/>', function () {
         const wrapper = shallow(<HomePage/>);
 
         // expect those default values
-        expect(wrapper.state().sortby).toBe('Date Added');
-        expect(wrapper.instance().sortState).toBe(SortBy.date);
+        expect(wrapper.state().sortby).toBe(0);
         expect(wrapper.instance().tagState).toBe(DefaultTags.all);
 
-        wrapper.instance().onDropDownItemClick(SortBy.name, 'namesort');
+        wrapper.instance().onDropDownItemClick(SortBy.name);
 
-        expect(wrapper.state().sortby).toBe('namesort');
-        expect(wrapper.instance().sortState).toBe(SortBy.name);
+        expect(wrapper.state().sortby).toBe(SortBy.name);
     });
 });
 
