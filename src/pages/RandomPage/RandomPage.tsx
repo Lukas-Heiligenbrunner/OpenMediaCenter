@@ -9,7 +9,7 @@ import {TagType} from '../../types/VideoTypes';
 import {VideoTypes} from '../../types/ApiTypes';
 import {addKeyHandler, removeKeyHandler} from '../../utils/ShortkeyHandler';
 import {IconButton} from '../../elements/GPElements/Button';
-import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
+import {faMinusCircle, faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import AddTagPopup from '../../elements/Popups/AddTagPopup/AddTagPopup';
 
 interface state {
@@ -56,7 +56,7 @@ class RandomPage extends React.Component<{}, state> {
     render(): JSX.Element {
         return (
             <div>
-                <PageTitle title='Random Videos' subtitle='4pc' />
+                <PageTitle title='Random Videos' subtitle='3pc' />
 
                 <SideBar>
                     <SideBarTitle>Visible Tags:</SideBarTitle>
@@ -75,6 +75,19 @@ class RandomPage extends React.Component<{}, state> {
                             this.setState({addTagPopup: true});
                         }}
                     />
+                    {this.state.filterTags.length > 0 ? (
+                        <IconButton
+                            title='Remove All'
+                            icon={faMinusCircle}
+                            onClick={(): void => {
+                                this.setState({filterTags: []}, (): void => {
+                                    this.loadShuffledvideos(this.LoadNR);
+                                });
+                            }}
+                        />
+                    ) : (
+                        <></>
+                    )}
                 </SideBar>
 
                 {this.state.videos.length !== 0 ? <VideoContainer data={this.state.videos} /> : <div>No Data found!</div>}
@@ -122,7 +135,7 @@ class RandomPage extends React.Component<{}, state> {
     private keypress(event: KeyboardEvent): void {
         // bind s to shuffle
         if (event.key === 's') {
-            this.loadShuffledvideos(4);
+            this.loadShuffledvideos(3);
         }
     }
 }
