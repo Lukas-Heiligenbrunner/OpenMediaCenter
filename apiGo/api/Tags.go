@@ -78,7 +78,7 @@ func getFromDB() {
 	 * @apiSuccess {string} TagName name of the Tag
 	 */
 	api.AddHandler("getAllTags", api.TagNode, api.PermUser, func(context api.Context) {
-		query := "SELECT tag_id,tag_name from tags"
+		query := "SELECT tag_id,tag_name from tags ORDER BY tag_name"
 		context.Json(readTagsFromResultset(database.Query(query)))
 	})
 }

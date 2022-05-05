@@ -1,11 +1,13 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"openmediacenter/apiGo/api"
 	api2 "openmediacenter/apiGo/api/api"
 	"openmediacenter/apiGo/config"
 	"openmediacenter/apiGo/database"
+	"openmediacenter/apiGo/housekeeping"
 	"openmediacenter/apiGo/static"
 	"openmediacenter/apiGo/videoparser"
 	"os"
@@ -16,6 +18,8 @@ func main() {
 	fmt.Println("init OpenMediaCenter server")
 	const port uint16 = 8081
 	errc := make(chan error, 1)
+
+	housekPTr := flag.Bool("HouseKeeping", false, "Run housekeeping tasks")
 
 	config.Init()
 
@@ -28,6 +32,12 @@ func main() {
 		errc <- err
 	}
 	defer database.Close()
+
+	// check if we should run the housekeeping tasks
+	if *housekPTr {
+		housekeeping.RunHouseKeepingTasks()
+		return
+	}
 
 	api.AddHandlers()
 
