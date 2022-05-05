@@ -74,6 +74,7 @@ func getSettingsFromDB() {
 			TVShowPath        string
 			TVShowEnabled     bool
 			FullDeleteEnabled bool
+			RandomNR          uint32
 		}
 
 		regexMatchUrl := regexp.MustCompile("^http(|s)://([0-9]){1,3}\\.([0-9]){1,3}\\.([0-9]){1,3}\\.([0-9]){1,3}:[0-9]{1,5}")
@@ -90,6 +91,7 @@ func getSettingsFromDB() {
 			TVShowPath:        serverTVShowPath,
 			TVShowEnabled:     !config.GetConfig().Features.DisableTVSupport,
 			FullDeleteEnabled: config.GetConfig().Features.FullyDeletableVideos,
+			RandomNR:          sett.RandomNR,
 		}
 
 		context.Json(res)
@@ -127,12 +129,13 @@ func saveSettingsToDB() {
                         password=?,
                         mediacenter_name=?,
                         TMDB_grabbing=?, 
-                        DarkMode=?
+                        DarkMode=?,
+						random_nr=?
                     WHERE 1`
 		// todo avoid conversion
 		context.Text(string(database.SuccessQuery(query,
 			args.VideoPath, args.EpisodePath, args.Password,
-			args.MediacenterName, args.TMDBGrabbing, args.DarkMode)))
+			args.MediacenterName, args.TMDBGrabbing, args.DarkMode, args.RandomNR)))
 	})
 }
 

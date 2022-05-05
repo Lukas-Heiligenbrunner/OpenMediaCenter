@@ -48,6 +48,7 @@ type SettingsType struct {
 	PasswordEnabled bool
 	TMDBGrabbing    bool
 	DarkMode        bool
+	RandomNR        uint32
 }
 
 type SettingsSizeType struct {

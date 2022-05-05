@@ -40,6 +40,7 @@ export namespace SettingsTypes {
         TVShowPath: string;
         TVShowEnabled: boolean;
         FullDeleteEnabled: boolean;
+        RandomNR: number;
     }
 
     export interface SettingsType {
@@ -50,6 +51,7 @@ export namespace SettingsTypes {
         PasswordEnabled: boolean;
         TMDBGrabbing: boolean;
         DarkMode: boolean;
+        RandomNR: number;
     }
 
     export interface SizesType {

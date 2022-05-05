@@ -11,6 +11,7 @@ class StaticInfos {
     private tvshowpath: string = '';
     private TVShowsEnabled: boolean = false;
     private fullDeleteable: boolean = false;
+    private RandomNR: number = 3;
 
     /**
      * check if the current theme is the dark theme
@@ -44,6 +45,7 @@ class StaticInfos {
     }
 
     handlers: (() => void)[] = [];
+
     onThemeChange(func: () => void): void {
         this.handlers.push(func);
     }
@@ -70,6 +72,14 @@ class StaticInfos {
      */
     getTVShowPath(): string {
         return this.tvshowpath;
+    }
+
+    setRandomNR(nr: number): void {
+        this.RandomNR = nr;
+    }
+
+    getRandomNR(): number {
+        return this.RandomNR;
     }
 }
 

@@ -126,7 +126,7 @@ func GetSettings() (result types.SettingsType, PathPrefix string, sizes types.Se
                            SELECT COUNT(*)
                            FROM video_tags
                        ) AS tagsadded,
-                       video_path, episode_path, password, mediacenter_name, TMDB_grabbing, DarkMode
+                       video_path, episode_path, password, mediacenter_name, TMDB_grabbing, DarkMode, random_nr
                 FROM settings
                 LIMIT 1`, DBName)
 
@@ -134,7 +134,7 @@ func GetSettings() (result types.SettingsType, PathPrefix string, sizes types.Se
 	var TMDBGrabbing int
 
 	err := QueryRow(query).Scan(&sizes.VideoNr, &sizes.DBSize, &sizes.DifferentTags, &sizes.TagsAdded,
-		&result.VideoPath, &result.EpisodePath, &result.Password, &result.MediacenterName, &TMDBGrabbing, &DarkMode)
+		&result.VideoPath, &result.EpisodePath, &result.Password, &result.MediacenterName, &TMDBGrabbing, &DarkMode, &result.RandomNR)
 
 	if err != nil {
 		fmt.Println(err.Error())

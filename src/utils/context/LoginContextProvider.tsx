@@ -32,6 +32,7 @@ export const LoginContextProvider: FunctionComponent = (props): JSX.Element => {
                 GlobalInfos.enableDarkTheme(result.DarkMode);
 
                 GlobalInfos.setVideoPaths(result.VideoPath, result.TVShowPath);
+                GlobalInfos.setRandomNR(result.RandomNR);
 
                 features.setTVShowEnabled(result.TVShowEnabled);
                 features.setVideosFullyDeleteable(result.FullDeleteEnabled);

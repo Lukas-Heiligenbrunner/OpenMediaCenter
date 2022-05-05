@@ -33,7 +33,8 @@ class GeneralSettings extends React.Component<Props, state> {
                 Password: '',
                 PasswordEnabled: false,
                 TMDBGrabbing: false,
-                VideoPath: ''
+                VideoPath: '',
+                RandomNR: 3
             },
             sizes: {
                 DBSize: 0,
@@ -193,6 +194,23 @@ class GeneralSettings extends React.Component<Props, state> {
                                         generalSettings: {
                                             ...this.state.generalSettings,
                                             MediacenterName: e.target.value
+                                        }
+                                    })
+                                }
+                            />
+                        </Form.Group>
+
+                        <Form.Group className={style.mediacenternameform} data-testid='randnrform'>
+                            <Form.Label>Number of random videos on Random page</Form.Label>
+                            <Form.Control
+                                type='number'
+                                placeholder='2'
+                                value={this.state.generalSettings.RandomNR}
+                                onChange={(e): void =>
+                                    this.setState({
+                                        generalSettings: {
+                                            ...this.state.generalSettings,
+                                            RandomNR: parseInt(e.target.value, 10)
                                         }
                                     })
                                 }
