@@ -117,9 +117,7 @@ Test_Server:
     - Debian_Server
   rules:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH # run this always on default branch
-    - if: $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH # allow triggering this manually
-      when: manual
-      allow_failure: true
+    - when: manual
   script:
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | ssh-add -
@@ -138,9 +136,7 @@ Test_Server_2:
     - Debian_Server
   rules:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH # run this always on default branch
-    - if: $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH # allow triggering this manually
-      when: manual
-      allow_failure: true
+    - when: manual
   script:
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY_2" | ssh-add -
