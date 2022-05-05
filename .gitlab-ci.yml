@@ -108,16 +108,13 @@ Debian_Server:
       - Minimize_Frontend
       - Build_Backend
 
-Test_Server:
+.Test_Server_Common:
   stage: deploy
   image: luki42/ssh:latest
   needs:
     - Frontend_Tests
     - Backend_Tests
     - Debian_Server
-  rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH # run this always on default branch
-    - when: manual
   script:
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | ssh-add -
@@ -127,16 +124,23 @@ Test_Server:
     - ssh root@192.168.0.42 "DEBIAN_FRONTEND=noninteractive apt-get --reinstall  -y -qq install /tmp/OpenMediaCenter-*.deb && rm /tmp/OpenMediaCenter-*.deb"
   allow_failure: true
 
-Test_Server_2:
+Test_Server_CD:
+  extends: .Test_Server_Common
+  only:
+    refs:
+      - master
+
+Test_Server_MANUAL:
+  extends: .Test_Server_Common
+  when: manual
+
+.Test_Server_2_Common:
   stage: deploy
   image: luki42/ssh:latest
   needs:
     - Frontend_Tests
     - Backend_Tests
     - Debian_Server
-  rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH # run this always on default branch
-    - when: manual
   script:
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY_2" | ssh-add -
@@ -146,3 +150,12 @@ Test_Server_2:
     - ssh root@192.168.0.209 "DEBIAN_FRONTEND=noninteractive apt-get --reinstall  -y -qq install /tmp/OpenMediaCenter-*.deb && rm /tmp/OpenMediaCenter-*.deb"
   allow_failure: true
 
+Test_Server_2_CD:
+  extends: .Test_Server_2_Common
+  only:
+    refs:
+      - master
+
+Test_Server_2_MANUAL:
+  extends: .Test_Server_2_Common
+  when: manual
