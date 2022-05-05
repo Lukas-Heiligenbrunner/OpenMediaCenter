@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"openmediacenter/apiGo/api/api"
@@ -9,6 +10,7 @@ import (
 	"openmediacenter/apiGo/database"
 	"os"
 	"strconv"
+	"strings"
 )
 
 func addVideoHandlers() {
@@ -162,7 +164,8 @@ func getVideoHandlers() {
 	 */
 	api.AddHandler("getRandomMovies", api.VideoNode, api.PermUser, func(context api.Context) {
 		var args struct {
-			Number int
+			Number    int
+			TagFilter []uint32
 		}
 		if api.DecodeRequest(context.GetRequest(), &args) != nil {
 			context.Text("unable to decode request")
@@ -174,34 +177,52 @@ func getVideoHandlers() {
 			Videos []types.VideoUnloadedType
 		}
 
-		query := fmt.Sprintf("SELECT movie_id,movie_name FROM videos ORDER BY RAND() LIMIT %d", args.Number)
-		result.Videos = readVideosFromResultset(database.Query(query))
+		whereclause := "WHERE 1"
+		if len(args.TagFilter) > 0 {
+			d, _ := json.Marshal(args.TagFilter)
+			vals := strings.Trim(string(d), "[]")
 
-		var ids string
-		for i := range result.Videos {
-			ids += "video_tags.video_id=" + strconv.Itoa(result.Videos[i].MovieId)
-
-			if i < len(result.Videos)-1 {
-				ids += " OR "
-			}
+			whereclause = fmt.Sprintf("WHERE tag_id IN (%s)", vals)
 		}
 
-		// add the corresponding tags
-		query = fmt.Sprintf(`SELECT t.tag_name,t.tag_id FROM video_tags
+		query := fmt.Sprintf(`
+SELECT video_tags.video_id,v.movie_name FROM video_tags join videos v on v.movie_id = video_tags.video_id
+                                        %s
+                                        group by video_id
+                                        ORDER BY RAND()
+                                        LIMIT %d`, whereclause, args.Number)
+		result.Videos = readVideosFromResultset(database.Query(query))
+
+		if len(result.Videos) > 0 {
+			var ids string
+			for i := range result.Videos {
+				ids += "video_tags.video_id=" + strconv.Itoa(result.Videos[i].MovieId)
+
+				if i < len(result.Videos)-1 {
+					ids += " OR "
+				}
+			}
+
+			// add the corresponding tags
+			query = fmt.Sprintf(`SELECT t.tag_name,t.tag_id FROM video_tags
 									INNER JOIN tags t on video_tags.tag_id = t.tag_id
 									WHERE %s
 									GROUP BY t.tag_id`, ids)
 
-		rows := database.Query(query)
-
-		for rows.Next() {
-			var tag types.Tag
-			err := rows.Scan(&tag.TagName, &tag.TagId)
-			if err != nil {
-				panic(err.Error()) // proper Error handling instead of panic in your app
+			rows := database.Query(query)
+			if rows != nil {
+				for rows.Next() {
+					var tag types.Tag
+					err := rows.Scan(&tag.TagName, &tag.TagId)
+					if err != nil {
+						panic(err.Error()) // proper Error handling instead of panic in your app
+					}
+					// append to final array
+					result.Tags = append(result.Tags, tag)
+				}
 			}
-			// append to final array
-			result.Tags = append(result.Tags, tag)
+		} else {
+			result.Tags = []types.Tag{}
 		}
 
 		context.Json(result)
