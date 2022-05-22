@@ -6,7 +6,6 @@ import (
 	"openmediacenter/apiGo/config"
 	"openmediacenter/apiGo/database"
 	"os"
-	"path/filepath"
 	"strings"
 )
 
@@ -33,22 +32,19 @@ func StartReindex() bool {
 		return false
 	}
 
-	var files []string
-	err := filepath.Walk(vidFolder, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			fmt.Println(err.Error())
-			return err
-		}
-
-		if !info.IsDir() && strings.HasSuffix(info.Name(), ".mp4") {
-			files = append(files, info.Name())
-		}
-		return nil
-	})
-
+	filelist, err := ioutil.ReadDir(vidFolder)
 	if err != nil {
 		fmt.Println(err.Error())
+		return false
 	}
+
+	var files []string
+	for _, file := range filelist {
+		if !file.IsDir() && strings.HasSuffix(file.Name(), ".mp4") {
+			files = append(files, file.Name())
+		}
+	}
+
 	// start reindex process
 	AppendMessage("Starting Reindexing!")
 	InitDeps(&mSettings)
