@@ -146,8 +146,8 @@ Test_Server_MANUAL:
     - echo "$SSH_PRIVATE_KEY_2" | ssh-add -
     - mkdir -p ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-    - scp deb/OpenMediaCenter-*.deb root@192.168.0.209:/tmp/
-    - ssh root@192.168.0.209 "DEBIAN_FRONTEND=noninteractive apt-get --reinstall  -y -qq install /tmp/OpenMediaCenter-*.deb && rm /tmp/OpenMediaCenter-*.deb"
+    - scp deb/OpenMediaCenter-*.deb root@192.168.0.44:/tmp/
+    - ssh root@192.168.0.44 "DEBIAN_FRONTEND=noninteractive apt-get --reinstall  -y -qq install /tmp/OpenMediaCenter-*.deb && rm /tmp/OpenMediaCenter-*.deb"
   allow_failure: true
 
 Test_Server_2_CD:
