@@ -42,6 +42,7 @@ func main() {
 	api.AddHandlers()
 
 	videoparser.SetupSettingsWebsocket()
+	videoparser.InitFileWatcher()
 
 	// add the static files
 	static.ServeStaticFiles()
