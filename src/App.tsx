@@ -10,7 +10,7 @@ import style from './App.module.css';
 import SettingsPage from './pages/SettingsPage/SettingsPage';
 import CategoryPage from './pages/CategoryPage/CategoryPage';
 
-import {NavLink, Route, Switch, useRouteMatch} from 'react-router-dom';
+import {NavLink, Route, Routes} from 'react-router-dom';
 import Player from './pages/Player/Player';
 import ActorOverviewPage from './pages/ActorOverviewPage/ActorOverviewPage';
 import ActorPage from './pages/ActorPage/ActorPage';
@@ -47,7 +47,7 @@ class App extends React.Component<{}, state> {
 
         return (
             <LoginContextProvider>
-                <Switch>
+                <Routes>
                     <Route path='/login'>
                         <AuthenticationPage />
                     </Route>
@@ -55,12 +55,18 @@ class App extends React.Component<{}, state> {
                         {this.navBar()}
                         <MyRouter />
                     </Route>
-                </Switch>
+                </Routes>
             </LoginContextProvider>
         );
     }
 
     static contextType = FeatureContext;
+
+    activeTab(history, path) {
+        if (history.location.pathname === path) {
+            return { color: "red" };
+        }
+    };
 
     /**
      * render the top navigation bar
@@ -75,39 +81,34 @@ class App extends React.Component<{}, state> {
                     Home
                 </NavLink>
                 <NavLink
-                    className={[style.navitem, themeStyle.navitem].join(' ')}
                     to={'/media/random'}
-                    activeStyle={{opacity: '0.85'}}>
+                    className={({ isActive }) => [style.navitem, themeStyle.navitem, (isActive ? 'navitem-active' : '')].join(' ')}>
                     Random Video
                 </NavLink>
 
                 <NavLink
-                    className={[style.navitem, themeStyle.navitem].join(' ')}
-                    to={'/media/categories'}
-                    activeStyle={{opacity: '0.85'}}>
+                    className={({ isActive }) => [style.navitem, themeStyle.navitem, (isActive ? 'navitem-active' : '')].join(' ')}
+                    to={'/media/categories'}>
                     Categories
                 </NavLink>
 
                 <NavLink
-                    className={[style.navitem, themeStyle.navitem].join(' ')}
-                    to={'/media/actors'}
-                    activeStyle={{opacity: '0.85'}}>
+                    className={({ isActive }) => [style.navitem, themeStyle.navitem, (isActive ? 'navitem-active' : '')].join(' ')}
+                    to={'/media/actors'}>
                     Actors
                 </NavLink>
 
                 {this.context.TVShowEnabled ? (
                     <NavLink
-                        className={[style.navitem, themeStyle.navitem].join(' ')}
-                        to={'/media/tvshows'}
-                        activeStyle={{opacity: '0.85'}}>
+                        className={({ isActive }) => [style.navitem, themeStyle.navitem, (isActive ? 'navitem-active' : '')].join(' ')}
+                        to={'/media/tvshows'}>
                         TV Shows
                     </NavLink>
                 ) : null}
 
                 <NavLink
-                    className={[style.navitem, themeStyle.navitem].join(' ')}
-                    to={'/media/settings'}
-                    activeStyle={{opacity: '0.85'}}>
+                    className={({ isActive }) => [style.navitem, themeStyle.navitem, (isActive ? 'navitem-active' : '')].join(' ')}
+                    to={'/media/settings'}>
                     Settings
                 </NavLink>
             </div>

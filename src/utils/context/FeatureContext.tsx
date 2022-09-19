@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useState} from 'react';
+import React, {FunctionComponent, PropsWithChildren, useState} from 'react';
 
 export interface FeatureContextType {
     setTVShowEnabled: (enabled: boolean) => void;
@@ -17,7 +17,7 @@ export const FeatureContext = React.createContext<FeatureContextType>({
     VideosFullyDeleteable: false
 });
 
-export const FeatureContextProvider: FunctionComponent = (props): JSX.Element => {
+export const FeatureContextProvider: FunctionComponent<PropsWithChildren> = (props): JSX.Element => {
     const [tvshowenabled, settvshowenabled] = useState(false);
     const [fullydeletablevids, setfullydeleteable] = useState(false);
 

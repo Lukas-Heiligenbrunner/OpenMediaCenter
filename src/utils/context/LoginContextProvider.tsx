@@ -1,13 +1,13 @@
 import {LoginContext, LoginPerm, LoginState} from './LoginContext';
-import React, {FunctionComponent, useContext, useEffect, useState} from 'react';
-import {useHistory, useLocation} from 'react-router';
+import React, {FunctionComponent, PropsWithChildren, useContext, useEffect, useState} from 'react';
+import {useLocation, useNavigate} from 'react-router';
 import {cookie} from './Cookie';
 import {APINode, callAPI} from '../Api';
 import {SettingsTypes} from '../../types/ApiTypes';
 import GlobalInfos from '../GlobalInfos';
 import {FeatureContext} from './FeatureContext';
 
-export const LoginContextProvider: FunctionComponent = (props): JSX.Element => {
+export const LoginContextProvider: FunctionComponent<PropsWithChildren> = (props): JSX.Element => {
     let initialLoginState = LoginState.LoggedIn;
     let initialUserPerm = LoginPerm.User;
 
@@ -50,7 +50,7 @@ export const LoginContextProvider: FunctionComponent = (props): JSX.Element => {
         );
     }, [features, loginState]);
 
-    const hist = useHistory();
+    const navigate = useNavigate();
     const loc = useLocation();
 
     // trigger redirect on loginstate change
@@ -59,14 +59,14 @@ export const LoginContextProvider: FunctionComponent = (props): JSX.Element => {
             // if we arent already in dashboard tree we want to redirect to default dashboard page
             console.log('redirecting to dashboard' + loc.pathname);
             if (!loc.pathname.startsWith('/media')) {
-                hist.replace('/media');
+                navigate('/media');
             }
         } else {
             if (!loc.pathname.startsWith('/login')) {
-                hist.replace('/login');
+                navigate('/login');
             }
         }
-    }, [hist, loc.pathname, loginState]);
+    }, [navigate, loc.pathname, loginState]);
 
     const value = {
         logout: (): void => {
@@ -86,7 +86,7 @@ export const LoginContextProvider: FunctionComponent = (props): JSX.Element => {
     return <LoginContext.Provider value={value}>{props.children}</LoginContext.Provider>;
 };
 
-interface Props {
+interface Props extends PropsWithChildren{
     perm: LoginPerm;
 }
 

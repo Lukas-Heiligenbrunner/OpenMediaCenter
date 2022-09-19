@@ -94,7 +94,7 @@ export class TVPlayer extends React.Component<Props, State> {
     }
 
     private closebtn(): void {
-        this.props.history.goBack();
+        this.props.goBack();
     }
 }
 

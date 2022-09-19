@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {PropsWithChildren} from 'react';
 import style from './SideBar.module.css';
 import GlobalInfos from '../../utils/GlobalInfos';
 
-interface SideBarProps {
+interface SideBarProps extends  PropsWithChildren{
     hiddenFrame?: boolean;
     width?: string;
 }

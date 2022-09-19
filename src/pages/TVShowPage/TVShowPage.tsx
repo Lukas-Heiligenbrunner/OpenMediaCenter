@@ -3,10 +3,11 @@ import Preview from '../../elements/Preview/Preview';
 import {APINode, callAPI, callAPIPlain} from '../../utils/Api';
 import {TVShow} from '../../types/ApiTypes';
 import DynamicContentContainer from '../../elements/DynamicContentContainer/DynamicContentContainer';
-import {Route, Switch, useRouteMatch} from 'react-router-dom';
+import {Route, Routes, useMatch} from 'react-router-dom';
 import EpisodePage from './EpisodePage';
 import PageTitle, {Line} from '../../elements/PageTitle/PageTitle';
 import SideBar, {SideBarItem, SideBarTitle} from '../../elements/SideBar/SideBar';
+import {useLocation} from "react-router";
 
 interface State {
     loading: boolean;
@@ -55,7 +56,7 @@ export class TVShowPage extends React.Component<Props, State> {
                                         (result) => callback(result)
                                     );
                                 }}
-                                linkPath={'/tvshows/' + elem.Id}
+                                linkPath={'/media/tvshows/' + elem.Id}
                             />
                         )}
                         data={this.state.loading ? [] : this.data}
@@ -68,16 +69,16 @@ export class TVShowPage extends React.Component<Props, State> {
 }
 
 export default function (): JSX.Element {
-    let match = useRouteMatch();
+    const { pathname } = useLocation();
 
     return (
-        <Switch>
-            <Route exact path={`${match.path}/:id`}>
+        <Routes>
+            <Route path={`${pathname}/:id`}>
                 <EpisodePage />
             </Route>
-            <Route path={match.path}>
+            <Route path={pathname}>
                 <TVShowPage />
             </Route>
-        </Switch>
+        </Routes>
     );
 }

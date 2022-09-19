@@ -15,6 +15,10 @@
     text-decoration: none;
 }
 
+.navitem-active {
+    opacity: 0.85;
+}
+
 .navitem:hover {
     opacity: 1;
     text-decoration: none;

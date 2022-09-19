@@ -78,8 +78,8 @@ function generalAPICall<T>(
                 // decode json or text
                 const data = json ? await response.json() : await response.text();
                 callback(data);
-            } catch (e) {
-                errorcallback(e);
+            } catch (e: any) {
+                errorcallback(e.toString());
             }
         } else if (response.status === 400) {
             // Bad Request --> invalid token
