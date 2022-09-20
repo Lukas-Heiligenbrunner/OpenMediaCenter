@@ -55,7 +55,7 @@ export class TVShowPage extends React.Component<Props, State> {
                                         (result) => callback(result)
                                     );
                                 }}
-                                linkPath={'/tvshows/' + elem.Id}
+                                linkPath={'/media/tvshows/' + elem.Id}
                             />
                         )}
                         data={this.state.loading ? [] : this.data}

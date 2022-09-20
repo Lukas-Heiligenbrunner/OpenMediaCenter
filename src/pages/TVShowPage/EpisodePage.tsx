@@ -66,7 +66,7 @@ export class EpisodePage extends React.Component<Props, State> {
 export const EpisodeTile = (props: {episode: Episode}): JSX.Element => {
     const themestyle = GlobalInfos.getThemeStyle();
     return (
-        <Link to={'/tvplayer/' + props.episode.ID}>
+        <Link to={'/media/tvplayer/' + props.episode.ID}>
             <div className={tileStyle.tile + ' ' + themestyle.secbackground + ' ' + themestyle.textcolor}>
                 <FontAwesomeIcon
                     style={{
