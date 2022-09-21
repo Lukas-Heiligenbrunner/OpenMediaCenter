@@ -25,20 +25,18 @@ func startTVShowReindex(files []Show) {
 }
 
 func insertEpisodesIfNotExisting(show Show) {
-	query := "SELECT tvshow_episodes.name, season, episode FROM tvshow_episodes JOIN tvshow t on t.id = tvshow_episodes.tvshow_id WHERE t.name=?"
+	query := "SELECT filename FROM tvshow_episodes JOIN tvshow t on t.id = tvshow_episodes.tvshow_id WHERE t.name=?"
 	rows := database.Query(query, show.Name)
 
 	var dbepisodes []string
 	for rows.Next() {
-		var epname string
-		var season int
-		var episode int
-		err := rows.Scan(&epname, &season, &episode)
+		var filename string
+		err := rows.Scan(&filename)
 		if err != nil {
 			fmt.Println(err.Error())
 		}
 
-		dbepisodes = append(dbepisodes, fmt.Sprintf("%s S%02dE%02d.mp4", epname, season, episode))
+		dbepisodes = append(dbepisodes, filename)
 	}
 
 	// get those episodes that are missing in db
@@ -83,6 +81,10 @@ VALUES (?, ?, ?, (SELECT tvshow.id FROM tvshow WHERE tvshow.name=?), ?, ?)`
 
 // difference returns the elements in `a` that aren't in `b`.
 func difference(a, b []string) []string {
+	if b == nil || len(b) == 0 {
+		return a
+	}
+
 	mb := make(map[string]struct{}, len(b))
 	for _, x := range b {
 		mb[x] = struct{}{}
@@ -129,7 +131,10 @@ func getAllTVShows() *[]string {
 	var res []string
 	for rows.Next() {
 		var show string
-		rows.Scan(&show)
+		err := rows.Scan(&show)
+		if err != nil {
+			continue
+		}
 
 		res = append(res, show)
 	}
