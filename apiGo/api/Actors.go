@@ -25,7 +25,7 @@ func getActorsFromDB() {
 	 * @apiSuccess {string} .Thumbnail Portrait Thumbnail
 	 */
 	api.AddHandler("getAllActors", api.ActorNode, api.PermUser, func(context api.Context) {
-		query := "SELECT actor_id, name, thumbnail FROM actors"
+		query := "SELECT actor_id, name, thumbnail FROM actors ORDER BY name ASC"
 		context.Json(readActorsFromResultset(database.Query(query)))
 	})
 
