@@ -21,7 +21,7 @@ func (p Perm) String() string {
 }
 
 const SignKey = "89013f1753a6890c6090b09e3c23ff43"
-const TokenExpireHours = 24
+const TokenExpireHours = 8760
 
 type Token struct {
 	Token     string
