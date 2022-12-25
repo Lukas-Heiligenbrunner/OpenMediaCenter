@@ -1,9 +1,7 @@
 import React from 'react';
 
 import style from './Player.module.css';
-import plyrstyle from 'plyr-react/dist/plyr.css';
 
-import {Plyr} from 'plyr-react';
 import SideBar, {SideBarItem, SideBarTitle} from '../../elements/SideBar/SideBar';
 import Tag from '../../elements/Tag/Tag';
 import AddTagPopup from '../../elements/Popups/AddTagPopup/AddTagPopup';
@@ -15,7 +13,7 @@ import ActorTile from '../../elements/ActorTile/ActorTile';
 import {withRouter} from 'react-router-dom';
 import {APINode, callAPI} from '../../utils/Api';
 import {RouteComponentProps} from 'react-router';
-import {DefaultPlyrOptions, GeneralSuccess} from '../../types/GeneralTypes';
+import {GeneralSuccess} from '../../types/GeneralTypes';
 import {ActorType, TagType} from '../../types/VideoTypes';
 import PlyrJS from 'plyr';
 import {IconButton} from '../../elements/GPElements/Button';
@@ -23,6 +21,7 @@ import {VideoTypes} from '../../types/ApiTypes';
 import GlobalInfos from '../../utils/GlobalInfos';
 import {ButtonPopup} from '../../elements/Popups/ButtonPopup/ButtonPopup';
 import {FeatureContext} from '../../utils/context/FeatureContext';
+import HLSPlayer from './HLSPlayer';
 
 interface Props extends RouteComponentProps<{id: string}> {}
 
@@ -84,11 +83,8 @@ export class Player extends React.Component<Props, mystate> {
 
                 <div className={style.videowrapper}>
                     {/* video component is added here */}
-                    {this.state.sources ? (
-                        <Plyr style={plyrstyle} source={this.state.sources} options={DefaultPlyrOptions} />
-                    ) : (
-                        <div>not loaded yet</div>
-                    )}
+                    {/*<Plyr style={plyrstyle} source={this.state.sources} options={DefaultPlyrOptions} />*/}
+                    {this.state.sources ? <HLSPlayer videoid={this.state.movieId} /> : <div>not loaded yet</div>}
                     <div className={style.videoactions}>
                         <IconButton icon={faThumbsUp} onClick={(): void => this.likebtn()} title='Like!' />
                         <IconButton icon={faTag} onClick={(): void => this.setState({popupvisible: true})} title='Add Tag!' />

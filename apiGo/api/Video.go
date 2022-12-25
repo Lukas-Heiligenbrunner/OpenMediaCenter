@@ -3,12 +3,15 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"net/url"
 	"openmediacenter/apiGo/api/api"
 	"openmediacenter/apiGo/api/types"
 	"openmediacenter/apiGo/config"
 	"openmediacenter/apiGo/database"
+	"openmediacenter/apiGo/videoparser/hls"
 	"os"
+	"os/exec"
 	"strconv"
 	"strings"
 )
@@ -397,6 +400,62 @@ func loadVideosHandlers() {
 		_ = database.QueryRow(query).Scan(&result.VideoNr, &result.Tagged, &result.HDNr, &result.FullHdNr, &result.SDNr, &result.DifferentTags)
 
 		context.Json(result)
+	})
+
+	api.AddHandler("loadM3U8", api.VideoNode, api.PermUnauthorized, func(ctx api.Context) {
+		param := ctx.GetRequest().URL.Query().Get("id")
+		id, _ := strconv.Atoi(param)
+
+		mylist :=
+			`#EXTM3U
+#EXT-X-VERSION:4
+#EXT-X-MEDIA-SEQUENCE:0
+#EXT-X-ALLOW-CACHE:NO
+#EXT-X-TARGETDURATION:10
+#EXT-X-START:TIME-OFFSET=0
+#EXT-X-PLAYLIST-TYPE:VOD
+`
+		// ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 input.mp4
+		cmd := exec.Command("ffprobe",
+			"-v", "error",
+			"-show_entries", "format=duration",
+			"-of", "default=noprint_wrappers=1:nokey=1",
+			hls.GetVideoPathById(uint32(id)))
+		stdout, err := cmd.Output()
+		//
+		if err != nil {
+			fmt.Println(err.Error())
+			fmt.Println(string(err.(*exec.ExitError).Stderr))
+		}
+		secss, _, _ := strings.Cut(string(stdout), ".")
+		secsi, err := strconv.Atoi(secss)
+
+		i := 0
+		for ; i < secsi/10; i++ {
+			mylist += fmt.Sprintf(
+				`#EXTINF:10.0,
+/api/video/getVideoSegment?id=%d&idx=%d
+`, id, i)
+		}
+		mylist += fmt.Sprintf(
+			`#EXTINF:%s,
+/api/video/getVideoSegment?id=%d&idx=%d
+EXT-X-ENDLIST
+`, fmt.Sprintf("%d.0", secsi%10), id, i)
+		ctx.Text(mylist)
+	})
+
+	api.AddHandler("getVideoSegment", api.VideoNode, api.PermUnauthorized, func(ctx api.Context) {
+		params := ctx.GetRequest().URL.Query()
+		idxs := params.Get("idx")
+		ids := params.Get("id")
+
+		id, _ := strconv.Atoi(ids)
+		idx, _ := strconv.Atoi(idxs)
+		// todo error handling
+
+		tmppath := hls.GetSegment(uint32(idx), uint32(id))
+		http.ServeFile(ctx.GetWriter(), ctx.GetRequest(), tmppath)
 	})
 }
 

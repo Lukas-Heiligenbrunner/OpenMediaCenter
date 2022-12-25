@@ -24,6 +24,7 @@ type FeaturesT struct {
 type GeneralT struct {
 	VerboseLogging bool
 	ReindexPrefix  string
+	TmpDir         string
 }
 
 type FileConfT struct {
@@ -44,6 +45,7 @@ func defaultConfig() *FileConfT {
 		General: GeneralT{
 			VerboseLogging: false,
 			ReindexPrefix:  "/var/www/openmediacenter",
+			TmpDir:         "/tmp/openmediacenter",
 		},
 		Features: FeaturesT{
 			DisableTVSupport:     false,
