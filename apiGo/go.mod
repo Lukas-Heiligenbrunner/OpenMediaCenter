@@ -9,6 +9,6 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/pelletier/go-toml/v2 v2.0.0-beta.3
 	github.com/pressly/goose/v3 v3.1.0
-	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
+	golang.org/x/crypto v0.1.0
 	nhooyr.io/websocket v1.8.7
 )
