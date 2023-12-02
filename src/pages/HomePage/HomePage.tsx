@@ -58,7 +58,7 @@ export class HomePage extends React.Component<Props, state> {
         };
     }
 
-    sortState = SortBy.date;
+    sortState = SortBy.random;
     tagState = DefaultTags.all;
 
     componentDidMount(): void {
